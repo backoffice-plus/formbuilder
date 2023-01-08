@@ -40,6 +40,8 @@
 
 
 <script setup>
+import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { useMousePressed } from '@vueuse/core'
 
 const resizeWrapper = ref(null);
 const resizeMover = ref(null);

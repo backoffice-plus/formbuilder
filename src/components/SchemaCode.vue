@@ -43,6 +43,8 @@ textarea {
 </style>
 
 <script setup>
+import { ref, computed } from 'vue'
+
 const props = defineProps({schema:Object,uischema:Object});
 const emit = defineEmits(['update:schema', 'update:uischema'])
 
