@@ -32,6 +32,6 @@
     "@jsonforms/vue-vanilla": "^3.0.0",
     "lodash.get": "^4.4.2",
     "mitt": "^3.0.0",
-    "vuedraggable": "^2.24.3"
+    "vuedraggable": "^4.1.0"
   }
 }
