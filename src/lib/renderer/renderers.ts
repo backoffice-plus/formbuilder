@@ -1,6 +1,6 @@
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
-import fileRenderer from "./FileControlRenderer.vue";
-import tabsCategorizationRenderer from "./TabsCategorizationRenderer.vue";
+import {entry as fileRenderer} from "./FileControlRenderer.vue";
+import {entry as tabsCategorizationRenderer} from "./TabsCategorizationRenderer.vue";
 
 export const jsonFormRenderes = Object.freeze([
     ...vanillaRenderers,
