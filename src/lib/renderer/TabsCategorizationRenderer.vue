@@ -49,12 +49,15 @@
 <script lang="ts">
 import {
   isVisible,
-  JsonFormsRendererRegistryEntry, Layout,
   rankWith,
-  createAjv, Category, Categorization
+  createAjv
+} from '@jsonforms/core';
+import type {
+  JsonFormsRendererRegistryEntry, Layout, Category, Categorization
 } from '@jsonforms/core';
 import { defineComponent } from 'vue';
-import { rendererProps, useJsonFormsLayout, RendererProps, DispatchRenderer } from '@jsonforms/vue';
+import { rendererProps, useJsonFormsLayout, DispatchRenderer } from '@jsonforms/vue';
+import type { RendererProps } from '@jsonforms/vue';
 import { useVanillaLayout } from '@jsonforms/vue-vanilla/src/util';
 import { uiTypeIs} from "@jsonforms/core/src/testers/testers";
 

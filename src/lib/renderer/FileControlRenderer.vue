@@ -29,12 +29,15 @@
 
 <script lang="ts">
 import {
-  ControlElement,
-  JsonFormsRendererRegistryEntry,
   rankWith,
 } from '@jsonforms/core';
+import type {
+  ControlElement,
+  JsonFormsRendererRegistryEntry,
+} from '@jsonforms/core';
 import { defineComponent } from 'vue';
-import { rendererProps, useJsonFormsControl, RendererProps } from '@jsonforms/vue';
+import { rendererProps, useJsonFormsControl } from '@jsonforms/vue';
+import type { RendererProps } from '@jsonforms/vue';
 import { default as ControlWrapper } from '@jsonforms/vue-vanilla/src/controls/ControlWrapper.vue';
 import { useVanillaControl } from '@jsonforms/vue-vanilla/src/util';
 import {and, schemaMatches,  uiTypeIs} from "@jsonforms/core/src/testers/testers";
