@@ -13,7 +13,7 @@ export default defineConfig({
             // Set the entry point (file that contains our components exported).
             entry: resolve(__dirname, 'src/index.ts'),
             // Name of the library.
-            name: 'my-component-library',
+            name: 'formbuilder',
             // We are building for CJS and ESM, use a function to rename automatically files.
             // Example: my-component-library.esm.js
             fileName: (format) => `${'my-component-library'}.${format}.js`,
