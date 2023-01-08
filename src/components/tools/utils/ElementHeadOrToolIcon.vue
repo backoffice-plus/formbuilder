@@ -7,7 +7,8 @@
         <span :title="name">
 
             <span class="tool">
-              <Icon :name="icon" size="24" class="text-gray-800" v-if="icon"/>
+              <!--<Icon :name="icon" size="24" class="text-gray-800" v-if="icon"/-->
+              <span v-if="icon">{{ icon }}</span>
               <span v-else>{{ toolProps.inputType }}</span>
             </span>
 
@@ -47,6 +48,7 @@
 </style>
 
 <script setup>
+import { computed } from 'vue'
 
 const props = defineProps(['uuid', 'tool', 'toolType', 'toolProps', 'properties'])
 
