@@ -24,7 +24,8 @@
         </div>
         <div>
           <button type="button" class="roundForIcons small" @click="addTab">
-            <Icon name="mdi:add"></Icon>
+            mdi:add
+            <!--<Icon name="mdi:add"></Icon>-->
           </button>
         </div>
       </div>
