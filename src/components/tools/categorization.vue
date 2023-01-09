@@ -21,12 +21,7 @@
             v-text="'All'"
             v-if="currentTab>=0 && elements.length>1"
           />
-        </div>
-        <div>
-          <button type="button" class="roundForIcons small" @click="addTab">
-            mdi:add
-            <!--<Icon name="mdi:add"></Icon>-->
-          </button>
+          <button type="button" class="add" @click="addTab" />
         </div>
       </div>
 
@@ -72,6 +67,51 @@
 .tabs {
   @apply my-0
 }
+
+
+.tabs {
+  @apply
+  flex
+
+  my-2
+
+  border-b border-gray-200
+}
+
+.tabs button:not(.add) {
+  min-width: 100px;
+  @apply
+  py-1
+
+  focus:outline-none
+
+  border-b border-transparent
+
+  transition-colors
+
+  rounded-t-lg
+
+  hover:bg-sky-400
+  hover:bg-opacity-10
+  hover:text-sky-800
+}
+
+.tabs button.selected {
+  @apply
+  text-sky-800
+  border-sky-800
+}
+
+
+button.add::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background-size: cover;
+  display: block;
+  /* mdi:tab-plus */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>');
+}
 </style>
 
 
@@ -83,9 +123,9 @@ import {
   ElementHeadOrToolIcon, Actions,
   ToolProps,
   getComponent, findLayoutTool, getChildComponents, initElementsByToolProps,
-  updatableUischemaKeys
+  updatableUischemaKeys,
+    emitter
 } from "../../index";
-import mitt from "mitt";
 
 export default {
   components: {draggableComponent, ElementHeadOrToolIcon, Actions},
@@ -150,7 +190,7 @@ export default {
       window.setTimeout(this.buildTabLabels,50);
     },
     openModal() {
-      mitt().emit('formBuilderModal', {uuid:this.uuid, data:this.data, type:this.toolProps.jsonForms.uischema?.type})
+      emitter.emit('formBuilderModal', {uuid:this.uuid, data:this.data, type:this.toolProps.jsonForms.uischema?.type})
     },
     onDelete() {
       if(confirm("Wirklich löschen?")) {
@@ -178,7 +218,7 @@ export default {
     onUpdated(e) {
       console.log("categorization onUpdated");
       window.setTimeout(this.buildTabLabels,50);
-      mitt().emit('formBuilderUpdated', e)
+      emitter.emit('formBuilderUpdated', e)
     },
   },
 

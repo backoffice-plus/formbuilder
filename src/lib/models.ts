@@ -27,22 +27,26 @@ export class Tool {
 
     clone(schema:JsonFormsSchema|undefined = undefined, uischema:JsonFormsUISchema|undefined = undefined): Tool {
 
+        const props = this.props.clone();
         let jsonForms = this.props.jsonForms;
         if(schema && uischema) {
-            jsonForms = new JsonForms(schema, uischema)
+            props.jsonForms = new JsonForms(schema, uischema)
         }
         else {
-            jsonForms = jsonForms.clone();
+            props.jsonForms = jsonForms.clone();
         }
+
+
 
         return new Tool(
             this.componentName,
-            new ToolProps(
-                this.props.inputType,
-                this.props.toolType,
-                jsonForms,
-                this.props.propertyName,
-            )
+            this.props.clone(),
+            // new ToolProps(
+            //     this.props.inputType,
+            //     this.props.toolType,
+            //     jsonForms,
+            //     this.props.propertyName,
+            // )
         );
     }
 }
@@ -54,6 +58,7 @@ export class ToolProps {
         public readonly toolType: string,
         private _jsonForms: JsonForms|any = new JsonForms(),
         public propertyName: string|undefined = undefined,
+        public toolName: string|undefined = undefined,
     ) {
         if(!(this._jsonForms instanceof JsonForms)) {
             this._jsonForms = new JsonForms(
@@ -77,6 +82,7 @@ export class ToolProps {
             props?.toolType,
             props?.jsonForms,
             props?.propertyName,
+            props?.toolName,
         )
     }
 
@@ -86,6 +92,7 @@ export class ToolProps {
             this.toolType,
             this.jsonForms.clone(),
             this.propertyName,
+            this.toolName,
         )
     }
 }

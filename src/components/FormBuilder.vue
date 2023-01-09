@@ -23,47 +23,33 @@
         :isDragging="!!drag"
     />
 
-    <details>
-      <summary class="cursor-pointer">JSON</summary>
-      <div class="card p-4">
-        <SchemaCode
-            v-model:schema="jsonFormsSchema"
-            v-model:uischema="jsonFormsUiSchema"
-            @update:schema="updateEditor()"
-            @update:uischema="updateEditor()"
-        />
-      </div>
-    </details>
-
-    <details>
-      <summary class="cursor-pointer">Preview</summary>
-      <ResizeArea>
-        <div class="card p-4" style="min-height: 106px">
-            <JsonForms
-                :class="'styleA'"
-                :schema="jsonFormsSchema"
-                :uischema="jsonFormsUiSchema"
-                :data="{}"
-                :renderers="jsonFormRenderes"
-                v-if="jsonFormsSchema && jsonFormsUiSchema"
-            />
-        </div>
-      </ResizeArea>
-    </details>
-
   </div>
 
 </template>
 
-<style>
-details {
-  @apply mb-2
+<style scoped>
+.modal {
+  @apply
+  relative z-10
 }
-details summary {
-   @apply
-   text-sky-800
-    hover:text-opacity-70
- }
+.modal > .modalBg {
+  @apply
+  fixed inset-0 overflow-y-auto
+  bg-black/30
+}
+.modal > .modalBg > .centerItem {
+  @apply
+  flex items-center justify-center
+  min-h-full
+}
+.modal > .modalBg > .centerItem .panel {
+  @apply
+  w-full max-w-md
+
+  overflow-hidden
+
+  bg-white rounded shadow
+}
 </style>
 
 
@@ -74,9 +60,9 @@ import {JsonForms} from "@jsonforms/vue";
 import {Dialog ,  DialogPanel,  DialogTitle, DialogDescription} from '@headlessui/vue';
 import {
   FormBuilderBar, ResizeArea, FlexArea, SchemaCode, OptionModal, jsonFormRenderes,
-  createJsonForms, findLayoutTool
+  createJsonForms, findLayoutTool,
+  emitter
 } from "../index";
-import mitt from "mitt";
 
 const props = defineProps({
   data: Object
@@ -98,13 +84,9 @@ const updateJsonForm = () => {
   const jsonForms = createJsonForms(rootForm);
   jsonFormsSchema.value = jsonForms.schema;
   jsonFormsUiSchema.value = jsonForms.uischema;
-  emit('schemaUpdated', jsonForms)
-}
 
-const updateEditor = () => {
-  tool.props.jsonForms.schema = jsonFormsSchema.value;
-  tool.props.jsonForms.uischema = jsonFormsUiSchema.value;
-  rootForm.value.init();
+  emit('schemaUpdated', jsonForms)
+  emitter.emit('formBuilderSchemaUpdated', jsonForms)
 }
 
 const isModalOpen = ref(false);
@@ -112,17 +94,17 @@ let modalData = {};
 
 
 onMounted(() => {
-  mitt().on('formBuilderModal', (data) => {
+  emitter.on('formBuilderModal', (data) => {
     isModalOpen.value = true;
     modalData = data; //uuid:, data:, type:
   })
-  mitt().on('formBuilderUpdated', (data) => {
+  emitter.on('formBuilderUpdated', (data) => {
     window.setTimeout(updateJsonForm,100);
   });
 });
 onBeforeUnmount(() => {
-  mitt().off('formBuilderModal');
-  mitt().off('formBuilderUpdated');
+  emitter.off('formBuilderModal');
+  emitter.off('formBuilderUpdated');
 })
 
 </script>

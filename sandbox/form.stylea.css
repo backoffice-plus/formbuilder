@@ -1,0 +1,273 @@
+.styleA {
+  @apply bg-transparent;
+
+}
+.styleA label,
+.styleA label.label {
+    @apply
+    uppercase tracking-wide text-gray-400 text-xs font-bold
+
+    pb-4
+
+    transition-colors
+}
+
+.styleA .control:focus-within label,
+.styleA .control:focus-within label.label {
+    @apply text-sky-600
+}
+
+/*
+    //extra
+    button
+    submit
+    image
+    reset
+    hidden
+*/
+
+.styleA input:not([type]),
+.styleA input:where([type="text"], [type="number"], [type="email"], [type="password"], [type="url"], [type="tel"], [type="search"], [type="xxx"], [type="xxx"]),
+.styleA input:where([type="date"], [type="datetime-local"], [type="month"], [type="time"], [type="week"]),
+.styleA input:where([type="file"], [type="range"], [type="color"]),
+.styleA select,
+.styleA textarea,
+.styleA .tagInput
+{
+    @apply
+    block
+    w-full
+    py-1 px-3
+
+    bg-gray-100
+    disabled:bg-gray-200
+    rounded
+
+    text-base
+    text-gray-700
+    leading-8
+
+    border border-gray-300
+    focus:border-sky-500
+    transition-colors
+
+    outline-none  appearance-none
+
+    disabled:cursor-not-allowed
+}
+.styleA select
+{
+    appearance:auto;
+    @apply p-2
+}
+
+
+
+.styleA input:where([type="file"]) {
+     @apply p-0 m-0
+}
+.styleA input:where([type="checkbox"], [type="radio"]) {
+    @apply p-2 m-2
+}
+.styleA input:where([type="range"]) {
+    appearance: auto;
+    @apply p-0
+}
+.styleA input:where([type="color"]) {
+    min-height: 40px;
+}
+
+.styleA textarea {
+    min-height: 10em;
+    @apply
+    leading-normal
+}
+
+.styleA .horizontal-layout,
+.styleA.horizontal-layout
+{
+    @apply flex flex-row w-full
+}
+.styleA .horizontal-layout .horizontal-layout-item,
+.styleA.horizontal-layout .horizontal-layout-item  {
+    @apply w-full
+}
+.styleA.vertical-layout,    /** root **/
+.styleA .vertical-layout
+{
+    @apply flex flex-col
+}
+
+.styleA .horizontal-layout,
+.styleA.horizontal-layout,
+.styleA .vertical-layout,
+.styleA.vertical-layout   /** root **/
+{
+    @apply gap-3
+}
+
+
+
+/**
+*
+* Array List
+*
+*/
+.styleA fieldset.group,
+fieldset.styleA.group {
+    @apply
+    border border-gray-300
+    p-2
+}
+.styleA fieldset.group > legend,
+fieldset.styleA.group > legend {
+    @apply
+    px-2
+    w-full
+}
+.styleA fieldset.group .group-item,
+fieldset.styleA.group .group-item {
+    /*@apply*/
+}
+
+
+
+
+
+.styleA label.label-element {
+    @apply block mt-3
+
+    uppercase tracking-wide
+    text-sm text-gray-400 font-bold;
+}
+
+
+.styleA .control .description,
+.styleA .control .error {
+    @apply block h-2 text-sm
+}
+.styleA .control .description {
+    @apply text-gray-500
+}
+.styleA .control .error {
+    @apply text-red-500
+}
+
+/**
+*
+* Array List
+*
+*/
+.styleA fieldset.array-list {
+    @apply
+    border border-gray-300
+    p-2
+
+    flex flex-col gap-2
+}
+.styleA fieldset.array-list legend {
+    @apply px-2
+    flex flex-row-reverse
+    justify-between
+    w-full
+}
+
+.styleA fieldset.array-list legend label {
+    @apply
+    uppercase tracking-wide text-gray-400 text-xs font-bold
+}
+.styleA fieldset.array-list legend button {
+    @apply
+    px-2 m-0
+    rounded-full
+
+    bg-gray-300
+    hover:bg-green-500
+}
+
+.styleA fieldset.array-list .array-list-no-data {
+    /*@apply */
+}
+
+.styleA fieldset.array-list .array-list-item-wrapper {
+    @apply
+    p-0
+    border border-gray-300
+}
+.styleA fieldset.array-list .array-list-item {
+    @apply p-0
+}
+
+.styleA fieldset.array-list .array-list-item-toolbar {
+    @apply
+    flex gap-1 items-center
+}
+.styleA fieldset.array-list .array-list-item-toolbar .array-list-item-label {
+    min-height: 22px;
+    @apply
+    flex-grow
+    text-black
+    pl-2
+}
+
+.styleA fieldset.array-list .array-list-item-toolbar button {
+    line-height: unset;
+    @apply
+
+    block
+    w-6 h-6
+
+    text-xs
+
+    cursor-pointer
+    rounded-full
+
+    bg-transparent
+    hover:bg-gray-400
+}
+.styleA fieldset.array-list .array-list-item-toolbar button.array-list-item-move-up {}
+.styleA fieldset.array-list .array-list-item-toolbar button.array-list-item-move-down {}
+.styleA fieldset.array-list .array-list-item-toolbar button.array-list-item-delete {
+    @apply
+    hover:bg-red-500
+}
+
+.styleA fieldset.array-list .array-list-item-content {
+    @apply
+    px-2
+}
+
+
+
+.styleA .tabs {
+    @apply
+    flex
+
+    my-2
+
+    border-b border-gray-200
+}
+
+.styleA .tabs button {
+    min-width: 100px;
+    @apply
+    py-1
+
+    focus:outline-none
+
+    border-b border-transparent
+
+    transition-colors
+
+    rounded-t-lg
+
+    hover:bg-sky-400
+    hover:bg-opacity-10
+    hover:text-sky-800
+}
+
+.styleA .tabs button.selected {
+    @apply
+    text-sky-800
+    border-sky-800
+}

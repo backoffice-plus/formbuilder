@@ -58,10 +58,10 @@
 import {
   ElementHeadOrToolIcon, Actions,
   ToolProps,
-  updatableSchemaKeys, updatableUischemaKeys
+  updatableSchemaKeys, updatableUischemaKeys,
+  emitter
 } from "../../index";
 import {defineComponent} from 'vue';
-import mitt from 'mitt';
 
 export default defineComponent({
   components: {ElementHeadOrToolIcon, Actions},
@@ -123,7 +123,8 @@ export default defineComponent({
       }
     },
     openModal() {
-      mitt().emit('formBuilderModal', {uuid:this.uuid, data:this.data, type:this.toolProps.jsonForms.uischema?.type})
+      console.log("openModal emit");
+      emitter.emit('formBuilderModal', {uuid:this.uuid, data:this.data, type:this.toolProps.jsonForms.uischema?.type})
     },
   },
 
@@ -131,7 +132,7 @@ export default defineComponent({
     data: {
       handler() {
         this.toolProps.jsonForms.update({...this.data});
-        mitt().emit('formBuilderUpdated')
+        emitter.emit('formBuilderUpdated')
       },
       deep: true
     },

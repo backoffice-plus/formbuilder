@@ -34,6 +34,7 @@
 import {JsonForms} from "@jsonforms/vue";
 import {jsonFormRenderes} from "../index";
 import {formControlSchema, formControlUiSchema, formLabelSchema, formLabelUiSchema} from "../schema";
+import {computed} from "vue";
 
 const props = defineProps(['uuid', 'data', 'type']);
 const emit = defineEmits(['change']);

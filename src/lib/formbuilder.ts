@@ -214,12 +214,14 @@ export const layoutTools = [
 
     new Tool('flexArea', ToolProps.create({
         toolType:'flex',
-        jsonForms: {uischema: {type: 'VerticalLayout'}}
+        jsonForms: {uischema: {type: 'VerticalLayout'}},
+        toolName: 'Vertical Layout',
     })),
 
     new Tool('flexArea', ToolProps.create({
         toolType:'flexRow',
-        jsonForms: {uischema: {type: 'HorizontalLayout'}}
+        jsonForms: {uischema: {type: 'HorizontalLayout'}},
+        toolName: 'Horizontal Layout',
     })),
 
     new Tool('flexArea', ToolProps.create({
@@ -229,7 +231,7 @@ export const layoutTools = [
 
     new Tool('categorization', ToolProps.create({
       toolType:'tabs',
-      jsonForms: {uischema: {type: 'Categorization'}}
+      jsonForms: {uischema: {type: 'Categorization'}},
     })),
 ];
 

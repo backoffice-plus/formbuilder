@@ -1,14 +1,14 @@
 <template>
   <div class="relative">
 
-    <ElementHeadOrToolIcon :uuid="uuid" :tool="tool" :toolType="toolType" :properties="data" />
+    <ElementHeadOrToolIcon :uuid="uuid" :tool="tool" :toolProps="toolProps" :toolType="toolType" :properties="data" />
 
     <div v-if="!tool" :class="{'mr-5':'root' !== uuid}">
 
       <Actions :uuid="uuid" @gear="openModal" @delete="onDelete" />
 
       <draggableComponent
-        :class="['dropArea', 'bg-dotted', flexType, {drag:isDragging||drag}]"
+        :class="['dropArea bg-dotted nestedFlexArea', this.toolType, {drag:isDragging||drag}]"
         :list="elements"
         group="formBuilder"
         item-key="uuid"
@@ -72,6 +72,14 @@
   @apply
   flex items-stretch
 }
+.nestedFlexArea:not(.flexRow) {
+   @apply
+   flex-col
+}
+.nestedFlexArea.flexRow {
+  @apply
+  flex-row
+}
 .nestedFlexArea > * {
   @apply w-full
 }
@@ -80,6 +88,7 @@
   @apply
   shadow-lg
   cursor-move
+  relative
 }
 
 .dropItem,
@@ -103,9 +112,9 @@ import {
   ElementHeadOrToolIcon, Actions,
   initElementsByToolProps, getComponent,
   ToolProps,
-  updatableUischemaKeys
+  updatableUischemaKeys,
+  emitter
 } from "../../index";
-import mitt from "mitt";
 
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
@@ -135,11 +144,11 @@ export default {
     };
   },
 
-  computed: {
-    flexType() {
-      return 'nestedFlexArea ' + ('flexRow' === this.toolType ? 'flex-row' : 'flex-col');
-    },
-  },
+  // computed: {
+  //   flexType() {
+  //     return 'nestedFlexArea ' + ('flexRow' === this.toolType ? 'flex-row' : 'flex-col');
+  //   },
+  // },
 
   mounted() {
     if (!this.tool) {
@@ -170,7 +179,7 @@ export default {
     },
 
     openModal() {
-      mitt().emit('formBuilderModal', {uuid:this.uuid, data:this.data, type:this.toolProps.jsonForms.uischema?.type})
+      emitter.emit('formBuilderModal', {uuid:this.uuid, data:this.data, type:this.toolProps.jsonForms.uischema?.type})
     },
     onDelete() {
       if(confirm("Wirklich löschen?")) {
@@ -186,7 +195,7 @@ export default {
     },
 
     onUpdated(e) {
-      mitt().emit('formBuilderUpdated', e)
+      emitter.emit('formBuilderUpdated', e)
     },
   },
 

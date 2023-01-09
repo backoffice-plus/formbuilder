@@ -6,10 +6,9 @@
 
         <span :title="name">
 
-            <span class="tool">
-              <!--<Icon :name="icon" size="24" class="text-gray-800" v-if="icon"/-->
-              <span v-if="icon">{{ icon }}</span>
-              <span v-else>{{ toolProps.inputType }}</span>
+            <span class="tool" :class="[props.toolType]">
+              <label>{{ name }}</label>
+              <span class="icon" />
             </span>
 
             <!-- Show name if while dragging tool is in dropArea -->
@@ -44,39 +43,49 @@
 }
 .dropArea .tool {
    @apply hidden
- }
+}
+
+.toolItem .tool:where(.group, .flexRow, .flex, .tabs) label {
+  @apply hidden
+}
+.toolItem .tool:where(.group, .flexRow, .flex, .tabs) .icon::before {
+  content: '';
+  width: 20px;
+  height: 20px;
+  background-size: cover;
+  display: block;
+}
+.toolItem .tool.group .icon::before {
+  /* mdi:crop-landscape */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,17H5V7H19M19,5H5A2,2 0 0,0 3,7V17A2,2 0 0,0 5,19H19A2,2 0 0,0 21,17V7C21,5.89 20.1,5 19,5Z"/></svg>');
+}
+.toolItem .tool.flexRow .icon::before {
+  /* mdi:land-rows-vertical */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 2H4C2.9 2 2 2.9 2 4V20C2 21.1 2.9 22 4 22H20C21.1 22 22 21.1 22 20V4C22 2.9 21.1 2 20 2M6.5 20H4V4H6.5V20M11 20H8.5V4H11V20M15.5 20H13V4H15.5V20M20 20H17.5V4H20V20Z"/></svg>');
+}
+.toolItem .tool.flex .icon::before {
+  /* mdi:land-rows-horizontal */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22 20V4C22 2.9 21.1 2 20 2H4C2.9 2 2 2.9 2 4V20C2 21.1 2.9 22 4 22H20C21.1 22 22 21.1 22 20M4 6.5V4H20V6.5H4M4 11V8.5H20V11H4M4 15.5V13H20V15.5H4M4 20V17.5H20V20H4Z"/></svg>');
+}
+.toolItem .tool.tabs .icon::before {
+  /* mdi:tab-plus */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3H3M3,5H13V9H21V19H3V5M10,10V13H7V15H10V18H12V15H15V13H12V10H10Z"/></svg>');
+}
+
+
 </style>
 
 <script setup>
 import { computed } from 'vue'
 
+/**
+ * :TODO refactor props (tool, toolProps, isTool/isElement/isToolbar)
+ */
 const props = defineProps(['uuid', 'tool', 'toolType', 'toolProps', 'properties'])
 
-const toolTypes = {
-  group: {name: 'Group', icon: 'mdi:crop-landscape'},
-  flexRow: {name: 'Horizontal Layout', icon: 'mdi:land-rows-vertical'},
-  flex: {name: 'Vertical Layout', icon: 'mdi:land-rows-horizontal'},
-  tabs: {name: 'Tabs',icon:'mdi:tab-plus'},
-  tab: {name: 'Tab'},
-};
-
 const name = computed(() => {
-  let label = '';
-  if(props.properties?.label) {
-    switch (props.toolType) {
-      case 'group':
-      case 'tab':
-        return props.properties.label;
-      default:
-        label = props.properties.label;
-    }
-  }
-
-  return (toolTypes[props.toolType]?.name ?? props.toolType ?? props.properties.propertyName ?? props.toolProps.inputType) + (label && ' '+ label);
-});
-
-const icon = computed(() => {
-  return toolTypes[props.toolType]?.icon ?? null;
+  let label = props?.properties?.label;
+  return (props.toolProps?.toolName ?? props.toolType ?? props.properties?.propertyName ?? props.toolProps?.inputType) + (label ? (' '+ label) : '');
 });
 
 </script>
