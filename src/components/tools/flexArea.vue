@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="flexAreaTool">
 
     <ElementHeadOrToolIcon :uuid="uuid" :tool="tool" :toolProps="toolProps" :toolType="toolType" :properties="data" />
 
@@ -40,6 +40,10 @@
 </template>
 
 <style>
+
+.flexAreaTool {
+  @apply relative;
+}
 
 .bg-dotted {
   background-image: radial-gradient(#b4b4b4 10%, #fff 0%);

@@ -1,6 +1,6 @@
 <template>
 
-  <section>
+  <section class="schemaCode">
 
     <div class="w-full">
       <h4>Schema</h4>

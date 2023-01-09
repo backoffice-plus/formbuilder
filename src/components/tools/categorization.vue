@@ -1,5 +1,5 @@
 <template>
-  <div class="relative">
+  <div class="categorizationTool">
 
     <ElementHeadOrToolIcon :uuid="uuid" :tool="tool" :toolType="toolType" :properties="data" />
 
@@ -63,6 +63,10 @@
 
 
 <style scoped>
+
+.categorizationTool {
+  @apply relative;
+}
 
 .tabs {
   @apply my-0

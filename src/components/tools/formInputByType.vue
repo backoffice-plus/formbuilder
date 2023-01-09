@@ -1,5 +1,5 @@
 <template>
-  <div class="formInputByType">
+  <div class="formInputByTypeTool">
 
 
     <ElementHeadOrToolIcon :uuid="uuid" :tool="tool" :toolProps="toolProps" :toolType="toolProps.toolType" :properties="data" />
@@ -47,7 +47,7 @@
 
 
 <style scoped>
-.formInputByType {
+.formInputByTypeTool {
   @apply
   relative
 }

@@ -1,9 +1,12 @@
 <template>
 
-    <div class="p-4 ">
+    <section class="p-4 ">
 
       <h2>Optionen</h2>
 
+      <!--
+      :TODO how to change class from jsonForms?
+      -->
       <JsonForms
           :class="'styleA'"
           :schema="formSchema[0]"
@@ -13,11 +16,11 @@
           @change="onChange"
       />
 
-      <div class="mt-4 flex justify-center">
-        <button class="button blue">Submit</button>
-      </div>
+<!--      <div class="mt-4 flex justify-center">-->
+<!--        <button class="button blue">Submit</button>-->
+<!--      </div>-->
 
-    </div>
+    </section>
 
 </template>
 

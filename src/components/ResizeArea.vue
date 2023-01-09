@@ -1,6 +1,6 @@
 <template>
 
-  <div class="relative" ref="resizeWrapper">
+  <section class="resizeArea" ref="resizeWrapper">
 
     <div class="indicator z-40"
          ref="resizeMover"
@@ -14,12 +14,15 @@
       <slot></slot>
     </div>
 
-  </div>
+  </section>
 
 </template>
 
 
 <style scoped>
+.resizeArea {
+  @apply relative
+}
 .indicator {
   transform: translate(-50%, -50%);
   width:5px;
