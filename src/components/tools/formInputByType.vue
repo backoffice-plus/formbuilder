@@ -2,11 +2,11 @@
   <div class="formInputByTypeTool">
 
 
-    <ElementHeadOrToolIcon :uuid="uuid" :tool="tool" :toolProps="toolProps" :toolType="toolProps.toolType" :properties="data" />
+    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" :properties="data" />
 
 <!--    <span class="font-mono text-xs" v-if="!tool">[{{ uuid }}]</span>-->
 
-    <div v-if="!tool">
+    <div v-if="!isToolbar">
 
       <div>
 
@@ -62,13 +62,13 @@ import {
   emitter
 } from "../../index";
 import {defineComponent} from 'vue';
+import {Tool} from "../../lib/models";
 
 export default defineComponent({
   components: {ElementHeadOrToolIcon, Actions},
   props: {
-    toolProps: ToolProps,
-    uuid: String,
-    tool: Boolean,
+    tool: Tool,
+    isToolbar: Boolean,
     index: Number, //for deleting correct element in list
 
     isDragging: Boolean, //needed in flexarea
@@ -80,13 +80,17 @@ export default defineComponent({
   data() {
     return {
 
+      uuid: this.tool.uuid,
+      toolProps: this.tool.props,
+      toolType: this?.toolProps?.toolType,
+
       data: {},
       isModalOpen: false,
     }
   },
 
   mounted() {
-    if(this.tool) {
+    if(this.isToolbar) {
       return;
     }
 
@@ -111,9 +115,6 @@ export default defineComponent({
         this.data[key] = this.toolProps.jsonForms.uischema[key];
       }
     });
-
-
-    console.log("mounted",this.toolProps.jsonForms.schema);
   },
 
   methods: {
@@ -123,7 +124,6 @@ export default defineComponent({
       }
     },
     openModal() {
-      console.log("openModal emit");
       emitter.emit('formBuilderModal', {uuid:this.uuid, data:this.data, type:this.toolProps.jsonForms.uischema?.type})
     },
   },

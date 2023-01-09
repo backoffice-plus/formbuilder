@@ -1,6 +1,6 @@
 <template>
 
-  <div class="toolActions" v-if="'root' !== uuid">
+  <div class="toolActions">
     <button type="button" class="options" @click="emit('gear')" />
     <button type="button" class="remove" @click="emit('delete')" />
   </div>
@@ -35,7 +35,6 @@
 
 <script setup>
 
-const props = defineProps(['uuid'])
 const emit = defineEmits(['gear', 'delete'])
 
 </script>

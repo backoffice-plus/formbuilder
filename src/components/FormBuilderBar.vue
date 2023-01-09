@@ -14,8 +14,10 @@
   >
     <template #item="{ element: tool }">
       <component :is="importComponent(tool.componentName)"
-                 :toolProps="tool.props"
-                 :tool="true"
+
+                 :tool="tool"
+                 :isToolbar="true"
+
                  class="toolItem"
       />
     </template>

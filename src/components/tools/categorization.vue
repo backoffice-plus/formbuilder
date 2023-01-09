@@ -1,9 +1,9 @@
 <template>
   <div class="categorizationTool">
 
-    <ElementHeadOrToolIcon :uuid="uuid" :tool="tool" :toolType="toolType" :properties="data" />
+    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" :properties="data" />
 
-    <div v-if="!tool" class="mr-5">
+    <div v-if="!isToolbar" class="mr-5">
 
       <Actions :uuid="uuid" @gear="openModal" @delete="onDelete" />
 
@@ -37,13 +37,11 @@
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
             <component :is="importComponent(tool.componentName)"
-                       :toolProps="tool.props"
-                       :uuid="tool.uuid"
 
-                       :index="index"
-                       :tool="false"
-
+                       :tool="tool"
+                       :isToolbar="false"
                        :isDragging=isDragging
+                       :index="index"
 
                        @deleteByIndex="onDeleteByIndex"
 
@@ -130,15 +128,15 @@ import {
   updatableUischemaKeys,
     emitter
 } from "../../index";
+import {Tool} from "../../lib/models";
 
 export default {
   components: {draggableComponent, ElementHeadOrToolIcon, Actions},
 
   props: {
-    toolProps: ToolProps,
-    uuid: String,
-    tool: Boolean,
-    index: Number, //needed?
+    tool: Tool,
+    isToolbar: Boolean,
+    index: Number, //for deleting correct element in list
 
     isDragging: Boolean,
   },
@@ -147,6 +145,9 @@ export default {
     return {
       dragTab: false,
 
+
+      uuid: this.tool.uuid,
+      toolProps: this.tool?.props,
       toolType: this?.toolProps?.toolType,
 
       elements: [],
@@ -160,7 +161,7 @@ export default {
 
 
   mounted() {
-    if (!this.tool) {
+    if (!this.isToolbar) {
       if (this.toolProps.jsonForms?.uischema?.elements?.length) {
         initElementsByToolProps(this.toolProps)
             .map(elm => this.elements.push(elm));
@@ -216,11 +217,9 @@ export default {
           this.tabLabels[uuid] = childs[uuid].toolProps.jsonForms.uischema.label;
         }
       });
-      console.log("lables",this.tabLabels);
     },
 
     onUpdated(e) {
-      console.log("categorization onUpdated");
       window.setTimeout(this.buildTabLabels,50);
       emitter.emit('formBuilderUpdated', e)
     },
@@ -234,7 +233,6 @@ export default {
   watch: {
     data: {
       handler() {
-        console.log("categorization watch.data");
         this.toolProps.jsonForms.update({...this.data});
         this.onUpdated();
       },

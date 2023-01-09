@@ -1,11 +1,11 @@
 <template>
   <div class="flexAreaTool">
 
-    <ElementHeadOrToolIcon :uuid="uuid" :tool="tool" :toolProps="toolProps" :toolType="toolType" :properties="data" />
+    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" :properties="data" v-if="!isRoot" />
 
-    <div v-if="!tool" :class="{'mr-5':'root' !== uuid}">
+    <div v-if="!isToolbar" :class="{'mr-5':!isRoot}">
 
-      <Actions :uuid="uuid" @gear="openModal" @delete="onDelete" />
+      <Actions @gear="openModal" @delete="onDelete" v-if="!isRoot" />
 
       <draggableComponent
         :class="['dropArea bg-dotted nestedFlexArea', this.toolType, {drag:isDragging||drag}]"
@@ -19,13 +19,11 @@
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
             <component :is="importComponent(tool.componentName)"
-                       :toolProps="tool.props"
-                       :uuid="tool.uuid"
 
-                       :index="index"
-                       :tool="false"
-
+                       :tool="tool"
+                       :isToolbar="false"
                        :isDragging=!!(isDragging||drag)
+                       :index="index"
 
                        @deleteByIndex="onDeleteByIndex"
 
@@ -119,6 +117,7 @@ import {
   updatableUischemaKeys,
   emitter
 } from "../../index";
+import {Tool} from "../../lib/models";
 
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
@@ -127,10 +126,10 @@ export default {
   components: {Actions, ElementHeadOrToolIcon, draggableComponent},
 
   props: {
-    toolProps: ToolProps,
-    uuid: String,
-    tool: Boolean,
-    index: Number, //needed?
+    tool: Tool,
+    isRoot: Boolean,
+    isToolbar: Boolean,
+    index: Number, //for deleting correct element in list
 
     isDragging: Boolean,
   },
@@ -140,6 +139,8 @@ export default {
     return {
       drag: false,
 
+      uuid: this.tool?.uuid,
+      toolProps: this.tool?.props,
       toolType: this?.toolProps?.toolType,
 
       elements: [],
@@ -155,7 +156,7 @@ export default {
   // },
 
   mounted() {
-    if (!this.tool) {
+    if (!this.isToolbar) {
       this.init();
 
       //wait to render dom
@@ -174,7 +175,7 @@ export default {
   methods: {
     init() {
       this.elements = [];
-      initElementsByToolProps(this.toolProps)
+      this.toolProps && initElementsByToolProps(this.toolProps)
           .map(elm => this.elements.push(elm));
     },
 

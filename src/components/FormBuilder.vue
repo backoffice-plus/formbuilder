@@ -16,10 +16,10 @@
 
     <FlexArea
         class="my-4"
-        uuid="root"
         ref="rootForm"
 
-        :toolProps="tool.props"
+        :tool="tool"
+        :isRoot="true"
         :isDragging="!!drag"
     />
 
