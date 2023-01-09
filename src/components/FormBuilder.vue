@@ -75,6 +75,8 @@ if(!tool) {
   throw "no tool was found";
 }
 
+console.log("tool",tool);
+
 const rootForm = ref(null);
 const drag = ref(false);
 const jsonFormsUiSchema = ref({});

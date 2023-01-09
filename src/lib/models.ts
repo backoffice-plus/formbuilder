@@ -40,7 +40,7 @@ export class Tool {
 
         return new Tool(
             this.componentName,
-            this.props.clone(),
+            props,
             // new ToolProps(
             //     this.props.inputType,
             //     this.props.toolType,
