@@ -35,7 +35,7 @@ import type {
   ControlElement,
   JsonFormsRendererRegistryEntry,
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { rendererProps, useJsonFormsControl } from '@jsonforms/vue';
 import type { RendererProps } from '@jsonforms/vue';
 import { default as ControlWrapper } from '@jsonforms/vue-vanilla/src/controls/ControlWrapper.vue';
