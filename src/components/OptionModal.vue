@@ -13,6 +13,8 @@
           :uischema="jsonFormSchema.uischema"
           :data="options"
           :renderers="jsonFormRenderes"
+          :ajv="ajv"
+          :i18n="{translate: createI18nTranslate(formBuilderCatalogue)}"
           @change="onChange"
       />
 
@@ -35,15 +37,19 @@
 <script setup>
 
 import {JsonForms} from "@jsonforms/vue";
-import {jsonFormRenderes} from "../index";
+import {jsonFormRenderes, createI18nTranslate} from "../index";
 import {jsonForms as jsonFormsOption} from "../schema/formBuilderControlOptions";
 import {jsonForms as jsonFormsLabel} from "../schema/formBuilderOptionsLabel";
 import {computed} from "vue";
+import {createAjv} from "@jsonforms/core";
+import {formBuilderCatalogue} from "../translations/de";
 
 const props = defineProps(['uuid', 'data', 'type']);
 const emit = defineEmits(['change']);
 const options = {...props.data ?? {}};
 const formType = props.type;
+
+const ajv = createAjv();//is needed because reactive :schema & :uischema will throw error
 
 
 //convert enum to object

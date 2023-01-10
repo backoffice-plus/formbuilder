@@ -63,12 +63,10 @@ const schema = {
                 "type": "object",
                 "properties": {
                     "const": {
-                        "type": "string",
-                        "label": "Name",
+                        "type": "string"
                     },
                     "title": {
-                        "type": "string",
-                        "label": "Beschreibung",
+                        "type": "string"
                     },
                 }
             },
@@ -88,7 +86,8 @@ const schema = {
             "type": "number"
         },
         "pattern": {
-            "type": "string"
+            "type": "string",
+            description: "for examples: \"[abc]+\""
         },
         required: {
             "type": "boolean"
@@ -235,8 +234,7 @@ const uischema = {
                         },
                         {
                             "scope": "#/properties/pattern",
-                            "type": "Control",
-                            description: "for examples: \"[abc]+\""
+                            "type": "Control"
                         },
                     ],
                 }

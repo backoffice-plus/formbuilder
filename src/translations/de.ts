@@ -6,3 +6,18 @@ export const translationsErrors = {
     'error.maximum': 'Die Eingabe muss kleiner als ${limit} sein.',
     'error.required': 'Die Eingabe muss ausgefüllt sein.',
 }
+
+export const formBuilder = {
+    'i18n.description': 'Alternativer Schlüssel für Übersetztungskatalog',
+    'options.placeholder.label': 'Platzhalter',
+    'options.placeholder.description': 'ACHTUNG: Platzhalter können derzeit noch nicht übersetzt werden',
+    'pattern.description': 'zB: \"[abc]+\"',
+    'oneOf.const.label': 'Name',
+    'oneOf.title.label': 'Title',
+}
+
+
+export const formBuilderCatalogue = {
+    ...translationsErrors,
+    ...formBuilder,
+}
