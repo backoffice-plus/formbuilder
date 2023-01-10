@@ -27,6 +27,7 @@
                 :uischema="jsonFormsUiSchema"
                 :data="{}"
                 :renderers="jsonFormRenderes"
+                :ajv="ajv"
                 v-if="jsonFormsSchema && jsonFormsUiSchema"
             />
         </div>
@@ -46,6 +47,7 @@
 import { ref } from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import {JsonForms} from "@jsonforms/vue";
+import {createAjv} from "@jsonforms/core";
 import {ResizeArea,  SchemaCode, jsonFormRenderes, emitter} from "../index";
 
 const props = defineProps({
@@ -70,6 +72,9 @@ onMounted(() => {
 onBeforeUnmount(() => {
   emitter.off('formBuilderSchemaUpdated');
 })
+
+const ajv = createAjv();//is needed because reactive :schema & :uischema will throw error
+
 
 </script>
 
