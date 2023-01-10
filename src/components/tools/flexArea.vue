@@ -8,7 +8,7 @@
       <Actions @gear="openModal" @delete="onDelete" v-if="!isRoot" />
 
       <draggableComponent
-        :class="['dropArea bg-dotted nestedFlexArea', this.toolType, {drag:isDragging||drag}]"
+        :class="['dropArea bg-dotted nestedFlexArea', toolType, {drag:isDragging||drag}]"
         :list="elements"
         group="formBuilder"
         item-key="uuid"
@@ -141,7 +141,7 @@ export default {
 
       uuid: this.tool?.uuid,
       toolProps: this.tool?.props,
-      toolType: this?.toolProps?.toolType,
+      toolType: this?.tool?.props?.toolType,
 
       elements: [],
 
