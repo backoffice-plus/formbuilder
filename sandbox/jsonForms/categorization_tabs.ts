@@ -76,7 +76,6 @@ const schema = {
   }
 }
 
-
 const uischema = {
   "type": "Categorization",
   "elements": [
