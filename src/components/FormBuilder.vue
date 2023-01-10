@@ -14,13 +14,13 @@
 
     <FormBuilderBar @drag="e=>drag = !!e"/>
 
-    <FlexArea
-        class="my-4"
-        ref="rootForm"
+    <component :is="importComponent(tool.componentName)"
 
-        :tool="tool"
-        :isRoot="true"
-        :isDragging="!!drag"
+               :tool="tool"
+               :isRoot="true"
+               :isDragging="!!drag"
+              class="my-4"
+              ref="rootForm"
     />
 
   </div>
@@ -56,12 +56,11 @@
 <script setup>
 import { ref } from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
-import {JsonForms} from "@jsonforms/vue";
-import {Dialog ,  DialogPanel,  DialogTitle, DialogDescription} from '@headlessui/vue';
+import {Dialog ,  DialogPanel} from '@headlessui/vue';
 import {
-  FormBuilderBar, ResizeArea, FlexArea, SchemaCode, OptionModal, jsonFormRenderes,
-  createJsonForms, findLayoutTool,
-  emitter
+  FormBuilderBar, OptionModal,
+  createJsonForms, findLayoutTool, getComponent,
+  emitter,
 } from "../index";
 
 const props = defineProps({
@@ -75,7 +74,9 @@ if(!tool) {
   throw "no tool was found";
 }
 
-console.log("tool",tool);
+const importComponent = (componentName) => {
+  return getComponent(componentName);
+};
 
 const rootForm = ref(null);
 const drag = ref(false);
