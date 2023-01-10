@@ -17,12 +17,16 @@ const schema = {
 }
 
 const uischema = {
+  "type": "VerticalLayout",
   "elements": [
     {
+      "type": "Categorization",
       "elements": [
         {
+          "type": "Category",
           "elements": [
             {
+              "type": "HorizontalLayout",
               "elements": [
                 {
                   "label": "checkbox",
@@ -34,12 +38,10 @@ const uischema = {
                   "scope": "#/properties/text2",
                   "type": "Control"
                 }
-              ],
-              "type": "HorizontalLayout"
+              ]
             }
           ],
-          "label": "Basics",
-          "type": "Category"
+          "label": "Basics"
         },
         {
           "elements": [
@@ -84,10 +86,8 @@ const uischema = {
           "type": "Category"
         }
       ],
-      "type": "Categorization"
     }
-  ],
-  "type": "VerticalLayout"
+  ]
 }
 
 export default {schema:schema,uischema:uischema,data: {}};

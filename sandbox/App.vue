@@ -5,6 +5,7 @@
     <div class="w-1/4">
       Select Example<br>
       <select v-model="example" >
+        <option></option>
         <option v-for="name in examples">{{name}}</option>
       </select>
     </div>

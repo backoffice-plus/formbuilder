@@ -11,7 +11,7 @@ const schema = {
     },
     "birthDate": {
       "type": "string",
-      //"format": "date" //date is broken
+      "format": "date"
     },
     "nationality": {
       "type": "string",
