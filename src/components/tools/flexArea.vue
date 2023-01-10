@@ -1,7 +1,7 @@
 <template>
   <div class="flexAreaTool">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" :properties="data" v-if="!isRoot" />
+    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" :properties="data" />
 
     <div v-if="!isToolbar" :class="{'mr-5':!isRoot}">
 
