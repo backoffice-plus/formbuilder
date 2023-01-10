@@ -147,7 +147,7 @@ export const updatableSchemaKeys = ['enum', 'oneOf', 'description', 'minimum','m
 //     customType: string;
 // }
 
-export const updatableUischemaKeys = ['label', 'rule', 'options'];
+export const updatableUischemaKeys = ['label', 'i18n', 'rule', 'options'];
 // export interface JsonFormsUISchema {
 //     type: string;
 //     elements: Array<JsonFormsUISchema>;

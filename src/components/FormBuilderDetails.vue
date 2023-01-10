@@ -28,6 +28,7 @@
                 :data="{}"
                 :renderers="jsonFormRenderes"
                 :ajv="ajv"
+                :i18n="{translate: createI18nTranslate(localeCatalogue)}"
                 v-if="jsonFormsSchema && jsonFormsUiSchema"
             />
         </div>
@@ -48,7 +49,8 @@ import { ref } from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv} from "@jsonforms/core";
-import {ResizeArea,  SchemaCode, jsonFormRenderes, emitter} from "../index";
+import {ResizeArea,  SchemaCode, jsonFormRenderes, emitter, createI18nTranslate} from "../index";
+import {translationsErrors as localeCatalogue} from "../translations/de";
 
 const props = defineProps({
   data: Object
@@ -74,7 +76,6 @@ onBeforeUnmount(() => {
 })
 
 const ajv = createAjv();//is needed because reactive :schema & :uischema will throw error
-
 
 </script>
 

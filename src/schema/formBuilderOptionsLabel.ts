@@ -1,4 +1,4 @@
-export const schema = {
+const schema = {
     "type": "object",
     "properties": {
         "label": {
@@ -7,7 +7,7 @@ export const schema = {
     },
 }
 
-export const uischema = {
+const uischema = {
 
     "type": "Categorization",
     "elements": [
@@ -31,4 +31,4 @@ export const uischema = {
     ]
 }
 
-
+export const jsonForms = {schema:schema, uischema:uischema};

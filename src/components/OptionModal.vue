@@ -9,8 +9,8 @@
       -->
       <JsonForms
           :class="'styleA'"
-          :schema="formSchema[0]"
-          :uischema="formSchema[1]"
+          :schema="jsonFormSchema.schema"
+          :uischema="jsonFormSchema.uischema"
           :data="options"
           :renderers="jsonFormRenderes"
           @change="onChange"
@@ -36,7 +36,8 @@
 
 import {JsonForms} from "@jsonforms/vue";
 import {jsonFormRenderes} from "../index";
-import {formControlSchema, formControlUiSchema, formLabelSchema, formLabelUiSchema} from "../schema";
+import {jsonForms as jsonFormsOption} from "../schema/formBuilderControlOptions";
+import {jsonForms as jsonFormsLabel} from "../schema/formBuilderOptionsLabel";
 import {computed} from "vue";
 
 const props = defineProps(['uuid', 'data', 'type']);
@@ -53,18 +54,18 @@ if(options?.rule?.condition?.schema) {
   options.rule.condition.schema = JSON.stringify(options.rule.condition.schema);
 }
 
-const formSchema = computed(() => {
+const jsonFormSchema = computed(() => {
   switch (formType) {
     case 'Group':
     case 'Category':
-      return [formLabelSchema, formLabelUiSchema]
+      return jsonFormsLabel
 
     //:TODO only rules (maybe load formControlSchema and clear unused tabs
     //case 'Categorization':
     //  return [formLayoutGroupSchema, formLayoutGroupUiSchema]
 
     default:
-      return [formControlSchema, formControlUiSchema];
+      return jsonFormsOption;
   }
 });
 

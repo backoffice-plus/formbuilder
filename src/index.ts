@@ -2,7 +2,7 @@ export { default as ElementHeadOrToolIcon } from './components/tools/utils/Eleme
 export { default as Actions } from './components/tools/utils/Actions.vue'
 
 //lib
-export {initElementsByToolProps, createJsonForms, createJsonUiSchema, findLayoutTool, getChildComponents} from './lib/formbuilder';
+export {initElementsByToolProps, createJsonForms, createJsonUiSchema, findLayoutTool, getChildComponents, createI18nTranslate} from './lib/formbuilder';
 export { layoutTools, controlTools  } from './lib/formbuilder';
 export { getComponent } from './lib/tools/toolImporter';
 export { jsonFormRenderes } from './lib/renderer/renderers';

@@ -5,8 +5,11 @@ import {layoutCategorization,layoutCategorizationSimplified} from "./examples_ca
 import group from "./group";
 import tabInTabs from "./tabs_in_tabs";
 import rule from "./rule";
+import _default from "./default";
+import {jsonForms as formBuilderControlOptions} from "../../src/schema/formBuilderControlOptions";
 
 export default {
+  default:_default,
   group:group,
   tabInTabs:tabInTabs,
   rule:rule,
@@ -20,4 +23,6 @@ export default {
   ExampleControlOptions:layoutControlOptions,
   ExampleCategorization:layoutCategorization,
   ExampleCategorizationSimplified:layoutCategorizationSimplified,
+
+  formBuilderControlOptions:formBuilderControlOptions
 };

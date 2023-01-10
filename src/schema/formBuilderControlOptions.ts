@@ -1,4 +1,4 @@
-export const schema = {
+const schema = {
     "type": "object",
     "properties": {
         "propertyName": {
@@ -12,6 +12,11 @@ export const schema = {
         },
         "description": {
             "type": "string"
+        },
+        i18n: {
+            type: "string",
+            title: 'i18n',
+            description: "alternative lookup key for translation catalogue",
         },
 
         default: {
@@ -106,7 +111,7 @@ export const schema = {
     ]
 }
 
-export const uischema = {
+const uischema = {
 
     "type": "Categorization",
     "elements": [
@@ -133,6 +138,10 @@ export const uischema = {
                         {
                             "scope": "#/properties/description",
                             "type": "Control"
+                        },
+                        {
+                            scope: "#/properties/i18n",
+                            type: "Control"
                         },
                         // {
                         //     "type": "HorizontalLayout",
@@ -318,4 +327,4 @@ export const uischema = {
     ]
 }
 
-
+export const jsonForms = {schema:schema, uischema:uischema};

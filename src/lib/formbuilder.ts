@@ -1,5 +1,6 @@
 // @ts-ignore
 import lodashGet from 'lodash.get';
+import lodashTemplate from 'lodash.template';
 //const lodashGet = require('lodash/get');
 import {
     JsonForms,
@@ -151,6 +152,29 @@ export const getChildComponents = (component:any, namePrefix:string|null) => {
 
     return childComponents;
 };
+
+
+export const createI18nTranslate = (localeCatalogue:Record<string, string>) => {
+    // $KEY can be propertyName or i18n
+    // const translations = {
+    //    '$KEY.label': 'TEXT',
+    //    '$KEY.description': 'TEXT',
+    //    '$KEY.error.minLength': 'ERROR TEXT',
+    // }
+
+    return  (key:string, defaultMessage:string, context:any) => {
+        //console.log("translate", {key,defaultMessage, context}, localeCatalogue[key]);
+
+        let params = {};
+
+        if(context?.error) {
+            console.log("translate error", {key, defaultMessage}, context.error);
+            params = {...params, ...context.error?.params};
+        }
+
+        return (localeCatalogue[key] && lodashTemplate(localeCatalogue[key])(params)) ?? defaultMessage;
+    };
+}
 
 export const findLayoutTool = (schema:JsonFormsSchema|undefined = undefined, itemUischema: JsonFormsUISchema) : Tool|undefined => {
     return [...layoutTools,...[tools.tab]]
