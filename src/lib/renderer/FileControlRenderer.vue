@@ -52,7 +52,7 @@ const controlRenderer = defineComponent({
   },
   setup(props: RendererProps<ControlElement>) {
     const c = useVanillaControl(useJsonFormsControl(props), target => target.value || undefined);
-    const onChangeRoot = c.onChange;
+    const onChangeRoot = c.onChange as any;
 
     const uploading = ref(false);
 
@@ -74,14 +74,14 @@ const controlRenderer = defineComponent({
       // });
 
       //change on upload success
-      const onUploadSuccess = (e: any) => {
+      const onUploadSuccess = (/*e: any*/) => {
         uploading.value = false;
 
         const finalPath = 'http://todo.file.path/img.jpg';
 
         onChangeRoot({target:{value:finalPath}});
       }
-      setTimeout(() => onUploadSuccess(e),100);
+      setTimeout(() => onUploadSuccess(/*e*/),100);
     }
 
     return {

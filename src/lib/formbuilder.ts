@@ -16,7 +16,7 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
     //console.log("initElementsByToolProps" , toolProps);
 
     const jsonFromSchema = toolProps.jsonForms?.schema ?? {};
-    const jsonFormUischema = toolProps.jsonForms?.uischema ?? {};
+    const jsonFormUischema = toolProps.jsonForms?.uischema ?? {} as any;
 
     const pushableElements = [] as any;
 
@@ -73,8 +73,6 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
 
     const itemSchema = jsonForms.schema as JsonFormsSchema;
     const uischema = jsonForms.uischema as JsonFormsUISchema;
-
-    const props = {};//refElm?.data ?? {}; //:TODO remove
 
     switch (uischema.type) {
         case 'Control':
@@ -282,7 +280,7 @@ export const guessInputType = (jsonForms:JsonForms) => {
 
 export const buildModalOptions = (tool:Tool) : Object => {
 
-    const jsonForms = tool.props.jsonForms;
+    const jsonForms = tool.props.jsonForms as any;
 
     const options = {} as any;
 
@@ -311,7 +309,7 @@ export const buildModalOptions = (tool:Tool) : Object => {
 
     //convert enum to object
     if(options?.enum) {
-        options.enum = options.enum.map(name => {return {name: String(name)} });
+        options.enum = options.enum.map((name: any) => {return {name: String(name)} });
     }
     if(options?.rule?.condition?.schema) {
         options.rule.condition.schema = JSON.stringify(options.rule.condition.schema);
@@ -332,7 +330,7 @@ export const denormalizeModalOptions = (data:any) => {
 
     //convert enum to map
     if(data?.enum) {
-        data.enum = data.enum?.map(item=>String(item?.name ?? '')) ?? [''];
+        data.enum = data.enum?.map((item:any)=>String(item?.name ?? '')) ?? [''];
         data.enum = [...new Set(data.enum)];
     }
 
