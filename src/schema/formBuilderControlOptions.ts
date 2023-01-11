@@ -5,7 +5,8 @@ const schema = {
             "type": "string"
         },
         "label": {
-            "type": "string"
+            "type": "string",
+            required: ["label"],
         },
         "inputType": {
             "type": "string",
@@ -22,6 +23,20 @@ const schema = {
         default: {
             type: "string",
         },
+
+        // schema: {
+        //     type: "object",
+        //     properties: {
+                type: {
+                    type: "string",
+                    enum: ['string', 'number', 'integer', 'boolean'],
+                },
+                format: {
+                    type: "string",
+                    enum: ['date', 'time', 'date-time'],
+                },
+        //     },
+        // },
 
         rule: {
             type: "object",
@@ -133,6 +148,27 @@ const uischema = {
                                     "type": "Control"
                                 },
                             ]
+                        },                        {
+                            "type": "HorizontalLayout",
+                            "elements": [
+                                {
+                                   // "scope": "#/properties/schema/properties/type",
+                                    "scope": "#/properties/type",
+                                    "type": "Control"
+                                },
+                                {
+                                    //"scope": "#/properties/schema/properties/format",
+                                    "scope": "#/properties/format",
+                                    "type": "Control",
+                                    "rule": {
+                                        "effect": "ENABLE",
+                                        "condition": {
+                                            "scope": "#/properties/type",
+                                            "schema": { enum: ["string"] }
+                                        }
+                                    }
+                                },
+                            ]
                         },
                         {
                             "scope": "#/properties/description",
@@ -165,7 +201,11 @@ const uischema = {
                             "elements": [
                                 {
                                     "scope": "#/properties/required",
-                                    "type": "Control"
+                                    "type": "Control",
+                                    //:TODO fix required
+                                    "options": {
+                                        "readonly": true
+                                    },
                                 },
                                 {
                                     "scope": "#/properties/options/properties/readonly",

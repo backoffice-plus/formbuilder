@@ -37,43 +37,42 @@
 <script setup>
 
 import {JsonForms} from "@jsonforms/vue";
-import {jsonFormRenderes, createI18nTranslate} from "../index";
+import {
+  jsonFormRenderes,
+  createI18nTranslate,
+  buildModalOptions, denormalizeModalOptions, emitter
+} from "../index";
 import {jsonForms as jsonFormsOption} from "../schema/formBuilderControlOptions";
 import {jsonForms as jsonFormsLabel} from "../schema/formBuilderOptionsLabel";
-import {computed} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
 
-const props = defineProps(['uuid', 'data', 'type']);
+const props = defineProps(['tool', 'data']);
 const emit = defineEmits(['change']);
-const options = {...props.data ?? {}};
-const formType = props.type;
 
 const ajv = createAjv();//is needed because reactive :schema & :uischema will throw error
 
-
-//convert enum to object
-if(options?.enum) {
-  options.enum = options.enum.map(name => {return {name: String(name)} });
-}
-if(options?.rule?.condition?.schema) {
-  options.rule.condition.schema = JSON.stringify(options.rule.condition.schema);
-}
-
 const jsonFormSchema = computed(() => {
-  switch (formType) {
-    case 'Group':
-    case 'Category':
-      return jsonFormsLabel
+  switch (props.tool.props.jsonForms.uischema.type) {
+    case 'Control':
+      return jsonFormsOption
+
+    //:TODO: add also Rules
+    // case 'Group':
+    // case 'Category':
+    //   return jsonFormsLabel
 
     //:TODO only rules (maybe load formControlSchema and clear unused tabs
     //case 'Categorization':
     //  return [formLayoutGroupSchema, formLayoutGroupUiSchema]
 
     default:
-      return jsonFormsOption;
+      return jsonFormsLabel
   }
 });
+
+const options = ref(buildModalOptions(props.tool));
 
 const onChange = (e) => {
 
@@ -83,28 +82,8 @@ const onChange = (e) => {
   else {
     const data = {...e.data};//:TODO deep copy
 
-    //convert enum to map
-    if(data?.enum) {
-      data.enum = data.enum?.map(item=>String(item?.name ?? '')) ?? [''];
-      data.enum = [...new Set(data.enum)];
-    }
-
-    if(typeof data?.rule?.condition?.schema === "string") {
-      try {
-
-        //:TODO deep copy
-        data.rule = {...data.rule};
-        data.rule.condition = {...data.rule.condition};
-
-        data.rule.condition.schema = JSON.parse(data.rule.condition.schema);
-      }
-      catch(e) {
-        console.warn("modal onChange rule has parse errors", e);
-        data.rule.condition.schema = {}
-      }
-    }
-
-    Object.keys(data).map(key => props.data[key] = data[key]);
+    emit('change', data);
+    emitter.emit('formBuilderUpdated');
   }
 }
 

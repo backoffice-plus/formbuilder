@@ -71,7 +71,7 @@ aside .toolItem {
 import {defineComponent} from 'vue';
 import * as draggableComponent from 'vuedraggable'
 import {
-  getComponent, layoutTools, controlTools
+  getComponent, layoutTools, controlTools, guessInputType
 } from "../index";
 
 export default defineComponent({
@@ -99,14 +99,15 @@ export default defineComponent({
     clone(tool) {
       const clone = tool.clone();
 
-      if(tool.props.inputType) {
-        if(this.cloneCounter[tool.props.inputType] === undefined) {
-          this.cloneCounter[tool.props.inputType] = 0;
+      if('Control' === tool.props.jsonForms.uischema.type) {
+        const inputType = guessInputType(tool.props.jsonForms)
+        if(this.cloneCounter[inputType] === undefined) {
+          this.cloneCounter[inputType] = 0;
         }
-        const counter = ++this.cloneCounter[tool.props.inputType];
+        const counter = ++this.cloneCounter[inputType];
 
-        clone.props.propertyName = tool.props.inputType + (counter);
-        clone.props.jsonForms.uischema.label = tool.props.inputType;
+        clone.props.propertyName = inputType + (counter);
+        clone.props.jsonForms.uischema.label = inputType;
       }
 
       return clone;

@@ -2,9 +2,9 @@
   <div class="formInputByTypeTool">
 
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" :properties="data" />
+    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
 
-<!--    <span class="font-mono text-xs" v-if="!tool">[{{ uuid }}]</span>-->
+<!--    <span class="font-mono text-xs" v-if="!tool">[{{ tool.uuid }}]</span>-->
 
     <div v-if="!isToolbar">
 
@@ -18,25 +18,28 @@
         </template>
 
 
-        <template v-else-if="'radio' === data.inputType">
-          <div class="flex flex-row space-x-4">
-            <span v-for="item in data.enum">
-              <input name="propertyName" :type="data.inputType"/> {{ item }}
-            </span>
-          </div>
-        </template>
+<!--        <template v-else-if="'radio' === data.inputType">-->
+<!--          <div class="flex flex-row space-x-4">-->
+<!--            <span v-for="item in data.enum">-->
+<!--              <input name="propertyName" :type="data.inputType"/> {{ item }}-->
+<!--            </span>-->
+<!--          </div>-->
+<!--        </template>-->
 
         <template v-else-if="'textarea' === data.inputType">
           <textarea></textarea>
         </template>
 
         <template v-else>
-          <input :type="data.inputType"  />
+          <input :type="'number'" v-if="'number' === data.inputType" :step="data.type==='integer' ? 1 : 0.1" />
+          <input :type="data.inputType" v-else />
         </template>
+
+        Type: {{ data.inputType }}
 
         <div>{{ data.description }}</div>
 
-        <Actions :uuid="uuid" @gear="openModal" @delete="onDelete" />
+        <Actions :tool="tool" @delete="onDelete" />
 
       </div>
 
@@ -59,7 +62,7 @@ import {
   ElementHeadOrToolIcon, Actions,
   ToolProps,
   updatableSchemaKeys, updatableUischemaKeys,
-  emitter
+  emitter, buildModalOptions
 } from "../../index";
 import {defineComponent} from 'vue';
 import {Tool} from "../../lib/models";
@@ -73,48 +76,17 @@ export default defineComponent({
 
     isDragging: Boolean, //needed in flexarea
   },
-  // props: [
-  //     'name', 'inputType', 'propertyName', 'uuid', 'jsonForms', 'options'
-  // ],
 
   data() {
     return {
 
-      uuid: this.tool.uuid,
-      toolProps: this.tool.props,
-      toolType: this?.toolProps?.toolType,
-
-      data: {},
-      isModalOpen: false,
     }
   },
 
-  mounted() {
-    if(this.isToolbar) {
-      return;
+  computed: {
+    data() {
+      return !this.isToolbar ? buildModalOptions(this.tool) : {};
     }
-
-    this.data.inputType = this.toolProps.inputType;
-    this.data.propertyName = this.toolProps.propertyName;
-
-    const schema = this.toolProps.jsonForms.schema;
-    if(schema.oneOf !== undefined && !schema.oneOf.length) {
-      this.toolProps.jsonForms.schema.oneOf = [{}]
-    }
-    if(schema.enum !== undefined && !schema.enum.length) {
-      this.toolProps.jsonForms.schema.enum = ['']
-    }
-
-    updatableSchemaKeys.forEach(key => {
-      if(this.toolProps.jsonForms.schema[key]) {
-        this.data[key] = this.toolProps.jsonForms.schema[key];
-      }
-    });
-    updatableUischemaKeys.forEach(key => {
-      if(this.toolProps.jsonForms.uischema[key]) {
-        this.data[key] = this.toolProps.jsonForms.uischema[key];
-      }
-    });
   },
 
   methods: {
@@ -122,19 +94,6 @@ export default defineComponent({
       if(confirm("Wirklich löschen?")) {
         this.$emit('deleteByIndex', {index: this.index});
       }
-    },
-    openModal() {
-      emitter.emit('formBuilderModal', {uuid:this.uuid, data:this.data, type:this.toolProps.jsonForms.uischema?.type})
-    },
-  },
-
-  watch: {
-    data: {
-      handler() {
-        this.toolProps.jsonForms.update({...this.data});
-        emitter.emit('formBuilderUpdated')
-      },
-      deep: true
     },
   }
 });

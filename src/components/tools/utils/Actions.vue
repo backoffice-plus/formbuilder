@@ -1,7 +1,7 @@
 <template>
 
   <div class="toolActions">
-    <button type="button" class="options" @click="emit('gear')" />
+    <button type="button" class="options" @click="openModal" />
     <button type="button" class="remove" @click="emit('delete')" />
   </div>
 
@@ -35,6 +35,13 @@
 
 <script setup>
 
+import {emitter} from "../../../index";
+
+const props = defineProps(['tool'])
 const emit = defineEmits(['gear', 'delete'])
+
+const openModal = () => {
+  emitter.emit('formBuilderModal', {tool:props.tool})
+};
 
 </script>

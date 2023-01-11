@@ -2,11 +2,11 @@
 
   <div class="">
 
-    <Dialog as="div" @close="isModalOpen=false" :open="isModalOpen" class="modal">
+    <Dialog as="div" @close="isModalOpen=false;toolEdit=null" :open="isModalOpen" class="modal">
       <div class="modalBg">
         <div class="centerItem">
           <DialogPanel class="panel" >
-              <OptionModal v-bind="modalData" />
+              <OptionModal :tool="toolEdit" @change="onChange" />
           </DialogPanel>
         </div>
       </div>
@@ -60,7 +60,7 @@ import {Dialog ,  DialogPanel} from '@headlessui/vue';
 import {
   FormBuilderBar, OptionModal,
   createJsonForms, findLayoutTool, getComponent,
-  emitter,
+  emitter, denormalizeModalOptions,
 } from "../index";
 
 const props = defineProps({
@@ -82,6 +82,21 @@ const rootForm = ref(null);
 const drag = ref(false);
 const jsonFormsUiSchema = ref({});
 const jsonFormsSchema = ref({});
+const isModalOpen = ref(false);
+const toolEdit = ref(null);
+
+const onChange = (data)=> {
+  if(toolEdit.value) {
+    if(data.propertyName) {
+      toolEdit.value.props.propertyName = data.propertyName;
+    }
+    toolEdit.value.props.jsonForms.update(denormalizeModalOptions(data));
+    updateJsonForm();
+  }
+  else {
+    console.warn("formBuilder", "onChange","toolEdit is null");
+  }
+}
 
 const updateJsonForm = () => {
   const jsonForms = createJsonForms(rootForm);
@@ -92,14 +107,12 @@ const updateJsonForm = () => {
   emitter.emit('formBuilderSchemaUpdated', jsonForms)
 }
 
-const isModalOpen = ref(false);
-let modalData = {};
 
 
 onMounted(() => {
   emitter.on('formBuilderModal', (data) => {
     isModalOpen.value = true;
-    modalData = data; //uuid:, data:, type:
+    toolEdit.value = data.tool;
   })
   emitter.on('formBuilderUpdated', (data) => {
     window.setTimeout(updateJsonForm,100);

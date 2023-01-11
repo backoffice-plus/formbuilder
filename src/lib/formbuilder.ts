@@ -5,7 +5,7 @@ import lodashTemplate from 'lodash.template';
 import {
     JsonForms,
     Tool,
-    ToolProps
+    ToolProps, updatableSchemaKeys, updatableUischemaKeys
 } from "./models";
 import type {
     JsonFormsSchema,
@@ -13,6 +13,8 @@ import type {
 } from "./models";
 
 export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
+    //console.log("initElementsByToolProps" , toolProps);
+
     const jsonFromSchema = toolProps.jsonForms?.schema ?? {};
     const jsonFormUischema = toolProps.jsonForms?.uischema ?? {};
 
@@ -61,22 +63,22 @@ export const createJsonForms = (rootForm:any) : JsonForms => {
 export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFormsUISchema => {
     refElm = refElm?.value ?? refElm;
 
-    if(!refElm?.toolProps) {
+    if(!refElm?.tool.props) {
         throw "refElm has no toolProps.";
     }
 
-    const toolProps = refElm?.toolProps as ToolProps;
+    const toolProps = refElm?.tool.props as ToolProps;
 
     const jsonForms = toolProps?.jsonForms.clone();
 
     const itemSchema = jsonForms.schema as JsonFormsSchema;
     const uischema = jsonForms.uischema as JsonFormsUISchema;
 
-    const props = refElm?.data ?? {};
+    const props = {};//refElm?.data ?? {}; //:TODO remove
 
     switch (uischema.type) {
         case 'Control':
-            const propName = props?.propertyName ?? "UNKNOWN";
+            const propName = toolProps?.propertyName ?? "UNKNOWN";
 
             if(itemSchema.oneOf !== undefined && !itemSchema.oneOf.length) {
                 itemSchema.oneOf = [{}];
@@ -92,12 +94,17 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
             }
             schema.properties[propName] = itemSchema;
 
-            if(props.required) {
-                if(undefined === schema.required) {
-                    schema.required = [];
-                }
-                schema.required?.push(propName);
-            }
+            //:TODO fix required
+            // //workaround to receive required info from item
+            // if(undefined !== itemSchema?.required)  {
+            //     if(itemSchema?.required?.includes('true')) {
+            //         if(undefined === schema.required) {
+            //             schema.required = [];
+            //         }
+            //         schema.required?.push(propName);
+            //     }
+            //     delete itemSchema.required;
+            // }
             break;
 
         case 'VerticalLayout':
@@ -143,11 +150,11 @@ export const getChildComponents = (component:any, namePrefix:string|null) => {
         });
 
     refs.map(reff => {
-        if(!reff.uuid)  {
+        if(!reff.tool.uuid)  {
             throw "no uuid in getChildComponents";
         }
 
-        childComponents[reff.uuid] = reff
+        childComponents[reff.tool.uuid] = reff
     })
 
     return childComponents;
@@ -176,7 +183,7 @@ export const createI18nTranslate = (localeCatalogue:Record<string, string>) => {
     };
 }
 
-export const findLayoutTool = (schema:JsonFormsSchema|undefined = undefined, itemUischema: JsonFormsUISchema) : Tool|undefined => {
+export const  findLayoutTool = (schema:JsonFormsSchema|undefined = undefined, itemUischema: JsonFormsUISchema) : Tool|undefined => {
     return [...layoutTools,...[tools.tab]]
         .find(comp => {
             return comp.props.jsonForms.uischema.type === itemUischema.type;
@@ -227,6 +234,125 @@ export const findControlTool = (itemSchema:any, itemUischema:any) : Tool => {
     return controlTools[sorted[0][0]]?.clone(itemSchema, itemUischema);
 };
 
+
+
+export const guessInputType = (jsonForms:JsonForms) => {
+    const type = jsonForms?.schema?.type;
+    const format = jsonForms.schema?.format;
+    const options = jsonForms.uischema?.options;
+
+    const byType = {
+        'number': 'number',
+        'integer': 'number',
+        'boolean': 'checkbox',
+    } as Record<string, string>;
+    const stringByFormat = {
+        'date': 'date',
+        'time': 'time',
+        'date-time': 'datetime-local',
+    } as Record<string, string>;
+
+    let inputType = 'text';
+    switch (type) {
+        default:
+            if(format && stringByFormat[format]) {
+                inputType = stringByFormat[format];
+            }
+            else if(jsonForms?.schema?.enum || jsonForms?.schema?.oneOf) {
+                inputType = 'select'
+            }
+            else if(options) {
+                if(options.multi) {
+                    inputType = 'textarea'
+                }
+            }
+            break;
+
+        case 'boolean':
+        case 'number':
+        case 'integer':
+            if(type && byType[type]) {
+                inputType = byType[type];
+            }
+    }
+
+    return inputType;
+}
+
+
+export const buildModalOptions = (tool:Tool) : Object => {
+
+    const jsonForms = tool.props.jsonForms;
+
+    const options = {} as any;
+
+    options.inputType = guessInputType(jsonForms);
+    options.propertyName = tool.props.propertyName;
+
+    const schema = jsonForms.schema;
+    if(schema.oneOf !== undefined && !schema.oneOf.length) {
+        jsonForms.schema.oneOf = [{}]
+    }
+    if(schema.enum !== undefined && !schema.enum.length) {
+        jsonForms.schema.enum = ['']
+    }
+
+    updatableSchemaKeys.forEach(key => {
+        if(jsonForms.schema[key] !== undefined) {
+            options[key] = jsonForms.schema[key];
+        }
+    });
+    updatableUischemaKeys.forEach(key => {
+        if(jsonForms.uischema[key] !== undefined) {
+            options[key] = jsonForms.uischema[key];
+        }
+    });
+
+
+    //convert enum to object
+    if(options?.enum) {
+        options.enum = options.enum.map(name => {return {name: String(name)} });
+    }
+    if(options?.rule?.condition?.schema) {
+        options.rule.condition.schema = JSON.stringify(options.rule.condition.schema);
+    }
+
+    //:TODO fix required
+    // //workaround to check
+    // if(undefined !== schema?.required)  {
+    //     if(schema?.required?.includes('true')) {
+    //         options.required = true;
+    //     }
+    // }
+
+    return options;
+};
+
+export const denormalizeModalOptions = (data:any) => {
+
+    //convert enum to map
+    if(data?.enum) {
+        data.enum = data.enum?.map(item=>String(item?.name ?? '')) ?? [''];
+        data.enum = [...new Set(data.enum)];
+    }
+
+    if(typeof data?.rule?.condition?.schema === "string") {
+        try {
+            //:TODO deep copy
+            data.rule = {...data.rule};
+            data.rule.condition = {...data.rule.condition};
+
+            data.rule.condition.schema = JSON.parse(data.rule.condition.schema);
+        }
+        catch(e) {
+            console.warn("modal onChange rule has parse errors", e);
+            data.rule.condition.schema = {}
+        }
+    }
+
+    return data;
+}
+
 export const tools = {
     tab: new Tool('flexArea', ToolProps.create({
         toolType:'tab',
@@ -262,37 +388,48 @@ export const layoutTools = [
 export const controlTools = [
 
     new Tool('formInputByType', ToolProps.create({
-        inputType: 'text',
+        toolName: 'text',
         jsonForms: {schema:{type:'string'}, uischema:{type:'Control'}}
     })),
 
     new Tool('formInputByType', ToolProps.create({
-        inputType: 'textarea',
+        toolName: 'textarea',
         jsonForms: {schema:{type:'string'}, uischema:{type:'Control', options:{multi:true}}}
     })),
 
     new Tool('formInputByType', ToolProps.create({
-        inputType: 'number',
+        toolName: 'number',
         jsonForms: {schema:{type:'number'}, uischema:{type:'Control'}}
     })),
 
     new Tool('formInputByType', ToolProps.create({
-        inputType: 'date',
+        toolName: 'date',
         jsonForms: {schema:{type:'string', format: 'date'}, uischema:{type:'Control'}}
     })),
 
-    new Tool('formInputByType', ToolProps.create({
-        inputType: 'radio',
-        jsonForms: {schema:{type:'string',enum:[]}, uischema:{type:'Control', options:{format:'radio'}}}
-    })),
+    //via optionModal.format
+    // new Tool('formInputByType', ToolProps.create({
+    //     toolName: 'datetime-local',
+    //     jsonForms: {schema:{type:'string', format: 'date-time'}, uischema:{type:'Control'}}
+    // })),
+    // new Tool('formInputByType', ToolProps.create({
+    //     toolName: 'time',
+    //     jsonForms: {schema:{type:'string', format: 'time'}, uischema:{type:'Control'}}
+    // })),
+
+    //no jsonforms renderer
+    // new Tool('formInputByType', ToolProps.create({
+    //     inputType: 'radio',
+    //     jsonForms: {schema:{type:'string',enum:[]}, uischema:{type:'Control', options:{format:'radio'}}}
+    // })),
 
     new Tool('formInputByType', ToolProps.create({
-        inputType: 'select',
+        toolName: 'select',
         jsonForms: {schema:{type:'string',oneOf:[]}, uischema:{type:'Control'}}
     })),
 
     new Tool('formInputByType', ToolProps.create({
-        inputType: 'checkbox',
+        toolName: 'checkbox',
         jsonForms: {schema:{type:'boolean'}, uischema:{type:'Control'}}
     })),
 
@@ -306,12 +443,6 @@ export const controlTools = [
     // new Tool('formInputByType', ToolProps.create({
     //     inputType: 'number',
     //     jsonForms: {schema:{type:'integer'}, uischema:{type:'Control'}}
-    // })),
-
-    //renderer broken for date-time & time
-    // new Tool('formInputByType', ToolProps.create({
-    //     inputType: 'time',
-    //     jsonForms: {schema:{type:'string', format: 'time'}, uischema:{type:'Control'}}
     // })),
 
     //no renderer for slider:true

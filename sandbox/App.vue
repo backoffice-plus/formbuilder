@@ -30,7 +30,7 @@ import {computed, ref} from "vue";
 const examples = Object.keys(exampleForms);
 const example = ref('basic');
 const data = computed(() => {
-  console.log("data",example.value, exampleForms[example.value]);
+  //console.log("data",example.value, exampleForms[example.value]);
   return exampleForms[example.value]
 });
 

@@ -1,11 +1,11 @@
 <template>
   <div class="flexAreaTool">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" :properties="data" />
+    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
 
     <div v-if="!isToolbar" :class="{'mr-5':!isRoot}">
 
-      <Actions @gear="openModal" @delete="onDelete" v-if="!isRoot" />
+      <Actions :tool="tool" @delete="onDelete" v-if="!isRoot" />
 
       <draggableComponent
         :class="['dropArea bg-dotted nestedFlexArea', toolType, {drag:isDragging||drag}]"
@@ -14,7 +14,7 @@
         item-key="uuid"
         @start="drag = true"
         @end="drag = false"
-        @change="onUpdated"
+        @change="onDropAreaChange"
       >
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
@@ -113,8 +113,6 @@ import * as draggableComponent from 'vuedraggable'
 import {
   ElementHeadOrToolIcon, Actions,
   initElementsByToolProps, getComponent,
-  ToolProps,
-  updatableUischemaKeys,
   emitter
 } from "../../index";
 import {Tool} from "../../lib/models";
@@ -144,8 +142,6 @@ export default {
       toolType: this?.tool?.props?.toolType,
 
       elements: [],
-
-      data: {},
     };
   },
 
@@ -158,17 +154,6 @@ export default {
   mounted() {
     if (!this.isToolbar) {
       this.init();
-
-      //wait to render dom
-      setTimeout(this.onUpdated, 100);
-
-      if(this.toolProps) {
-        updatableUischemaKeys.forEach(key => {
-          if(this.toolProps.jsonForms?.uischema[key]) {
-            this.data[key] = this.toolProps.jsonForms.uischema[key];
-          }
-        });
-      }
     }
   },
 
@@ -177,15 +162,17 @@ export default {
       this.elements = [];
       this.toolProps && initElementsByToolProps(this.toolProps)
           .map(elm => this.elements.push(elm));
+
+      if(this.elements.length)  {
+        //wait to render dom
+        setTimeout(this.onDropAreaChange, 50);
+      }
     },
 
     importComponent(componentName) {
       return getComponent(componentName);
     },
 
-    openModal() {
-      emitter.emit('formBuilderModal', {uuid:this.uuid, data:this.data, type:this.toolProps.jsonForms.uischema?.type})
-    },
     onDelete() {
       if(confirm("Wirklich löschen?")) {
         this.$emit('deleteByIndex', {index: this.index});
@@ -196,22 +183,23 @@ export default {
       const index = e.index;
       this.elements.splice(index, 1);
 
-      this.onUpdated(e);
+      this.onDropAreaChange(e);
     },
 
-    onUpdated(e) {
+    onDropAreaChange(e) {
       emitter.emit('formBuilderUpdated', e)
     },
   },
 
   watch: {
-    data: {
-      handler() {
-        this.toolProps.jsonForms.update({...this.data});
-        this.onUpdated();
-      },
-      deep: true
-    },
+    // data: {
+    //   handler() {
+    //     console.log("flexarea watch data DEPRECATED!!!")
+    //     this.toolProps.jsonForms.update({...this.data});
+    //     this.onDropAreaChange();
+    //   },
+    //   deep: true
+    // },
   }
 };
 

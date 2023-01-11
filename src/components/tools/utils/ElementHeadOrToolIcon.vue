@@ -86,13 +86,9 @@
 import {computed} from 'vue'
 import {Tool} from "../../../lib/models";
 
-//const props = defineProps(['tool', 'isToolbar', 'properties'])
 const props = defineProps({
   tool: Tool,
   isToolbar: Boolean,
-
-  properties: Object,//needed? (maybe use tool.props.jsonForms
-
   index: Number //for deleting correct element in list
 })
 
@@ -101,15 +97,14 @@ const tool = props?.tool;
 const name = computed(() => {
 
   const toolProps = tool?.props;
-  const formData = props?.properties;
-  let label = formData?.label;
+  let label = toolProps?.jsonForms.uischema?.label;
 
   if(!tool) {
     return '';
   }
 
   if(props.isToolbar) {
-    return toolProps?.toolName ?? toolProps?.toolType ?? toolProps?.inputType; //inputType only at Tool=formInputByType
+    return toolProps?.toolName ?? toolProps?.toolType
   }
 
   //if label exists, then show only label
@@ -119,11 +114,11 @@ const name = computed(() => {
 
   //fix tool/type name
   else if(['flex','flexRow','tabs','group'].includes(toolProps?.toolType)) {
-    return toolProps?.toolName ?? toolProps?.toolType ?? toolProps?.inputType ?? 'UNKNOWN';
+    return toolProps?.toolName ?? toolProps?.toolType ?? 'UNKNOWN';
   }
 
   //:TODO add something for if Tool!=formInputByType
-  return (formData?.propertyName ?? toolProps?.inputType) + (label ? (': ' + label) : '');
+  return (toolProps?.propertyName ?? toolProps?.toolName) + (label ? (': ' + label) : '');
 
 });
 

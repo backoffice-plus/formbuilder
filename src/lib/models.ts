@@ -54,7 +54,6 @@ export class Tool {
 
 export class ToolProps {
     constructor(
-        public readonly inputType: string,
         public readonly toolType: string,
         private _jsonForms: JsonForms|any = new JsonForms(),
         public propertyName: string|undefined = undefined,
@@ -78,7 +77,6 @@ export class ToolProps {
 
     static create(props:any) : ToolProps {
         return new ToolProps(
-            props?.inputType,
             props?.toolType,
             props?.jsonForms,
             props?.propertyName,
@@ -88,7 +86,6 @@ export class ToolProps {
 
     clone() : ToolProps {
         return new ToolProps(
-            this.inputType,
             this.toolType,
             this.jsonForms.clone(),
             this.propertyName,
@@ -107,18 +104,22 @@ export class JsonForms {
     }
 
     update(data:Record<string, any>) {
-        updatableSchemaKeys.forEach((key:string) => {
-            if(data[key]) {
+        Object.keys(data).forEach(key => {
+            if(updatableSchemaKeys.includes(key)) {
                 //@ts-ignore
                 this.schema[key] = data[key];
             }
-        });
-        updatableUischemaKeys.forEach((key:string) => {
-            if(data[key]) {
+            if(updatableUischemaKeys.includes(key)) {
                 //@ts-ignore
                 this.uischema[key] = data[key];
             }
         });
+
+        //:TODO fix required
+        // //just a workaround to "send" required info from this tool to root schema
+        // if(undefined !== data?.required) {
+        //     this.schema.required = [data?.required ? "true" : "false"];
+        // }
     }
 
     clone() : JsonForms {
@@ -130,7 +131,7 @@ export class JsonForms {
 }
 
 
-export const updatableSchemaKeys = ['enum', 'oneOf', 'description', 'minimum','maximum', 'pattern', 'minLength', 'maxLength'];
+export const updatableSchemaKeys = ['type', 'format', 'enum', 'oneOf', 'description', 'minimum','maximum', 'pattern', 'minLength', 'maxLength'];
 // export interface JsonFormsSchema {
 //     type: string;
 //     properties?: Record<string, JsonFormsSchema>;

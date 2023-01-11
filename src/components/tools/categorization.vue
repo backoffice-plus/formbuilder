@@ -1,11 +1,11 @@
 <template>
   <div class="categorizationTool">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" :properties="data" />
+    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
 
     <div v-if="!isToolbar" class="mr-5">
 
-      <Actions :uuid="uuid" @gear="openModal" @delete="onDelete" />
+      <Actions :tool="tool" @delete="onDelete" />
 
       <div class="flex items-center">
         <div class="tabs">
@@ -32,7 +32,7 @@
           item-key="uuid"
           @start="dragTab = true"
           @end="dragTab = false"
-          @change="onUpdated"
+          @change="onDropAreaChange"
       >
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
@@ -151,7 +151,6 @@ export default {
       toolType: this?.toolProps?.toolType,
 
       elements: [],
-      data: {},
 
       tabs:[],
       currentTab: -1,
@@ -167,19 +166,17 @@ export default {
             .map(elm => this.elements.push(elm));
 
         //wait to render dom
-        setTimeout(this.onUpdated, 100);
+        if(this.elements.length) {
+          setTimeout(this.onDropAreaChange, 20);
+        }
       }
       else {
         this.addTab();
       }
 
-      if(this.toolProps) {
-        updatableUischemaKeys.forEach(key => {
-          if(this.toolProps.jsonForms?.uischema[key]) {
-            this.data[key] = this.toolProps.jsonForms.uischema[key];
-          }
-        });
-      }
+      emitter.on('formBuilderUpdated', (data) => {
+        window.setTimeout(this.buildTabLabels,20);
+      });
     }
   },
   methods: {
@@ -194,9 +191,6 @@ export default {
       this.elements.push(tool);
       window.setTimeout(this.buildTabLabels,50);
     },
-    openModal() {
-      emitter.emit('formBuilderModal', {uuid:this.uuid, data:this.data, type:this.toolProps.jsonForms.uischema?.type})
-    },
     onDelete() {
       if(confirm("Wirklich löschen?")) {
         this.$emit('deleteByIndex', {index: this.index});
@@ -207,7 +201,7 @@ export default {
       const index = e.index;
       this.elements.splice(index, 1);
 
-      this.onUpdated();
+      emitter.emit('formBuilderUpdated')
     },
 
     buildTabLabels: function (e) {
@@ -219,26 +213,15 @@ export default {
       });
     },
 
-    onUpdated(e) {
+    onDropAreaChange(e) {
       window.setTimeout(this.buildTabLabels,50);
-      emitter.emit('formBuilderUpdated', e)
+      emitter.emit('formBuilderUpdated')
     },
   },
 
-  /**
-   * HIER WEITER!!!
-   * after changing tab label, the internal tab also needs to be renamed!!
-   * but no event is triggered!
-   */
-  watch: {
-    data: {
-      handler() {
-        this.toolProps.jsonForms.update({...this.data});
-        this.onUpdated();
-      },
-      deep: true
-    },
-  },
+  beforeUnmount() {
+    emitter.off('formBuilderUpdated')
+  }
 };
 
 </script>
