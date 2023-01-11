@@ -1,4 +1,4 @@
-const schema = {
+export const schema = {
     "type": "object",
     "properties": {
         "label": {
@@ -7,7 +7,7 @@ const schema = {
     },
 }
 
-const uischema = {
+export const uischema = {
 
     "type": "Categorization",
     "elements": [
