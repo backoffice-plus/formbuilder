@@ -2,6 +2,8 @@
   "extends": "@vue/tsconfig/tsconfig.node.json",
   "include": ["vite.config.*", "vitest.config.*", "cypress.config.*"],
   "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
     "composite": true,
     "types": ["node"]
   }

@@ -16,7 +16,7 @@ export default defineConfig({
             name: 'formbuilder',
             // We are building for CJS and ESM, use a function to rename automatically files.
             // Example: my-component-library.esm.js
-            fileName: (format) => `${'my-component-library'}.${format}.js`,
+            fileName: (format) => `${'formbuilder'}.${format}.js`,
         },
         rollupOptions: {
             // Vue is provided by the parent project, don't compile Vue source-code inside our library.
