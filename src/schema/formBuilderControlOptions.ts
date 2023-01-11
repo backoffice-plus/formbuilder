@@ -117,6 +117,9 @@ export const schema = {
                 placeholder: {
                     type: "string",
                 },
+                showUnfocusedDescription: {
+                    type: "boolean",
+                },
             },
         },
     },
@@ -172,6 +175,10 @@ export const uischema = {
                         },
                         {
                             "scope": "#/properties/description",
+                            "type": "Control"
+                        },
+                        {
+                            "scope": "#/properties/options/properties/showUnfocusedDescription",
                             "type": "Control"
                         },
                         {
