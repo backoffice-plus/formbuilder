@@ -56,7 +56,7 @@ const controlRenderer = defineComponent({
 
     const uploading = ref(false);
 
-    const onChange = async (e) => {
+    const onChange = async (e: any) => {
 
       uploading.value = true;
 
@@ -74,7 +74,7 @@ const controlRenderer = defineComponent({
       // });
 
       //change on upload success
-      const onUploadSuccess = (e) => {
+      const onUploadSuccess = (e: any) => {
         uploading.value = false;
 
         const finalPath = 'http://todo.file.path/img.jpg';
