@@ -7,6 +7,9 @@
 
       <Actions :tool="tool" @delete="onDelete" v-if="!isRoot" />
 
+      <!--
+        @see http://sortablejs.github.io/Sortable/#thresholds
+      -->
       <draggableComponent
         :class="['dropArea bg-dotted nestedFlexArea', toolType, {drag:isDragging||drag}]"
         :list="elements"
@@ -15,6 +18,10 @@
         @start="drag = true"
         @end="drag = false"
         @change="onDropAreaChange"
+
+        :swapThreshold=".7"
+        :invertSwap="true"
+        :fallbackOnBody="true"
       >
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
