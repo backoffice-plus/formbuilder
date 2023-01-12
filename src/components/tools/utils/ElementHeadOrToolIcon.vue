@@ -97,7 +97,8 @@ const tool = props?.tool;
 const name = computed(() => {
 
   const toolProps = tool?.props;
-  let label = toolProps?.jsonForms.uischema?.label;
+  let uischema = toolProps?.jsonForms?.uischema;
+  let label = uischema?.label;
 
   if(!tool) {
     return '';
@@ -112,7 +113,7 @@ const name = computed(() => {
     return label;
   }
   if(['label'].includes(toolProps.toolType)) {
-    return label ?? 'Label';
+    return uischema?.text ?? 'LABEL';
   }
 
   //fix tool/type name

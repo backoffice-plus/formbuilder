@@ -44,6 +44,7 @@ import {
 } from "../index";
 import {jsonForms as jsonFormsOption} from "../schema/formBuilderControlOptions";
 import {jsonForms as jsonFormsLabel} from "../schema/formBuilderOptionsLabel";
+import {jsonForms as jsonFormsLabelElement} from "../schema/toolOptionsLabel";
 import {computed, onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
@@ -57,6 +58,9 @@ const jsonFormSchema = computed(() => {
   switch (props.tool.props.jsonForms.uischema.type) {
     case 'Control':
       return jsonFormsOption
+
+    case 'Label':
+      return jsonFormsLabelElement
 
     //:TODO: add also Rules
     // case 'Group':

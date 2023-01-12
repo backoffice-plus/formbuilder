@@ -41,16 +41,6 @@ export default defineComponent({
     isDragging: Boolean, //needed in flexarea
   },
 
-  mounted() {
-    if(!this.isToolbar) {
-      const uischema = this.tool.props.jsonForms.uischema;
-      if(undefined === uischema?.text) {
-        uischema.text = 'Label'
-      }
-      uischema.label = uischema.text  ;
-    }
-  },
-
   data() {
     return {
 

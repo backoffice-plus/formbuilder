@@ -128,14 +128,14 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
             break;
 
 
-        case 'Label':
-            let label = 'Label';
-            if(uischema?.label) {
-                label = String(uischema.label);
-                delete uischema.label;
-            }
-            uischema.text = label;
-            break;
+        // case 'Label':
+        //     let label = 'Label';
+        //     if(uischema?.label) {
+        //         label = String(uischema.label);
+        //         delete uischema.label;
+        //     }
+        //     uischema.text = label;
+        //     break;
     }
 
     return uischema;
@@ -394,7 +394,7 @@ export const layoutTools = [
 
     new Tool('label', ToolProps.create({
         toolType:'label',
-        jsonForms: {uischema: {type: 'Label'}},
+        jsonForms: {uischema: {type: 'Label', text:'label'}},
     })),
 ];
 
