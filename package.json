@@ -7,15 +7,14 @@
     "dev": "vite",
     "build": "vite build && npm run build:types",
     "build:types": "vue-tsc --project tsconfig.types.json --declaration --emitDeclarationOnly --skipLibCheck --outDir dist/types ",
-    "typecheck": "vue-tsc --project tsconfig.types.json --noEmit --skipLibCheck"
+    "typecheck": "vue-tsc --project tsconfig.types.json --noEmit --skipLibCheck",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@babel/types": "^7.20.7",
-    "@types/lodash": "^4.14.191",
-    "@types/lodash.template": "^4.5.1",
     "@types/node": "^18.11.18",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/tsconfig": "^0.1.3",
@@ -26,6 +25,7 @@
     "tailwindcss": "^3.2.4",
     "typescript": "^4.9.4",
     "vite": "^4.0.4",
+    "vitest": "^0.27.1",
     "vue-tsc": "^1.0.24"
   },
   "peerDependencies": {
@@ -37,7 +37,9 @@
     "@jsonforms/vue": "^3.0.0",
     "@jsonforms/vue-vanilla": "^3.0.0",
     "lodash.get": "^4.4.2",
+    "lodash.set": "^4.3.2",
     "lodash.template": "^4.5.0",
+    "lodash.topath": "^4.5.2",
     "mitt": "^3.0.0",
     "vuedraggable": "^4.1.0"
   }

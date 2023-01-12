@@ -1,6 +1,8 @@
 // @ts-ignore
 import lodashGet from 'lodash.get';
+import lodashSet from 'lodash.set';
 import lodashTemplate from 'lodash.template';
+import lodashToPath from 'lodash.topath';
 //const lodashGet = require('lodash/get');
 import {
     JsonForms,
@@ -11,6 +13,53 @@ import type {
     JsonFormsSchema,
     JsonFormsUISchema,
 } from "./models";
+
+
+/**
+ * - scope = #/properties/personalData/properties/age
+ * - path = properties.personalData.properties.age
+*/
+export const normalizeScope = (scope:string) : string => {
+    return scope.replaceAll('#/', '').replaceAll('/', '.');
+}
+
+/**
+ * - path = properties.personalData.properties.age
+ * - name = personalData.age
+ */
+export const normalizePath = (scope:string) : string => {
+    return scope.replaceAll('properties.', '');
+}
+/**
+ * - prop = personalData.age
+ * - path = properties.personalData.properties.age
+ */
+export const denormalizePath = (prop:string) : string => {
+    return 'properties.' + prop.replaceAll('.', '.properties.');
+}
+/**
+ * - path = properties.personalData.properties.age
+ * - scope = #/properties/personalData/properties/age
+ */
+export const denormalizeScope = (path:string) : string => {
+    return '#/' + path.replaceAll('.', '/');
+}
+
+/**
+ * - prop = data.personal.age
+ * - subpaths = ['data', 'data.personal','data.personal.age']
+*/
+export const getAllSubpaths = (prop:string, startIndex:number=0) => {
+    const allParts:Array<string> = [];
+
+    return lodashToPath(prop)
+        .map((part:string) => {
+            allParts.push(part);
+            return allParts.join('.')
+        })
+        .slice(startIndex);
+}
+
 
 export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
     //console.log("initElementsByToolProps" , toolProps);
@@ -23,14 +72,13 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
     jsonFormUischema?.elements?.forEach((itemUischema:any) => {
         switch (itemUischema.type) {
             case 'Control':
-                const propertyPath = itemUischema.scope.replaceAll('#/', '').replaceAll('/', '.');
+                const propertyPath = normalizeScope(itemUischema.scope);
                 const itemSchema = lodashGet(jsonFromSchema, propertyPath);
 
                 let tool = findControlTool(itemSchema, itemUischema);
 
                 if(tool) {
-                    //:TODO: support nested elements (#/properties/details/properties/name)
-                    tool.props.propertyName = propertyPath.replace('properties.','');
+                    tool.props.propertyName = normalizePath(propertyPath);
 
                     pushableElements.push(tool);
                 }
@@ -85,12 +133,27 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
                 itemSchema.enum = [''];
             }
 
-            uischema.scope = '#/properties/' + propName;
+            const path = denormalizePath(propName);
+            uischema.scope = denormalizeScope(path)
 
             if(undefined === schema.properties) {
                 schema.properties = {};
             }
-            schema.properties[propName] = itemSchema;
+            lodashSet(schema, path, itemSchema)
+
+            //
+            /**
+             * check for type=object
+             * path = data.personal.age
+             * subpaths = ['data', 'data.personal','data.personal.age']
+             */
+            getAllSubpaths(propName, 1).forEach((subProp:string) => {
+                const subPath = denormalizePath(subProp);
+                const type = lodashGet(schema, subPath+'.type')
+                if(!type) {
+                    lodashSet(schema, subPath+'.type', 'object')
+                }
+            })
 
             //:TODO fix required
             // //workaround to receive required info from item
