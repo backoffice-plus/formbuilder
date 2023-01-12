@@ -2,6 +2,8 @@ import exampleBasic from "./basic";
 import {layoutHorizontal,layoutVertical,layoutNested,layoutGroup} from "./examples_layout";
 import {layoutControl,layoutControlOptions} from "./examples_control";
 import {layoutCategorization,layoutCategorizationSimplified} from "./examples_categorization";
+import {layoutEnum,layoutOneOf} from "./examples_multipleChoice";
+import {exampleArray} from "./examples_array";
 import group from "./group";
 import tabInTabs from "./tabs_in_tabs";
 import rule from "./rule";
@@ -23,6 +25,9 @@ export default {
   ExampleControlOptions:layoutControlOptions,
   ExampleCategorization:layoutCategorization,
   ExampleCategorizationSimplified:layoutCategorizationSimplified,
+  ExampleArray:exampleArray,
+  ExampleMultipleEnum:layoutEnum,
+  ExampleMultipleOneOf:layoutOneOf,
 
   formBuilderControlOptions:formBuilderControlOptions
 };
