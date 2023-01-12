@@ -22,7 +22,8 @@ export class Tool {
         this.componentName = componentName;
         this.props = props;
 
-        this.uuid = crypto.randomUUID();
+        //this.uuid = crypto.randomUUID();
+        this.uuid = String(Date.now().toString(32)+Math.random().toString(16)).replace(/\./g, '');
     }
 
     clone(schema:JsonFormsSchema|undefined = undefined, uischema:JsonFormsUISchema|undefined = undefined): Tool {
