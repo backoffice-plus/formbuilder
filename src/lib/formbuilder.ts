@@ -136,11 +136,6 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
             const path = denormalizePath(propName);
             uischema.scope = denormalizeScope(path)
 
-            if(undefined === schema.properties) {
-                schema.properties = {};
-            }
-            lodashSet(schema, path, itemSchema)
-
             //
             /**
              * check for type=object
@@ -154,6 +149,8 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
                     lodashSet(schema, subPath+'.type', 'object')
                 }
             })
+
+            lodashSet(schema, path, itemSchema)
 
             //:TODO fix required
             // //workaround to receive required info from item
