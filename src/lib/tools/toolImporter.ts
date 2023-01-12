@@ -2,6 +2,7 @@ import {shallowRef} from "vue";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import flexArea from "../../components/tools/flexArea.vue";
 import categorization from "../../components/tools/categorization.vue";
+import label from "../../components/tools/label.vue";
 
 export const getComponent = (componentName:string, useShallowRef:boolean|undefined = false) => {
     const asShallowRef = (e:any) => {
@@ -13,6 +14,9 @@ export const getComponent = (componentName:string, useShallowRef:boolean|undefin
     }
     else if('formInputByType' === componentName) {
         return asShallowRef(formInputByType);
+    }
+    else if('label' === componentName) {
+        return asShallowRef(label);
     }
     else {
         return asShallowRef(flexArea);

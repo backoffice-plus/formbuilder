@@ -111,6 +111,9 @@ const name = computed(() => {
   if(label && ['tab','group'].includes(toolProps.toolType)) {
     return label;
   }
+  if(['label'].includes(toolProps.toolType)) {
+    return label ?? 'Label';
+  }
 
   //fix tool/type name
   else if(['flex','flexRow','tabs','group'].includes(toolProps?.toolType)) {
@@ -118,7 +121,7 @@ const name = computed(() => {
   }
 
   //:TODO add something for if Tool!=formInputByType
-  return (toolProps?.propertyName ?? toolProps?.toolName) + (label ? (': ' + label) : '');
+  return (toolProps?.propertyName ?? toolProps?.toolName ?? 'UNKNOWN') + (label ? (': ' + label) : '');
 
 });
 
