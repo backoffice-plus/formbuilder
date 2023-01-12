@@ -30,9 +30,14 @@
                 :ajv="ajv"
                 :i18n="{translate: createI18nTranslate(localeCatalogue)}"
                 v-if="jsonFormsSchema && jsonFormsUiSchema"
+                @change="data => newData=data"
             />
         </div>
       </ResizeArea>
+
+      Data
+      <textarea class="w-full h-60 p-4 bg-white rounded" readonly disabled>{{ newData?.data }}</textarea>
+
     </details>
 
   </div>
@@ -58,6 +63,7 @@ const props = defineProps({
 
 const jsonFormsUiSchema = ref({});
 const jsonFormsSchema = ref({});
+const newData = ref({});
 
 // const updateEditor = () => {
 //   tool.props.jsonForms.schema = jsonFormsSchema.value;
