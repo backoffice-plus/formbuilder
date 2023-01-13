@@ -117,6 +117,12 @@
   border border-blue-200
 }
 
+.sortable-chosen {
+  @apply
+  filter grayscale
+  opacity-80
+}
+
 </style>
 
 <script>
