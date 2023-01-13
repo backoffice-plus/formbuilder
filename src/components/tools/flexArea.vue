@@ -105,12 +105,17 @@
   min-height: 100px;
   @apply
 
-  bg-blue-100
-  border border-blue-200
+  bg-blue-50
+  border border-blue-100
   p-4
   rounded
 }
+.dropItem.formInputByTypeTool {
+  @apply
 
+  bg-blue-100
+  border border-blue-200
+}
 
 </style>
 

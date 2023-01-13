@@ -35,8 +35,6 @@
           <input :type="data.inputType" v-else />
         </template>
 
-        Type: {{ data.inputType }}
-
         <div>{{ data.description }}</div>
 
         <Actions :tool="tool" @delete="onDelete" />
