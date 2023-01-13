@@ -3,7 +3,7 @@
 
     <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
 
-    <div v-if="!isToolbar" :class="{'mr-5':!isRoot}">
+    <div v-if="!isToolbar" :class="['flex',{'mr-5':!isRoot}]">
 
       <Actions :class="['opacity-0', 'group-hover/itemF:opacity-100']" :tool="tool" @delete="onDelete" v-if="!isRoot" />
 
@@ -47,7 +47,8 @@
 <style>
 
 .flexAreaTool {
-  @apply relative;
+  @apply relative
+  h-full
 }
 
 .bg-dotted {
@@ -60,6 +61,9 @@
   min-height: 80px;
   @apply
   w-full
+  flex-grow
+
+    overflow-auto
 
   p-2
 
@@ -90,7 +94,7 @@
   flex-row
 }
 .nestedFlexArea > * {
-  @apply w-full
+  @apply w-full flex-shrink
 }
 
 .dropItem {
