@@ -1,11 +1,11 @@
 <template>
-  <div class="flexAreaTool">
+  <div class="flexAreaTool" :class="['group/itemF']">
 
     <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
 
     <div v-if="!isToolbar" :class="{'mr-5':!isRoot}">
 
-      <Actions :tool="tool" @delete="onDelete" v-if="!isRoot" />
+      <Actions :class="['opacity-0', 'group-hover/itemF:opacity-100']" :tool="tool" @delete="onDelete" v-if="!isRoot" />
 
       <!--
         @see http://sortablejs.github.io/Sortable/#thresholds

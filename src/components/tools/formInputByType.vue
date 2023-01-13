@@ -1,6 +1,5 @@
 <template>
-  <div class="formInputByTypeTool">
-
+  <div class="formInputByTypeTool" :class="['group/item']">
 
     <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
 
@@ -36,8 +35,7 @@
         </template>
 
         <div>{{ data.description }}</div>
-
-        <Actions :tool="tool" @delete="onDelete" />
+        <Actions  :class="['opacity-0', 'group-hover/item:opacity-100']" :tool="tool" @delete="onDelete" />
 
       </div>
 

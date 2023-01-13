@@ -11,10 +11,18 @@
 <style scoped>
 .toolActions {
   @apply absolute right-0 top-0
+
+  transition-opacity duration-300
 }
 
 .toolActions button {
   @apply block p-1
+
+  rounded-full
+
+  transition-colors
+  hover:bg-opacity-40
+  hover:bg-gray-500
 }
 .toolActions button::before {
   content: '';

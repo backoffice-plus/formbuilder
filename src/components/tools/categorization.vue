@@ -1,11 +1,11 @@
 <template>
-  <div class="categorizationTool">
+  <div class="categorizationTool" :class="['group/itemC']">
 
     <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
 
     <div v-if="!isToolbar" class="mr-5">
 
-      <Actions :tool="tool" @delete="onDelete" />
+      <Actions :class="['opacity-0', 'group-hover/itemC:opacity-100']" :tool="tool" @delete="onDelete" />
 
       <div class="flex items-center">
         <div class="tabs">
