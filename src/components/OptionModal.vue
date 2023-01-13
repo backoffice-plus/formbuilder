@@ -40,7 +40,7 @@ import {JsonForms} from "@jsonforms/vue";
 import {
   jsonFormRenderes,
   createI18nTranslate,
-  buildModalOptions, denormalizeModalOptions, emitter
+  normalizeModalOptions, emitter
 } from "../index";
 import {jsonForms as jsonFormsOption} from "../schema/formBuilderControlOptions";
 import {jsonForms as jsonFormsLabel} from "../schema/formBuilderOptionsLabel";
@@ -54,7 +54,15 @@ const emit = defineEmits(['change']);
 
 const ajv = createAjv();//is needed because reactive :schema & :uischema will throw error
 
-const jsonFormSchema = computed(() => {
+const options = ref({});
+const jsonFormSchema = ref({});
+
+onMounted(() => {
+  options.value = normalizeModalOptions(props.tool);
+  jsonFormSchema.value = getJsonForms();
+})
+
+const getJsonForms = () => {
   switch (props.tool.props.jsonForms.uischema.type) {
     case 'Control':
       return jsonFormsOption
@@ -62,29 +70,28 @@ const jsonFormSchema = computed(() => {
     case 'Label':
       return jsonFormsLabelElement
 
-    //:TODO: add also Rules
-    // case 'Group':
-    // case 'Category':
-    //   return jsonFormsLabel
+      //:TODO: add also Rules
+      // case 'Group':
+      // case 'Category':
+      //   return jsonFormsLabel
 
-    //:TODO only rules (maybe load formControlSchema and clear unused tabs
-    //case 'Categorization':
-    //  return [formLayoutGroupSchema, formLayoutGroupUiSchema]
+      //:TODO only rules (maybe load formControlSchema and clear unused tabs
+      //case 'Categorization':
+      //  return [formLayoutGroupSchema, formLayoutGroupUiSchema]
 
     default:
       return jsonFormsLabel
   }
-});
-
-const options = ref(buildModalOptions(props.tool));
+};
 
 const onChange = (e) => {
 
   if(e.errors.length) {
-    console.warn("modal onChange has errors", e.errors);
+    console.warn("OptionModal", "errors at onChange", e.errors, e.data);
   }
   else {
-    const data = {...e.data};//:TODO deep copy
+    //const data = {...e.data};//:TODO deep copy
+    const data = JSON.parse(JSON.stringify(e.data));
 
     emit('change', data);
     emitter.emit('formBuilderUpdated');

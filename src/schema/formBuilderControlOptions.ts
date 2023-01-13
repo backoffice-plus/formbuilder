@@ -48,13 +48,40 @@ export const schema = {
                 condition: {
                     type: "object",
                     properties: {
-                        scope: {
+                        // scope: {
+                        //     type: "string",
+                        //     description: "like \"#/properties/name\""
+                        // },
+                        //"schema": { const: true }
+                        //"schema": { const: 1 }
+                        //"schema": { const: "sometext" }
+                        //"schema": { enum: ["radio"] }
+
+                        _scopePropertyName: {
                             type: "string",
-                            description: "like \"#/properties/name\""
                         },
-                        schema: {
+                        _schema: {
                             type: "string",
-                            description: "like \"{\"enum\":[\"foo\"]}\" or \"{\"const\":true}\""
+                            enum: ['const', 'enum']
+                        },
+                        _schemaConstType: {
+                            type: "string",
+                            enum: ['string', 'number', 'boolean'],
+                        },
+                        _schemaConstAsString: {type:'string'},
+                        _schemaConstAsNumber: {type:'number'},
+                        _schemaConstAsBoolean: {type:'boolean'},
+                        schema: {
+                            type: "object",
+                            properties: {
+                                //_constAsNumber: {type:'number'},
+                                // const: {
+                                //     type: ['number', 'string', 'boolean'],
+                                // },
+                                // enum: {
+                                //     type: "array",
+                                // },
+                            },
                         },
                     }
                 },
@@ -166,8 +193,8 @@ export const uischema = {
                                     "rule": {
                                         "effect": "ENABLE",
                                         "condition": {
-                                            "scope": "#/properties/type",
-                                            "schema": { enum: ["string"] }
+                                             "scope": "#/properties/type",
+                                            // "schema": { enum: ["string"] }
                                         }
                                     }
                                 },
@@ -287,6 +314,11 @@ export const uischema = {
                 }
             ]
         },
+
+
+        /**
+         * Tab - Rule
+         */
         {
             "type": "Category",
             "label": "Rule",
@@ -299,17 +331,83 @@ export const uischema = {
                             "type": "Control"
                         },
                         {
-                            "scope": "#/properties/rule/properties/condition/properties/scope",
-                            "type": "Control"
+                            "scope": "#/properties/rule/properties/condition/properties/_scopePropertyName",
+                            "type": "Control",
+                            label: 'Property Name',
                         },
                         {
-                            "scope": "#/properties/rule/properties/condition/properties/schema",
-                            "type": "Control"
+                            type: "Group",
+                            label: "Schema based condition",
+                            elements: [
+
+                                {
+                                    type: "HorizontalLayout",
+                                    elements: [
+                                        {
+                                            type: "Control",
+                                            label: "Schema Type",
+                                            scope: "#/properties/rule/properties/condition/properties/_schema"
+                                        },
+                                        {
+                                            type: "Control",
+                                            label: "Const Type",
+                                            scope: "#/properties/rule/properties/condition/properties/_schemaConstType",
+                                            rule: {
+                                                effect: "ENABLE",
+                                                condition: {
+                                                    scope: "#/properties/rule/properties/condition/properties/_schema",
+                                                    schema: { const: "const" }
+                                                }
+                                            }
+                                        },
+                                    ],
+                                },
+                                {
+                                    scope: "#/properties/rule/properties/condition/properties/_schemaConstAsString",
+                                    type: "Control",
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition: {
+                                            scope: "#/properties/rule/properties/condition/properties/_schemaConstType",
+                                            //schema: { enum: ["string"] }
+                                            schema: { const: "string" }
+                                        }
+                                    }
+                                },
+                                {
+                                    scope: "#/properties/rule/properties/condition/properties/_schemaConstAsNumber",
+                                    type: "Control",
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition: {
+                                            scope: "#/properties/rule/properties/condition/properties/_schemaConstType",
+                                            //schema: { enum: ["string"] }
+                                            schema: { const: "number" }
+                                        }
+                                    }
+                                },
+                                {
+                                    scope: "#/properties/rule/properties/condition/properties/_schemaConstAsBoolean",
+                                    type: "Control",
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition: {
+                                            scope: "#/properties/rule/properties/condition/properties/_schemaConstType",
+                                            schema: { const: "boolean" }
+                                        }
+                                    }
+                                },
+
+                            ]
                         },
                     ],
                 }
             ]
         },
+
+        /**
+         * Tab - Enum
+         */
         {
             "type": "Category",
             "label": "Enum",
@@ -332,6 +430,10 @@ export const uischema = {
                 }
             }
         },
+
+        /**
+         * Tab - oneOf
+         */
         {
             "type": "Category",
             "label": "oneOf",

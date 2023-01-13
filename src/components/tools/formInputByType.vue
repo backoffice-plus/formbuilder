@@ -62,7 +62,7 @@ import {
   ElementHeadOrToolIcon, Actions,
   ToolProps,
   updatableSchemaKeys, updatableUischemaKeys,
-  emitter, buildModalOptions
+  emitter, normalizeModalOptions
 } from "../../index";
 import {defineComponent} from 'vue';
 import {Tool} from "../../lib/models";
@@ -85,7 +85,7 @@ export default defineComponent({
 
   computed: {
     data() {
-      return !this.isToolbar ? buildModalOptions(this.tool) : {};
+      return !this.isToolbar ? normalizeModalOptions(this.tool) : {};
     }
   },
 

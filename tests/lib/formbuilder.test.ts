@@ -2,8 +2,11 @@ import { expect, test } from 'vitest'
 import {
     normalizeScope, normalizePath,
     denormalizePath, denormalizeScope,
-    getAllSubpaths
+    getAllSubpaths,
+
+    normalizeRule, denormalizeRule
 } from "../../src";
+import type {Rule, SchemaBasedCondition} from "@jsonforms/core";
 
 test('normalizeScope', () => {
     const scope = '#/properties/name'
@@ -46,4 +49,33 @@ test('buildAllSubpaths index1', () => {
     const prop = 'data.personal.age'
     const subparts = getAllSubpaths(prop, 1)
     expect(subparts).toEqual(['data.personal','data.personal.age'])
+})
+
+const ruleData = {
+    effect: 'SHOW',
+    condition: {
+        scope: '#/properties/asd',
+        schema: { const: true },
+        _scopePropertyName: 'asd',
+        _schema: 'const',
+        _schemaConstType: 'boolean',
+        _schemaConstAsBoolean: true
+    },
+};
+const rule = {
+    effect: 'SHOW',
+    condition: {
+        scope: '#/properties/asd',
+        schema: {
+            const: true
+        }
+    } as SchemaBasedCondition
+} as Rule;
+
+test('normalizeRule', () => {
+    expect(normalizeRule(rule)).toEqual(ruleData)
+})
+
+test('denormalizeRule', () => {
+    expect(denormalizeRule(ruleData)).toEqual(rule)
 })

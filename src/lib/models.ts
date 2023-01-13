@@ -116,6 +116,13 @@ export class JsonForms {
             }
         });
 
+        if(undefined !== data.rule) {
+            if(undefined !== data.rule.condition) {
+                console.log("Update",data.rule);
+                this.uischema.rule = data.rule;
+            }
+        }
+
         //:TODO fix required
         // //just a workaround to "send" required info from this tool to root schema
         // if(undefined !== data?.required) {
@@ -149,7 +156,7 @@ export const updatableSchemaKeys = ['type', 'format', 'enum', 'oneOf', 'descript
 //     customType: string;
 // }
 
-export const updatableUischemaKeys = ['label', 'i18n', 'rule', 'options', 'text'];
+export const updatableUischemaKeys = ['label', 'i18n', 'options', 'text'];
 // export interface JsonFormsUISchema {
 //     type: string;
 //     elements: Array<JsonFormsUISchema>;
