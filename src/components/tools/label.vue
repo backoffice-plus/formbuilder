@@ -15,6 +15,7 @@
 
 <style scoped>
 .labelTool {
+  min-height:auto;
   @apply
   relative
 }
