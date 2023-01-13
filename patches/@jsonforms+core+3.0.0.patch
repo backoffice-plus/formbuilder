@@ -1,0 +1,31 @@
+diff --git a/node_modules/@jsonforms/core/src/util/type.ts b/node_modules/@jsonforms/core/src/util/type.ts
+index 7cdc8e7..cf50b77 100644
+--- a/node_modules/@jsonforms/core/src/util/type.ts
++++ b/node_modules/@jsonforms/core/src/util/type.ts
+@@ -23,6 +23,10 @@
+   THE SOFTWARE.
+ */
+ 
++declare interface SymbolConstructor {
++  readonly observable: symbol;
++}
++
+ // Copied from https://github.com/reduxjs/redux/blob/master/src/types/actions.ts
+ export interface Action<T = any> {
+   type: T;
+@@ -152,6 +156,7 @@ export interface Store<S = any, A extends Action = AnyAction> {
+    * For more information, see the observable proposal:
+    * https://github.com/tc39/proposal-observable
+    */
++  // @ts-ignore
+   [Symbol.observable](): Observable<S>;
+ }
+ 
+@@ -171,6 +176,7 @@ export type Observable<T> = {
+    * emission of values from the observable.
+    */
+   subscribe(observer: Observer<T>): { unsubscribe: Unsubscribe };
++  // @ts-ignore
+   [Symbol.observable](): Observable<T>
+ };
+ 

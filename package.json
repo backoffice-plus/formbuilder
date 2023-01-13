@@ -8,7 +8,8 @@
     "build": "vite build && npm run build:types",
     "build:types": "vue-tsc --project tsconfig.types.json --declaration --emitDeclarationOnly --skipLibCheck --outDir dist/types ",
     "typecheck": "vue-tsc --project tsconfig.types.json --noEmit --skipLibCheck",
-    "test": "vitest"
+    "test": "vitest",
+    "postinstall": "patch-package"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "@vue/tsconfig": "^0.1.3",
     "@vueuse/core": "^9.10.0",
     "autoprefixer": "^10.4.13",
+    "patch-package": "^6.5.1",
     "postcss": "^8.4.21",
     "sass": "^1.57.1",
     "tailwindcss": "^3.2.4",
