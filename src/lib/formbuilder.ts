@@ -575,24 +575,25 @@ export const layoutTools = [
 export const controlTools = [
 
     new Tool('formInputByType', ToolProps.create({
-        toolName: 'text',
+        toolType: 'control',
+        toolName: 'Control',
         jsonForms: {schema:{type:'string'}, uischema:{type:'Control'}}
     })),
 
-    new Tool('formInputByType', ToolProps.create({
-        toolName: 'textarea',
-        jsonForms: {schema:{type:'string'}, uischema:{type:'Control', options:{multi:true}}}
-    })),
+    // new Tool('formInputByType', ToolProps.create({
+    //     toolName: 'textarea',
+    //     jsonForms: {schema:{type:'string'}, uischema:{type:'Control', options:{multi:true}}}
+    // })),
 
-    new Tool('formInputByType', ToolProps.create({
-        toolName: 'number',
-        jsonForms: {schema:{type:'number'}, uischema:{type:'Control'}}
-    })),
+    // new Tool('formInputByType', ToolProps.create({
+    //     toolName: 'number',
+    //     jsonForms: {schema:{type:'number'}, uischema:{type:'Control'}}
+    // })),
 
-    new Tool('formInputByType', ToolProps.create({
-        toolName: 'date',
-        jsonForms: {schema:{type:'string', format: 'date'}, uischema:{type:'Control'}}
-    })),
+    // new Tool('formInputByType', ToolProps.create({
+    //     toolName: 'date',
+    //     jsonForms: {schema:{type:'string', format: 'date'}, uischema:{type:'Control'}}
+    // })),
 
     //via optionModal.format
     // new Tool('formInputByType', ToolProps.create({
@@ -615,10 +616,10 @@ export const controlTools = [
         jsonForms: {schema:{type:'string',oneOf:[]}, uischema:{type:'Control'}}
     })),
 
-    new Tool('formInputByType', ToolProps.create({
-        toolName: 'checkbox',
-        jsonForms: {schema:{type:'boolean'}, uischema:{type:'Control'}}
-    })),
+    // new Tool('formInputByType', ToolProps.create({
+    //     toolName: 'checkbox',
+    //     jsonForms: {schema:{type:'boolean'}, uischema:{type:'Control'}}
+    // })),
 
     // new Tool('formInputByType', ToolProps.create({
     //     inputType: 'file',

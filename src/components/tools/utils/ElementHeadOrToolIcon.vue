@@ -6,7 +6,7 @@
 
         <span :title="name">
 
-            <span class="tool" :class="[tool.props.toolType]">
+            <span class="tool" :class="[tool.props.toolType,{readOnly:tool.props.schemaReadOnly}]">
               <label>{{ name }}</label>
               <span class="icon"/>
             </span>
@@ -56,12 +56,12 @@
   @apply hidden
 }
 
-.toolItem .tool:where(.group, .flexRow, .flex, .tabs, .label) label {
+.toolItem .tool:where(.group, .flexRow, .flex, .tabs, .label, .control:not(.readOnly)) label {
   @apply hidden
 }
 
 .toolIcon .icon::before,
-.toolItem .tool:where(.group, .flexRow, .flex, .tabs, .label) .icon::before {
+.toolItem .tool:where(.group, .flexRow, .flex, .tabs, .label, .control:not(.readOnly)) .icon::before {
   content: '';
   width: 20px;
   height: 20px;
@@ -108,7 +108,11 @@
   /* mdi:tab-plus */
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m21.41 11.58l-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.41l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M6.5 8A1.5 1.5 0 1 1 8 6.5A1.5 1.5 0 0 1 6.5 8m5.09 7.41l-4-4L9 10l4 4m2.59.41l-5.5-5.5L11.5 7.5L17 13Z"/></svg>');
 }
-
+.toolIcon.control .icon::before,
+.toolItem .tool.control:not(.readOnly) .icon::before {
+  /* mdi:tab-plus */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M9.93 13.5h4.14L12 7.98L9.93 13.5zM20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-4.29 15.88l-.9-2.38H9.17l-.89 2.37a.968.968 0 1 1-1.81-.69l4.25-10.81c.22-.53.72-.87 1.28-.87s1.06.34 1.27.87l4.25 10.81a.968.968 0 0 1-.9 1.32c-.4 0-.76-.25-.91-.62z"/></svg>');
+}
 
 
 </style>

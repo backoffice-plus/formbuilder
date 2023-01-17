@@ -147,6 +147,9 @@ export const schema = {
                 showUnfocusedDescription: {
                     type: "boolean",
                 },
+                multi: {
+                    type: "boolean",
+                },
             },
         },
     },
@@ -199,6 +202,18 @@ export const uischema = {
                                     }
                                 },
                             ]
+                        },
+                        {
+                            scope: "#/properties/options/properties/multi",
+                            label: "as Textarea",
+                            type: "Control",
+                            rule: {
+                                effect: "ENABLE",
+                                condition: {
+                                    scope: "#/properties/type",
+                                    schema: { const: "string" }
+                                }
+                            }
                         },
                         {
                             "scope": "#/properties/description",
