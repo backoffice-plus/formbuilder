@@ -59,6 +59,7 @@ export class ToolProps {
         private _jsonForms: JsonForms|any = new JsonForms(),
         public propertyName: string|undefined = undefined,
         public toolName: string|undefined = undefined,
+        public schemaReadOnly: boolean = false,
     ) {
         if(!(this._jsonForms instanceof JsonForms)) {
             this._jsonForms = new JsonForms(
@@ -82,6 +83,7 @@ export class ToolProps {
             props?.jsonForms,
             props?.propertyName,
             props?.toolName,
+            props?.schemaReadOnly,
         )
     }
 
@@ -91,6 +93,7 @@ export class ToolProps {
             this.jsonForms.clone(),
             this.propertyName,
             this.toolName,
+            this.schemaReadOnly,
         )
     }
 }

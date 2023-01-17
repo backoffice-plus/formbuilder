@@ -6,17 +6,20 @@
       <div class="modalBg">
         <div class="centerItem">
           <DialogPanel class="panel" >
-              <OptionModal :tool="toolEdit" @change="onChange" />
+              <OptionModal :tool="toolEdit" :schemaReadOnly="schemaReadOnly" @change="onChange" />
           </DialogPanel>
         </div>
       </div>
     </Dialog>
 
-    <FormBuilderBar @drag="e=>drag = !!e"/>
+    <FormBuilderBar
+        :jsonForms="schemaReadOnly ? props.data : {}"
+        :schemaReadOnly="!!schemaReadOnly"
+        @drag="e=>drag = !!e"
+    />
 
-    <component :is="importComponent(tool.componentName)"
-
-               :tool="tool"
+    <component :is="getComponent(baseTool.componentName)"
+               :tool="baseTool"
                :isRoot="true"
                :isDragging="!!drag"
               class="my-4"
@@ -54,7 +57,7 @@
 
 
 <script setup>
-import { ref } from 'vue'
+import {computed, ref} from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import {Dialog ,  DialogPanel} from '@headlessui/vue';
 import {
@@ -64,19 +67,11 @@ import {
 } from "../index";
 
 const props = defineProps({
-  data: Object
+  data: Object,
+  schemaReadOnly: Boolean,
 })
 
 const emit = defineEmits(['schemaUpdated']);
-
-const tool = findLayoutTool(props?.data?.schema ?? {}, props?.data?.uischema ?? {type:'VerticalLayout'});
-if(!tool) {
-  throw "no tool was found";
-}
-
-const importComponent = (componentName) => {
-  return getComponent(componentName);
-};
 
 const rootForm = ref(null);
 const drag = ref(false);
@@ -85,12 +80,21 @@ const jsonFormsSchema = ref({});
 const isModalOpen = ref(false);
 const toolEdit = ref(null);
 
+const baseTool = computed(() => {
+  const tool = findLayoutTool(props?.data?.schema ?? {}, (props.data?.uischema?.type && props.data.uischema) ?? {type:'VerticalLayout'});
+  if(!tool) {
+    throw "no tool was found";
+  }
+  return tool;
+})
+
 const onChange = (data)=> {
   if(toolEdit.value) {
     if(data.propertyName) {
       toolEdit.value.props.propertyName = data.propertyName;
     }
     toolEdit.value.props.jsonForms.update(denormalizeModalOptions(data));
+    console.log("FormBuilder onChange")
     updateJsonForm();
   }
   else {
@@ -99,7 +103,10 @@ const onChange = (data)=> {
 }
 
 const updateJsonForm = () => {
-  const jsonForms = createJsonForms(rootForm);
+  if(!rootForm?.value) {
+    return;
+  }
+  const jsonForms = createJsonForms(rootForm, props.schemaReadOnly ? props.data?.schema : undefined);
   jsonFormsSchema.value = jsonForms.schema;
   jsonFormsUiSchema.value = jsonForms.uischema;
 
@@ -110,11 +117,15 @@ const updateJsonForm = () => {
 
 
 onMounted(() => {
+  console.log("FormBuilder onMounted");
+  window.setTimeout(() => emitter.emit('formBuilderUpdated'),50);
+
   emitter.on('formBuilderModal', (data) => {
     isModalOpen.value = true;
     toolEdit.value = data.tool;
   })
   emitter.on('formBuilderUpdated', (data) => {
+    console.log("FormBuilder emitter.on formBuilderUpdated")
     window.setTimeout(updateJsonForm,100);
   });
 });

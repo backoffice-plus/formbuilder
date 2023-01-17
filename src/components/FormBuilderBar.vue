@@ -68,21 +68,73 @@ aside .toolItem {
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {defineComponent} from 'vue';
+import {defineComponent, onBeforeUnmount, onMounted} from 'vue';
 import * as draggableComponent from 'vuedraggable'
 import {
-  getComponent, layoutTools, controlTools, guessInputType
+  getComponent,
+  layoutTools,
+  controlTools,
+  guessInputType,
+  findAllProperties,
+  findControlTool,
+  emitter,
+  findAllScopes,
+  normalizeScope, normalizePath
 } from "../index";
 
 export default defineComponent({
   components: {draggableComponent},
 
+  props: {
+    schemaReadOnly: {type:Boolean, default: false},
+    jsonForms: {type:Object, default: {}},
+  },
+
   data() {
     return {
       drag: false,
-      tools: [...controlTools, ...layoutTools],
       cloneCounter: {},
+      usedProps: [],
     };
+  },
+
+  mounted() {
+    emitter.on('formBuilderSchemaUpdated', (jsonForms) => {
+      console.log("FormBuilderBar emitter.on formBuilderSchemaUpdated")
+      this.usedProps = findAllScopes(jsonForms.uischema).map(scope=>normalizePath(normalizeScope(scope)))
+    });
+  },
+  //
+  // beforeUnmount() {
+  //   emitter.off('formBuilderSchemaUpdated');
+  // },
+
+  computed: {
+    schema() {
+      return this.jsonForms?.schema;
+    },
+    tools() {
+      let all = [...layoutTools];
+      if(this.schemaReadOnly) {
+        const allProps = findAllProperties(this.schema);
+        const readOnlyControlTools = Object.keys(allProps)?.map(name => {
+          const tool = findControlTool(allProps[name], {}).clone();
+          tool.props.propertyName = name;
+          tool.props.schemaReadOnly = true;
+
+          return tool;
+        }).filter(tool => !this.usedProps.includes(tool.props.propertyName))
+
+        console.log("FormBuilderBar","schemaReadOnly readOnlyControlTools",readOnlyControlTools)
+        all = [...readOnlyControlTools, ...all]
+      }
+      else {
+        all = [...controlTools, ...all]
+      }
+
+      return all;
+    },
+
   },
 
   methods: {
@@ -106,8 +158,10 @@ export default defineComponent({
         }
         const counter = ++this.cloneCounter[inputType];
 
-        clone.props.propertyName = inputType + (counter);
-        clone.props.jsonForms.uischema.label = inputType;
+        if(!this.schemaReadOnly) {
+          clone.props.propertyName = inputType + (counter);
+          clone.props.jsonForms.uischema.label = inputType;
+        }
       }
 
       return clone;

@@ -73,13 +73,14 @@ const newData = ref({});
 
 onMounted(() => {
   emitter.on('formBuilderSchemaUpdated', (jsonForms) => {
-    jsonFormsSchema.value = jsonForms.schema;
-    jsonFormsUiSchema.value = jsonForms.uischema;
+    console.log("FormBuilderBarDetails emitter.on formBuilderSchemaUpdated")
+    jsonFormsSchema.value = jsonForms?.schema;
+    jsonFormsUiSchema.value = jsonForms?.uischema;
   });
 });
-onBeforeUnmount(() => {
-  emitter.off('formBuilderSchemaUpdated');
-})
+// onBeforeUnmount(() => {
+//   emitter.off('formBuilderSchemaUpdated');
+// })
 
 const ajv = createAjv();//is needed because reactive :schema & :uischema will throw error
 

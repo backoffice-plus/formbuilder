@@ -194,7 +194,7 @@ export const uischema = {
                                         "effect": "ENABLE",
                                         "condition": {
                                              "scope": "#/properties/type",
-                                            // "schema": { enum: ["string"] }
+                                             "schema": { const: "string" }
                                         }
                                     }
                                 },

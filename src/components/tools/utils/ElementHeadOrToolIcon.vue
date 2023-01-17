@@ -138,6 +138,10 @@ const name = computed(() => {
     return '';
   }
 
+  if(tool.props.schemaReadOnly) {
+    return tool.props.propertyName;
+  }
+
   if(props.isToolbar) {
     return toolProps?.toolName ?? toolProps?.toolType
   }

@@ -42,14 +42,20 @@ import {
   createI18nTranslate,
   normalizeModalOptions, emitter
 } from "../index";
+
 import {jsonForms as jsonFormsOption} from "../schema/formBuilderControlOptions";
 import {jsonForms as jsonFormsLabel} from "../schema/formBuilderOptionsLabel";
 import {jsonForms as jsonFormsLabelElement} from "../schema/toolOptionsLabel";
 import {computed, onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
+import lodashSet from 'lodash.set';
 
-const props = defineProps(['tool', 'data']);
+const props = defineProps({
+  tool: Object,
+  data: Object,
+  schemaReadOnly: Boolean,
+})
 const emit = defineEmits(['change']);
 
 const ajv = createAjv();//is needed because reactive :schema & :uischema will throw error
@@ -65,6 +71,13 @@ onMounted(() => {
 const getJsonForms = () => {
   switch (props.tool.props.jsonForms.uischema.type) {
     case 'Control':
+      if(props.schemaReadOnly) {
+
+        // :TODO should be solved with uischemaRules
+        const readOnlyOptions = ['propertyName', 'type', 'format'];
+        readOnlyOptions.forEach(name => lodashSet(jsonFormsOption,'schema.properties.'+ name +'.readOnly', true));
+      }
+
       return jsonFormsOption
 
     case 'Label':

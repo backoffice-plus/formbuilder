@@ -13,8 +13,8 @@ import type {
     JsonFormsSchema,
     JsonFormsUISchema,
 } from "./models";
-import type {SchemaBasedCondition} from "@jsonforms/core/src/models/uischema";
-import type {Rule} from "@jsonforms/core";
+import type {ControlElement, Layout, SchemaBasedCondition, Scopable, Scoped} from "@jsonforms/core/src/models/uischema";
+import type {Rule, UISchemaElement} from "@jsonforms/core";
 
 export const isScope = (scope:string) : boolean => {
     return scope.startsWith('#/properties/')
@@ -83,7 +83,7 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
                 const propertyPath = normalizeScope(itemUischema.scope);
                 const itemSchema = lodashGet(jsonFromSchema, propertyPath);
 
-                let tool = findControlTool(itemSchema, itemUischema);
+                let tool = findControlTool(itemSchema, itemUischema).clone(itemSchema, itemUischema);
 
                 if(tool) {
                     tool.props.propertyName = normalizePath(propertyPath);
@@ -104,14 +104,14 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
     return pushableElements;
 };
 
-export const createJsonForms = (rootForm:any) : JsonForms => {
+export const createJsonForms = (rootForm:any, schemaReadOnly:JsonFormsSchema|undefined = undefined) : JsonForms => {
     const schema = {
         type: 'object',
         properties: {},
     } as JsonFormsSchema;
 
     return new JsonForms(
-        schema,
+        schemaReadOnly ? schemaReadOnly : schema,
         createJsonUiSchema(rootForm, schema)
     );
 }
@@ -130,6 +130,7 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
     const itemSchema = jsonForms.schema as JsonFormsSchema;
     const uischema = jsonForms.uischema as JsonFormsUISchema;
 
+    console.log("createJsonUiSchema", uischema)
     switch (uischema.type) {
         case 'Control':
             const propName = toolProps?.propertyName ?? "UNKNOWN";
@@ -259,6 +260,48 @@ export const createI18nTranslate = (localeCatalogue:Record<string, string>) => {
     };
 }
 
+export const findAllProperties = (schema: JsonFormsSchema, rootPath = "") : Record<string, JsonFormsSchema> => {
+    let all = {} as Record<string, JsonFormsSchema>
+
+    schema?.properties && Object.keys(schema.properties ?? {}).map(name => {
+        const path = (rootPath ? rootPath+'.' : '') + name;
+        if(schema.properties && schema?.properties[name]) {
+            if('object' === schema?.properties[name]?.type) {
+                all = {...all,...findAllProperties(schema.properties[name], path)}
+            }
+            else {
+                all[path] = schema?.properties[name];
+            }
+        }
+    });
+
+    return all;
+}
+
+
+export const findAllScopes = (uischema:ControlElement|Layout|UISchemaElement) : Array<string> => {
+
+    const scopes = [] as Array<string>;
+
+    switch (uischema.type) {
+        case 'Control':
+            if ("scope" in uischema) {
+                scopes.push(uischema.scope);
+            }
+            break;
+
+        default:
+            if ("elements" in uischema) {
+                uischema.elements.forEach((elm: UISchemaElement) => scopes.push(...findAllScopes(elm)));
+            }
+            break;
+    }
+
+    return scopes;
+};
+
+
+
 export const  findLayoutTool = (schema:JsonFormsSchema|undefined = undefined, itemUischema: JsonFormsUISchema) : Tool|undefined => {
     return [...layoutTools,...[tools.tab]]
         .find(comp => {
@@ -307,7 +350,7 @@ export const findControlTool = (itemSchema:any, itemUischema:any) : Tool => {
         throw "unknown tool";
     }
 
-    return controlTools[sorted[0][0]]?.clone(itemSchema, itemUischema);
+    return controlTools[sorted[0][0]];//?.clone(itemSchema, itemUischema);
 };
 
 
