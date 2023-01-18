@@ -227,6 +227,7 @@ export const uischema = {
                                                 {
                                                     "scope": "#/properties/format",
                                                     "type": "LEAF",
+                                                    /* @ts-ignore */
                                                     "expectedValue": undefined,
                                                 }
                                             ]
