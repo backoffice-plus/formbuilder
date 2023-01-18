@@ -69,7 +69,7 @@ const jsonFormsUpdated = ref({});
 onMounted(() => {
   jsonFormsSchema.value = props.jsonForms?.schema;
   jsonFormsUiSchema.value = props.jsonForms?.uischema;
-  jsonFormsData.value = props.jsonForms?.data;
+  jsonFormsData.value = props.jsonForms?.data ?? {};
 
   emitter.on('formBuilderSchemaUpdated', (jsonForms) => {
     jsonFormsSchema.value = jsonForms?.schema;
