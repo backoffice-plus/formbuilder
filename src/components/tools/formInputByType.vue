@@ -10,7 +10,7 @@
       <div>
 
         <template v-if="'select' === data.inputType">
-          <select class="w-full">
+          <select>
             <option v-for="item in data.enum" v-if="data.enum">{{ item }}</option>
             <option v-for="item in data.oneOf" v-else-if="data.oneOf">{{ item }}</option>
           </select>
@@ -26,12 +26,12 @@
 <!--        </template>-->
 
         <template v-else-if="'textarea' === data.inputType">
-          <textarea class="w-full"></textarea>
+          <textarea></textarea>
         </template>
 
         <template v-else>
-          <input class="w-full" :type="'number'" v-if="'number' === data.inputType" :step="data.type==='integer' ? 1 : 0.1" />
-          <input class="w-full" :type="data.inputType" v-else />
+          <input :type="'number'" v-if="'number' === data.inputType" :step="data.type==='integer' ? 1 : 0.1" />
+          <input :type="data.inputType" v-else />
         </template>
 
         <div>{{ data.description }}</div>
@@ -46,6 +46,12 @@
 
 
 <style scoped>
+input:not([type="checkbox"]),
+textarea,
+select {
+  @apply
+  w-full
+}
 .formInputByTypeTool {
   @apply
   relative
