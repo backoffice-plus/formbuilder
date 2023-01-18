@@ -13,7 +13,7 @@ import type {
     JsonFormsSchema,
     JsonFormsUISchema,
 } from "./models";
-import type {ControlElement, Layout, SchemaBasedCondition, Scopable, Scoped} from "@jsonforms/core/src/models/uischema";
+import type {ControlElement, Layout, SchemaBasedCondition} from "@jsonforms/core/src/models/uischema";
 import type {Rule, UISchemaElement} from "@jsonforms/core";
 
 export const isScope = (scope:string) : boolean => {
