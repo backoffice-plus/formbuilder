@@ -25,18 +25,18 @@
                 :class="'styleA'"
                 :schema="jsonFormsSchema"
                 :uischema="jsonFormsUiSchema"
-                :data="{}"
+                :data="jsonFormsData"
                 :renderers="jsonFormRenderes"
                 :ajv="ajv"
                 :i18n="{translate: createI18nTranslate(localeCatalogue)}"
                 v-if="jsonFormsSchema && jsonFormsUiSchema"
-                @change="data => newData=data"
+                @change="r => jsonFormsUpdated=r"
             />
         </div>
       </ResizeArea>
 
       Data
-      <textarea class="w-full h-60 p-4 bg-white rounded" readonly disabled>{{ newData?.data }}</textarea>
+      <textarea class="w-full h-60 p-4 bg-white rounded" readonly disabled>{{ jsonFormsUpdated?.data }}</textarea>
 
     </details>
 
@@ -58,20 +58,19 @@ import {ResizeArea,  SchemaCode, jsonFormRenderes, emitter, createI18nTranslate}
 import {translationsErrors as localeCatalogue} from "../translations/de";
 
 const props = defineProps({
-  data: Object
+  jsonForms: Object
 })
 
-const jsonFormsUiSchema = ref({});
 const jsonFormsSchema = ref({});
-const newData = ref({});
-
-// const updateEditor = () => {
-//   tool.props.jsonForms.schema = jsonFormsSchema.value;
-//   tool.props.jsonForms.uischema = jsonFormsUiSchema.value;
-//   rootForm.value.init();
-// }
+const jsonFormsUiSchema = ref({});
+const jsonFormsData = ref({});
+const jsonFormsUpdated = ref({});
 
 onMounted(() => {
+  jsonFormsSchema.value = props.jsonForms?.schema;
+  jsonFormsUiSchema.value = props.jsonForms?.uischema;
+  jsonFormsData.value = props.jsonForms?.data;
+
   emitter.on('formBuilderSchemaUpdated', (jsonForms) => {
     console.log("FormBuilderBarDetails emitter.on formBuilderSchemaUpdated")
     jsonFormsSchema.value = jsonForms?.schema;

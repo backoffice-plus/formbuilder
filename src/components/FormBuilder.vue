@@ -67,11 +67,20 @@ import {
 } from "../index";
 
 const props = defineProps({
-  data: Object,
+  jsonForms: Object,
   schemaReadOnly: Boolean,
 })
 
 const emit = defineEmits(['schemaUpdated']);
+
+const tool = findLayoutTool(props?.jsonForms?.schema ?? {}, props?.jsonForms?.uischema ?? {type:'VerticalLayout'});
+if(!tool) {
+  throw "no tool was found";
+}
+
+const importComponent = (componentName) => {
+  return getComponent(componentName);
+};
 
 const rootForm = ref(null);
 const drag = ref(false);
@@ -81,7 +90,7 @@ const isModalOpen = ref(false);
 const toolEdit = ref(null);
 
 const baseTool = computed(() => {
-  const tool = findLayoutTool(props?.data?.schema ?? {}, (props.data?.uischema?.type && props.data.uischema) ?? {type:'VerticalLayout'});
+  const tool = findLayoutTool(props?.jsonForms?.schema ?? {}, (props.jsonForms?.uischema?.type && props.jsonForms.uischema) ?? {type:'VerticalLayout'});
   if(!tool) {
     throw "no tool was found";
   }

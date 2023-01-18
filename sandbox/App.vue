@@ -12,12 +12,12 @@
     </div>
 
       <FormBuilder
-          :data="data"
+          :jsonForms="jsonForms"
           :schemaReadOnly="schemaReadOnly"
           :key="example + (schemaReadOnly?1:0)"
       />
 
-      <FormBuilderDetails />
+      <FormBuilderDetails  :jsonForms="jsonForms" />
 
   </div>
 
@@ -31,7 +31,7 @@ import {computed, ref, watch} from "vue";
 
 const examples = Object.keys(exampleForms);
 const example = ref('');
-const data = computed(() => {
+const jsonForms = computed(() => {
   const jsonForms = exampleForms[example.value];
 
   if(schemaReadOnly.value && jsonForms?.uischema) {
