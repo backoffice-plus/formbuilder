@@ -181,40 +181,62 @@ export const uischema = {
                                     "type": "Control"
                                 },
                             ]
-                        },                        {
-                            "type": "HorizontalLayout",
+                        },
+
+                        {
+                            "type": "Group",
+                            "label": "Form Type",
                             "elements": [
                                 {
-                                   // "scope": "#/properties/schema/properties/type",
-                                    "scope": "#/properties/type",
-                                    "type": "Control"
+                                    "type": "HorizontalLayout",
+                                    "elements": [
+                                        {
+                                            "scope": "#/properties/type",
+                                            "type": "Control"
+                                        },
+                                        {
+                                            "scope": "#/properties/format",
+                                            "type": "Control",
+                                            "rule": {
+                                                "effect": "ENABLE",
+                                                "condition": {
+                                                    "scope": "#/properties/type",
+                                                    "schema": {
+                                                        "const": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
                                 },
                                 {
-                                    //"scope": "#/properties/schema/properties/format",
-                                    "scope": "#/properties/format",
+                                    "scope": "#/properties/options/properties/multi",
+                                    "label": "as Textarea",
                                     "type": "Control",
                                     "rule": {
-                                        "effect": "ENABLE",
+                                        "effect": "SHOW",
                                         "condition": {
-                                             "scope": "#/properties/type",
-                                             "schema": { const: "string" }
+                                            "type": "AND",
+                                            "conditions": [
+                                                {
+                                                    "scope": "#/properties/type",
+                                                    "schema": {
+                                                        "const": "string"
+                                                    }
+                                                },
+                                                {
+                                                    "scope": "#/properties/format",
+                                                    "type": "LEAF",
+                                                    "expectedValue": undefined,
+                                                }
+                                            ]
                                         }
                                     }
-                                },
+                                }
                             ]
                         },
-                        {
-                            scope: "#/properties/options/properties/multi",
-                            label: "as Textarea",
-                            type: "Control",
-                            rule: {
-                                effect: "ENABLE",
-                                condition: {
-                                    scope: "#/properties/type",
-                                    schema: { const: "string" }
-                                }
-                            }
-                        },
+
+
                         {
                             "scope": "#/properties/description",
                             "type": "Control"
