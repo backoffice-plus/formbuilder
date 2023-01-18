@@ -43,8 +43,8 @@ import {
   normalizeModalOptions, emitter
 } from "../index";
 
-import {jsonForms as jsonFormsOption} from "../schema/formBuilderControlOptions";
-import {jsonForms as jsonFormsLabel} from "../schema/formBuilderOptionsLabel";
+import {jsonForms as jsonFormsOption} from "../schema/toolOptionsControl";
+import {jsonForms as jsonFormsLabel} from "../schema/toolOptionsLabelProperty";
 import {jsonForms as jsonFormsLabelElement} from "../schema/toolOptionsLabel";
 import {computed, onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
