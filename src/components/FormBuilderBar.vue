@@ -104,7 +104,6 @@ export default defineComponent({
 
   mounted() {
     emitter.on('formBuilderSchemaUpdated', (jsonForms) => {
-      console.log("FormBuilderBar emitter.on formBuilderSchemaUpdated")
       this.usedProps = findAllScopes(jsonForms.uischema).map(scope=>normalizePath(normalizeScope(scope)))
     });
   },
@@ -129,7 +128,6 @@ export default defineComponent({
           return tool;
         }).filter(tool => !this.usedProps.includes(tool.props.propertyName))
 
-        console.log("FormBuilderBar","schemaReadOnly readOnlyControlTools",readOnlyControlTools)
         all = [...readOnlyControlTools, ...all]
       }
       else {

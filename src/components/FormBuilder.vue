@@ -98,7 +98,6 @@ const onChange = (data)=> {
       toolEdit.value.props.propertyName = data.propertyName;
     }
     toolEdit.value.props.jsonForms.update(denormalizeModalOptions(data));
-    console.log("FormBuilder onChange")
     updateJsonForm();
   }
   else {
@@ -128,7 +127,6 @@ onMounted(() => {
     toolEdit.value = data.tool;
   })
   emitter.on('formBuilderUpdated', (data) => {
-    console.log("FormBuilder emitter.on formBuilderUpdated")
     window.setTimeout(updateJsonForm,100);
   });
 });

@@ -72,7 +72,6 @@ onMounted(() => {
   jsonFormsData.value = props.jsonForms?.data;
 
   emitter.on('formBuilderSchemaUpdated', (jsonForms) => {
-    console.log("FormBuilderBarDetails emitter.on formBuilderSchemaUpdated")
     jsonFormsSchema.value = jsonForms?.schema;
     jsonFormsUiSchema.value = jsonForms?.uischema;
   });

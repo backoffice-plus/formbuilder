@@ -121,7 +121,6 @@ export class JsonForms {
 
         if(undefined !== data.rule) {
             if(undefined !== data.rule.condition) {
-                console.log("Update",data.rule);
                 this.uischema.rule = data.rule;
             }
         }

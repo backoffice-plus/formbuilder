@@ -130,7 +130,6 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
     const itemSchema = jsonForms.schema as JsonFormsSchema;
     const uischema = jsonForms.uischema as JsonFormsUISchema;
 
-    console.log("createJsonUiSchema", uischema)
     switch (uischema.type) {
         case 'Control':
             const propName = toolProps?.propertyName ?? "UNKNOWN";
@@ -252,7 +251,7 @@ export const createI18nTranslate = (localeCatalogue:Record<string, string>) => {
         let params = {};
 
         if(context?.error) {
-            console.log("translate error", {key, defaultMessage}, context.error);
+            //console.log("translate error", {key, defaultMessage}, context.error);
             params = {...params, ...context.error?.params};
         }
 
