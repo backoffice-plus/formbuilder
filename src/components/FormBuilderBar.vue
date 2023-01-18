@@ -26,7 +26,6 @@
 
 </template>
 
-
 <style scoped>
 
 aside {
@@ -36,9 +35,28 @@ aside {
   bg-gray-200
   rounded
   p-2
+
+  overflow-x-auto
+}
+
+aside::-webkit-scrollbar {
+  width: 4px;
+}
+aside::-webkit-scrollbar-track {
+  @apply bg-gray-200
+}
+aside::-webkit-scrollbar-thumb {
+  border-width: 6px;
+  @apply
+  rounded-full
+  border-solid border-gray-200
+  bg-gray-500
+  hover:bg-opacity-80
+  active:bg-opacity-50
 }
 
 aside .toolItem {
+  min-width: 80px;
   @apply
   cursor-move
 
