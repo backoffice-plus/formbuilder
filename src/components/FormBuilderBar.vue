@@ -83,8 +83,9 @@ import {
   findControlTool,
   emitter,
   findAllScopes,
-  normalizeScope, normalizePath
+  normalizeScope, normalizePath, ToolProps
 } from "../index";
+import {Tool} from "../lib/models";
 
 export default defineComponent({
   components: {draggableComponent},
@@ -121,9 +122,17 @@ export default defineComponent({
       if(this.schemaReadOnly) {
         const allProps = findAllProperties(this.schema);
         const readOnlyControlTools = Object.keys(allProps)?.map(name => {
-          const tool = findControlTool(allProps[name], {}).clone();
-          tool.props.propertyName = name;
-          tool.props.schemaReadOnly = true;
+
+          //const tool = findControlTool(allProps[name], {}).clone();
+          // tool.props.propertyName = name;
+          // tool.props.schemaReadOnly = true;
+          const tool = new Tool('formInputByType', ToolProps.create({
+            propertyName: name,
+            toolType: 'control',
+            toolName: 'Control',
+            schemaReadOnly: true,
+            jsonForms: {schema:allProps[name], uischema:{type:'Control'}}
+          }));
 
           return tool;
         }).filter(tool => !this.usedProps.includes(tool.props.propertyName))
