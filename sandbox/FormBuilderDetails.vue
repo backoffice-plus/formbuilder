@@ -54,7 +54,8 @@ import { ref } from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv} from "@jsonforms/core";
-import {SchemaCode, jsonFormRenderes, emitter, createI18nTranslate} from "../src/index";
+import {jsonFormRenderes, emitter, createI18nTranslate} from "../src/index";
+import SchemaCode from './SchemaCode.vue'
 import ResizeArea from "./ResizeArea.vue";
 import {translationsErrors as localeCatalogue} from "../src/translations/de";
 

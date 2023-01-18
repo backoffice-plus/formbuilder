@@ -35,8 +35,7 @@
 
 
 <script setup>
-import {computed, ref} from 'vue'
-import { onMounted, onBeforeUnmount } from 'vue'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import {
   FormBuilderBar,
   createJsonForms, findLayoutTool, getComponent,
@@ -51,10 +50,6 @@ const props = defineProps({
 
 const emit = defineEmits(['schemaUpdated']);
 
-const importComponent = (componentName) => {
-  return getComponent(componentName);
-};
-
 const rootForm = ref(null);
 const drag = ref(false);
 const jsonFormsUiSchema = ref({});
@@ -63,24 +58,19 @@ const isModalOpen = ref(false);
 const toolEdit = ref(null);
 
 const baseTool = computed(() => {
-  const tool = findLayoutTool(props?.jsonForms?.schema ?? {}, (props.jsonForms?.uischema?.type && props.jsonForms.uischema) ?? {type:'VerticalLayout'});
-  if(!tool) {
-    throw "no tool was found";
-  }
-  return tool;
+  return findLayoutTool(
+      props?.jsonForms?.schema ?? {},
+      (props.jsonForms?.uischema?.type && props.jsonForms.uischema) ?? {type:'VerticalLayout'}
+  );
 })
 
-const onChange = (data)=> {
-  console.log("formbuilder", "onchange", data);
+const onChange = (data) => {
   if(toolEdit.value) {
     if(data.propertyName) {
       toolEdit.value.props.propertyName = data.propertyName;
     }
     toolEdit.value.props.jsonForms.update(denormalizeModalOptions(data));
     updateJsonForm();
-  }
-  else {
-    console.warn("formBuilder", "onChange","toolEdit is null");
   }
 }
 
@@ -95,8 +85,6 @@ const updateJsonForm = () => {
   emit('schemaUpdated', jsonForms)
   emitter.emit('formBuilderSchemaUpdated', jsonForms)
 }
-
-
 
 onMounted(() => {
   window.setTimeout(() => emitter.emit('formBuilderUpdated'),50);

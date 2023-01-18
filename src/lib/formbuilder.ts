@@ -301,11 +301,14 @@ export const findAllScopes = (uischema:ControlElement|Layout|UISchemaElement) : 
 
 
 
-export const  findLayoutTool = (schema:JsonFormsSchema|undefined = undefined, itemUischema: JsonFormsUISchema) : Tool|undefined => {
-    return [...layoutTools,...[tools.tab]]
-        .find(comp => {
-            return comp.props.jsonForms.uischema.type === itemUischema.type;
-        })?.clone(schema, itemUischema);
+export const  findLayoutTool = (schema:JsonFormsSchema|undefined = undefined, itemUischema: JsonFormsUISchema) : Tool => {
+    const tool = [...layoutTools, ...[tools.tab]].find(comp => comp.props.jsonForms.uischema.type === itemUischema.type)
+
+    if(!tool) {
+        throw "No tool was found.";
+    }
+
+    return tool.clone(schema, itemUischema);
 }
 
 export const findControlTool = (itemSchema:any, itemUischema:any) : Tool => {
