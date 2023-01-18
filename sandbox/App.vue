@@ -25,9 +25,10 @@
 
 <script setup lang="ts">
 
-import {emitter, FormBuilder, FormBuilderDetails} from "../src/index.ts";
+import {FormBuilder} from "../src/index.ts";
+import FormBuilderDetails from "./FormBuilderDetails.vue";
 import exampleForms from "./jsonForms";
-import {computed, ref, watch} from "vue";
+import {computed, ref} from "vue";
 
 const examples = Object.keys(exampleForms);
 const example = ref('');

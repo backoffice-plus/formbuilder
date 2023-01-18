@@ -2,19 +2,31 @@
   @apply bg-transparent;
 
 }
-.styleA label,
-.styleA label.label {
-    @apply
-    uppercase tracking-wide text-gray-400 text-xs font-bold
 
-    pb-4
+.styleA label,
+.styleA label.label,
+.styleA label.label-element {
+    @apply
+    tracking-wide text-gray-700 text-sm
 
     transition-colors
 }
 
+.styleA label,
+.styleA label.label {
+    @apply
+    pb-4
+}
+.styleA label.label-element {
+    @apply block
+    pb-2 mt-2
+    text-base
+}
+
+
 .styleA .control:focus-within label,
 .styleA .control:focus-within label.label {
-    @apply text-sky-600
+    @apply text-gray-600
 }
 
 /*
@@ -37,18 +49,20 @@
     @apply
     block
     w-full
-    py-1 px-3
+    py-0.5 px-2
 
     bg-gray-100
     disabled:bg-gray-200
-    rounded
+    bg-opacity-50 focus:bg-opacity-100
+
+    rounded-sm
 
     text-base
     text-gray-700
-    leading-8
+    leading-6
 
     border border-gray-300
-    focus:border-sky-500
+    focus:border-gray-500
     transition-colors
 
     outline-none  appearance-none
@@ -58,7 +72,7 @@
 .styleA select
 {
     appearance:auto;
-    @apply p-2
+    @apply p-0.5
 }
 
 
@@ -67,7 +81,7 @@
      @apply p-0 m-0
 }
 .styleA input:where([type="checkbox"], [type="radio"]) {
-    @apply p-2 m-2
+    @apply p-2 m-2 pl-0 ml-0
 }
 .styleA input:where([type="range"]) {
     appearance: auto;
@@ -103,7 +117,7 @@
 .styleA .vertical-layout,
 .styleA.vertical-layout   /** root **/
 {
-    @apply gap-3
+    @apply gap-2
 }
 
 
@@ -134,12 +148,6 @@ fieldset.styleA.group .group-item {
 
 
 
-.styleA label.label-element {
-    @apply block mt-3
-
-    uppercase tracking-wide
-    text-sm text-gray-400 font-bold;
-}
 
 
 .styleA .control .description,
@@ -261,13 +269,13 @@ fieldset.styleA.group .group-item {
 
     rounded-t-lg
 
-    hover:bg-sky-400
+    hover:bg-gray-400
     hover:bg-opacity-10
-    hover:text-sky-800
+    hover:text-gray-800
 }
 
 .styleA .tabs button.selected {
     @apply
-    text-sky-800
-    border-sky-800
+    text-gray-800
+    border-gray-800
 }

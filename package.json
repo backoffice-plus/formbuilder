@@ -16,9 +16,6 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/types": "^7.20.7",
-    "@types/lodash.set": "^4.3.7",
-    "@types/lodash.template": "^4.5.1",
-    "@types/lodash.topath": "^4.5.7",
     "@types/node": "^18.11.18",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/tsconfig": "^0.1.3",

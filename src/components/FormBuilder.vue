@@ -2,15 +2,14 @@
 
   <div class="">
 
-    <Dialog as="div" @close="isModalOpen=false;toolEdit=null" :open="isModalOpen" class="modal">
-      <div class="modalBg">
-        <div class="centerItem">
-          <DialogPanel class="panel" >
-              <OptionModal :tool="toolEdit" :schemaReadOnly="schemaReadOnly" @change="onChange" />
-          </DialogPanel>
-        </div>
-      </div>
-    </Dialog>
+    <Modal
+        :tool="toolEdit"
+        :schemaReadOnly="schemaReadOnly"
+        :open="isModalOpen"
+
+        @change="onChange"
+        @close="isModalOpen=false;toolEdit=null"
+    />
 
     <FormBuilderBar
         :jsonForms="schemaReadOnly ? props.jsonForms : {}"
@@ -31,40 +30,19 @@
 </template>
 
 <style scoped>
-.modal {
-  @apply
-  relative z-10
-}
-.modal > .modalBg {
-  @apply
-  fixed inset-0 overflow-y-auto
-  bg-black/30
-}
-.modal > .modalBg > .centerItem {
-  @apply
-  flex items-center justify-center
-  min-h-full
-}
-.modal > .modalBg > .centerItem .panel {
-  @apply
-  w-full max-w-md
 
-  overflow-hidden
-
-  bg-white rounded shadow
-}
 </style>
 
 
 <script setup>
 import {computed, ref} from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
-import {Dialog ,  DialogPanel} from '@headlessui/vue';
 import {
-  FormBuilderBar, OptionModal,
+  FormBuilderBar,
   createJsonForms, findLayoutTool, getComponent,
   emitter, denormalizeModalOptions,
 } from "../index";
+import Modal from "./Modal.vue";
 
 const props = defineProps({
   jsonForms: Object,
@@ -93,6 +71,7 @@ const baseTool = computed(() => {
 })
 
 const onChange = (data)=> {
+  console.log("formbuilder", "onchange", data);
   if(toolEdit.value) {
     if(data.propertyName) {
       toolEdit.value.props.propertyName = data.propertyName;

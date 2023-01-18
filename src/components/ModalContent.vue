@@ -100,7 +100,7 @@ const getJsonForms = () => {
 const onChange = (e) => {
 
   if(e.errors.length) {
-    console.warn("OptionModal", "errors at onChange", e.errors, e.data);
+    console.warn("ModalOption", "errors at onChange", e.errors, e.data);
   }
   else {
     //const data = {...e.data};//:TODO deep copy

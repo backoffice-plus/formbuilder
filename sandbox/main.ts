@@ -1,6 +1,6 @@
 import { createApp } from 'vue'
-import '../src/tailwind.css'
-import './form.stylea.css'
+import '../src/css/tailwind.css'
+import '../src/css/form.stylea.css'
 
 //@ts-ignore
 import App from './App.vue'

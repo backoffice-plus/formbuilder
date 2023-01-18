@@ -54,8 +54,9 @@ import { ref } from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv} from "@jsonforms/core";
-import {ResizeArea,  SchemaCode, jsonFormRenderes, emitter, createI18nTranslate} from "../index";
-import {translationsErrors as localeCatalogue} from "../translations/de";
+import {SchemaCode, jsonFormRenderes, emitter, createI18nTranslate} from "../src/index";
+import ResizeArea from "./ResizeArea.vue";
+import {translationsErrors as localeCatalogue} from "../src/translations/de";
 
 const props = defineProps({
   jsonForms: Object

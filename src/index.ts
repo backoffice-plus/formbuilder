@@ -10,11 +10,8 @@ export {ToolProps, updatableUischemaKeys, updatableSchemaKeys} from "./lib/model
 
 
 //components
-export { default as ResizeArea } from './components/ResizeArea.vue';
 export { default as FormBuilder } from './components/FormBuilder.vue';
 export { default as FormBuilderBar } from './components/FormBuilderBar.vue';
-export { default as FormBuilderDetails } from './components/FormBuilderDetails.vue';
-export { default as OptionModal } from './components/OptionModal.vue';
 export { default as SchemaCode } from './components/SchemaCode.vue'
 export { default as FlexArea } from './components/tools/flexArea.vue'
 
