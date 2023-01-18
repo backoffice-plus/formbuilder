@@ -13,7 +13,7 @@
     </Dialog>
 
     <FormBuilderBar
-        :jsonForms="schemaReadOnly ? props.data : {}"
+        :jsonForms="schemaReadOnly ? props.jsonForms : {}"
         :schemaReadOnly="!!schemaReadOnly"
         @drag="e=>drag = !!e"
     />
@@ -73,11 +73,6 @@ const props = defineProps({
 
 const emit = defineEmits(['schemaUpdated']);
 
-const tool = findLayoutTool(props?.jsonForms?.schema ?? {}, props?.jsonForms?.uischema ?? {type:'VerticalLayout'});
-if(!tool) {
-  throw "no tool was found";
-}
-
 const importComponent = (componentName) => {
   return getComponent(componentName);
 };
@@ -115,7 +110,7 @@ const updateJsonForm = () => {
   if(!rootForm?.value) {
     return;
   }
-  const jsonForms = createJsonForms(rootForm, props.schemaReadOnly ? props.data?.schema : undefined);
+  const jsonForms = createJsonForms(rootForm, props.schemaReadOnly ? props.jsonForms?.schema : undefined);
   jsonFormsSchema.value = jsonForms.schema;
   jsonFormsUiSchema.value = jsonForms.uischema;
 
@@ -126,7 +121,6 @@ const updateJsonForm = () => {
 
 
 onMounted(() => {
-  console.log("FormBuilder onMounted");
   window.setTimeout(() => emitter.emit('formBuilderUpdated'),50);
 
   emitter.on('formBuilderModal', (data) => {

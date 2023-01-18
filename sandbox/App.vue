@@ -31,15 +31,17 @@ import {computed, ref, watch} from "vue";
 
 const examples = Object.keys(exampleForms);
 const example = ref('');
-const jsonForms = computed(() => {
-  const jsonForms = exampleForms[example.value];
-
-  if(schemaReadOnly.value && jsonForms?.uischema) {
-    jsonForms.uischema = {};
-  }
-  return jsonForms
-});
 const schemaReadOnly = ref(false);
+
+const jsonForms = computed(() => {
+  const exampleData = {...exampleForms[example.value]};
+
+  if(exampleData?.uischema && schemaReadOnly.value) {
+    exampleData.uischema = {};
+  }
+
+  return exampleData
+});
 
 </script>
 
