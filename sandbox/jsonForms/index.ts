@@ -8,7 +8,7 @@ import group from "./group";
 import tabInTabs from "./tabs_in_tabs";
 import rule from "./rule";
 import _default from "./default";
-import {jsonForms as formBuilderControlOptions} from "../../src/schema/formBuilderControlOptions";
+import {jsonForms as formBuilderControlOptions} from "../../src/schema/toolOptionsControl";
 
 export default {
   default:_default,
