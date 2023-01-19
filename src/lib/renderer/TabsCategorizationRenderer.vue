@@ -1,15 +1,15 @@
 <template>
-  <div>
 
-    <TabGroup  as="template">
+  <!--  :class="styles.categorization.root" -->
+  <div class="categorization">
 
-      <TabList class="tabs">
+    <!--  :class="styles.categorization.category" -->
+    <div class="tabs">
 
-        <Tab
+        <div
             v-for="(element, index) in visibleCategories"
-            as="div"
             :key="`tab-${index}`"
-            v-slot="{ selected }"
+            @click="selected=index"
         >
           <!--
           :TODO add translation
@@ -17,15 +17,18 @@
   "label": "categoryLabelKey",
   "i18n": "address",
           -->
-          <button :class="{selected:selected}">   {{ element.i18n ?? element.label }}</button>
 
-        </Tab>
+          <!--  :class="styles.categorization.selected" -->
+          <button :class="{selected:selected===index}">   {{ element.i18n ?? element.label }}</button>
 
-      </TabList>
+        </div>
 
-      <TabPanels>
+      </div>
 
-        <TabPanel
+      <!--  :class="styles.categorization.panel" -->
+      <div class="panel">
+
+        <template
             v-for="(element, index) in visibleCategories"
             :key="`panel-${index}`"
         >
@@ -36,15 +39,17 @@
               :enabled="layout.enabled"
               :renderers="layout.renderers"
               :cells="layout.cells"
+              v-if="selected===index"
           />
 
-        </TabPanel>
-      </TabPanels>
-    </TabGroup>
+        </template>
+
+      </div>
 
   </div>
 
 </template>
+
 
 <script lang="ts">
 import {
@@ -55,21 +60,17 @@ import {
 import type {
   JsonFormsRendererRegistryEntry, Layout, Category, Categorization
 } from '@jsonforms/core';
-import { defineComponent } from 'vue';
+import {defineComponent, ref} from 'vue';
 import { rendererProps, useJsonFormsLayout, DispatchRenderer } from '@jsonforms/vue';
 import type { RendererProps } from '@jsonforms/vue';
 import { useVanillaLayout } from '@jsonforms/vue-vanilla/src/util';
 import { uiTypeIs} from "@jsonforms/core/src/testers/testers";
 
-import {TabGroup, TabList, Tab, TabPanels, TabPanel} from '@headlessui/vue'
 
 const controlRenderer = defineComponent({
   name: 'tabs-categorization-renderer',
   methods: {isVisible},
-  components: {
-    DispatchRenderer,
-    TabGroup, TabList, Tab, TabPanels, TabPanel
-  },
+  components: {DispatchRenderer},
   props: {
     ...rendererProps<Layout>()
   },
@@ -79,11 +80,14 @@ const controlRenderer = defineComponent({
    */
   setup(props: RendererProps<Layout>) {
 
-     const ajv = createAjv();
+    const selected = ref(0);
+
+    const ajv = createAjv();
 
     return {
       ...useVanillaLayout(useJsonFormsLayout(props)),
-      ajv
+      ajv,
+      selected
     };
   },
   computed: {

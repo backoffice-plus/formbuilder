@@ -1,14 +1,14 @@
 <template>
 
-  <Dialog as="div" @close="emit('close')" :open="isModalOpen" class="modal">
+  <div v-if="open" class="modal">
     <div class="modalBg">
       <div class="centerItem">
-        <DialogPanel class="panel">
-          <ModalContent :tool="tool" :schemaReadOnly="schemaReadOnly" @change="data=>emit('change', data)"/>
-        </DialogPanel>
+        <div class="panel">
+          <ModalContent :tool="tool" :schemaReadOnly="schemaReadOnly" @change="data=>emit('change', data)" ref="modal"/>
+        </div>
       </div>
     </div>
-  </Dialog>
+  </div>
 
 </template>
 
@@ -42,16 +42,26 @@
 
 
 <script setup>
-import {Dialog, DialogPanel} from '@headlessui/vue';
 import ModalContent from "./ModalContent.vue";
+import {onClickOutside, onKeyStroke} from "@vueuse/core";
+import {ref} from "vue";
 
 const props = defineProps({
   tool: Object,
   schemaReadOnly: Boolean,
-  isModalOpen: Boolean,
+  open: Boolean,
 })
 
 const emit = defineEmits(['close', 'change']);
+
+const modal = ref(null)
+onClickOutside(modal, (event) => {
+  emit('close')
+})
+onKeyStroke('Escape', (e) => {
+  e.preventDefault()
+  emit('close')
+})
 
 </script>
 
