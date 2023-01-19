@@ -1,6 +1,6 @@
 <template>
 
-  <div v-if="open" class="modal">
+  <div class="modal">
     <div class="modalBg">
       <div class="centerItem">
         <div class="panel">
@@ -40,16 +40,20 @@
 }
 </style>
 
+<style>
+.fixBody {
+  @apply h-screen overflow-y-hidden pr-4
+}
+</style>
 
 <script setup>
 import ModalContent from "./ModalContent.vue";
 import {onClickOutside, onKeyStroke} from "@vueuse/core";
-import {ref} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 
 const props = defineProps({
   tool: Object,
-  schemaReadOnly: Boolean,
-  open: Boolean,
+  schemaReadOnly: Boolean
 })
 
 const emit = defineEmits(['close', 'change']);
@@ -62,6 +66,11 @@ onKeyStroke('Escape', (e) => {
   e.preventDefault()
   emit('close')
 })
-
+onMounted(() => {
+  document.body.classList.add('fixBody')
+})
+onUnmounted(() => {
+  document.body.classList.remove('fixBody')
+})
 </script>
 

@@ -33,13 +33,6 @@
 </style>
 
 
-<style>
-body {
-  height: 100vh;
-  overflow-y: hidden;
-  padding-right: 15px; /* Avoid width reflow */
-}
-</style>
 
 <script setup>
 

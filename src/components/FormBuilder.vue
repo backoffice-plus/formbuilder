@@ -5,10 +5,11 @@
     <Modal
         :tool="toolEdit"
         :schemaReadOnly="schemaReadOnly"
-        :open="isModalOpen"
 
         @change="onChange"
         @close="isModalOpen=false;toolEdit=null"
+
+        v-if="isModalOpen && toolEdit"
     />
 
     <FormBuilderBar
