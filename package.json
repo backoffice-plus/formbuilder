@@ -1,16 +1,15 @@
 {
   "name": "@backoffice-plus/formbuilder",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "dist/formbuilder.umd.js",
   "module": "dist/formbuilder.es.js",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run build:types",
+    "build": "patch-package && vite build && npm run build:types",
     "build:types": "vue-tsc --project tsconfig.types.json --declaration --emitDeclarationOnly --skipLibCheck --outDir dist/types ",
     "typecheck": "vue-tsc --project tsconfig.types.json --noEmit --skipLibCheck",
-    "test": "vitest",
-    "postinstall": "patch-package"
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
