@@ -50,7 +50,7 @@
 
 
 <script setup>
-import { ref } from 'vue'
+import { ref, watch} from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv} from "@jsonforms/core";
@@ -67,6 +67,13 @@ const jsonFormsSchema = ref({});
 const jsonFormsUiSchema = ref({});
 const jsonFormsData = ref({});
 const jsonFormsUpdated = ref({});
+
+watch(props,() => {
+   jsonFormsSchema.value = props.jsonForms?.schema;
+   jsonFormsUiSchema.value = props.jsonForms?.uischema;
+   jsonFormsData.value = props.jsonForms?.data ?? {};
+})
+
 
 onMounted(() => {
   jsonFormsSchema.value = props.jsonForms?.schema;

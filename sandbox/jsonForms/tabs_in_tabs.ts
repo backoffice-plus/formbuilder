@@ -1,3 +1,6 @@
+import {registerExamples} from "@jsonforms/examples/src/register";
+import {data} from "./default";
+
 const schema = {
   "properties": {
     "checkbox1": {
@@ -89,5 +92,12 @@ const uischema = {
     }
   ]
 }
-
-export default {schema:schema,uischema:uischema,data: {}};
+registerExamples([
+  {
+    name: 'tabsInTabs',
+    label: 'FormBuilder - Tabs in Tabs //:TODO - remove to own package',
+    data,
+    schema,
+    uischema
+  }
+]);

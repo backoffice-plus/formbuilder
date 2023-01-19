@@ -3,11 +3,12 @@
   <div class="container max-w-screen-lg mx-auto p-4 flex flex-col gap-4">
 
     <div>
+      Disable Formbuilder: <input type="checkbox" v-model="disableFormbuilder" /><br>
       Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" /><br>
       Select Example:
       <select v-model="example" class="inline" >
         <option></option>
-        <option v-for="name in examples">{{name}}</option>
+        <option v-for="name in examples">{{name.label}}</option>
       </select>
     </div>
 
@@ -15,9 +16,10 @@
           :jsonForms="jsonForms"
           :schemaReadOnly="schemaReadOnly"
           :key="example + (schemaReadOnly?1:0)"
+          v-if="!disableFormbuilder"
       />
 
-      <FormBuilderDetails  :jsonForms="jsonForms" />
+      <FormBuilderDetails  :jsonForms="jsonForms" :key="(disableFormbuilder?1:0)" />
 
   </div>
 
@@ -27,15 +29,19 @@
 
 import {FormBuilder} from "../src/index.ts";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
-import exampleForms from "./jsonForms";
 import {computed, ref} from "vue";
+import * as ownExamples from "./jsonForms/index";
+import {getExamples} from '@jsonforms/examples/src'
 
-const examples = Object.keys(exampleForms);
+const oe = ownExamples;//import own examples
+
+const examples = computed(() => getExamples());
 const example = ref('');
 const schemaReadOnly = ref(false);
+const disableFormbuilder = ref(false);
 
 const jsonForms = computed(() => {
-  const exampleData = {...exampleForms[example.value]};
+  const exampleData = getExamples().find(item => item.label===example.value);
 
   if(exampleData?.uischema && schemaReadOnly.value) {
     exampleData.uischema = {};
