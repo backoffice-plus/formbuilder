@@ -56,7 +56,7 @@ import {jsonForms as jsonFormsLabelElement} from "../schema/toolOptionsLabel";
 import {computed, onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
-import lodashSet from 'lodash.set';
+import lodashSet from 'lodash/set';
 
 const props = defineProps({
   tool: Object,

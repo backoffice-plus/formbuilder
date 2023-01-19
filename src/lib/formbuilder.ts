@@ -1,8 +1,8 @@
 // @ts-ignore
-import lodashGet from 'lodash.get';
-import lodashSet from 'lodash.set';
-import lodashTemplate from 'lodash.template';
-import lodashToPath from 'lodash.topath';
+import lodashGet from 'lodash/get';
+import lodashSet from 'lodash/set';
+import lodashTemplate from 'lodash/template';
+import lodashToPath from 'lodash/topath';
 //const lodashGet = require('lodash/get');
 import {
     JsonForms,
