@@ -23,6 +23,7 @@ import {entry as allOfRenderera} from "../packages/boplus-vue-vanilla/src/compon
 import {entry as anyOfRenderer} from "../packages/boplus-vue-vanilla/src/components/AnyOfRenderer.vue";
 import {entry as objectRenderer} from "../packages/boplus-vue-vanilla/src/components/ObjectRenderer.vue";
 import {entry as arrayControlRenderer} from "../packages/boplus-vue-vanilla/src/components/ArrayControlRenderer.vue";
+import {entry as enumArrayRenderer} from "../packages/boplus-vue-vanilla/src/components/EnumArrayRenderer.vue";
 export const jsonFormRenderes = Object.freeze([
     ...vanillaRenderers,
     tabsCategorizationRenderer,
@@ -31,6 +32,7 @@ export const jsonFormRenderes = Object.freeze([
     anyOfRenderer,
     objectRenderer,
     arrayControlRenderer,
+    enumArrayRenderer,
 ]);
 
 import mitt from 'mitt'
