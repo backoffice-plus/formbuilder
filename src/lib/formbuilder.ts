@@ -1,9 +1,5 @@
 // @ts-ignore
-import lodashGet from 'lodash/get';
-import lodashSet from 'lodash/set';
-import lodashTemplate from 'lodash/template';
-import lodashToPath from 'lodash/topath';
-//const lodashGet = require('lodash/get');
+import _ from "lodash";
 import {
     JsonForms,
     Tool,
@@ -60,7 +56,7 @@ export const denormalizeScope = (path:string) : string => {
 export const getAllSubpaths = (prop:string, startIndex:number=0) => {
     const allParts:Array<string> = [];
 
-    return lodashToPath(prop)
+    return _.toPath(prop)
         .map((part:string) => {
             allParts.push(part);
             return allParts.join('.')
@@ -81,7 +77,7 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
         switch (itemUischema.type) {
             case 'Control':
                 const propertyPath = normalizeScope(itemUischema.scope);
-                const itemSchema = lodashGet(jsonFromSchema, propertyPath);
+                const itemSchema = _.get(jsonFromSchema, propertyPath);
 
                 let tool = findControlTool(itemSchema, itemUischema).clone(itemSchema, itemUischema);
 
@@ -152,13 +148,13 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
              */
             getAllSubpaths(propName, 1).forEach((subProp:string) => {
                 const subPath = denormalizePath(subProp);
-                const type = lodashGet(schema, subPath+'.type')
+                const type = _.get(schema, subPath+'.type')
                 if(!type) {
-                    lodashSet(schema, subPath+'.type', 'object')
+                    _.set(schema, subPath+'.type', 'object')
                 }
             })
 
-            lodashSet(schema, path, itemSchema)
+            _.set(schema, path, itemSchema)
 
             //:TODO fix required
             // //workaround to receive required info from item
@@ -255,7 +251,7 @@ export const createI18nTranslate = (localeCatalogue:Record<string, string>) => {
             params = {...params, ...context.error?.params};
         }
 
-        return (localeCatalogue[key] && lodashTemplate(localeCatalogue[key])(params)) ?? defaultMessage;
+        return (localeCatalogue[key] && _.template(localeCatalogue[key])(params)) ?? defaultMessage;
     };
 }
 
