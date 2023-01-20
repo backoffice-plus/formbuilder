@@ -21,12 +21,14 @@ import {entry as tabsCategorizationRenderer} from "../packages/boplus-vue-vanill
 import {entry as oneOfRenderer} from "../packages/boplus-vue-vanilla/src/components/OneOfRenderer.vue";
 import {entry as allOfRenderera} from "../packages/boplus-vue-vanilla/src/components/AllOfRenderer.vue";
 import {entry as anyOfRenderer} from "../packages/boplus-vue-vanilla/src/components/AnyOfRenderer.vue";
+import {entry as objectRenderer} from "../packages/boplus-vue-vanilla/src/components/ObjectRenderer.vue";
 export const jsonFormRenderes = Object.freeze([
     ...vanillaRenderers,
     tabsCategorizationRenderer,
     oneOfRenderer,
     allOfRenderera,
     anyOfRenderer,
+    objectRenderer,
 ]);
 
 import mitt from 'mitt'
