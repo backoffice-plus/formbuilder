@@ -29,7 +29,7 @@
                 :renderers="jsonFormRenderes"
                 :ajv="ajv"
                 :i18n="{translate: createI18nTranslate(localeCatalogue)}"
-                v-if="jsonFormsSchema && jsonFormsUiSchema"
+                v-if="jsonFormsSchema"
                 @change="r => jsonFormsUpdated=r"
             />
         </div>
