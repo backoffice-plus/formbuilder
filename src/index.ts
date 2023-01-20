@@ -16,9 +16,11 @@ export { default as FlexArea } from './components/tools/flexArea.vue'
 //jsonForms Renderer
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
 import {entry as tabsCategorizationRenderer} from "../packages/boplus-vue-vanilla/src/components/TabsCategorizationRenderer.vue";
+import {entry as oneOfRenderer} from "../packages/boplus-vue-vanilla/src/components/OneOfRenderer.vue";
 export const jsonFormRenderes = Object.freeze([
     ...vanillaRenderers,
     tabsCategorizationRenderer,
+    oneOfRenderer,
 ]);
 
 import mitt from 'mitt'
