@@ -1,3 +1,5 @@
+import allOfRenderer from "../packages/boplus-vue-vanilla/src/components/AllOfRenderer.vue";
+
 export { default as ElementHeadOrToolIcon } from './components/tools/utils/ElementHeadOrToolIcon.vue'
 export { default as Actions } from './components/tools/utils/Actions.vue'
 
@@ -17,10 +19,12 @@ export { default as FlexArea } from './components/tools/flexArea.vue'
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
 import {entry as tabsCategorizationRenderer} from "../packages/boplus-vue-vanilla/src/components/TabsCategorizationRenderer.vue";
 import {entry as oneOfRenderer} from "../packages/boplus-vue-vanilla/src/components/OneOfRenderer.vue";
+import {entry as allOfRenderera} from "../packages/boplus-vue-vanilla/src/components/AllOfRenderer.vue";
 export const jsonFormRenderes = Object.freeze([
     ...vanillaRenderers,
     tabsCategorizationRenderer,
     oneOfRenderer,
+    allOfRenderera,
 ]);
 
 import mitt from 'mitt'
