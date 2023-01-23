@@ -17,7 +17,7 @@ import {Generate, JsonSchema, Layout} from '@jsonforms/core';
 import omit from 'lodash/omit';
 import {DispatchRenderer} from '@jsonforms/vue';
 
-interface CombinatorProps {
+export interface CombinatorProps {
   schema: JsonSchema;
   combinatorKeyword: 'oneOf' | 'anyOf' | 'allOf';
   path: string;
