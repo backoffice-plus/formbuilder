@@ -52,6 +52,6 @@ export const schema = {
     }
 };
 
-export const uischema = {}
+export const uischema = null as any;
 
-export const jsonForms = {schema:schema, uischema:null};
+export const jsonForms = {schema:schema, uischema:uischema};

@@ -28,6 +28,7 @@ export const normalizeDefinitions = (schema:JsonSchema) : Array<any> => {
     const r = [] as Array<any>;
 
     Object.keys(schema).map((key:string) => {
+        /* @ts-ignore */
         const newSchema = {...schema[key]} as any;
         newSchema._key = key;
 
