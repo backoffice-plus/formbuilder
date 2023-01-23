@@ -10,8 +10,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": ["es6", "dom", "es2021"],
-    "noUnusedParameters": true,
-    "noUnusedLocals": true,
+
     "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
