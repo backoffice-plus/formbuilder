@@ -32,6 +32,8 @@ const allOfRenderer = defineComponent({
 export default allOfRenderer;
 export const entry: JsonFormsRendererRegistryEntry = {
   renderer: allOfRenderer,
-  tester: rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl))
+  //tester: rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl))
+  //:TODO enable ArrayControl
+  tester: rankWith(3, ()=>false)
 };
 </script>
