@@ -4,7 +4,7 @@ import {
     denormalizePath, denormalizeScope,
     getAllSubpaths,
 
-    normalizeRule, denormalizeRule
+    normalizeRule, denormalizeRule, normalizeDefinitions, denormalizeDefinitions
 } from "../../src";
 import type {Rule, SchemaBasedCondition} from "@jsonforms/core";
 
@@ -50,6 +50,35 @@ test('buildAllSubpaths index1', () => {
     const subparts = getAllSubpaths(prop, 1)
     expect(subparts).toEqual(['data.personal','data.personal.age'])
 })
+
+test('normalizeDefinitions', () => {
+    const normalized = normalizeDefinitions(definition)
+    expect(normalized).toEqual(definitionNormalized)
+})
+test('denormalizeDefinitions', () => {
+    const denormalized = denormalizeDefinitions(definitionNormalized)
+    console.log(JSON.stringify(denormalized));
+    expect(denormalized).toEqual(definition)
+})
+
+const definition = {
+    address:{
+        properties:{
+            street:{type:'string'}
+        }
+    }
+};
+const definitionNormalized = [
+    {
+        _key:'address',
+        properties:[
+            {
+                _key:'street',
+                type:'string',
+            }
+        ]
+    }
+];
 
 const ruleData = {
     effect: 'SHOW',

@@ -12,19 +12,33 @@
         v-if="isModalOpen && toolEdit"
     />
 
-    <FormBuilderBar
-        :jsonForms="schemaReadOnly ? props.jsonForms : {}"
-        :schemaReadOnly="!!schemaReadOnly"
-        @drag="e=>drag = !!e"
-    />
+    <div class="flex gap-2">
+     <button @click="showBuilder='uischema'" class="hover:bg-gray-200">UI Schema</button>
+     <button @click="showBuilder='definitions'" class="hover:bg-gray-200">Definitions</button>
+    </div>
 
-    <component :is="getComponent(baseTool.componentName)"
-               :tool="baseTool"
-               :isRoot="true"
-               :isDragging="!!drag"
-              class="my-4"
-              ref="rootForm"
-    />
+    <!-- UISchema -->
+    <template v-if="'uischema' === showBuilder">
+        <FormBuilderBar
+            :jsonForms="schemaReadOnly ? props.jsonForms : {}"
+            :schemaReadOnly="!!schemaReadOnly"
+            @drag="e=>drag = !!e"
+        />
+
+        <component :is="getComponent(baseTool.componentName)"
+                   :tool="baseTool"
+                   :isRoot="true"
+                   :isDragging="!!drag"
+                  class="my-4"
+                  ref="rootForm"
+        />
+    </template>
+
+
+    <!-- Definitions -->
+    <template v-if="'definitions' === showBuilder">
+      <FormBuilderDefinitions :definitions="jsonFormsSchema.definitions"/>
+    </template>
 
   </div>
 
@@ -44,6 +58,7 @@ import {
 } from "../index";
 import Modal from "./Modal.vue";
 import {Generate} from "@jsonforms/core/src/generators/Generate";
+import FormBuilderDefinitions from "./FormBuilderDefinitions.vue";
 
 const props = defineProps({
   jsonForms: Object,
@@ -58,6 +73,7 @@ const jsonFormsUiSchema = ref(props?.jsonForms?.uischema ?? {});
 const jsonFormsSchema = ref(props?.jsonForms?.schema ?? Generate.jsonSchema({}));
 const isModalOpen = ref(false);
 const toolEdit = ref(null);
+const showBuilder = ref('uischema');
 
 const baseTool = computed(() => {
   return findLayoutTool(

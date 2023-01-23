@@ -10,13 +10,57 @@ import type {
     JsonFormsUISchema,
 } from "./models";
 import type {ControlElement, Layout, SchemaBasedCondition} from "@jsonforms/core/src/models/uischema";
-import type {Rule, UISchemaElement} from "@jsonforms/core";
+import type {JsonSchema, Rule, UISchemaElement} from "@jsonforms/core";
 
 export const isScope = (scope:string) : boolean => {
     return scope.startsWith('#/properties/')
 }
 export const isPath = (path:string) : boolean => {
     return path.startsWith('properties.')
+}
+
+/*
+    from {address:{properties:{street:{...}}}
+    to   [{_key:'address',properties:[{_key:'street'}]]
+ */
+export const normalizeDefinitions = (schema:JsonSchema) : Array<any> => {
+
+    const r = [] as Array<any>;
+
+    Object.keys(schema).map((key:string) => {
+        const newSchema = {...schema[key]} as any;
+        newSchema._key = key;
+
+        if(newSchema.properties) {
+            newSchema.properties = normalizeDefinitions(newSchema.properties);
+        }
+
+        r.push(newSchema);
+    });
+
+    return r;
+}
+
+/*
+    from [{_key:'address',properties:[{_key:'street'}]]
+    to   {address:{properties:{street:{...}}}
+ */
+export const denormalizeDefinitions = (definition:Array<any>) : JsonSchema => {
+
+    const props = {} as Record<string, JsonSchema>;
+
+    definition.forEach(item => {
+        const nItem = {...item};
+        const key = nItem._key;
+        if(nItem.properties) {
+            nItem.properties = denormalizeDefinitions(nItem.properties);
+        }
+        delete nItem._key;
+
+        props[key] = nItem;
+    });
+
+    return props;
 }
 
 /**
