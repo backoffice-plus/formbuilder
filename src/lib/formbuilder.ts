@@ -100,14 +100,15 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
     return pushableElements;
 };
 
-export const createJsonForms = (rootForm:any, schemaReadOnly:JsonFormsSchema|undefined = undefined) : JsonForms => {
-    const schema = {
-        type: 'object',
-        properties: {},
-    } as JsonFormsSchema;
+export const createJsonForms = (rootForm:any, rootSchema:JsonFormsSchema, schemaReadOnly:boolean) : JsonForms => {
+
+    const schema = _.clone(rootSchema);
+    if(!schemaReadOnly) {
+        schema.properties = {}; //clear properties
+    }
 
     return new JsonForms(
-        schemaReadOnly ? schemaReadOnly : schema,
+        schemaReadOnly ? rootSchema : schema,
         createJsonUiSchema(rootForm, schema)
     );
 }

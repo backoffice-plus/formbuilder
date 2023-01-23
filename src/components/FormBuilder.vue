@@ -43,6 +43,7 @@ import {
   emitter, denormalizeModalOptions,
 } from "../index";
 import Modal from "./Modal.vue";
+import {Generate} from "@jsonforms/core/src/generators/Generate";
 
 const props = defineProps({
   jsonForms: Object,
@@ -53,15 +54,15 @@ const emit = defineEmits(['schemaUpdated']);
 
 const rootForm = ref(null);
 const drag = ref(false);
-const jsonFormsUiSchema = ref({});
-const jsonFormsSchema = ref({});
+const jsonFormsUiSchema = ref(props?.jsonForms?.uischema ?? {});
+const jsonFormsSchema = ref(props?.jsonForms?.schema ?? Generate.jsonSchema({}));
 const isModalOpen = ref(false);
 const toolEdit = ref(null);
 
 const baseTool = computed(() => {
   return findLayoutTool(
-      props?.jsonForms?.schema ?? {},
-      (props.jsonForms?.uischema?.type && props.jsonForms.uischema) ?? {type:'VerticalLayout'}
+      jsonFormsSchema.value,
+      (jsonFormsUiSchema.value?.type && jsonFormsUiSchema.value) ?? {type:'VerticalLayout'}
   );
 })
 
@@ -79,12 +80,13 @@ const updateJsonForm = () => {
   if(!rootForm?.value) {
     return;
   }
-  const jsonForms = createJsonForms(rootForm, props.schemaReadOnly ? props.jsonForms?.schema : undefined);
-  jsonFormsSchema.value = jsonForms.schema;
-  jsonFormsUiSchema.value = jsonForms.uischema;
 
-  emit('schemaUpdated', jsonForms)
-  emitter.emit('formBuilderSchemaUpdated', jsonForms)
+  const newJsonForms = createJsonForms(rootForm, jsonFormsSchema.value, props.schemaReadOnly);
+  jsonFormsSchema.value = newJsonForms.schema;
+  jsonFormsUiSchema.value = newJsonForms.uischema;
+
+  emit('schemaUpdated', newJsonForms)
+  emitter.emit('formBuilderSchemaUpdated', newJsonForms)
 }
 
 onMounted(() => {
