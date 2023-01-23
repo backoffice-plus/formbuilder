@@ -13,7 +13,8 @@
 /**
  * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/components/CombinatorProperties.vue
  */
-import {Generate, JsonSchema, Layout} from '@jsonforms/core';
+import {Generate} from '@jsonforms/core';
+import type {JsonSchema, Layout} from '@jsonforms/core';
 import omit from 'lodash/omit';
 import {DispatchRenderer} from '@jsonforms/vue';
 
