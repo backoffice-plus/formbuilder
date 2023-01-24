@@ -1,11 +1,10 @@
 import { expect, test } from 'vitest'
+import {getAllSubpaths} from '../../src'
 import {
     normalizeScope, normalizePath,
     denormalizePath, denormalizeScope,
-    getAllSubpaths,
-
     normalizeRule, denormalizeRule, normalizeDefinitions, denormalizeDefinitions
-} from "../../src";
+} from "../../src/lib/normalizer";
 import type {Rule, SchemaBasedCondition} from "@jsonforms/core";
 
 test('normalizeScope', () => {

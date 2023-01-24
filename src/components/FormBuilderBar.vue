@@ -96,13 +96,13 @@ import {
   getComponent,
   layoutTools,
   controlTools,
-  guessInputType,
   findAllProperties,
   findControlTool,
   emitter,
   findAllScopes,
-  normalizeScope, normalizePath, ToolProps
+  ToolProps
 } from "../index";
+import {guessInputType, normalizeScope, normalizePath} from '../lib/normalizer'
 import {Tool} from "../lib/models";
 
 export default defineComponent({

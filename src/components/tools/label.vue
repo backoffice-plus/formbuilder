@@ -27,8 +27,9 @@ import {
   ElementHeadOrToolIcon, Actions,
   ToolProps,
   updatableSchemaKeys, updatableUischemaKeys,
-  emitter, normalizeModalOptions
+  emitter
 } from "../../index";
+import {normalizeModalOptions} from "../../lib/normalizer";
 import {defineComponent} from 'vue';
 import {Tool} from "../../lib/models";
 

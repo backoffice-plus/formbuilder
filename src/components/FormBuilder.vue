@@ -54,8 +54,9 @@ import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import {
   FormBuilderBar,
   createJsonForms, findLayoutTool, getComponent,
-  emitter, denormalizeModalOptions,
+  emitter,
 } from "../index";
+import {denormalizeModalOptions} from '../lib/normalizer'
 import Modal from "./Modal.vue";
 import {Generate} from "@jsonforms/core/src/generators/Generate";
 import FormBuilderDefinitions from "./FormBuilderDefinitions.vue";

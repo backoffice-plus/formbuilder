@@ -40,9 +40,9 @@ import {JsonForms} from "@jsonforms/vue";
 import {
   jsonFormRenderes,
   createI18nTranslate,
-  normalizeModalOptions, emitter
+  emitter
 } from "../index";
-
+import {normalizeModalOptions} from '../lib/normalizer'
 import {jsonForms as jsonFormsOption} from "../schema/toolOptionsControl";
 import {jsonForms as jsonFormsLabel} from "../schema/toolOptionsLabelProperty";
 import {jsonForms as jsonFormsLabelElement} from "../schema/toolOptionsLabel";

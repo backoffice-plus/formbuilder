@@ -33,7 +33,7 @@
 <script setup>
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv} from "@jsonforms/core";
-import {denormalizeDefinitions, jsonFormRenderes, normalizeDefinitions} from "../../src/index";
+import {jsonFormRenderes} from "../../src/index";
 import {schema} from "../schema/definitions";
 import {computed, onMounted, ref} from "vue";
 
