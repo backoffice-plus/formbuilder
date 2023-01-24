@@ -17,10 +17,12 @@ export class Tool {
     componentName: string;
     uuid: string;
     props: ToolProps;
+    tester: undefined|any = undefined;
 
-    constructor(componentName: string, props: ToolProps) {
+    constructor(componentName: string, props: ToolProps, tester:undefined|any = undefined) {
         this.componentName = componentName;
         this.props = props;
+        this.tester = tester;
 
         //this.uuid = crypto.randomUUID();
         this.uuid = String(Date.now().toString(32)+Math.random().toString(16)).replace(/\./g, '');
@@ -42,6 +44,7 @@ export class Tool {
         return new Tool(
             this.componentName,
             props,
+            this.tester,
             // new ToolProps(
             //     this.props.inputType,
             //     this.props.toolType,

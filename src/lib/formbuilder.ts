@@ -11,6 +11,7 @@ import type {
 } from "./models";
 import type {ControlElement, Layout, SchemaBasedCondition} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Rule, UISchemaElement} from "@jsonforms/core";
+import {isOneOfControl, isStringControl, isAnyOfControl, isBooleanControl, isNumberControl, or, rankWith} from "@jsonforms/core";
 
 export const isScope = (scope:string) : boolean => {
     return scope.startsWith('#/properties/')
@@ -124,7 +125,7 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
                 const propertyPath = normalizeScope(itemUischema.scope);
                 const itemSchema = _.get(jsonFromSchema, propertyPath);
 
-                let tool = findControlTool(itemSchema, itemUischema).clone(itemSchema, itemUischema);
+                let tool = findControlToolByTester(jsonFromSchema,itemSchema, itemUischema).clone(itemSchema, itemUischema);
 
                 if(tool) {
                     tool.props.propertyName = normalizePath(propertyPath);
@@ -397,7 +398,22 @@ export const findControlTool = (itemSchema:any, itemUischema:any) : Tool => {
     return controlTools[sorted[0][0]];//?.clone(itemSchema, itemUischema);
 };
 
-
+export const findControlToolByTester = (schema:any, itemSchema:any, itemUischema:any) : Tool => {
+    const toolsWithScore = controlTools.map((tool, index) => {
+        if(!tool.tester) {
+            throw "Tool has no tester";
+        }
+        return {
+            tool: tool,
+            score: tool.tester(itemUischema, itemSchema, { rootSchema: schema, config: null}),
+        }
+    });
+    const toolWithScore = _.maxBy(toolsWithScore,(i)=>i.score)
+    if(!toolWithScore?.tool) {
+        throw "No tool was found.";
+    }
+    return toolWithScore.tool;
+};
 
 export const guessInputType = (jsonForms:JsonForms) => {
     const type = jsonForms?.schema?.type;
@@ -622,7 +638,7 @@ export const controlTools = [
         toolType: 'control',
         toolName: 'Control',
         jsonForms: {schema:{type:'string'}, uischema:{type:'Control'}}
-    })),
+    }), rankWith(1, or(isStringControl, isBooleanControl, isNumberControl))),
 
     // new Tool('formInputByType', ToolProps.create({
     //     toolName: 'textarea',
@@ -658,7 +674,7 @@ export const controlTools = [
     new Tool('formInputByType', ToolProps.create({
         toolName: 'select',
         jsonForms: {schema:{type:'string',oneOf:[]}, uischema:{type:'Control'}}
-    })),
+    }), rankWith(1, isOneOfControl)),
 
     // new Tool('formInputByType', ToolProps.create({
     //     toolName: 'checkbox',
