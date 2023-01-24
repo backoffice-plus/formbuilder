@@ -11,8 +11,16 @@ import type {
 } from "./models";
 import type {ControlElement, Layout, SchemaBasedCondition} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Rule, UISchemaElement} from "@jsonforms/core";
-import {isOneOfControl, isStringControl, isAnyOfControl, isBooleanControl, isNumberControl, or, rankWith} from "@jsonforms/core";
+import {
+    isOneOfControl,
+    isStringControl,
+    isBooleanControl,
+    isNumberControl,
+    or,and,
+    rankWith,
+} from "@jsonforms/core";
 import { normalizeScope,normalizePath,denormalizePath,denormalizeScope } from './normalizer';
+import {isIntegerControl, schemaMatches, schemaTypeIs, uiTypeIs} from "@jsonforms/core/src/testers/testers";
 
 
 /**
@@ -268,55 +276,15 @@ export const  findLayoutTool = (schema:JsonFormsSchema|undefined = undefined, it
     const tool = [...layoutTools, ...[tools.tab]].find(comp => comp.props.jsonForms.uischema.type === itemUischema.type)
 
     if(!tool) {
-        throw "No tool was found.";
+        console.log("no layout tool was found",schema,itemUischema);
+        return new Tool('unknown', ToolProps.create({
+            toolType: 'unknown',
+            jsonForms: {schema:{}, uischema:{}}
+        }));
     }
 
     return tool.clone(schema, itemUischema);
 }
-
-export const findControlTool = (itemSchema:any, itemUischema:any) : Tool => {
-
-    const elements = controlTools.map((itemForm, index) => {
-        const schema = itemForm.props.jsonForms.schema;
-        const uischema = itemForm.props.jsonForms.uischema;
-
-        let score = 0;
-
-        const sameType = schema.type === itemSchema?.type;
-        const isString = 'string' === schema.type;
-        if(sameType) {
-            score++;
-
-            const sameOptions = itemUischema?.options && JSON.stringify(uischema?.options) === JSON.stringify(itemUischema?.options);
-            //console.log("options",JSON.stringify(uischema?.options) , JSON.stringify(itemUischema?.options),sameOptions);
-            if(sameOptions) {
-                score++;
-            }
-
-            if(isString) {
-                if(schema?.enum !== undefined && itemSchema?.enum !== undefined) {
-                    score++;
-                }
-                if(schema?.oneOf !== undefined && itemSchema?.oneOf !== undefined) {
-                    score++;
-                }
-                if(schema?.format !== undefined && schema?.format === itemSchema?.format) {
-                    score++;
-                }
-            }
-        }
-
-        return [index, score];
-    });
-
-    const sorted = elements.sort((a, b) => b[1] - a[1]);
-
-    if(!controlTools[sorted[0][0]]) {
-        throw "unknown tool";
-    }
-
-    return controlTools[sorted[0][0]];//?.clone(itemSchema, itemUischema);
-};
 
 export const findControlToolByTester = (schema:any, itemSchema:any, itemUischema:any) : Tool => {
     const toolsWithScore = controlTools.map((tool, index) => {
@@ -328,9 +296,14 @@ export const findControlToolByTester = (schema:any, itemSchema:any, itemUischema
             score: tool.tester(itemUischema, itemSchema, { rootSchema: schema, config: null}),
         }
     });
+
     const toolWithScore = _.maxBy(toolsWithScore,(i)=>i.score)
-    if(!toolWithScore?.tool) {
-        throw "No tool was found.";
+    if(!toolWithScore?.tool || -1 === toolWithScore?.score) {
+        console.log("no control tool was found",itemSchema,itemUischema);
+        return new Tool('unknown', ToolProps.create({
+            toolType: 'unknown',
+            jsonForms: {schema:itemSchema, uischema:{}}
+        }));
     }
     return toolWithScore.tool;
 };
@@ -378,7 +351,37 @@ export const controlTools = [
         toolType: 'control',
         toolName: 'Control',
         jsonForms: {schema:{type:'string'}, uischema:{type:'Control'}}
-    }), rankWith(1, or(isStringControl, isBooleanControl, isNumberControl))),
+    }), rankWith(1, or(isStringControl, isBooleanControl, isNumberControl, isIntegerControl))),
+
+    new Tool('formInputByType', ToolProps.create({
+        toolName: 'select',
+        jsonForms: {schema:{type:'string',oneOf:[]}, uischema:{type:'Control'}}
+    }), rankWith(1, and(isStringControl, isOneOfControl))),
+
+
+    new Tool('reference', ToolProps.create({
+        toolType: 'reference',
+        jsonForms: {schema:{}, uischema:{type:'Control'}}
+    }), rankWith(1,
+        and(
+            uiTypeIs('Control'),
+            (uischema,schema) => undefined !== schema?.$ref
+        )
+    )),
+
+    new Tool('combinatorAsTabs', ToolProps.create({
+        toolType: 'combinator',
+        jsonForms: {schema:{}, uischema:{type:'Control'}}
+    }), rankWith(2,
+        and(
+            uiTypeIs('Control'),
+            (uischema,schema) => {
+                const hasKeyword = undefined !== schema?.allOf || undefined !== schema?.anyOf || undefined !== schema?.oneOf;
+                const noType = undefined === schema?.type
+                return hasKeyword && noType
+            }
+        )
+    )),
 
     // new Tool('formInputByType', ToolProps.create({
     //     toolName: 'textarea',
@@ -410,11 +413,6 @@ export const controlTools = [
     //     inputType: 'radio',
     //     jsonForms: {schema:{type:'string',enum:[]}, uischema:{type:'Control', options:{format:'radio'}}}
     // })),
-
-    new Tool('formInputByType', ToolProps.create({
-        toolName: 'select',
-        jsonForms: {schema:{type:'string',oneOf:[]}, uischema:{type:'Control'}}
-    }), rankWith(1, isOneOfControl)),
 
     // new Tool('formInputByType', ToolProps.create({
     //     toolName: 'checkbox',

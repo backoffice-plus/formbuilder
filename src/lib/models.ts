@@ -144,7 +144,7 @@ export class JsonForms {
 }
 
 
-export const updatableSchemaKeys = ['type', 'format', 'enum', 'oneOf', 'description', 'minimum','maximum', 'pattern', 'minLength', 'maxLength'];
+export const updatableSchemaKeys = ['type', 'format', 'enum', 'oneOf', 'description', 'minimum','maximum', 'pattern', 'minLength', 'maxLength' , '$ref'];
 // export interface JsonFormsSchema {
 //     type: string;
 //     properties?: Record<string, JsonFormsSchema>;

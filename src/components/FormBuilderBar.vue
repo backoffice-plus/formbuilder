@@ -97,7 +97,6 @@ import {
   layoutTools,
   controlTools,
   findAllProperties,
-  findControlTool,
   emitter,
   findAllScopes,
   ToolProps

@@ -46,6 +46,8 @@ import {normalizeModalOptions} from '../lib/normalizer'
 import {jsonForms as jsonFormsOption} from "../schema/toolOptionsControl";
 import {jsonForms as jsonFormsLabel} from "../schema/toolOptionsLabelProperty";
 import {jsonForms as jsonFormsLabelElement} from "../schema/toolOptionsLabel";
+import {jsonForms as jsonFormsCombinator} from "../schema/toolOptionsCombinator";
+import {jsonForms as jsonFormsReference} from "../schema/toolOptionsReference";
 import {computed, onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
@@ -76,6 +78,14 @@ const getJsonForms = () => {
         // :TODO should be solved with uischemaRules
         const readOnlyOptions = ['propertyName', 'type', 'format'];
         readOnlyOptions.forEach(name => lodashSet(jsonFormsOption,'schema.properties.'+ name +'.readOnly', true));
+      }
+
+      if(['reference'].includes(props.tool.props.toolType)) {
+        return jsonFormsReference
+      }
+
+      if(['combinator'].includes(props.tool.props.toolType)) {
+        return jsonFormsCombinator
       }
 
       return jsonFormsOption

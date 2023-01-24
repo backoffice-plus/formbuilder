@@ -3,6 +3,9 @@ import formInputByType from "../../components/tools/formInputByType.vue";
 import flexArea from "../../components/tools/flexArea.vue";
 import categorization from "../../components/tools/categorization.vue";
 import label from "../../components/tools/label.vue";
+import reference from "../../components/tools/reference.vue";
+import combinatorAsTabs from "../../components/tools/combinatorAsTabs.vue";
+import unknown from "../../components/tools/unknown.vue";
 
 export const getComponent = (componentName:string, useShallowRef:boolean|undefined = false) => {
     const asShallowRef = (e:any) => {
@@ -17,6 +20,15 @@ export const getComponent = (componentName:string, useShallowRef:boolean|undefin
     }
     else if('label' === componentName) {
         return asShallowRef(label);
+    }
+    else if('reference' === componentName) {
+        return asShallowRef(reference);
+    }
+    else if('combinatorAsTabs' === componentName) {
+        return asShallowRef(combinatorAsTabs);
+    }
+    else if('unknown' === componentName) {
+        return asShallowRef(unknown);
     }
     else {
         return asShallowRef(flexArea);

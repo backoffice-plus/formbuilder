@@ -16,24 +16,23 @@ export const isPath = (path:string) : boolean => {
     return path.startsWith('properties.')
 }
 
+export const normalizeRef = (object:any) => {
+    if(object.$ref !== undefined) {
+        object._ref = object.$ref;
+    }
+    return object;
+}
+export const denormalizeRef = (object:any) => {
+    if(object._ref !== undefined) {
+        object.$ref = object._ref;
+    }
+    return object;
+}
 export const normalizeCombinators = (items:Array<JsonSchema|any>) => {
-    return items.map(item => {
-        const copy = {...item}
-        if(copy.$ref !== undefined) {
-            copy._ref = copy.$ref;
-            delete copy.$ref;
-        }
-        return copy;
-    })
+    return items.map(item => normalizeRef(item));
 }
 export const denormalizeCombinators = (items:Array<any>) => {
-    return items.map(item => {
-        if(item._ref !== undefined) {
-            item.$ref = item._ref;
-            delete item._ref;
-        }
-        return item;
-    })
+    return items.map(item => denormalizeRef(item));
 }
 
 
@@ -183,12 +182,34 @@ export const normalizeModalOptions = (tool:Tool) : Object => {
         }
     });
 
-    if(options.anyOf !== undefined) {
-        options.anyOf = normalizeCombinators(options.anyOf)
+    //rename $ref
+    if(undefined !== schema.$ref) {
+        options._reference = schema.$ref
     }
 
-    console.log("normalizeModalOptions",tool);
+    //combinator
+    ['oneOf', 'anyOf', 'allOf'].forEach(key => {
+        if(jsonForms.schema[key] !== undefined && jsonForms.schema[key]?.length > 0) {
+            options.keyword = key;
+        }
+    })
 
+    //let refOrRefs = {} as any;
+    // else {
+    //     ['oneOf', 'anyOf', 'allOf'].forEach(key => {
+    //         if(jsonForms.schema[key] !== undefined && jsonForms.schema[key]?.length > 0) {
+    //             jsonForms.schema[key].map((schema:any) => {
+    //                 refOrRefs[key] = [];
+    //                 if(undefined !== schema.$ref) {
+    //                     refOrRefs[key] = {
+    //                         _ref: schema.$ref,
+    //                     }
+    //                 }
+    //             })
+    //         }
+    //     })
+    // }
+    //options.refOrRefs = refOrRefs;
 
     const ruleData = jsonForms.uischema.rule && normalizeRule(jsonForms.uischema.rule)
     if(ruleData) {
@@ -210,6 +231,8 @@ export const normalizeModalOptions = (tool:Tool) : Object => {
     //         options.required = true;
     //     }
     // }
+
+    console.log("normalizeModalOption",options);
 
     return options;
 };
@@ -293,122 +316,23 @@ export const denormalizeModalOptions = (data:any) : any => {
         data.rule = denormalizeRule(data.rule);
     }
 
-    if(data.anyOf) {
-        data.anyOf = denormalizeCombinators(data.anyOf)
+    //rename $ref
+    if(undefined !== data._reference) {
+        data.$ref = data._reference;
     }
+
+    // if(undefined !== data.refOrRefs) {
+    //     if(typeof data.refOrRefs === 'string') {
+    //         data.refOrRefs.$ref = data.refOrRefs._ref;
+    //     }
+    //     else {
+    //         ['oneOf', 'anyOf', 'allOf'].forEach(key => {
+    //             if(data[key] !== undefined && data[key]?.length > 0) {
+    //                 data[key] = denormalizeCombinators(data[key])
+    //             }
+    //         })
+    //     }
+    // }
 
     return data;
 }
-
-export const tools = {
-    tab: new Tool('flexArea', ToolProps.create({
-        toolType:'tab',
-        jsonForms: {uischema: {type: 'Category'}}
-    })),
-};
-
-export const layoutTools = [
-
-    new Tool('flexArea', ToolProps.create({
-        toolType:'flex',
-        jsonForms: {uischema: {type: 'VerticalLayout'}},
-        toolName: 'Vertical Layout',
-    })),
-
-    new Tool('flexArea', ToolProps.create({
-        toolType:'flexRow',
-        jsonForms: {uischema: {type: 'HorizontalLayout'}},
-        toolName: 'Horizontal Layout',
-    })),
-
-    new Tool('flexArea', ToolProps.create({
-        toolType:'group',
-        jsonForms: {uischema: {type: 'Group'}}
-    })),
-
-    new Tool('categorization', ToolProps.create({
-      toolType:'tabs',
-      jsonForms: {uischema: {type: 'Categorization'}},
-    })),
-
-    new Tool('label', ToolProps.create({
-        toolType:'label',
-        jsonForms: {uischema: {type: 'Label', text:'label'}},
-    })),
-];
-
-export const controlTools = [
-
-    new Tool('formInputByType', ToolProps.create({
-        toolType: 'control',
-        toolName: 'Control',
-        jsonForms: {schema:{type:'string'}, uischema:{type:'Control'}}
-    }), rankWith(1, or(isStringControl, isBooleanControl, isNumberControl))),
-
-
-    new Tool('combinator', ToolProps.create({
-        toolType: 'combinator',
-        toolName: 'Combinator',
-        jsonForms: {schema:{}, uischema:{type:'Control'}}
-    }), rankWith(1, isAnyOfControl)),
-
-    // new Tool('formInputByType', ToolProps.create({
-    //     toolName: 'textarea',
-    //     jsonForms: {schema:{type:'string'}, uischema:{type:'Control', options:{multi:true}}}
-    // })),
-
-    // new Tool('formInputByType', ToolProps.create({
-    //     toolName: 'number',
-    //     jsonForms: {schema:{type:'number'}, uischema:{type:'Control'}}
-    // })),
-
-    // new Tool('formInputByType', ToolProps.create({
-    //     toolName: 'date',
-    //     jsonForms: {schema:{type:'string', format: 'date'}, uischema:{type:'Control'}}
-    // })),
-
-    //via optionModal.format
-    // new Tool('formInputByType', ToolProps.create({
-    //     toolName: 'datetime-local',
-    //     jsonForms: {schema:{type:'string', format: 'date-time'}, uischema:{type:'Control'}}
-    // })),
-    // new Tool('formInputByType', ToolProps.create({
-    //     toolName: 'time',
-    //     jsonForms: {schema:{type:'string', format: 'time'}, uischema:{type:'Control'}}
-    // })),
-
-    //no jsonforms renderer
-    // new Tool('formInputByType', ToolProps.create({
-    //     inputType: 'radio',
-    //     jsonForms: {schema:{type:'string',enum:[]}, uischema:{type:'Control', options:{format:'radio'}}}
-    // })),
-
-    new Tool('formInputByType', ToolProps.create({
-        toolName: 'select',
-        jsonForms: {schema:{type:'string',oneOf:[]}, uischema:{type:'Control'}}
-    }), rankWith(1, isOneOfControl)),
-
-    // new Tool('formInputByType', ToolProps.create({
-    //     toolName: 'checkbox',
-    //     jsonForms: {schema:{type:'boolean'}, uischema:{type:'Control'}}
-    // })),
-
-    // new Tool('formInputByType', ToolProps.create({
-    //     inputType: 'file',
-    //     jsonForms: {schema:{type:'string', format:'file'}, uischema:{type:'Control'}}
-    // })),
-
-
-    //try to solve with optionmodal
-    // new Tool('formInputByType', ToolProps.create({
-    //     inputType: 'number',
-    //     jsonForms: {schema:{type:'integer'}, uischema:{type:'Control'}}
-    // })),
-
-    //no renderer for slider:true
-    // new Tool('formInputByType', ToolProps.create({
-    //   inputType: 'range',
-    //   jsonForms: {schema:{type:'number'}, uischema:{type:'Control',options:{"slider": true }}}
-    //   //{type: 'number',"minimum": 1,"maximum": 5, "default": 2}
-    // })),
-];
