@@ -28,12 +28,12 @@ export class Tool {
         this.uuid = String(Date.now().toString(32)+Math.random().toString(16)).replace(/\./g, '');
     }
 
-    clone(schema:JsonFormsSchema|undefined = undefined, uischema:JsonFormsUISchema|undefined = undefined): Tool {
+    clone(schema:JsonFormsSchema|undefined = undefined, uischema:JsonFormsUISchema|undefined = undefined, rootSchema:JsonFormsSchema|undefined=undefined): Tool {
 
         const props = this.props.clone();
         let jsonForms = this.props.jsonForms;
         if(schema && uischema) {
-            props.jsonForms = new JsonForms(schema, uischema)
+            props.jsonForms = new JsonForms(schema, uischema, rootSchema)
         }
         else {
             props.jsonForms = jsonForms.clone();
@@ -106,6 +106,7 @@ export class JsonForms {
     constructor(
         public schema: JsonFormsSchema = {} as JsonFormsSchema,
         public uischema: JsonFormsUISchema = {} as JsonFormsUISchema,
+        public rootSchema: JsonFormsSchema = {} as JsonFormsSchema,
     )
     {
     }
@@ -139,6 +140,7 @@ export class JsonForms {
         return new JsonForms(
             {...this.schema},
             {...this.uischema},
+            this.rootSchema,
         )
     }
 }

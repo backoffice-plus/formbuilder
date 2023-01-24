@@ -192,6 +192,9 @@ export default defineComponent({
         }
       }
 
+      //rootSchema
+      clone.props.jsonForms.rootSchema = this.jsonForms?.schema
+
       return clone;
     },
   }
