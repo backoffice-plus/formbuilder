@@ -53,8 +53,8 @@ import {DispatchRenderer, rendererProps, useJsonFormsAnyOfControl} from '@jsonfo
 import {useVanillaControl} from "@jsonforms/vue-vanilla";
 
 
-const controlRenderer = defineComponent({
-  name: 'tabs-categorization-renderer',
+const anyOfRenderer = defineComponent({
+  name: 'any-of-renderer',
   methods: {isVisible},
   components: {DispatchRenderer},
   props: {
@@ -90,9 +90,9 @@ const controlRenderer = defineComponent({
   },
 });
 
-export default controlRenderer;
+export default anyOfRenderer;
 export const entry: JsonFormsRendererRegistryEntry = {
-  renderer: controlRenderer,
+  renderer: anyOfRenderer,
   tester: rankWith(3, isAnyOfControl)
 };
 </script>

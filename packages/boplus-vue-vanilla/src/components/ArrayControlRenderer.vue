@@ -14,7 +14,7 @@ import {isObjectArrayControl, isPrimitiveArrayControl, or, rankWith} from '@json
 import type {RendererProps} from '@jsonforms/vue';
 import {DispatchRenderer, rendererProps} from '@jsonforms/vue';
 
-const allOfRenderer = defineComponent({
+const ArrayControlRenderer = defineComponent({
   name: 'array-control-renderer',
   components: {DispatchRenderer},
   props: {
@@ -29,9 +29,9 @@ const allOfRenderer = defineComponent({
   }
 });
 
-export default allOfRenderer;
+export default ArrayControlRenderer;
 export const entry: JsonFormsRendererRegistryEntry = {
-  renderer: allOfRenderer,
+  renderer: ArrayControlRenderer,
   //tester: rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl))
   //:TODO enable ArrayControl
   tester: rankWith(3, ()=>false)
