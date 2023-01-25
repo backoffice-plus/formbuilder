@@ -19,7 +19,7 @@ export interface ToolInterface {
     props: ToolProps;
     tester: undefined|any;
 
-    clone: (schema:JsonFormsSchema|undefined, uischema:JsonFormsUISchema|undefined, rootSchema:JsonFormsSchema|undefined) => ToolInterface;
+    clone: (schema:JsonFormsSchema|undefined, uischema:JsonFormsUISchema|undefined) => ToolInterface;
 }
 
 export class Tool implements ToolInterface{
@@ -38,12 +38,12 @@ export class Tool implements ToolInterface{
         this.uuid = String(Date.now().toString(32)+Math.random().toString(16)).replace(/\./g, '');
     }
 
-    clone(schema:JsonFormsSchema|undefined = undefined, uischema:JsonFormsUISchema|undefined = undefined, rootSchema:JsonFormsSchema|undefined=undefined): Tool {
+    clone(schema:JsonFormsSchema|undefined = undefined, uischema:JsonFormsUISchema|undefined = undefined): Tool {
 
         const props = this.props.clone();
         let jsonForms = this.props.jsonForms;
         if(schema && uischema) {
-            props.jsonForms = new JsonForms(schema, uischema, rootSchema)
+            props.jsonForms = new JsonForms(schema, uischema)
         }
         else {
             props.jsonForms = jsonForms.clone();
@@ -117,8 +117,7 @@ export class ToolProps {
 export class JsonForms {
     constructor(
         public schema: JsonFormsSchema = {} as JsonFormsSchema,
-        public uischema: JsonFormsUISchema = {} as JsonFormsUISchema,
-        public rootSchema: JsonFormsSchema = {} as JsonFormsSchema,
+        public uischema: JsonFormsUISchema = {} as JsonFormsUISchema
     )
     {
     }
@@ -151,8 +150,7 @@ export class JsonForms {
     clone() : JsonForms {
         return new JsonForms(
             {...this.schema},
-            {...this.uischema},
-            this.rootSchema,
+            {...this.uischema}
         )
     }
 }

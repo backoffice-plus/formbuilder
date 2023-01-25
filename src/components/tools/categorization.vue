@@ -203,7 +203,7 @@ const init = () => {
 
 const addTab = () => {
   const {findLayoutToolByUiType} = useTools();
-  const tabTool = (findLayoutToolByUiType('Category') ?? unknownTool).clone(undefined, {type: 'Category'}, undefined)
+  const tabTool = (findLayoutToolByUiType('Category') ?? unknownTool).clone(undefined, {type: 'Category'})
 
   tabTool.props.jsonForms.uischema.label = 'Tab';
   childTools.value.push(tabTool);

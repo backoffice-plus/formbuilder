@@ -85,7 +85,7 @@ registerTools(defaultTools);
 const baseTool = computed(() => {
   const uiSchema = (jsonFormsUiSchema.value?.type && jsonFormsUiSchema.value) ?? {type:'VerticalLayout'};
   let tool = findLayoutToolByUiType(uiSchema.type) ?? unknownTool;
-  return tool.clone(jsonFormsSchema.value, uiSchema, undefined)
+  return tool.clone(jsonFormsSchema.value, uiSchema)
 })
 
 const onChange = (data) => {

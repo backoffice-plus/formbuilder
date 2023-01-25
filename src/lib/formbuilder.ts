@@ -82,8 +82,7 @@ export const createJsonForms = (rootForm:any, rootSchema:JsonFormsSchema, schema
 
     return new JsonForms(
         schemaReadOnly ? rootSchema : schema,
-        createJsonUiSchema(rootForm, schema),
-        rootSchema
+        createJsonUiSchema(rootForm, schema)
     );
 }
 
