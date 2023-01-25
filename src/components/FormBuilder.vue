@@ -50,7 +50,7 @@
 
 
 <script setup>
-import {computed, ref, onMounted, onBeforeUnmount, useAttrs} from 'vue'
+import {computed, ref, onMounted, onBeforeUnmount} from 'vue'
 import {
   FormBuilderBar,
   createJsonForms, defaultTools,

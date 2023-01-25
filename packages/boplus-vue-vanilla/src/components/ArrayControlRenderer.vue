@@ -25,7 +25,7 @@ const ArrayControlRenderer = defineComponent({
    * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/ArrayControlRenderer.vue
    */
   setup(props: RendererProps<ControlElement>) {
-      return {}
+      return { props }
   }
 });
 

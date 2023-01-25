@@ -26,7 +26,7 @@ const controlRenderer = defineComponent({
    * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/EnumArrayRenderer.vue
    */
   setup(props: RendererProps<ControlElement>) {
-    return {}
+    return {props}
   }
 });
 

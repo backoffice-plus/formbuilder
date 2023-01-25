@@ -51,7 +51,7 @@ import {computed, defineComponent, ref,} from 'vue';
 import {
   createAjv,
   createCombinatorRenderInfos,
-  createDefaultValue, getData,
+  createDefaultValue,
   isOneOfControl,
   isVisible,  rankWith
 
@@ -60,9 +60,7 @@ import type {ControlElement, JsonFormsRendererRegistryEntry} from '@jsonforms/co
 import {DispatchRenderer, rendererProps, useJsonFormsOneOfControl} from '@jsonforms/vue';
 import type {RendererProps} from '@jsonforms/vue';
 import {ControlWrapper, useVanillaControl} from "@jsonforms/vue-vanilla";
-import {isEmpty} from "lodash";
 import CompinatorProperties from "./CompinatorProperties.vue";
-import {mapStateToControlProps} from "@jsonforms/core/src/util/renderer";
 
 const oneOfRenderer = defineComponent({
   name: 'one-of-select-renderer',
@@ -123,7 +121,7 @@ const oneOfRenderer = defineComponent({
         }
       }
     },
-    confirmedIndex(newIndex, oldIndex) {
+    confirmedIndex(newIndex) {
       const schema = this.indexedOneOfRenderInfos[newIndex]?.schema;
       this.handleChange(this.control.path, (schema && createDefaultValue(schema)) ?? {});
     }
