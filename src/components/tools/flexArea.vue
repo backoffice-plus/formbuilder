@@ -134,7 +134,7 @@
 import * as draggableComponent from 'vuedraggable'
 import {
   ElementHeadOrToolIcon, Actions,
-  initElementsByToolProps, getComponent,
+  initElementsByToolProps, importToolComponent,
   emitter
 } from "../../index";
 import {Tool} from "../../lib/models";
@@ -192,7 +192,7 @@ export default {
     },
 
     importComponent(componentName) {
-      return getComponent(componentName);
+      return importToolComponent(componentName);
     },
 
     onDelete() {

@@ -124,7 +124,7 @@ import * as draggableComponent from 'vuedraggable'
 import {
   ElementHeadOrToolIcon, Actions,
   ToolProps,
-  getComponent, findLayoutTool, getChildComponents, initElementsByToolProps,
+  importToolComponent, findLayoutTool, getChildComponents, initElementsByToolProps,
   updatableUischemaKeys,
     emitter
 } from "../../index";
@@ -182,7 +182,7 @@ export default {
   methods: {
 
     importComponent(componentName) {
-      return getComponent(componentName);
+      return importToolComponent(componentName);
     },
 
     addTab: function() {

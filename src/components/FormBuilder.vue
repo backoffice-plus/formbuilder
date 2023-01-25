@@ -25,7 +25,7 @@
             @drag="e=>drag = !!e"
         />
 
-        <component :is="getComponent(baseTool.componentName)"
+        <component :is="importToolComponent(baseTool.componentName)"
                    :tool="baseTool"
                    :isRoot="true"
                    :isDragging="!!drag"
@@ -53,7 +53,7 @@
 import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
 import {
   FormBuilderBar,
-  createJsonForms, findLayoutTool, getComponent,
+  createJsonForms, findLayoutTool, importToolComponent,
   emitter,
 } from "../index";
 import {denormalizeModalOptions} from '../lib/normalizer'

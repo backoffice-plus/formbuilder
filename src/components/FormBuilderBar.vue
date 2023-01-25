@@ -93,7 +93,7 @@ aside .toolItem.formInputByTypeTool {
 import {defineComponent, onBeforeUnmount, onMounted} from 'vue';
 import * as draggableComponent from 'vuedraggable'
 import {
-  getComponent,
+  importToolComponent,
   layoutTools,
   controlTools,
   findAllProperties,
@@ -167,7 +167,7 @@ export default defineComponent({
 
   methods: {
     importComponent(componentName) {
-      return getComponent(componentName);
+      return importToolComponent(componentName);
     },
     onChoose(e) {
       //console.log("onChoose",e)

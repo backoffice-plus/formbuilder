@@ -5,8 +5,7 @@ export { default as Actions } from './components/tools/utils/Actions.vue'
 
 //lib
 export * from './lib/formbuilder';
-export { layoutTools, controlTools  } from './lib/formbuilder';
-export { getComponent } from './lib/tools/toolImporter';
+export { layoutTools, controlTools, importToolComponent, findLayoutTool, findControlToolByTester } from './lib/tools';
 export {ToolProps, updatableUischemaKeys, updatableSchemaKeys} from "./lib/models";
 
 
