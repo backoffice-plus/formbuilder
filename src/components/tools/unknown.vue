@@ -17,32 +17,21 @@
 }
 </style>
 
-<script>
+<script setup>
 
 import {
   ElementHeadOrToolIcon, Actions,
-  ToolProps,
-  updatableSchemaKeys, updatableUischemaKeys,
-  emitter
 } from "../../index";
-import {normalizeModalOptions} from "../../lib/normalizer";
-import {defineComponent} from 'vue';
 import {Tool} from "../../lib/models";
 
-export default defineComponent({
-  components: {ElementHeadOrToolIcon, Actions},
-  props: {
-    tool: Tool,
-    isToolbar: Boolean,
-    index: Number, //for deleting correct element in list
+const props = defineProps({
+  tool: Tool,
+  isToolbar: Boolean,
+  index: Number, //for deleting correct element in list
 
-    isDragging: Boolean, //needed in flexarea
-  },
+  isDragging: Boolean, //needed in flexarea
+})
 
-  data() {
-    return {
+defineExpose({ tool:props.tool })
 
-    }
-  },
-});
 </script>

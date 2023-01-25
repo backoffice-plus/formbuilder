@@ -1,11 +1,11 @@
 <template>
   <div class="labelTool">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
+    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool"/>
 
     <div v-if="!isToolbar">
 
-        <Actions :tool="tool" @delete="onDelete" />
+      <Actions :tool="tool" @delete="onDelete"/>
 
       <textarea class="w-full h-32 bg-black text-white font-mono text-xs" disabled>{{ items }}</textarea>
 
@@ -17,64 +17,55 @@
 
 <style scoped>
 .labelTool {
-  min-height:auto;
+  min-height: auto;
   @apply
   relative
 }
 </style>
 
-<script>
+<script setup>
 
 import {
   ElementHeadOrToolIcon, Actions,
-  ToolProps,
-  updatableSchemaKeys, updatableUischemaKeys,
-  emitter
 } from "../../index";
 import {normalizeModalOptions} from '../../lib/normalizer'
-import {defineComponent} from 'vue';
+import {computed} from 'vue';
 import {Tool} from "../../lib/models";
 
-export default defineComponent({
-  components: {ElementHeadOrToolIcon, Actions},
-  props: {
-    tool: Tool,
-    isToolbar: Boolean,
-    index: Number, //for deleting correct element in list
+const props = defineProps({
+  tool: Tool,
+  isToolbar: Boolean,
+  index: Number, //for deleting correct element in list
 
-    isDragging: Boolean, //needed in flexarea
-  },
+  isDragging: Boolean, //needed in flexarea
+})
 
-  data() {
-    return {
+const emit = defineEmits(['deleteByIndex']);
 
-    }
-  },
+defineExpose({ tool:props.tool })
 
-  computed: {
-    data() {
-      return !this.isToolbar ? normalizeModalOptions(this.tool) : {};
-    },
-    keyword() {
-      let keyword = undefined;
-      ['oneOf', 'anyOf', 'allOf'].forEach(key => {
-        if(undefined !== this.tool.props.jsonForms.schema[key]) {
-          keyword = key;
-        }
-      })
-      return keyword;
-    },
-    items() {
-      return this.tool.props.jsonForms.schema[this.keyword] ?? [];
-    }
-  },
-
-  methods: {
-    onDelete() {
-      if(confirm("Wirklich löschen?")) {
-        this.$emit('deleteByIndex', {index: this.index});
-      }
-    },
-  }
+const data = computed(() => {
+  return !props.isToolbar ? normalizeModalOptions(props.tool) : {};
 });
+
+const keyword = computed(() => {
+  let keyword = undefined;
+  ['oneOf', 'anyOf', 'allOf'].forEach(key => {
+    if (undefined !== props.tool.props.jsonForms.schema[key]) {
+      keyword = key;
+    }
+  })
+  return keyword;
+});
+
+const items = computed(() => {
+  return props.tool.props.jsonForms.schema[keyword] ?? [];
+});
+
+const onDelete = () => {
+  if (confirm("Wirklich löschen?")) {
+    emit('deleteByIndex', {index: props.index});
+  }
+};
+
 </script>

@@ -232,7 +232,7 @@ export const normalizeModalOptions = (tool:Tool) : Object => {
     //     }
     // }
 
-    console.log("normalizeModalOption",options);
+    //console.log("normalizeModalOption",options);
 
     return options;
 };

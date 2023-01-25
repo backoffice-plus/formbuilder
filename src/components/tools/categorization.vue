@@ -10,7 +10,7 @@
       <div class="flex items-center">
         <div class="tabs">
           <button
-              v-for="(element,index) in elements"
+              v-for="(element,index) in childTools"
               :class="{selected:currentTab===index}"
               @click="currentTab=index"
           >
@@ -19,15 +19,15 @@
           <button
             @click="currentTab=-1"
             v-text="'All'"
-            v-if="currentTab>=0 && elements.length>1"
+            v-if="currentTab>=0 && childTools.length>1"
           />
           <button type="button" class="add" @click="addTab" />
         </div>
       </div>
 
-      <draggableComponent
+      <Vuedraggable
           :class="['dropArea bg-dotted nestedFlexArea flex-col', {drag:dragTab}]"
-          :list="elements"
+          :list="childTools"
           group="formBuilderCategorization"
           item-key="uuid"
           @start="dragTab = true"
@@ -36,7 +36,7 @@
       >
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
-            <component :is="importComponent(tool.componentName)"
+            <component :is="tool.importer()"
 
                        :tool="tool"
                        :isToolbar="false"
@@ -46,13 +46,13 @@
                        @deleteByIndex="onDeleteByIndex"
 
                        class="dropItem"
-                       :ref="'components '+ tool.uuid"
+                       :ref="addChildComponent"
 
                        v-show="currentTab===-1 || index===currentTab"
             />
           </div>
         </template>
-      </draggableComponent>
+      </Vuedraggable>
 
     </div>
   </div>
@@ -117,111 +117,124 @@ button.add::before {
 </style>
 
 
-
-<script>
-//import draggableComponent from 'vuedraggable'
-import * as draggableComponent from 'vuedraggable'
+<script setup>
+/**
+ * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
+ */
 import {
   ElementHeadOrToolIcon, Actions,
-  ToolProps,
-  importToolComponent, findLayoutTool, getChildComponents, initElementsByToolProps,
-  updatableUischemaKeys,
-    emitter
+  initElementsByToolProps,
+  emitter
 } from "../../index";
+import Vuedraggable from 'vuedraggable'
+import {normalizeModalOptions} from '../../lib/normalizer'
+import {ref, computed, onMounted} from 'vue';
 import {Tool} from "../../lib/models";
+import {useTools} from "../../composable/tools";
+import {unknownTool} from "../../lib/tools/unknownTool";
 
-export default {
-  components: {draggableComponent, ElementHeadOrToolIcon, Actions},
+const props = defineProps({
+  tool: Tool,
+  isRoot: Boolean,
+  isToolbar: Boolean,
+  index: Number, //for deleting correct element in list
 
-  props: {
-    tool: Tool,
-    isToolbar: Boolean,
-    index: Number, //for deleting correct element in list
+  isDragging: Boolean, //needed in flexarea
+})
 
-    isDragging: Boolean,
-  },
+const emit = defineEmits(['deleteByIndex']);
 
-  data() {
-    return {
-      dragTab: false,
-
-
-      uuid: this.tool.uuid,
-      toolProps: this.tool?.props,
-      toolType: this?.toolProps?.toolType,
-
-      elements: [],
-
-      tabs:[],
-      currentTab: -1,
-      tabLabels:{},
-    };
-  },
+const drag = ref(false);
+const dragTab = ref(false);
+const childTools = ref([]);
+const toolProps = ref( props?.tool?.props);
+const toolType = ref( props?.tool?.props?.toolType);
+const childComponents = ref({});
+const tabs = ref([]);
+const currentTab = ref(-1);
+const tabLabels = ref({});
 
 
-  mounted() {
-    if (!this.isToolbar) {
-      if (this.toolProps.jsonForms?.uischema?.elements?.length) {
-        initElementsByToolProps(this.toolProps)
-            .map(elm => this.elements.push(elm));
+const data = computed(() => {
+  return !props.isToolbar ? normalizeModalOptions(props.tool) : {};
+});
 
-        //wait to render dom
-        if(this.elements.length) {
-          setTimeout(this.onDropAreaChange, 20);
-        }
+const addChildComponent = (e) => {
+  if(e?.tool?.uuid) {
+    childComponents.value[e.tool.uuid]=e;
+  }
+}
+
+defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComponents })
+
+onMounted(() => {
+  if (!props.isToolbar) {
+    if (props?.tool?.props.jsonForms?.uischema?.elements?.length) {
+      initElementsByToolProps(props?.tool?.props)
+          .map(elm => childTools.value.push(elm));
+
+      //wait to render dom
+      if(childTools.value.length) {
+        setTimeout(onDropAreaChange, 20);
       }
-      else {
-        this.addTab();
-      }
-
-      emitter.on('formBuilderUpdated', (data) => {
-        window.setTimeout(this.buildTabLabels,20);
-      });
     }
-  },
-  methods: {
+    else {
+      addTab();
+    }
 
-    importComponent(componentName) {
-      return importToolComponent(componentName);
-    },
+    emitter.on('formBuilderUpdated', (data) => {
+      window.setTimeout(buildTabLabels,20);
+    });
+  }
+})
 
-    addTab: function() {
-      const tool = findLayoutTool(undefined,{type: 'Category'});
-      tool.props.jsonForms.uischema.label = 'Tab';
-      this.elements.push(tool);
-      window.setTimeout(this.buildTabLabels,50);
-    },
-    onDelete() {
-      if(confirm("Wirklich löschen?")) {
-        this.$emit('deleteByIndex', {index: this.index});
-      }
-    },
 
-    onDeleteByIndex(e) {
-      const index = e.index;
-      this.elements.splice(index, 1);
+const init = () => {
+  childTools.value = [];
+  props?.tool?.props && initElementsByToolProps(props?.tool?.props)
+      .map(elm => childTools.value.push(elm));
 
-      emitter.emit('formBuilderUpdated')
-    },
-
-    buildTabLabels: function (e) {
-      const childs = getChildComponents(this);
-      Object.keys(childs).map(uuid => {
-        if(childs[uuid]?.toolProps.jsonForms.uischema.label) {
-          this.tabLabels[uuid] = childs[uuid].toolProps.jsonForms.uischema.label;
-        }
-      });
-    },
-
-    onDropAreaChange(e) {
-      window.setTimeout(this.buildTabLabels,50);
-      emitter.emit('formBuilderUpdated')
-    },
-  },
-
-  beforeUnmount() {
-    emitter.off('formBuilderUpdated')
+  if (childTools.value.length) {
+    //wait to render dom (:TODO use nextTick)
+    setTimeout(onDropAreaChange, 50);
   }
 };
 
+
+const addTab = () => {
+  const {findLayoutToolByUiType} = useTools();
+  const tabTool = (findLayoutToolByUiType('Category') ?? unknownTool).clone(undefined, {type: 'Category'}, undefined)
+
+  tabTool.props.jsonForms.uischema.label = 'Tab';
+  childTools.value.push(tabTool);
+  window.setTimeout(buildTabLabels,50);
+};
+
+
+const buildTabLabels = (e) => {
+  Object.keys(childComponents).map(uuid => {
+    if(childComponents[uuid]?.tool?.toolProps.jsonForms.uischema.label) {
+      tabLabels.value[uuid] = childComponents[uuid].tool?.toolProps.jsonForms.uischema.label;
+    }
+  });
+};
+
+
+const onDropAreaChange = (e) => {
+  window.setTimeout(buildTabLabels,50);
+  emitter.emit('formBuilderUpdated')
+};
+
+const onDeleteByIndex = (e) => {
+  const index = e.index;
+  childTools.value.splice(index, 1);
+
+  emitter.emit('formBuilderUpdated')
+};
+
+const onDelete = () => {
+  if (confirm("Wirklich löschen?")) {
+    emit('deleteByIndex', {index: props.index});
+  }
+};
 </script>

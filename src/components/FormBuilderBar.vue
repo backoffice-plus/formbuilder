@@ -13,7 +13,7 @@
     item-key="uuid"
   >
     <template #item="{ element: tool }">
-      <component :is="importComponent(tool.componentName)"
+      <component :is="tool.importer()"
 
                  :tool="tool"
                  :isToolbar="true"
@@ -88,14 +88,12 @@ aside .toolItem.formInputByTypeTool {
 <script>
 
 /**
+ * :TODO refactor to <script setup>
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
 import {defineComponent, onBeforeUnmount, onMounted} from 'vue';
 import * as draggableComponent from 'vuedraggable'
 import {
-  importToolComponent,
-  layoutTools,
-  controlTools,
   findAllProperties,
   emitter,
   findAllScopes,
@@ -103,6 +101,7 @@ import {
 } from "../index";
 import {guessInputType, normalizeScope, normalizePath} from '../lib/normalizer'
 import {Tool} from "../lib/models";
+import {useTools} from "../composable/tools";
 
 export default defineComponent({
   components: {draggableComponent},
@@ -135,7 +134,10 @@ export default defineComponent({
       return this.jsonForms?.schema;
     },
     tools() {
-      let all = [...layoutTools];
+      const {getControlTools, getLayoutTools} = useTools();
+
+      let all = [...getLayoutTools()];
+
       if(this.schemaReadOnly) {
         const allProps = findAllProperties(this.schema);
         const readOnlyControlTools = Object.keys(allProps)?.map(name => {
@@ -157,8 +159,11 @@ export default defineComponent({
         all = [...readOnlyControlTools, ...all]
       }
       else {
-        all = [...controlTools, ...all]
+        all = [...getControlTools(), ...all]
       }
+
+      //:TODO add property to tool to hide tools
+      all = all.filter(tool => tool.props.toolType !== 'tab');
 
       return all;
     },
@@ -166,9 +171,6 @@ export default defineComponent({
   },
 
   methods: {
-    importComponent(componentName) {
-      return importToolComponent(componentName);
-    },
     onChoose(e) {
       //console.log("onChoose",e)
     },

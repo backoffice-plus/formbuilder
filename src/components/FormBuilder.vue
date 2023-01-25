@@ -25,12 +25,12 @@
             @drag="e=>drag = !!e"
         />
 
-        <component :is="importToolComponent(baseTool.componentName)"
+        <component :is="baseTool.importer()"
                    :tool="baseTool"
                    :isRoot="true"
                    :isDragging="!!drag"
                   class="my-4"
-                  ref="rootForm"
+                   :ref="setRootForm"
         />
     </template>
 
@@ -50,16 +50,18 @@
 
 
 <script setup>
-import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import {computed, ref, onMounted, onBeforeUnmount, useAttrs} from 'vue'
 import {
   FormBuilderBar,
-  createJsonForms, findLayoutTool, importToolComponent,
+  createJsonForms, defaultTools,
   emitter,
 } from "../index";
 import {denormalizeModalOptions} from '../lib/normalizer'
 import Modal from "./Modal.vue";
 import {Generate} from "@jsonforms/core/src/generators/Generate";
 import FormBuilderDefinitions from "./FormBuilderDefinitions.vue";
+import {useTools} from "../composable/tools";
+import {unknownTool} from "../lib/tools/unknownTool";
 
 const props = defineProps({
   jsonForms: Object,
@@ -76,11 +78,13 @@ const isModalOpen = ref(false);
 const toolEdit = ref(null);
 const showBuilder = ref('uischema');
 
+const {registerTools, unregisterAllTools, findLayoutToolByUiType} = useTools();
+registerTools(defaultTools);
+
 const baseTool = computed(() => {
-  return findLayoutTool(
-      jsonFormsSchema.value,
-      (jsonFormsUiSchema.value?.type && jsonFormsUiSchema.value) ?? {type:'VerticalLayout'}
-  );
+  const uiSchema = (jsonFormsUiSchema.value?.type && jsonFormsUiSchema.value) ?? {type:'VerticalLayout'};
+  let tool = findLayoutToolByUiType(uiSchema.type) ?? unknownTool;
+  return tool.clone(jsonFormsSchema.value, uiSchema, undefined)
 })
 
 const onChange = (data) => {
@@ -106,6 +110,10 @@ const updateJsonForm = () => {
   emitter.emit('formBuilderSchemaUpdated', newJsonForms)
 }
 
+const setRootForm = (e) => {
+  rootForm.value = e;
+}
+
 onMounted(() => {
   window.setTimeout(() => emitter.emit('formBuilderUpdated'),50);
 
@@ -118,6 +126,8 @@ onMounted(() => {
   });
 });
 onBeforeUnmount(() => {
+  unregisterAllTools();
+
   emitter.off('formBuilderModal');
   emitter.off('formBuilderUpdated');
 })

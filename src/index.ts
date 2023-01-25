@@ -1,13 +1,13 @@
-import allOfRenderer from "../packages/boplus-vue-vanilla/src/components/AllOfRenderer.vue";
+import {controlTools} from "./lib/tools/controlTools";
+import {layoutTools} from "./lib/tools/layoutTools";
 
 export { default as ElementHeadOrToolIcon } from './components/tools/utils/ElementHeadOrToolIcon.vue'
 export { default as Actions } from './components/tools/utils/Actions.vue'
 
 //lib
 export * from './lib/formbuilder';
-export { layoutTools, controlTools, importToolComponent, findLayoutTool, findControlToolByTester } from './lib/tools';
 export {ToolProps, updatableUischemaKeys, updatableSchemaKeys} from "./lib/models";
-
+export const defaultTools = [...controlTools, ...layoutTools]
 
 //components
 export { default as FormBuilder } from './components/FormBuilder.vue';

@@ -1,31 +1,31 @@
 <template>
-  <div class="flexAreaTool" :class="['group/itemF']">
+  <div class="flexAreaTool" :class="['group/itemF']" ref="flexAreaTool">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
+    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool"/>
 
     <div v-if="!isToolbar" :class="['flex',{'mr-5':!isRoot}]">
 
-      <Actions :class="['opacity-0', 'group-hover/itemF:opacity-100']" :tool="tool" @delete="onDelete" v-if="!isRoot" />
+      <Actions :class="['opacity-0', 'group-hover/itemF:opacity-100']" :tool="tool" @delete="onDelete" v-if="!isRoot"/>
 
       <!--
         @see http://sortablejs.github.io/Sortable/#thresholds
       -->
-      <draggableComponent
-        :class="['dropArea bg-dotted nestedFlexArea', toolType, {drag:isDragging||drag}]"
-        :list="elements"
-        group="formBuilder"
-        item-key="uuid"
-        @start="drag = true"
-        @end="drag = false"
-        @change="onDropAreaChange"
+      <Vuedraggable
+          :class="['dropArea bg-dotted nestedFlexArea', toolType, {drag:isDragging||drag}]"
+          :list="childTools"
+          group="formBuilder"
+          item-key="uuid"
+          @start="drag = true"
+          @end="drag = false"
+          @change="onDropAreaChange"
 
-        :swapThreshold=".7"
-        :invertSwap="true"
-        :fallbackOnBody="true"
+          :swapThreshold=".7"
+          :invertSwap="true"
+          :fallbackOnBody="true"
       >
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
-            <component :is="importComponent(tool.componentName)"
+            <component :is="tool.importer()"
 
                        :tool="tool"
                        :isToolbar="false"
@@ -35,11 +35,11 @@
                        @deleteByIndex="onDeleteByIndex"
 
                        class="dropItem"
-                       :ref="'components '+ tool.uuid"
+                       :ref="addChildComponent"
             />
           </div>
         </template>
-      </draggableComponent>
+      </Vuedraggable>
     </div>
   </div>
 </template>
@@ -63,7 +63,7 @@
   w-full
   flex-grow
 
-    overflow-auto
+  overflow-auto
 
   p-2
 
@@ -85,14 +85,17 @@
   @apply
   flex items-stretch
 }
+
 .nestedFlexArea:not(.flexRow) {
-   @apply
-   flex-col
+  @apply
+  flex-col
 }
+
 .nestedFlexArea.flexRow {
   @apply
   flex-row
 }
+
 .nestedFlexArea > * {
   @apply w-full flex-shrink
 }
@@ -108,15 +111,14 @@
 .dropArea .toolItem {
   min-height: 100px;
   @apply
-
   bg-blue-50
   border border-blue-100
   p-4
   rounded
 }
+
 .dropItem.formInputByTypeTool {
   @apply
-
   bg-blue-100
   border border-blue-200
 }
@@ -129,100 +131,80 @@
 
 </style>
 
-<script>
-//import draggableComponent from 'vuedraggable'
-import * as draggableComponent from 'vuedraggable'
-import {
-  ElementHeadOrToolIcon, Actions,
-  initElementsByToolProps, importToolComponent,
-  emitter
-} from "../../index";
-import {Tool} from "../../lib/models";
-
+<script setup>
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-export default {
-  components: {Actions, ElementHeadOrToolIcon, draggableComponent},
+import {
+  ElementHeadOrToolIcon, Actions,
+  initElementsByToolProps,
+  emitter
+} from "../../index";
+import Vuedraggable from 'vuedraggable'
+import {normalizeModalOptions} from '../../lib/normalizer'
+import {ref, computed, onMounted} from 'vue';
+import {Tool} from "../../lib/models";
 
-  props: {
-    tool: Tool,
-    isRoot: Boolean,
-    isToolbar: Boolean,
-    index: Number, //for deleting correct element in list
+const props = defineProps({
+  tool: Tool,
+  isRoot: Boolean,
+  isToolbar: Boolean,
+  index: Number, //for deleting correct element in list
 
-    isDragging: Boolean,
-  },
-  //props: ['toolType', 'uuid', 'index', 'type', 'jsonForms', 'edit', 'options'],
+  isDragging: Boolean, //needed in flexarea
+})
 
-  data() {
-    return {
-      drag: false,
+const emit = defineEmits(['deleteByIndex']);
 
-      uuid: this.tool?.uuid,
-      toolProps: this.tool?.props,
-      toolType: this?.tool?.props?.toolType,
+const drag = ref(false);
+const childTools = ref([]);
+const toolProps = ref( props?.tool?.props);
+const toolType = ref( props?.tool?.props?.toolType);
+const childComponents = ref({});
 
-      elements: [],
-    };
-  },
+const data = computed(() => {
+  return !props.isToolbar ? normalizeModalOptions(props.tool) : {};
+});
 
-  // computed: {
-  //   flexType() {
-  //     return 'nestedFlexArea ' + ('flexRow' === this.toolType ? 'flex-row' : 'flex-col');
-  //   },
-  // },
+const addChildComponent = (e) => {
+  if(e?.tool?.uuid) {
+    childComponents.value[e.tool.uuid]=e;
+  }
+}
 
-  mounted() {
-    if (!this.isToolbar) {
-      this.init();
-    }
-  },
+defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComponents })
 
-  methods: {
-    init() {
-      this.elements = [];
-      this.toolProps && initElementsByToolProps(this.toolProps)
-          .map(elm => this.elements.push(elm));
+onMounted(() => {
+  if (!props.isToolbar) {
+    init();
+  }
+})
 
-      if(this.elements.length)  {
-        //wait to render dom
-        setTimeout(this.onDropAreaChange, 50);
-      }
-    },
+const init = () => {
+  childTools.value = [];
+  toolProps && initElementsByToolProps(toolProps.value)
+      .map(elm => childTools.value.push(elm));
 
-    importComponent(componentName) {
-      return importToolComponent(componentName);
-    },
-
-    onDelete() {
-      if(confirm("Wirklich löschen?")) {
-        this.$emit('deleteByIndex', {index: this.index});
-      }
-    },
-
-    onDeleteByIndex(e) {
-      const index = e.index;
-      this.elements.splice(index, 1);
-
-      this.onDropAreaChange(e);
-    },
-
-    onDropAreaChange(e) {
-      emitter.emit('formBuilderUpdated', e)
-    },
-  },
-
-  watch: {
-    // data: {
-    //   handler() {
-    //     console.log("flexarea watch data DEPRECATED!!!")
-    //     this.toolProps.jsonForms.update({...this.data});
-    //     this.onDropAreaChange();
-    //   },
-    //   deep: true
-    // },
+  if (childTools.value.length) {
+    //wait to render dom (:TODO use nextTick)
+    setTimeout(onDropAreaChange, 50);
   }
 };
 
+const onDeleteByIndex = (e) => {
+  const index = e.index;
+  childTools.value.splice(index, 1);
+
+  onDropAreaChange(e);
+};
+
+const onDropAreaChange = (e) => {
+  emitter.emit('formBuilderUpdated', e)
+};
+
+const onDelete = () => {
+  if (confirm("Wirklich löschen?")) {
+    emit('deleteByIndex', {index: props.index});
+  }
+};
 </script>

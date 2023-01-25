@@ -1,5 +1,5 @@
 <template>
-  <div class="labelTool">
+  <div class="combinatorTool">
 
     <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
 
@@ -16,53 +16,38 @@
 
 
 <style scoped>
-.labelTool {
+.combinatorTool {
   min-height:auto;
   @apply
   relative
 }
 </style>
 
-<script>
+<script setup>
 
 import {
   ElementHeadOrToolIcon, Actions,
-  ToolProps,
-  updatableSchemaKeys, updatableUischemaKeys,
-  emitter
 } from "../../index";
 import {normalizeModalOptions} from '../../lib/normalizer'
-import {defineComponent} from 'vue';
+import {computed} from 'vue';
 import {Tool} from "../../lib/models";
 
-export default defineComponent({
-  components: {ElementHeadOrToolIcon, Actions},
-  props: {
-    tool: Tool,
-    isToolbar: Boolean,
-    index: Number, //for deleting correct element in list
+const props = defineProps({
+  tool: Tool,
+  isToolbar: Boolean,
+  index: Number, //for deleting correct element in list
 
-    isDragging: Boolean, //needed in flexarea
-  },
+  isDragging: Boolean, //needed in flexarea
+})
 
-  data() {
-    return {
+const emit = defineEmits(['deleteByIndex']);
 
-    }
-  },
+defineExpose({ tool:props.tool })
 
-  computed: {
-    data() {
-      return !this.isToolbar ? normalizeModalOptions(this.tool) : {};
-    }
-  },
-
-  methods: {
-    onDelete() {
-      if(confirm("Wirklich löschen?")) {
-        this.$emit('deleteByIndex', {index: this.index});
-      }
-    },
+const onDelete = () => {
+  if (confirm("Wirklich löschen?")) {
+    emit('deleteByIndex', {index: props.index});
   }
-});
+};
+
 </script>

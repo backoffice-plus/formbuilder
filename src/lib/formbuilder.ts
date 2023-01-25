@@ -3,25 +3,18 @@ import _ from "lodash";
 import {
     JsonForms,
     Tool,
-    ToolProps, updatableSchemaKeys, updatableUischemaKeys
+    ToolProps
 } from "./models";
 import type {
     JsonFormsSchema,
     JsonFormsUISchema,
 } from "./models";
-import type {ControlElement, Layout, SchemaBasedCondition} from "@jsonforms/core/src/models/uischema";
-import type {JsonSchema, Rule, UISchemaElement} from "@jsonforms/core";
-import {
-    isOneOfControl,
-    isStringControl,
-    isBooleanControl,
-    isNumberControl,
-    or,and,
-    rankWith,
-} from "@jsonforms/core";
+import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
+import type {UISchemaElement} from "@jsonforms/core";
 import { normalizeScope,normalizePath,denormalizePath,denormalizeScope } from './normalizer';
-import {isIntegerControl, schemaMatches, schemaTypeIs, uiTypeIs} from "@jsonforms/core/src/testers/testers";
-import {findControlToolByTester, findLayoutTool} from "./tools";
+import {useTools} from "../composable/tools";
+import {unknownTool} from "./tools/unknownTool";
+import {unref} from "vue";
 
 
 /**
@@ -48,13 +41,15 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
 
     const pushableElements = [] as any;
 
+    const {findMatchingTool, findLayoutToolByUiType} = useTools();
+
     jsonFormUischema?.elements?.forEach((itemUischema:any) => {
         switch (itemUischema.type) {
             case 'Control':
                 const propertyPath = normalizeScope(itemUischema.scope);
                 const itemSchema = _.get(jsonFromSchema, propertyPath);
 
-                let tool = findControlToolByTester(jsonFromSchema,itemSchema, itemUischema).clone(itemSchema, itemUischema);
+                let tool = findMatchingTool(jsonFromSchema,itemSchema, itemUischema).clone(itemSchema, itemUischema, undefined);
 
                 if(tool) {
                     tool.props.propertyName = normalizePath(propertyPath);
@@ -64,7 +59,8 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
                 break;
 
             default:
-                const toolLayout = findLayoutTool(jsonFromSchema, itemUischema);
+                const toolLayout = (findLayoutToolByUiType(itemUischema.type) ?? unknownTool).clone(jsonFromSchema, itemUischema, undefined)
+
                 if(toolLayout) {
                     pushableElements.push(toolLayout);
                 }
@@ -82,6 +78,8 @@ export const createJsonForms = (rootForm:any, rootSchema:JsonFormsSchema, schema
         schema.properties = {}; //clear properties
     }
 
+    //console.log("formbuilder.ts","createJsonForms",rootForm)
+
     return new JsonForms(
         schemaReadOnly ? rootSchema : schema,
         createJsonUiSchema(rootForm, schema),
@@ -90,13 +88,16 @@ export const createJsonForms = (rootForm:any, rootSchema:JsonFormsSchema, schema
 }
 
 export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFormsUISchema => {
-    refElm = refElm?.value ?? refElm;
+    refElm = unref(refElm)
+    const tool = refElm?.tool;
+    const childTools = refElm?.childTools ?? refElm?.elements;
+    const childComponents = refElm?.childComponents;
 
-    if(!refElm?.tool.props) {
+    if(!tool?.props) {
         throw "refElm has no toolProps.";
     }
 
-    const toolProps = refElm?.tool.props as ToolProps;
+    const toolProps = tool.props as ToolProps;
 
     const jsonForms = toolProps?.jsonForms.clone();
 
@@ -151,21 +152,12 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
         case 'Categorization':
         case 'Category':
         case 'Group':
-            const childComponents = getChildComponents(refElm, null);
-
-            const elements = refElm.elements.map((tool:Tool) => {
+            uischema.elements = childTools.map((tool:Tool) => {
                 if(!childComponents[tool.uuid]) {
                     throw "no child with uuid "+ tool.uuid +" found";
                 }
                 return createJsonUiSchema(childComponents[tool.uuid], schema)
-            });
-            uischema.elements = elements ?? [];
-            // if (props?.label) {
-            //     uischema.label = props.label;
-            // }
-            // if(!uischema.label && 'Category' === uischema.type) {
-            //     uischema.label = 'Tab';
-            // }
+            }) ?? [];
             break;
 
 
@@ -182,32 +174,34 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
     return uischema;
 };
 
-export const getChildComponents = (component:any, namePrefix:string|null) => {
-    const childComponents = {} as Record<string, any>;
-
-    const refs = Object.keys(component.$refs)
-        .filter(key => key.includes(namePrefix ?? 'components') && component.$refs[key])
-        .map(key => {
-            let reff = component.$refs[key];
-            if(reff.length) {
-                reff = reff[0];
-                if(1 < reff.length) {
-                    throw "there are more then one $refs with key "+ key
-                }
-            }
-            return reff;
-        });
-
-    refs.map(reff => {
-        if(!reff.tool.uuid)  {
-            throw "no uuid in getChildComponents";
-        }
-
-        childComponents[reff.tool.uuid] = reff
-    })
-
-    return childComponents;
-};
+// export const getChildComponents = (component:any, namePrefix:string|null) => {
+//     const childComponents = {} as Record<string, any>;
+//
+//     console.log("formbuilder.ts","getChildComponents",component)
+//
+//     const refs = Object.keys(component.$refs)
+//         .filter(key => key.includes(namePrefix ?? 'components') && component.$refs[key])
+//         .map(key => {
+//             let reff = component.$refs[key];
+//             if(reff.length) {
+//                 reff = reff[0];
+//                 if(1 < reff.length) {
+//                     throw "there are more then one $refs with key "+ key
+//                 }
+//             }
+//             return reff;
+//         });
+//
+//     refs.map(reff => {
+//         if(!reff.tool.uuid)  {
+//             throw "no uuid in getChildComponents";
+//         }
+//
+//         childComponents[reff.tool.uuid] = reff
+//     })
+//
+//     return childComponents;
+// };
 
 
 export const createI18nTranslate = (localeCatalogue:Record<string, string>) => {

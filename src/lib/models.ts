@@ -13,11 +13,21 @@ export interface JsonFormsUISchema extends UISchemaElement, LabelElement, Contro
     type:string
 }
 
-export class Tool {
+export interface ToolInterface {
+    componentName: string;
+    uuid: string;
+    props: ToolProps;
+    tester: undefined|any;
+
+    clone: (schema:JsonFormsSchema|undefined, uischema:JsonFormsUISchema|undefined, rootSchema:JsonFormsSchema|undefined) => ToolInterface;
+}
+
+export class Tool implements ToolInterface{
     componentName: string;
     uuid: string;
     props: ToolProps;
     tester: undefined|any = undefined;
+    importer: () => any = ()=>undefined;
 
     constructor(componentName: string, props: ToolProps, tester:undefined|any = undefined) {
         this.componentName = componentName;
@@ -41,7 +51,7 @@ export class Tool {
 
 
 
-        return new Tool(
+        const tool = new Tool(
             this.componentName,
             props,
             this.tester,
@@ -52,6 +62,8 @@ export class Tool {
             //     this.props.propertyName,
             // )
         );
+        tool.importer = this.importer;
+        return tool;
     }
 }
 

@@ -129,10 +129,9 @@
 
 <script setup>
 import {ref, computed} from 'vue'
-import {Tool} from "../../../lib/models";
 
 const props = defineProps({
-  tool: Tool,
+  tool: Object,
   isToolbar: Boolean,
   index: Number //for deleting correct element in list
 })
