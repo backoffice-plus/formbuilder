@@ -6,7 +6,7 @@ export { default as Actions } from './components/tools/utils/Actions.vue'
 
 //lib
 export * from './lib/formbuilder';
-export {ToolProps, updatableUischemaKeys, updatableSchemaKeys} from "./lib/models";
+export {Tool, ToolProps, updatableUischemaKeys, updatableSchemaKeys} from "./lib/models";
 export const defaultTools = [...controlTools, ...layoutTools]
 
 //components
@@ -38,6 +38,6 @@ import mitt from 'mitt'
 type Events = {
     formBuilderModal: any,
     formBuilderUpdated: any,
-    formBuilderSchemaUpdated: any,
+    //formBuilderSchemaUpdated: any,
 };
 export const emitter = mitt<Events>();

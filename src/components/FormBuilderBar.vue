@@ -1,13 +1,13 @@
 <template>
 
-  <draggableComponent
+  <vuedraggable
     tag="aside"
     :list="tools"
     :group="{name:'formBuilder', pull: 'clone', put: false}"
     :clone="clone"
     :sort="false"
     drag-class="dragging"
-    @choose="onChoose"
+    @choose="() => {}"
     @start="onDrag(true)"
     @end="onDrag(false)"
     item-key="uuid"
@@ -22,7 +22,7 @@
       />
     </template>
 
-  </draggableComponent>
+  </vuedraggable>
 
 </template>
 
@@ -85,122 +85,101 @@ aside .toolItem.formInputByTypeTool {
 
 </style>
 
-<script>
+
+<script setup>
 
 /**
- * :TODO refactor to <script setup>
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {defineComponent, onBeforeUnmount, onMounted} from 'vue';
-import * as draggableComponent from 'vuedraggable'
-import {
-  findAllProperties,
-  emitter,
-  findAllScopes,
-  ToolProps
-} from "../index";
+
+import {computed, ref} from 'vue';
+import Vuedraggable from 'vuedraggable'
+import {Tool, ToolProps, findAllProperties, findAllScopes,} from "../index";
 import {guessInputType, normalizeScope, normalizePath} from '../lib/normalizer'
-import {Tool} from "../lib/models";
 import {useTools} from "../composable/tools";
+import {useJsonforms} from "../composable/jsonforms";
+import formInputByType from "../components/tools/formInputByType.vue";
 
-export default defineComponent({
-  components: {draggableComponent},
+const props = defineProps(
+    {
+      schemaReadOnly: {type:Boolean, default: false},
+      jsonForms: {type:Object, default: {}},
+    }
+);
 
-  props: {
-    schemaReadOnly: {type:Boolean, default: false},
-    jsonForms: {type:Object, default: {}},
-  },
+const emits = defineEmits(['drag']);
 
-  data() {
-    return {
-      drag: false,
-      cloneCounter: {},
-      usedProps: [],
-    };
-  },
 
-  mounted() {
-    emitter.on('formBuilderSchemaUpdated', (jsonForms) => {
-      this.usedProps = findAllScopes(jsonForms.uischema).map(scope=>normalizePath(normalizeScope(scope)))
-    });
-  },
-  //
-  // beforeUnmount() {
-  //   emitter.off('formBuilderSchemaUpdated');
-  // },
+const {getControlTools, getLayoutTools} = useTools();
+const {schema, uischema} = useJsonforms();
 
-  computed: {
-    schema() {
-      return this.jsonForms?.schema;
-    },
-    tools() {
-      const {getControlTools, getLayoutTools} = useTools();
+const drag = ref(false);
+const cloneCounter = ref({});
 
-      let all = [...getLayoutTools()];
+const usedProps = computed(() => findAllScopes(uischema.value).map(scope=>normalizePath(normalizeScope(scope))));
 
-      if(this.schemaReadOnly) {
-        const allProps = findAllProperties(this.schema);
-        const readOnlyControlTools = Object.keys(allProps)?.map(name => {
+const tools = computed(() => {
 
-          //const tool = findControlTool(allProps[name], {}).clone();
-          // tool.props.propertyName = name;
-          // tool.props.schemaReadOnly = true;
-          const tool = new Tool('formInputByType', ToolProps.create({
-            propertyName: name,
-            toolType: 'control',
-            toolName: 'Control',
-            schemaReadOnly: true,
-            jsonForms: {schema:allProps[name], uischema:{type:'Control'}}
-          }));
+  let all = [...getLayoutTools()];
 
-          return tool;
-        }).filter(tool => !this.usedProps.includes(tool.props.propertyName))
+  //:TODO find better solution!! use toolStore
+  if(props.schemaReadOnly) {
+    const allProps = findAllProperties(schema.value);
+    const readOnlyControlTools = Object.keys(allProps)?.map(name => {
 
-        all = [...readOnlyControlTools, ...all]
-      }
-      else {
-        all = [...getControlTools(), ...all]
-      }
+      //const tool = findControlTool(allProps[name], {}).clone();
+      // tool.props.propertyName = name;
+      // tool.props.schemaReadOnly = true;
+      const tool = new Tool('formInputByType', ToolProps.create({
+        propertyName: name,
+        toolType: 'control',
+        toolName: 'Control',
+        schemaReadOnly: true,
+        jsonForms: {schema:allProps[name], uischema:{type:'Control'}}
+      }));
+      tool.importer = () => formInputByType
 
-      //:TODO add property to tool to hide tools
-      all = all.filter(tool => tool.props.toolType !== 'tab');
+      return tool;
+    }).filter(tool => !usedProps.value.includes(tool.props.propertyName))
 
-      return all;
-    },
-
-  },
-
-  methods: {
-    onChoose(e) {
-      //console.log("onChoose",e)
-    },
-    onDrag(drag) {
-      this.$emit('drag', drag);
-    },
-
-    clone(tool) {
-      const clone = tool.clone();
-
-      if('Control' === tool.props.jsonForms.uischema.type) {
-        const inputType = guessInputType(tool.props.jsonForms)
-        if(this.cloneCounter[inputType] === undefined) {
-          this.cloneCounter[inputType] = 0;
-        }
-        const counter = ++this.cloneCounter[inputType];
-
-        if(!this.schemaReadOnly) {
-          clone.props.propertyName = inputType + (counter);
-          clone.props.jsonForms.uischema.label = inputType;
-        }
-      }
-
-      //rootSchema
-      clone.props.jsonForms.rootSchema = this.jsonForms?.schema
-
-      return clone;
-    },
+    all = [...readOnlyControlTools, ...all]
   }
-})
+  else {
+    all = [...getControlTools(), ...all]
+  }
+
+  //:TODO add property to tool to hide tools
+  all = all.filter(tool => tool.props.toolType !== 'tab');
+
+  return all;
+});
+
+
+const onDrag = (drag) => {
+  emits('drag', drag);
+};
+
+const clone = (tool) => {
+  const clone = tool.clone();
+
+  if('Control' === tool.props.jsonForms.uischema.type) {
+    const inputType = guessInputType(tool.props.jsonForms)
+    if(cloneCounter.value[inputType] === undefined) {
+      cloneCounter.value[inputType] = 0;
+    }
+    const counter = ++cloneCounter.value[inputType];
+
+    if(!props.schemaReadOnly) {
+      clone.props.propertyName = inputType + (counter);
+      clone.props.jsonForms.uischema.label = inputType;
+    }
+  }
+
+  //rootSchema
+  //clone.props.jsonForms.rootSchema = this.jsonForms?.schema
+
+  return clone;
+};
+
 
 </script>
-

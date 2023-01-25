@@ -62,6 +62,7 @@ import {Generate} from "@jsonforms/core/src/generators/Generate";
 import FormBuilderDefinitions from "./FormBuilderDefinitions.vue";
 import {useTools} from "../composable/tools";
 import {unknownTool} from "../lib/tools/unknownTool";
+import {useJsonforms} from "../composable/jsonforms";
 
 const props = defineProps({
   jsonForms: Object,
@@ -106,8 +107,11 @@ const updateJsonForm = () => {
   jsonFormsSchema.value = newJsonForms.schema;
   jsonFormsUiSchema.value = newJsonForms.uischema;
 
+  const {update} = useJsonforms();
+  update(newJsonForms.schema, newJsonForms.uischema)
+
   emit('schemaUpdated', newJsonForms)
-  emitter.emit('formBuilderSchemaUpdated', newJsonForms)
+  //emitter.emit('formBuilderSchemaUpdated', newJsonForms)
 }
 
 const setRootForm = (e) => {

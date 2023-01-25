@@ -58,32 +58,34 @@ import {jsonFormRenderes, emitter, createI18nTranslate} from "../src/index";
 import SchemaCode from './SchemaCode.vue'
 import ResizeArea from "./ResizeArea.vue";
 import {translationsErrors as localeCatalogue} from "../src/translations/de";
+import {useJsonforms} from "../src/composable/jsonforms";
 
 const props = defineProps({
-  jsonForms: Object
+  //jsonForms: Object, //read from store
 })
 
-const jsonFormsSchema = ref({});
-const jsonFormsUiSchema = ref({});
+const {schema,uischema} = useJsonforms();
+const jsonFormsSchema = schema;
+const jsonFormsUiSchema = uischema;
 const jsonFormsData = ref({});
 const jsonFormsUpdated = ref({});
 
-watch(props,() => {
-   jsonFormsSchema.value = props.jsonForms?.schema;
-   jsonFormsUiSchema.value = props.jsonForms?.uischema;
-   jsonFormsData.value = props.jsonForms?.data ?? {};
-})
+// watch(props,() => {
+//    jsonFormsSchema.value = props.jsonForms?.schema;
+//    jsonFormsUiSchema.value = props.jsonForms?.uischema;
+//    jsonFormsData.value = props.jsonForms?.data ?? {};
+// })
 
 
 onMounted(() => {
-  jsonFormsSchema.value = props.jsonForms?.schema;
-  jsonFormsUiSchema.value = props.jsonForms?.uischema;
-  jsonFormsData.value = props.jsonForms?.data ?? {};
+  // jsonFormsSchema.value = props.jsonForms?.schema;
+  // jsonFormsUiSchema.value = props.jsonForms?.uischema;
+  // jsonFormsData.value = props.jsonForms?.data ?? {};
 
-  emitter.on('formBuilderSchemaUpdated', (jsonForms) => {
-    jsonFormsSchema.value = jsonForms?.schema;
-    jsonFormsUiSchema.value = jsonForms?.uischema;
-  });
+  // emitter.on('formBuilderSchemaUpdated', (jsonForms) => {
+  //   jsonFormsSchema.value = jsonForms?.schema;
+  //   jsonFormsUiSchema.value = jsonForms?.uischema;
+  // });
 });
 // onBeforeUnmount(() => {
 //   emitter.off('formBuilderSchemaUpdated');
