@@ -25,9 +25,8 @@
 
 <script setup>
 
-import {
-  ElementHeadOrToolIcon, Actions,
-} from "../../index";
+import Actions from "./utils/Actions.vue";
+import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import {normalizeModalOptions} from '../../lib/normalizer'
 import {computed} from 'vue';
 import {Tool} from "../../lib/models";

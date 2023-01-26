@@ -43,7 +43,7 @@
 
 <script setup>
 
-import {emitter} from "../../../index";
+import {emitter} from "../../../lib/mitt";
 
 const props = defineProps(['tool'])
 const emit = defineEmits(['gear', 'delete'])

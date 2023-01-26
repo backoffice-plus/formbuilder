@@ -2,6 +2,7 @@
 
   <div class="">
 
+
     <Modal
         :tool="toolEdit"
         :schemaReadOnly="schemaReadOnly"
@@ -90,10 +91,10 @@ const baseTool = computed(() => {
 
 const onChange = (data) => {
   if(toolEdit.value) {
-    if(data.propertyName) {
-      toolEdit.value.props.propertyName = data.propertyName;
-    }
-    toolEdit.value.props.jsonForms.update(denormalizeModalOptions(data));
+    // if(data.propertyName) {
+    //   toolEdit.value.props.propertyName = data.propertyName;
+    // }
+    // toolEdit.value.props.jsonForms.update(denormalizeModalOptions(data));
     updateJsonForm();
   }
 }

@@ -19,9 +19,6 @@
 
 <script setup>
 
-import {
-  ElementHeadOrToolIcon, Actions,
-} from "../../index";
 import {Tool} from "../../lib/models";
 
 const props = defineProps({

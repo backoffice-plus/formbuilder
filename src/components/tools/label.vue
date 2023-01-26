@@ -23,11 +23,10 @@
 
 <script setup>
 
-import {
-  ElementHeadOrToolIcon, Actions,
-} from "../../index";
-import {normalizeModalOptions} from '../../lib/normalizer'
-import {computed} from 'vue';
+
+import Actions from "./utils/Actions.vue";
+import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
+
 import {Tool} from "../../lib/models";
 
 const props = defineProps({

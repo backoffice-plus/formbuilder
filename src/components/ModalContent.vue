@@ -9,13 +9,14 @@
       -->
       <JsonForms
           :class="'styleA'"
-          :schema="jsonFormSchema.schema"
-          :uischema="jsonFormSchema.uischema"
+          :schema="jsonFormSchema?.schema"
+          :uischema="jsonFormSchema?.uischema"
           :data="options"
           :renderers="jsonFormRenderes"
           :ajv="ajv"
           :i18n="{translate: createI18nTranslate(formBuilderCatalogue)}"
           @change="onChange"
+          v-if="jsonFormSchema?.schema"
       />
 
 <!--      <div class="mt-4 flex justify-center">-->
@@ -37,21 +38,12 @@
 <script setup>
 
 import {JsonForms} from "@jsonforms/vue";
-import {
-  jsonFormRenderes,
-  createI18nTranslate,
-  emitter
-} from "../index";
-import {normalizeModalOptions} from '../lib/normalizer'
-import {jsonForms as jsonFormsOption} from "../schema/toolOptionsControl";
-import {jsonForms as jsonFormsLabel} from "../schema/toolOptionsLabelProperty";
-import {jsonForms as jsonFormsLabelElement} from "../schema/toolOptionsLabel";
-import {jsonForms as jsonFormsCombinator} from "../schema/toolOptionsCombinator";
-import {jsonForms as jsonFormsReference} from "../schema/toolOptionsReference";
-import {computed, onMounted, ref} from "vue";
+import {jsonFormRenderes} from "../index";
+import {createI18nTranslate} from "../lib/formbuilder";
+import {emitter} from "../lib/mitt";
+import {onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
-import lodashSet from 'lodash/set';
 
 const props = defineProps({
   tool: Object,
@@ -66,46 +58,9 @@ const options = ref({});
 const jsonFormSchema = ref({});
 
 onMounted(() => {
-  options.value = normalizeModalOptions(props.tool);
-  jsonFormSchema.value = getJsonForms();
+  options.value = props.tool.optionDataPrepare(props.tool)
+  jsonFormSchema.value = props.tool.optionJsonforms;
 })
-
-const getJsonForms = () => {
-  switch (props.tool.props.jsonForms.uischema.type) {
-    case 'Control':
-      if(props.schemaReadOnly) {
-
-        // :TODO should be solved with uischemaRules
-        const readOnlyOptions = ['propertyName', 'type', 'format'];
-        readOnlyOptions.forEach(name => lodashSet(jsonFormsOption,'schema.properties.'+ name +'.readOnly', true));
-      }
-
-      if(['reference'].includes(props.tool.props.toolType)) {
-        return jsonFormsReference
-      }
-
-      if(['combinator'].includes(props.tool.props.toolType)) {
-        return jsonFormsCombinator
-      }
-
-      return jsonFormsOption
-
-    case 'Label':
-      return jsonFormsLabelElement
-
-      //:TODO: add also Rules
-      // case 'Group':
-      // case 'Category':
-      //   return jsonFormsLabel
-
-      //:TODO only rules (maybe load formControlSchema and clear unused tabs
-      //case 'Categorization':
-      //  return [formLayoutGroupSchema, formLayoutGroupUiSchema]
-
-    default:
-      return jsonFormsLabel
-  }
-};
 
 const onChange = (e) => {
 
@@ -114,7 +69,9 @@ const onChange = (e) => {
   }
   else {
     //const data = {...e.data};//:TODO deep copy
-    const data = JSON.parse(JSON.stringify(e.data));
+    const data = JSON.parse(JSON.stringify(e.data)); //:TODO other way to remove ref/proxy?
+
+    props.tool.optionDataUpdate(props.tool, data)
 
     emit('change', data);
     emitter.emit('formBuilderUpdated');

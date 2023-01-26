@@ -9,6 +9,8 @@
 
       <div>
 
+        propertyName: {{ props.tool.props.propertyName }}
+
         <template v-if="'select' === data.inputType">
           <select>
             <option v-for="item in data.enum" v-if="data.enum">{{ item }}</option>
@@ -62,9 +64,8 @@ select {
 
 <script setup>
 
-import {
-  ElementHeadOrToolIcon, Actions,
-} from "../../index";
+import Actions from "./utils/Actions.vue";
+import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import {normalizeModalOptions} from '../../lib/normalizer'
 import {computed} from 'vue';
 import {Tool} from "../../lib/models";

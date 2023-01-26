@@ -1,3 +1,7 @@
+import type {JsonSchema} from "@jsonforms/core";
+import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
+import type {JsonFormsInterface} from "../lib/models";
+
 export const schema = {
     "type": "object",
     "properties": {
@@ -152,6 +156,11 @@ export const schema = {
                 },
             },
         },
+
+        _combinator: {
+            type: "string",
+            enum: ['oneOf', 'enum'],
+        },
     },
     "required": [
         "propertyName"
@@ -293,6 +302,19 @@ export const uischema = {
                             "rule": {
                                 "effect": "HIDE",
                                 "condition": {}
+                            }
+                        },
+                        {
+                            "scope": "#/properties/_combinator",
+                            "type": "Control",
+                            "rule": {
+                                "effect": "HIDE",
+                                "condition": {}
+                                // "effect": "SHOW",
+                                // "condition": {
+                                //     "scope": "#/properties/_combinator",
+                                //     "schema": { enum: ["oneOf","enum"] }
+                                // }
                             }
                         },
                     ],
@@ -465,8 +487,8 @@ export const uischema = {
             "rule": {
                 "effect": "SHOW",
                 "condition": {
-                    "scope": "#/properties/inputType",
-                    "schema": { enum: ["radio"] }
+                    "scope": "#/properties/_combinator",
+                    "schema": { const: "enum" }
                 }
             }
         },
@@ -506,12 +528,12 @@ export const uischema = {
             "rule": {
                 "effect": "SHOW",
                 "condition": {
-                    "scope": "#/properties/inputType",
-                    "schema": { enum: ["select"] }
+                    "scope": "#/properties/_combinator",
+                    "schema": { const: "oneOf" }
                 }
             }
         },
     ]
 }
 
-export const jsonForms = {schema:schema, uischema:uischema};
+export const jsonForms = {schema:schema as JsonSchema, uischema:uischema as UISchemaElement} as JsonFormsInterface;

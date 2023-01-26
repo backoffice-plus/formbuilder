@@ -49,7 +49,7 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
                 const propertyPath = normalizeScope(itemUischema.scope);
                 const itemSchema = _.get(jsonFromSchema, propertyPath);
 
-                let tool = findMatchingTool(jsonFromSchema,itemSchema, itemUischema).clone(itemSchema, itemUischema, undefined);
+                let tool = findMatchingTool(jsonFromSchema,itemSchema, itemUischema).clone(itemSchema, itemUischema);
 
                 if(tool) {
                     tool.props.propertyName = normalizePath(propertyPath);
@@ -59,7 +59,7 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
                 break;
 
             default:
-                const toolLayout = (findLayoutToolByUiType(itemUischema.type) ?? unknownTool).clone(jsonFromSchema, itemUischema, undefined)
+                const toolLayout = (findLayoutToolByUiType(itemUischema.type) ?? unknownTool).clone(jsonFromSchema, itemUischema)
 
                 if(toolLayout) {
                     pushableElements.push(toolLayout);

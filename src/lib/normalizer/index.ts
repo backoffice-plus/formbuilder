@@ -1,13 +1,9 @@
 // @ts-ignore
 import _ from "lodash";
-import {
-    JsonForms,
-    Tool,
-    ToolProps, updatableSchemaKeys, updatableUischemaKeys
-} from "../models";
+import {    JsonForms,    updatableSchemaKeys, updatableUischemaKeys} from "../models";
+import type {ToolInterface} from "../models";
 import type { SchemaBasedCondition} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Rule} from "@jsonforms/core";
-import {isOneOfControl, isStringControl, isAnyOfControl, isBooleanControl, isNumberControl, or, rankWith} from "@jsonforms/core";
 
 export const isScope = (scope:string) : boolean => {
     return scope.startsWith('#/properties/')
@@ -154,7 +150,8 @@ export const denormalizeScope = (path:string) : string => {
     return '#/' + path.replaceAll('.', '/');
 }
 
-export const normalizeModalOptions = (tool:Tool) : Object => {
+export const normalizeModalOptions = (tool:ToolInterface) : Object => {
+
 
     const jsonForms = tool.props.jsonForms as any;
 
@@ -312,9 +309,6 @@ export const denormalizeModalOptions = (data:any) : any => {
         data.enum = [...new Set(data.enum)];
     }
 
-    if(data.rule) {
-        data.rule = denormalizeRule(data.rule);
-    }
 
     //rename $ref
     if(undefined !== data._reference) {

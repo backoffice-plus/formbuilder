@@ -13,11 +13,19 @@ export interface JsonFormsUISchema extends UISchemaElement, LabelElement, Contro
     type:string
 }
 
+export interface JsonFormsInterface {
+    schema: JsonFormsSchema;
+    uischema: JsonFormsUISchema;
+}
+
 export interface ToolInterface {
     componentName: string;
     uuid: string;
     props: ToolProps;
     tester: undefined|any;
+
+    optionDataPrepare: (tool:ToolInterface) => Record<string, any>;
+    optionDataUpdate: (tool:ToolInterface, data:Record<string, any>) => void;
 
     clone: (schema:JsonFormsSchema|undefined, uischema:JsonFormsUISchema|undefined) => ToolInterface;
 }
@@ -28,6 +36,9 @@ export class Tool implements ToolInterface{
     props: ToolProps;
     tester: undefined|any = undefined;
     importer: () => any = ()=>undefined;
+    optionJsonforms: JsonFormsInterface|undefined = undefined;
+    optionDataPrepare: (tool:ToolInterface) => Record<string, any> = () => {return{}};
+    optionDataUpdate: (tool:ToolInterface, data:any) => void = ()=> {};
 
     constructor(componentName: string, props: ToolProps, tester:undefined|any = undefined) {
         this.componentName = componentName;
@@ -63,6 +74,10 @@ export class Tool implements ToolInterface{
             // )
         );
         tool.importer = this.importer;
+        tool.optionJsonforms = this.optionJsonforms;
+        tool.optionDataPrepare = this.optionDataPrepare;
+        tool.optionDataUpdate = this.optionDataUpdate;
+
         return tool;
     }
 }

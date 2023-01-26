@@ -1,5 +1,4 @@
-import {controlTools} from "./lib/tools/controlTools";
-import {layoutTools} from "./lib/tools/layoutTools";
+import {controlTools, layoutTools} from "./lib/tools";
 
 export { default as ElementHeadOrToolIcon } from './components/tools/utils/ElementHeadOrToolIcon.vue'
 export { default as Actions } from './components/tools/utils/Actions.vue'
@@ -34,10 +33,4 @@ export const jsonFormRenderes = Object.freeze([
     enumArrayRenderer,
 ]);
 
-import mitt from 'mitt'
-type Events = {
-    formBuilderModal: any,
-    formBuilderUpdated: any,
-    //formBuilderSchemaUpdated: any,
-};
-export const emitter = mitt<Events>();
+export {emitter} from './lib/mitt'

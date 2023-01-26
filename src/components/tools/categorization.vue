@@ -121,11 +121,10 @@ button.add::before {
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {
-  ElementHeadOrToolIcon, Actions,
-  initElementsByToolProps,
-  emitter
-} from "../../index";
+import {  initElementsByToolProps} from "../../lib/formbuilder";
+import {  emitter} from "../../lib/mitt";
+import Actions from "./utils/Actions.vue";
+import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import Vuedraggable from 'vuedraggable'
 import {normalizeModalOptions} from '../../lib/normalizer'
 import {ref, computed, onMounted} from 'vue';
