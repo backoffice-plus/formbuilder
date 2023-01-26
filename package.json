@@ -1,6 +1,6 @@
 {
   "name": "@backoffice-plus/formbuilder",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "",
   "main": "dist/formbuilder.umd.js",
   "module": "dist/formbuilder.es.js",
