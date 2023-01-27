@@ -5,6 +5,8 @@ import type {ToolInterface} from "../models";
 import {Tool, ToolProps} from "../models";
 import combinatorAsTabs from "../../components/tools/combinatorAsTabs.vue";
 import {jsonForms as toolOptionsCombinator} from "../../schema/toolOptionsCombinator";
+import {updatePropertyNameAndScope} from "../formbuilder";
+import type {ControlElement} from "@jsonforms/core/src/models/uischema";
 
 
 export const combinatorTool = new Tool('combinatorAsTabs',
@@ -47,8 +49,9 @@ combinatorTool.optionDataPrepare = (tool: ToolInterface) => {
 
 combinatorTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
     const schema = tool.props.jsonForms.schema as JsonSchema;
+    const uischema = tool.props.jsonForms.uischema as ControlElement;
 
-    tool.props.propertyName = data.propertyName;
+    updatePropertyNameAndScope(data?.propertyName, tool)
 
     //:TODO
 };

@@ -7,6 +7,7 @@ import {Tool, ToolProps} from "../models";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {jsonForms as toolOptionsControl} from "../../schema/toolOptionsControl";
 import {denormalizeRule} from "../normalizer";
+import {updatePropertyNameAndScope} from "../formbuilder";
 
 export const controlTool = new Tool('formInputByType', ToolProps.create({
     toolType: 'control',
@@ -25,7 +26,7 @@ const uiSchemaKeys = ['label', 'i18n', 'options'] as Array<uiSchemaKey>;
 
 controlTool.optionDataPrepare = (tool: ToolInterface) => {
     const schema = tool.props.jsonForms.schema as JsonSchema;
-    const uischema = tool.props.jsonForms.schema as ControlElement;
+    const uischema = tool.props.jsonForms.uischema as ControlElement;
 
     const data = {} as any;
 
@@ -50,12 +51,10 @@ controlTool.optionDataPrepare = (tool: ToolInterface) => {
 
 controlTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
     const schema = tool.props.jsonForms.schema as JsonSchema|Record<string, any>;
-    const uischema = tool.props.jsonForms.schema as ControlElement;
+    const uischema = tool.props.jsonForms.uischema as ControlElement;
 
-    if (!data.propertyName) {
-        throw "invalid propertyName";
-    }
-    tool.props.propertyName = data.propertyName;
+    updatePropertyNameAndScope(data?.propertyName, tool)
+
 
     schemaKeys.forEach((key:schemaKey) => schema[key] = data[key]);
     uiSchemaKeys.forEach((key:uiSchemaKey) => uischema[key] = data[key]);
@@ -67,6 +66,18 @@ controlTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
             uischema.rule = rule;
         }
     }
+
+    //:TODO need rootSchema (or parent schema) of current property
+    // //workaround to receive required info from item
+    // if(undefined !== itemSchema?.required)  {
+    //     if(itemSchema?.required?.includes('true')) {
+    //         if(undefined === schema.required) {
+    //             schema.required = [];
+    //         }
+    //         schema.required?.push(propName);
+    //     }
+    //     delete itemSchema.required;
+    // }
 };
 
 

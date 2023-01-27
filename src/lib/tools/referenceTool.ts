@@ -5,6 +5,8 @@ import referenceComp from "../../components/tools/reference.vue";
 import type {ToolInterface} from "../models";
 import {Tool, ToolProps} from "../models";
 import {jsonForms as toolOptionsReference} from "../../schema/toolOptionsReference";
+import type {ControlElement} from "@jsonforms/core/src/models/uischema";
+import {updatePropertyNameAndScope} from "../formbuilder";
 
 
 export const referenceTool = new Tool('reference', ToolProps.create({
@@ -36,8 +38,9 @@ referenceTool.optionDataPrepare = (tool: ToolInterface) => {
 
 referenceTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
     const schema = tool.props.jsonForms.schema as JsonSchema;
+    const uischema = tool.props.jsonForms.uischema as ControlElement;
 
-    tool.props.propertyName = data.propertyName;
+    updatePropertyNameAndScope(data?.propertyName, tool)
 
     if (undefined !== data._reference) {
         schema.$ref = data._reference;

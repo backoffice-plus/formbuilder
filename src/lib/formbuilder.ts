@@ -8,14 +8,22 @@ import {
 import type {
     JsonFormsSchema,
     JsonFormsUISchema,
+    ToolInterface,
 } from "./models";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
-import type {UISchemaElement} from "@jsonforms/core";
-import { normalizeScope,normalizePath,denormalizePath,denormalizeScope } from './normalizer';
+import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
+import { normalizeScope, normalizePath,denormalizePath,denormalizeScope, fromPropertyToScope} from './normalizer';
 import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
 import {unref} from "vue";
 
+export const updatePropertyNameAndScope = (propertyName:string|undefined, tool:ToolInterface) => {
+    if (!propertyName) {
+        throw "invalid propertyName";
+    }
+    tool.props.propertyName = propertyName;
+    tool.props.jsonForms.uischema.scope = fromPropertyToScope(tool.props.propertyName)
+};
 
 /**
  * - prop = data.personal.age
@@ -86,64 +94,42 @@ export const createJsonForms = (rootForm:any, rootSchema:JsonFormsSchema, schema
     );
 }
 
-export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFormsUISchema => {
+export const setItemSchemaToSchema = (propertyName:string, itemSchema:JsonSchema, rootSchema:JsonFormsSchema) : void => {
+
+    const sets = [
+        {path:denormalizePath(propertyName), value:itemSchema}
+    ] as [{path:string, value:any}];
+
+    //create type=object in subpaths
+    getAllSubpaths(propertyName, 1)
+        .forEach((subProp:string) => {
+            const subPath = denormalizePath(subProp)+'.type'
+            if(!_.get(rootSchema, subPath)) {
+                sets.push({path:subPath, value:'object'})
+            }
+        }
+    )
+
+    sets.forEach(item => _.set(rootSchema, item.path, item.value));
+}
+
+export const createJsonUiSchema = (refElm:any, rootSchema:JsonFormsSchema) : JsonFormsUISchema => {
     refElm = unref(refElm)
-    const tool = refElm?.tool;
-    const childTools = refElm?.childTools ?? refElm?.elements;
+
+    //from defineExpose() in tool components
+    const tool = refElm?.tool as Tool;
+    const childTools = refElm?.childTools;
     const childComponents = refElm?.childComponents;
 
-    if(!tool?.props) {
-        throw "refElm has no toolProps.";
-    }
+    const propName = tool.props?.propertyName ?? "UNKNOWN";
+    const schema = tool.props.jsonForms.schema;
+    const uischema = tool.props.jsonForms.uischema;
 
-    const toolProps = tool.props as ToolProps;
-
-    const jsonForms = toolProps?.jsonForms.clone();
-
-    const itemSchema = jsonForms.schema as JsonFormsSchema;
-    const uischema = jsonForms.uischema as JsonFormsUISchema;
+    const created = _.cloneDeep(uischema) as JsonFormsUISchema;
 
     switch (uischema.type) {
         case 'Control':
-            const propName = toolProps?.propertyName ?? "UNKNOWN";
-
-            if(itemSchema.oneOf !== undefined && !itemSchema.oneOf.length) {
-                itemSchema.oneOf = [{}];
-            }
-            if(itemSchema.enum !== undefined && !itemSchema.enum.length) {
-                itemSchema.enum = [''];
-            }
-
-            const path = denormalizePath(propName);
-            uischema.scope = denormalizeScope(path)
-
-            //
-            /**
-             * check for type=object
-             * path = data.personal.age
-             * subpaths = ['data', 'data.personal','data.personal.age']
-             */
-            getAllSubpaths(propName, 1).forEach((subProp:string) => {
-                const subPath = denormalizePath(subProp);
-                const type = _.get(schema, subPath+'.type')
-                if(!type) {
-                    _.set(schema, subPath+'.type', 'object')
-                }
-            })
-
-            _.set(schema, path, itemSchema)
-
-            //:TODO fix required
-            // //workaround to receive required info from item
-            // if(undefined !== itemSchema?.required)  {
-            //     if(itemSchema?.required?.includes('true')) {
-            //         if(undefined === schema.required) {
-            //             schema.required = [];
-             //         }
-            //         schema.required?.push(propName);
-            //     }
-            //     delete itemSchema.required;
-            // }
+            setItemSchemaToSchema(propName, schema, rootSchema);
             break;
 
         case 'VerticalLayout':
@@ -151,26 +137,16 @@ export const createJsonUiSchema = (refElm:any, schema:JsonFormsSchema) : JsonFor
         case 'Categorization':
         case 'Category':
         case 'Group':
-            uischema.elements = childTools.map((tool:Tool) => {
+            created.elements = childTools.map((tool:Tool) => {
                 if(!childComponents[tool.uuid]) {
                     throw "no child with uuid "+ tool.uuid +" found";
                 }
-                return createJsonUiSchema(childComponents[tool.uuid], schema)
+                return createJsonUiSchema(childComponents[tool.uuid], rootSchema)
             }) ?? [];
             break;
-
-
-        // case 'Label':
-        //     let label = 'Label';
-        //     if(uischema?.label) {
-        //         label = String(uischema.label);
-        //         delete uischema.label;
-        //     }
-        //     uischema.text = label;
-        //     break;
     }
 
-    return uischema;
+    return created;
 };
 
 // export const getChildComponents = (component:any, namePrefix:string|null) => {

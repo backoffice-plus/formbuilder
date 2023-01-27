@@ -7,6 +7,7 @@ import {Tool, ToolProps} from "../models";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {jsonForms as toolOptionsControl} from "../../schema/toolOptionsControl";
 import {denormalizeRule} from "../normalizer";
+import {updatePropertyNameAndScope} from "../formbuilder";
 
 
 export const selectTool = new Tool('formInputByType', ToolProps.create({
@@ -26,7 +27,7 @@ const uiSchemaKeys = ['label', 'i18n', 'options'] as Array<uiSchemaKey>;
 
 selectTool.optionDataPrepare = (tool: ToolInterface) => {
     const schema = tool.props.jsonForms.schema as JsonSchema;
-    const uischema = tool.props.jsonForms.schema as ControlElement;
+    const uischema = tool.props.jsonForms.uischema as ControlElement;
 
     const data = {} as any;
 
@@ -68,18 +69,23 @@ selectTool.optionDataPrepare = (tool: ToolInterface) => {
 
 selectTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
     const schema = tool.props.jsonForms.schema as JsonSchema|Record<string, any>;
-    const uischema = tool.props.jsonForms.schema as ControlElement;
+    const uischema = tool.props.jsonForms.uischema as ControlElement;
 
-    if (!data.propertyName) {
-        throw "invalid propertyName";
-    }
-    tool.props.propertyName = data.propertyName;
+    updatePropertyNameAndScope(data?.propertyName, tool)
 
     //convert enum to map
     if (data?.enum) {
         data.enum = data.enum?.map((item: any) => String(item?.name ?? '')) ?? [''];
         data.enum = [...new Set(data.enum)];
     }
+
+
+    // if(itemSchema.oneOf !== undefined && !itemSchema.oneOf.length) {
+    //     itemSchema.oneOf = [{}];
+    // }
+    // if(itemSchema.enum !== undefined && !itemSchema.enum.length) {
+    //     itemSchema.enum = [''];
+    // }
 
     schemaKeys.forEach(key => schema[key] = data[key]);
     uiSchemaKeys.forEach(key => uischema[key] = data[key]);

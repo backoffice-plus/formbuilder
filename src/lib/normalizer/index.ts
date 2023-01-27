@@ -149,6 +149,13 @@ export const denormalizePath = (prop:string) : string => {
 export const denormalizeScope = (path:string) : string => {
     return '#/' + path.replaceAll('.', '/');
 }
+/**
+ * - prop = personalData.age
+ * - path = #/properties/personalData/properties/age
+ */
+export const fromPropertyToScope = (propertyName:string) : string => {
+    return denormalizeScope(denormalizePath(propertyName))
+}
 
 export const normalizeModalOptions = (tool:ToolInterface) : Object => {
 

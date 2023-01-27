@@ -175,6 +175,10 @@ const clone = (tool) => {
     }
   }
 
+  //set default data
+  const defaultData = clone.optionDataPrepare(clone)
+  clone.optionDataUpdate(clone, defaultData);
+
   //rootSchema
   //clone.props.jsonForms.rootSchema = this.jsonForms?.schema
 
