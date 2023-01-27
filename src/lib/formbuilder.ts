@@ -52,26 +52,17 @@ export const getAllSubpaths = (prop:string, startIndex:number=0) => {
         .slice(startIndex);
 }
 
+let cloneCounter=0;
 export const cloneTool = (tool:ToolInterface, schema:JsonFormsSchema|undefined, uischema:JsonFormsUISchema|undefined) => {
     const clone = tool.clone(schema, uischema);
 
     if('Control' === clone.props.jsonForms.uischema.type) {
-        clone.props.propertyName = clone.uuid;
         if(uischema?.scope) {
             clone.props.propertyName = fromScopeToProperty(uischema.scope)
         }
-
-        //:TODO create default propName
-        // const inputType = guessInputType(tool.props.jsonForms)
-        // if(cloneCounter.value[inputType] === undefined) {
-        //     cloneCounter.value[inputType] = 0;
-        // }
-        // const counter = ++cloneCounter.value[inputType];
-
-        // if(!props.schemaReadOnly) {
-        //     clone.props.propertyName = inputType + (counter);
-        //     clone.props.jsonForms.uischema.label = inputType;
-        // }
+        if(undefined === clone.props.propertyName) {
+            clone.props.propertyName = (tool.props.jsonForms.uischema.type + ++cloneCounter).toLowerCase();
+        }
     }
 
     //set default data
