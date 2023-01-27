@@ -96,21 +96,17 @@ export const createJsonForms = (rootForm:any, rootSchema:JsonFormsSchema, schema
 
 export const setItemSchemaToSchema = (propertyName:string, itemSchema:JsonSchema, rootSchema:JsonFormsSchema) : void => {
 
-    const sets = [
-        {path:denormalizePath(propertyName), value:itemSchema}
-    ] as [{path:string, value:any}];
-
     //create type=object in subpaths
     getAllSubpaths(propertyName, 1)
         .forEach((subProp:string) => {
             const subPath = denormalizePath(subProp)+'.type'
             if(!_.get(rootSchema, subPath)) {
-                sets.push({path:subPath, value:'object'})
+                _.set(rootSchema, subPath, 'object')
             }
         }
     )
 
-    sets.forEach(item => _.set(rootSchema, item.path, item.value));
+    _.set(rootSchema, denormalizePath(propertyName), itemSchema)
 }
 
 export const createJsonUiSchema = (refElm:any, rootSchema:JsonFormsSchema) : JsonFormsUISchema => {
