@@ -61,7 +61,7 @@ import {translationsErrors as localeCatalogue} from "../src/translations/de";
 import {useJsonforms} from "../src/composable/jsonforms";
 
 const props = defineProps({
-  //jsonForms: Object, //read from store
+  jsonForms: Object, //read from store
 })
 
 const {schema,uischema} = useJsonforms();
@@ -70,11 +70,11 @@ const jsonFormsUiSchema = uischema;
 const jsonFormsData = ref({});
 const jsonFormsUpdated = ref({});
 
-// watch(props,() => {
-//    jsonFormsSchema.value = props.jsonForms?.schema;
-//    jsonFormsUiSchema.value = props.jsonForms?.uischema;
-//    jsonFormsData.value = props.jsonForms?.data ?? {};
-// })
+watch(() => props.jsonForms, () => {
+   jsonFormsSchema.value = props.jsonForms?.schema;
+   jsonFormsUiSchema.value = props.jsonForms?.uischema;
+   jsonFormsData.value = props.jsonForms?.data ?? {};
+})
 
 
 onMounted(() => {

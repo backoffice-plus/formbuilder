@@ -22,6 +22,7 @@ export interface ToolInterface {
     componentName: string;
     uuid: string;
     props: ToolProps;
+    isRequired:boolean;
     tester: undefined|any;
 
     optionDataPrepare: (tool:ToolInterface) => Record<string, any>;
@@ -34,6 +35,7 @@ export class Tool implements ToolInterface{
     componentName: string;
     uuid: string;
     props: ToolProps;
+    isRequired:boolean = false;
     tester: undefined|any = undefined;
     importer: () => any = ()=>undefined;
     optionJsonforms: JsonFormsInterface|undefined = undefined;
@@ -73,6 +75,8 @@ export class Tool implements ToolInterface{
             //     this.props.propertyName,
             // )
         );
+        tool.isRequired = this.isRequired;
+
         tool.importer = this.importer;
         tool.optionJsonforms = this.optionJsonforms;
         tool.optionDataPrepare = this.optionDataPrepare;

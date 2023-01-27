@@ -30,7 +30,7 @@
 import {FormBuilder} from "../src/index.ts";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
 import {computed, ref} from "vue";
-import * as ownExamples from "./jsonForms/index";
+import * as ownExamples from "./jsonForms/examples";
 import {getExamples} from '@jsonforms/examples/src'
 
 const oe = ownExamples;//import own examples

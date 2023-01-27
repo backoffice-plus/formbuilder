@@ -1,5 +1,5 @@
 import {registerExamples} from "@jsonforms/examples/src/register";
-import {schema, uischema} from "../../src/schema/toolOptionsCombinatorWithRefs";
+import {schema, uischema} from "../../../src/schema/toolOptionsCombinatorWithRefs";
 
 export const data = {};
 

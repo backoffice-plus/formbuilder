@@ -3,6 +3,28 @@ import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {JsonFormsInterface} from "../lib/models";
 
 export const schema = {
+    definitions: {
+        selectAsEnum: {
+            type: "array",
+            items: {
+                type: 'string',
+            },
+        },
+        selectAsOneOf: {
+            type: "array",
+            items: {
+                type: 'object',
+                properties: {
+                    const: {
+                        type: "string"
+                    },
+                    title: {
+                        type: "string"
+                    },
+                }
+            },
+        },
+    },
     "type": "object",
     "properties": {
         "propertyName": {
@@ -91,30 +113,28 @@ export const schema = {
                 },
             }
         },
-        "enum": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "name": {
-                        "type": "string",
-                        "label": "Name",
-                    },
-                }
-            },
-        },
-        "oneOf": {
-            "type": "array",
-            "items": {
-                "type": "object",
-                "properties": {
-                    "const": {
-                        "type": "string"
-                    },
-                    "title": {
-                        "type": "string"
-                    },
-                }
+
+        select: {
+            type: 'object',
+            properties: {
+                _type: {
+                    type: "string",
+                    enum: ['oneOf', 'enum'],
+                },
+                // enumOrOneOf: {
+                //     oneOf: [
+                //         {$ref:'#/definitions/selectAsEnum'},
+                //         {$ref:'#/definitions/selectAsOneOf'},
+                //     ]
+                // },
+                enum: {
+                    type:'array',
+                    $ref:'#/definitions/selectAsEnum'
+                },
+                oneOf: {
+                    type: "array",
+                    $ref:'#/definitions/selectAsOneOf'
+                },
             },
         },
 
@@ -155,11 +175,6 @@ export const schema = {
                     type: "boolean",
                 },
             },
-        },
-
-        _combinator: {
-            type: "string",
-            enum: ['oneOf', 'enum'],
         },
     },
     "required": [
@@ -284,11 +299,7 @@ export const uischema = {
                             "elements": [
                                 {
                                     "scope": "#/properties/required",
-                                    "type": "Control",
-                                    //:TODO fix required
-                                    "options": {
-                                        "readonly": true
-                                    },
+                                    "type": "Control"
                                 },
                                 {
                                     "scope": "#/properties/options/properties/readonly",
@@ -302,19 +313,6 @@ export const uischema = {
                             "rule": {
                                 "effect": "HIDE",
                                 "condition": {}
-                            }
-                        },
-                        {
-                            "scope": "#/properties/_combinator",
-                            "type": "Control",
-                            "rule": {
-                                "effect": "HIDE",
-                                "condition": {}
-                                // "effect": "SHOW",
-                                // "condition": {
-                                //     "scope": "#/properties/_combinator",
-                                //     "schema": { enum: ["oneOf","enum"] }
-                                // }
                             }
                         },
                     ],
@@ -468,18 +466,40 @@ export const uischema = {
         },
 
         /**
-         * Tab - Enum
+         * Tab - Items oneOf
          */
         {
             "type": "Category",
-            "label": "Enum",
+            "label": "Select Items",
             "elements": [
                 {
                     type: "VerticalLayout",
                     elements: [
+                        // {
+                        //     "scope": "#/properties/select/properties/_type",
+                        //     "type": "Control",
+                        // },
                         {
-                            "scope": "#/properties/enum",
-                            "type": "Control",
+                            type: "Control",
+                            scope: "#/properties/select/properties/enum",
+                            rule: {
+                                "effect": "SHOW",
+                                "condition": {
+                                    "scope": "#/properties/select/properties/_type",
+                                    "schema": { const: "enum" }
+                                }
+                            }
+                        },
+                        {
+                            type: "Control",
+                            scope: "#/properties/select/properties/oneOf",
+                            rule: {
+                                "effect": "SHOW",
+                                "condition": {
+                                    "scope": "#/properties/select/properties/_type",
+                                    "schema": { const: "oneOf" }
+                                }
+                            }
                         },
                     ],
                 }
@@ -487,52 +507,82 @@ export const uischema = {
             "rule": {
                 "effect": "SHOW",
                 "condition": {
-                    "scope": "#/properties/_combinator",
-                    "schema": { const: "enum" }
+                    "scope": "#/properties/select/properties/_type",
+                    "schema": { enum: ["oneOf", "enum"] }
                 }
             }
         },
 
-        /**
-         * Tab - oneOf
-         */
-        {
-            "type": "Category",
-            "label": "oneOf",
-            "elements": [
-                {
-                    type: "VerticalLayout",
-                    elements: [
-                        {
-                            "scope": "#/properties/oneOf",
-                            "type": "Control",
-                            "options": {
-                                detail : {
-                                    "type": "HorizontalLayout",
-                                    "elements": [
-                                        {
-                                            "type": "Control",
-                                            "scope": "#/properties/const"
-                                        },
-                                        {
-                                            "type": "Control",
-                                            "scope": "#/properties/title"
-                                        }
-                                    ]
-                                },
-                            },
-                        },
-                    ],
-                }
-            ],
-            "rule": {
-                "effect": "SHOW",
-                "condition": {
-                    "scope": "#/properties/_combinator",
-                    "schema": { const: "oneOf" }
-                }
-            }
-        },
+
+
+        // /**
+        //  * Tab - Enum
+        //  */
+        // {
+        //     "type": "Category",
+        //     //"label": "Enum",
+        //     "label": "Items",
+        //     "elements": [
+        //         {
+        //             type: "VerticalLayout",
+        //             elements: [
+        //                 {
+        //                     "scope": "#/properties/enum",
+        //                     "type": "Control",
+        //                 },
+        //             ],
+        //         }
+        //     ],
+        //     "rule": {
+        //         "effect": "SHOW",
+        //         "condition": {
+        //             "scope": "#/properties/_combinator",
+        //             "schema": { const: "enum" }
+        //         }
+        //     }
+        // },
+        //
+        // /**
+        //  * Tab - oneOf
+        //  */
+        // {
+        //     "type": "Category",
+        //     //"label": "oneOf",
+        //     "label": "Items",
+        //     "elements": [
+        //         {
+        //             type: "VerticalLayout",
+        //             elements: [
+        //                 {
+        //                     "scope": "#/properties/oneOf",
+        //                     "type": "Control",
+        //                     // "options": {
+        //                     //     detail : {
+        //                     //         "type": "HorizontalLayout",
+        //                     //         "elements": [
+        //                     //             {
+        //                     //                 "type": "Control",
+        //                     //                 "scope": "#/properties/const"
+        //                     //             },
+        //                     //             {
+        //                     //                 "type": "Control",
+        //                     //                 "scope": "#/properties/title"
+        //                     //             }
+        //                     //         ]
+        //                     //     },
+        //                     // },
+        //                 },
+        //             ],
+        //         }
+        //     ],
+        //     "rule": {
+        //         "effect": "SHOW",
+        //         "condition": {
+        //             "scope": "#/properties/_combinator",
+        //             "schema": { const: "oneOf" }
+        //         }
+        //     }
+        // },
     ]
 }
 

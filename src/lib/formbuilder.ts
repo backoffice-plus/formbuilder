@@ -12,17 +12,26 @@ import type {
 } from "./models";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
-import { normalizeScope, normalizePath,denormalizePath,denormalizeScope, fromPropertyToScope} from './normalizer';
+import {
+    normalizeScope,
+    normalizePath,
+    denormalizePath,
+    denormalizeScope,
+    fromPropertyToScope,
+    getPlainProperty, fromPropertyToBasePath, guessInputType, fromScopeToProperty
+} from './normalizer';
 import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
 import {unref} from "vue";
 
-export const updatePropertyNameAndScope = (propertyName:string|undefined, tool:ToolInterface) => {
+export const updatePropertyNameAndScope = (propertyName:string|undefined, tool:ToolInterface) : string => {
     if (!propertyName) {
         throw "invalid propertyName";
     }
     tool.props.propertyName = propertyName;
     tool.props.jsonForms.uischema.scope = fromPropertyToScope(tool.props.propertyName)
+
+    return propertyName;
 };
 
 /**
@@ -40,6 +49,34 @@ export const getAllSubpaths = (prop:string, startIndex:number=0) => {
         .slice(startIndex);
 }
 
+export const cloneTool = (tool:ToolInterface, schema:JsonFormsSchema|undefined, uischema:JsonFormsUISchema|undefined) => {
+    const clone = tool.clone(schema, uischema);
+
+    if('Control' === clone.props.jsonForms.uischema.type) {
+        clone.props.propertyName = clone.uuid;
+        if(uischema?.scope) {
+            clone.props.propertyName = fromScopeToProperty(uischema.scope)
+        }
+
+        //:TODO create default propName
+        // const inputType = guessInputType(tool.props.jsonForms)
+        // if(cloneCounter.value[inputType] === undefined) {
+        //     cloneCounter.value[inputType] = 0;
+        // }
+        // const counter = ++cloneCounter.value[inputType];
+
+        // if(!props.schemaReadOnly) {
+        //     clone.props.propertyName = inputType + (counter);
+        //     clone.props.jsonForms.uischema.label = inputType;
+        // }
+    }
+
+    //set default data
+    const defaultData = clone.optionDataPrepare(clone)
+    clone.optionDataUpdate(clone, defaultData);
+
+    return clone;
+};
 
 export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
     //console.log("initElementsByToolProps" , toolProps);
@@ -52,28 +89,28 @@ export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
     const {findMatchingTool, findLayoutToolByUiType} = useTools();
 
     jsonFormUischema?.elements?.forEach((itemUischema:any) => {
+        let tool;
         switch (itemUischema.type) {
             case 'Control':
                 const propertyPath = normalizeScope(itemUischema.scope);
                 const itemSchema = _.get(jsonFromSchema, propertyPath);
 
-                let tool = findMatchingTool(jsonFromSchema,itemSchema, itemUischema).clone(itemSchema, itemUischema);
+                tool = cloneTool(findMatchingTool(jsonFromSchema,itemSchema, itemUischema), itemSchema, itemUischema)
+                tool.props.propertyName = normalizePath(propertyPath);
 
-                if(tool) {
-                    tool.props.propertyName = normalizePath(propertyPath);
-
-                    pushableElements.push(tool);
+                //required
+                const required = getRequiredFromSchema(tool.props.propertyName, jsonFromSchema);
+                if(required?.includes(getPlainProperty(tool.props.propertyName))) {
+                    tool.isRequired = true;
                 }
                 break;
 
             default:
-                const toolLayout = (findLayoutToolByUiType(itemUischema.type) ?? unknownTool).clone(jsonFromSchema, itemUischema)
-
-                if(toolLayout) {
-                    pushableElements.push(toolLayout);
-                }
+                tool = cloneTool(findLayoutToolByUiType(itemUischema.type) ?? unknownTool, jsonFromSchema, itemUischema);
                 break;
         }
+
+        pushableElements.push(tool);
     });
 
     return pushableElements;
@@ -84,6 +121,7 @@ export const createJsonForms = (rootForm:any, rootSchema:JsonFormsSchema, schema
     const schema = _.clone(rootSchema);
     if(!schemaReadOnly) {
         schema.properties = {}; //clear properties
+        schema.required = undefined;
     }
 
     //console.log("formbuilder.ts","createJsonForms",rootForm)
@@ -94,7 +132,7 @@ export const createJsonForms = (rootForm:any, rootSchema:JsonFormsSchema, schema
     );
 }
 
-export const setItemSchemaToSchema = (propertyName:string, itemSchema:JsonSchema, rootSchema:JsonFormsSchema) : void => {
+export const setItemSchemaToSchema = (tool:ToolInterface, propertyName:string, itemSchema:JsonSchema, rootSchema:JsonFormsSchema) : void => {
 
     //create type=object in subpaths
     getAllSubpaths(propertyName, 1)
@@ -107,6 +145,32 @@ export const setItemSchemaToSchema = (propertyName:string, itemSchema:JsonSchema
     )
 
     _.set(rootSchema, denormalizePath(propertyName), itemSchema)
+
+    if(tool.isRequired) {
+        setRequiredToSchema(propertyName, rootSchema, true);
+    }
+}
+
+export const getRequiredPath = (propertyName:string) : string =>  {
+    return (fromPropertyToBasePath(propertyName)+'.required').replace(/^\./,'')
+}
+export const getRequiredFromSchema = (propertyName:string, schema:JsonSchema) : Array<string> =>  {
+    return _.get(schema, getRequiredPath(propertyName)) ?? [];
+}
+export const setRequiredToSchema = (propertyName:string, schema:JsonSchema, isRequired:boolean=false) : void =>  {
+    const plainProp = getPlainProperty(propertyName);
+    let required = getRequiredFromSchema(propertyName, schema);
+    if(isRequired) {
+        if(!required.includes(plainProp)) {
+            required.push(plainProp);
+        }
+    }
+    else {
+        if(required.includes(plainProp)) {
+            required = required.filter((item:string) => item !== plainProp)
+        }
+    }
+    _.set(schema, getRequiredPath(propertyName), required.length ? required : undefined)
 }
 
 export const createJsonUiSchema = (refElm:any, rootSchema:JsonFormsSchema) : JsonFormsUISchema => {
@@ -125,7 +189,7 @@ export const createJsonUiSchema = (refElm:any, rootSchema:JsonFormsSchema) : Jso
 
     switch (uischema.type) {
         case 'Control':
-            setItemSchemaToSchema(propName, schema, rootSchema);
+            setItemSchemaToSchema(tool, propName, schema, rootSchema);
             break;
 
         case 'VerticalLayout':

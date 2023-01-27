@@ -8,6 +8,7 @@ import formInputByType from "../../components/tools/formInputByType.vue";
 import {jsonForms as toolOptionsControl} from "../../schema/toolOptionsControl";
 import {denormalizeRule} from "../normalizer";
 import {updatePropertyNameAndScope} from "../formbuilder";
+import {unref} from "vue";
 
 
 export const selectTool = new Tool('formInputByType', ToolProps.create({
@@ -20,8 +21,8 @@ selectTool.optionJsonforms = toolOptionsControl;
 
 type schemaValidationKey = | 'minimum' | 'maximum' | 'pattern' | 'minLength' | 'maxLength';
 type schemaKeyDefault = 'type' | 'format' | 'description' | schemaValidationKey;
-type schemaKey = 'oneOf' | 'enum' | schemaKeyDefault;
-const schemaKeys = ['type', 'format', 'enum', 'oneOf', 'description', 'minimum', 'maximum', 'pattern', 'minLength', 'maxLength'] as Array<schemaKey>;
+type schemaKey = schemaKeyDefault;
+const schemaKeys = ['type', 'format', 'description', 'minimum', 'maximum', 'pattern', 'minLength', 'maxLength'] as Array<schemaKey>;
 type uiSchemaKey = 'label' | 'i18n' | 'options';
 const uiSchemaKeys = ['label', 'i18n', 'options'] as Array<uiSchemaKey>;
 
@@ -40,29 +41,30 @@ selectTool.optionDataPrepare = (tool: ToolInterface) => {
         if (undefined !== uischema[key]) data[key] = uischema[key]
     });
 
-    data._combinator = 'oneOf'
-    if(data.enum) {
-        data._combinator = 'enum'
+    /**
+     * :TODO right now its not possible to change from oneOf to enum
+     * - the jsonforms renderer throws error at isOneOfEnumControl
+     */
+    if(schema.enum) {
+        data.select = {
+            enum: schema.enum,
+            _type: 'enum'
+        }
     }
-
-    //fix empty elements
-    // if (undefined !== data.oneOf && !data.oneOf.length) {
-    //     data.oneOf = [{}]
-    // }
-    // if (undefined !== data.enum && !data.enum.length) {
-    //     data.enum = ['']
-    // }
-
+    else if(schema.oneOf) {
+        data.select = {
+            oneOf: schema.oneOf,
+            _type: 'oneOf'
+        }
+    }
     /**
      * :TODO better modeling without converting
      */
     //convert enum to object
-    if(data?.enum) {
-        data.enum = data.enum.map((name: any) => {return {name: String(name)} });
-    }
     // if(options?.rule?.condition?.schema) {
     //     options.rule.condition.schema = JSON.stringify(options.rule.condition.schema);
     // }
+
 
     return data;
 };
@@ -73,19 +75,23 @@ selectTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
 
     updatePropertyNameAndScope(data?.propertyName, tool)
 
-    //convert enum to map
-    if (data?.enum) {
-        data.enum = data.enum?.map((item: any) => String(item?.name ?? '')) ?? [''];
-        data.enum = [...new Set(data.enum)];
+
+    if(data?.select._type) {
+        switch (data?.select._type) {
+            case 'enum':
+                schema.enum = data.select?.enum ?? [''];
+                break;
+
+            case 'oneOf':
+                schema.oneOf = data.select?.oneOf ?? [];
+                schema.oneOf = schema.oneOf.filter(item => item?.const)
+
+                if(!schema.oneOf.length) {
+                    schema.oneOf = [{const:''}];
+                }
+                break;
+        }
     }
-
-
-    // if(itemSchema.oneOf !== undefined && !itemSchema.oneOf.length) {
-    //     itemSchema.oneOf = [{}];
-    // }
-    // if(itemSchema.enum !== undefined && !itemSchema.enum.length) {
-    //     itemSchema.enum = [''];
-    // }
 
     schemaKeys.forEach(key => schema[key] = data[key]);
     uiSchemaKeys.forEach(key => uischema[key] = data[key]);

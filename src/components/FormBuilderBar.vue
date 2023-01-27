@@ -4,7 +4,7 @@
     tag="aside"
     :list="tools"
     :group="{name:'formBuilder', pull: 'clone', put: false}"
-    :clone="clone"
+    :clone="cloneTool"
     :sort="false"
     drag-class="dragging"
     @choose="() => {}"
@@ -94,7 +94,7 @@ aside .toolItem.formInputByTypeTool {
 
 import {computed, ref} from 'vue';
 import Vuedraggable from 'vuedraggable'
-import {Tool, ToolProps, findAllProperties, findAllScopes,} from "../index";
+import {Tool, ToolProps, findAllProperties, findAllScopes, cloneTool,} from "../index";
 import {guessInputType, normalizeScope, normalizePath} from '../lib/normalizer'
 import {useTools} from "../composable/tools";
 import {useJsonforms} from "../composable/jsonforms";
@@ -157,32 +157,6 @@ const tools = computed(() => {
 
 const onDrag = (drag) => {
   emits('drag', drag);
-};
-
-const clone = (tool) => {
-  const clone = tool.clone();
-
-  if('Control' === tool.props.jsonForms.uischema.type) {
-    const inputType = guessInputType(tool.props.jsonForms)
-    if(cloneCounter.value[inputType] === undefined) {
-      cloneCounter.value[inputType] = 0;
-    }
-    const counter = ++cloneCounter.value[inputType];
-
-    if(!props.schemaReadOnly) {
-      clone.props.propertyName = inputType + (counter);
-      clone.props.jsonForms.uischema.label = inputType;
-    }
-  }
-
-  //set default data
-  const defaultData = clone.optionDataPrepare(clone)
-  clone.optionDataUpdate(clone, defaultData);
-
-  //rootSchema
-  //clone.props.jsonForms.rootSchema = this.jsonForms?.schema
-
-  return clone;
 };
 
 

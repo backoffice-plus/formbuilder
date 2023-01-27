@@ -9,8 +9,6 @@
 
       <div>
 
-        propertyName: {{ props.tool.props.propertyName }}
-
         <template v-if="'select' === data.inputType">
           <select>
             <option v-for="item in data.enum" v-if="data.enum">{{ item }}</option>

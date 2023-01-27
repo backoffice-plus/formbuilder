@@ -46,6 +46,11 @@ controlTool.optionDataPrepare = (tool: ToolInterface) => {
     //     options.rule.condition.schema = JSON.stringify(options.rule.condition.schema);
     // }
 
+
+    if(tool.isRequired) {
+        data.required = true;
+    } 
+
     return data;
 };
 
@@ -53,8 +58,9 @@ controlTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
     const schema = tool.props.jsonForms.schema as JsonSchema|Record<string, any>;
     const uischema = tool.props.jsonForms.uischema as ControlElement;
 
-    updatePropertyNameAndScope(data?.propertyName, tool)
+    const propertyName = updatePropertyNameAndScope(data?.propertyName, tool)
 
+   // console.log("controllTool optionDataUpdate",schema);
 
     schemaKeys.forEach((key:schemaKey) => schema[key] = data[key]);
     uiSchemaKeys.forEach((key:uiSchemaKey) => uischema[key] = data[key]);
@@ -67,17 +73,7 @@ controlTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
         }
     }
 
-    //:TODO need rootSchema (or parent schema) of current property
-    // //workaround to receive required info from item
-    // if(undefined !== itemSchema?.required)  {
-    //     if(itemSchema?.required?.includes('true')) {
-    //         if(undefined === schema.required) {
-    //             schema.required = [];
-    //         }
-    //         schema.required?.push(propName);
-    //     }
-    //     delete itemSchema.required;
-    // }
+    tool.isRequired = data.required;
 };
 
 

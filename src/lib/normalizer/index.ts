@@ -156,6 +156,34 @@ export const denormalizeScope = (path:string) : string => {
 export const fromPropertyToScope = (propertyName:string) : string => {
     return denormalizeScope(denormalizePath(propertyName))
 }
+/**
+ -   scope = #/properties/personalData/properties/age
+ * - prop = personalData.age
+ */
+export const fromScopeToProperty = (scope:string) : string => {
+    return normalizePath(normalizeScope(scope))
+}
+/**
+ * - prop = personalData.age
+ * - path = properties.personalData.properties.age
+ */
+export const fromPropertyToPath = (propertyName:string) : string => {
+    return denormalizePath(propertyName)
+}
+/**
+ * - prop = personalData.age
+ * - basePath = properties.personalData
+ */
+export const fromPropertyToBasePath = (propertyName:string) => {
+    return _.toPath(fromPropertyToPath(propertyName)).slice(0,-2).join('.')
+}
+/**
+ * - prop = personalData.age
+ * - propPlain = age
+ */
+export const getPlainProperty = (propertyName:string) : string => {
+    return propertyName.split('.').pop() ?? '';
+}
 
 export const normalizeModalOptions = (tool:ToolInterface) : Object => {
 

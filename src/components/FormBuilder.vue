@@ -51,11 +51,11 @@
 
 
 <script setup>
-import {computed, ref, onMounted, onBeforeUnmount} from 'vue'
+import {computed, ref, onMounted, onBeforeUnmount, watch} from 'vue'
 import {
   FormBuilderBar,
   createJsonForms, defaultTools,
-  emitter,
+  emitter, cloneTool,
 } from "../index";
 import {denormalizeModalOptions} from '../lib/normalizer'
 import Modal from "./Modal.vue";
@@ -64,6 +64,7 @@ import FormBuilderDefinitions from "./FormBuilderDefinitions.vue";
 import {useTools} from "../composable/tools";
 import {unknownTool} from "../lib/tools/unknownTool";
 import {useJsonforms} from "../composable/jsonforms";
+import {JsonForms} from "../lib/models";
 
 const props = defineProps({
   jsonForms: Object,
@@ -83,10 +84,12 @@ const showBuilder = ref('uischema');
 const {registerTools, unregisterAllTools, findLayoutToolByUiType} = useTools();
 registerTools(defaultTools);
 
+const {update} = useJsonforms();
+//update(props.jsonForms?.schema, props.jsonForms?.uischema);
+
 const baseTool = computed(() => {
   const uiSchema = (jsonFormsUiSchema.value?.type && jsonFormsUiSchema.value) ?? {type:'VerticalLayout'};
-  let tool = findLayoutToolByUiType(uiSchema.type) ?? unknownTool;
-  return tool.clone(jsonFormsSchema.value, uiSchema)
+  return cloneTool(findLayoutToolByUiType(uiSchema.type) ?? unknownTool, jsonFormsSchema.value, uiSchema);
 })
 
 const onChange = (data) => {
@@ -108,7 +111,7 @@ const updateJsonForm = () => {
   jsonFormsSchema.value = newJsonForms.schema;
   jsonFormsUiSchema.value = newJsonForms.uischema;
 
-  const {update} = useJsonforms();
+  //console.log("formbukder","uodate",newJsonForms.schema);
   update(newJsonForms.schema, newJsonForms.uischema)
 
   emit('schemaUpdated', newJsonForms)
