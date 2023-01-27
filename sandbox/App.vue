@@ -32,6 +32,7 @@ import FormBuilderDetails from "./FormBuilderDetails.vue";
 import {computed, ref} from "vue";
 import * as ownExamples from "./jsonForms/examples";
 import {getExamples} from '@jsonforms/examples/src'
+import {generateDefaultUISchema} from "@jsonforms/core";
 
 const oe = ownExamples;//import own examples
 
@@ -43,8 +44,14 @@ const disableFormbuilder = ref(false);
 const jsonForms = computed(() => {
   const exampleData = getExamples().find(item => item.label===example.value);
 
-  if(exampleData?.uischema && schemaReadOnly.value) {
-    exampleData.uischema = {};
+  if(exampleData) {
+    if(exampleData?.uischema && schemaReadOnly.value) {
+      exampleData.uischema = {};
+    }
+    if(!exampleData?.uischema && !schemaReadOnly.value) {
+      console.log("sandbox app","UiSschema generated because example is empty");
+      exampleData.uischema = generateDefaultUISchema(exampleData.schema)
+    }
   }
 
   return exampleData
