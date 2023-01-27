@@ -84,7 +84,7 @@ selectTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
 
             case 'oneOf':
                 schema.oneOf = data.select?.oneOf ?? [];
-                schema.oneOf = schema.oneOf.filter(item => item?.const)
+                schema.oneOf = schema.oneOf.filter((item:any) => item?.const)
 
                 if(!schema.oneOf.length) {
                     schema.oneOf = [{const:''}];
