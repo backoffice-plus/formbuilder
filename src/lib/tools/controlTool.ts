@@ -6,8 +6,9 @@ import type {ToolInterface} from "../models";
 import {Tool, ToolProps} from "../models";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {jsonForms as toolOptionsControl} from "../../schema/toolOptionsControl";
+import {schemaValidationKeys} from "../../schema/toolOptionsSchemaValidation";
 import {denormalizeRule} from "../normalizer";
-import {updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 
 export const controlTool = new Tool('formInputByType', ToolProps.create({
     toolType: 'control',
@@ -15,12 +16,16 @@ export const controlTool = new Tool('formInputByType', ToolProps.create({
     jsonForms: {schema: {type: 'string'}, uischema: {type: 'Control'}}
 }), rankWith(1, or(isStringControl, isBooleanControl, isNumberControl, isIntegerControl)));
 controlTool.importer = () => formInputByType;
-controlTool.optionJsonforms = toolOptionsControl;
+controlTool.optionJsonforms = async (tool) => {
+    return {
+        schema:await resolveSchema(toolOptionsControl.schema),
+        uischema:await resolveSchema(toolOptionsControl.uischema),
+    }
+};
 
-type schemaValidationKey = | 'minimum' | 'maximum' | 'pattern' | 'minLength' | 'maxLength';
-type schemaKeyDefault = 'type' | 'format' | 'description' | schemaValidationKey;
+type schemaKeyDefault = 'type' | 'format' | 'description';
 type schemaKey = schemaKeyDefault;
-const schemaKeys = ['type', 'format', 'description', 'minimum', 'maximum', 'pattern', 'minLength', 'maxLength'] as Array<schemaKey>;
+const schemaKeys = ['type', 'format', 'description'] as Array<schemaKey>;
 type uiSchemaKey = 'label' | 'i18n' | 'options';
 const uiSchemaKeys = ['label', 'i18n', 'options'] as Array<uiSchemaKey>;
 
@@ -28,7 +33,9 @@ controlTool.optionDataPrepare = (tool: ToolInterface) => {
     const schema = tool.props.jsonForms.schema as JsonSchema;
     const uischema = tool.props.jsonForms.uischema as ControlElement;
 
-    const data = {} as any;
+    const data = {
+        validation: {},
+    } as any;
 
     data.propertyName = tool.props.propertyName;
 
@@ -39,17 +46,15 @@ controlTool.optionDataPrepare = (tool: ToolInterface) => {
         if (undefined !== uischema[key]) data[key] = uischema[key]
     });
 
-    /**
-     * :TODO better modeling without converting
-     */
-    // if(options?.rule?.condition?.schema) {
-    //     options.rule.condition.schema = JSON.stringify(options.rule.condition.schema);
-    // }
+    if(uischema.rule) {
+        data.rule = uischema.rule;
+    }
 
+    schemaValidationKeys.forEach(key => data.validation[key] = schema[key]);
 
     if(tool.isRequired) {
         data.required = true;
-    } 
+    }
 
     return data;
 };
@@ -60,17 +65,16 @@ controlTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
 
     const propertyName = updatePropertyNameAndScope(data?.propertyName, tool)
 
-   // console.log("controllTool optionDataUpdate",schema);
-
     schemaKeys.forEach((key:schemaKey) => schema[key] = data[key]);
     uiSchemaKeys.forEach((key:uiSchemaKey) => uischema[key] = data[key]);
 
-    //:TODO better rule schema without denormalization
-    if (undefined !== data.rule) {
-        const rule = denormalizeRule(data.rule);
-        if (undefined !== rule.condition) {
-            uischema.rule = rule;
-        }
+    if(data.rule) {
+        console.log("data.rule",data.rule)
+        uischema.rule = data.rule;
+    }
+
+    if(data.validation) {
+        schemaValidationKeys.forEach(key => schema[key] = data.validation[key]);
     }
 
     tool.isRequired = data.required;

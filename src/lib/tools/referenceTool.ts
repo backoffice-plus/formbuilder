@@ -20,7 +20,7 @@ export const referenceTool = new Tool('reference', ToolProps.create({
         )
     ));
 referenceTool.importer = () => referenceComp;
-referenceTool.optionJsonforms = toolOptionsReference;
+referenceTool.optionJsonforms = async () => toolOptionsReference;
 
 referenceTool.optionDataPrepare = (tool: ToolInterface) => {
     const data = {} as any;

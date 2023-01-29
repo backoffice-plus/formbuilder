@@ -25,7 +25,7 @@ export const combinatorTool = new Tool('combinatorAsTabs',
     ));
 
 combinatorTool.importer = () => combinatorAsTabs;
-combinatorTool.optionJsonforms = toolOptionsCombinator;
+combinatorTool.optionJsonforms = async () => toolOptionsCombinator;
 
 type keyword = "oneOf" | "anyOf" | "allOf";
 const keywords = ['oneOf', 'anyOf', 'allOf'] as Array<keyword>

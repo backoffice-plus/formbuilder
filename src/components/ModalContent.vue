@@ -7,6 +7,7 @@
       <!--
       :TODO how to change class from jsonForms?
       -->
+      {{ options?.rule }}
       <JsonForms
           :class="'styleA'"
           :schema="jsonFormSchema?.schema"
@@ -18,6 +19,8 @@
           @change="onChange"
           v-if="jsonFormSchema?.schema"
       />
+
+      a: {{ dataAfterUpdated?.rule }}
 
 <!--      <div class="mt-4 flex justify-center">-->
 <!--        <button class="button blue">Submit</button>-->
@@ -38,7 +41,7 @@
 <script setup>
 
 import {JsonForms} from "@jsonforms/vue";
-import {jsonFormRenderes} from "../index";
+import {jsonFormRenderes, Tool} from "../index";
 import {createI18nTranslate} from "../lib/formbuilder";
 import {emitter} from "../lib/mitt";
 import {onMounted, ref} from "vue";
@@ -46,7 +49,7 @@ import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
 
 const props = defineProps({
-  tool: Object,
+  tool: Tool,
   data: Object,
   schemaReadOnly: Boolean,
 })
@@ -56,10 +59,13 @@ const ajv = createAjv();//is needed because reactive :schema & :uischema will th
 
 const options = ref({});
 const jsonFormSchema = ref({});
+const dataAfterUpdated = ref({});
 
-onMounted(() => {
+onMounted(async () => {
   options.value = props.tool.optionDataPrepare(props.tool)
-  jsonFormSchema.value = props.tool.optionJsonforms;
+  jsonFormSchema.value = await props.tool.optionJsonforms(props.tool)
+
+  console.log("jsonFormSchema.value",jsonFormSchema.value);
 })
 
 const onChange = (e) => {
@@ -70,6 +76,7 @@ const onChange = (e) => {
   else {
     //const data = {...e.data};//:TODO deep copy
     const data = JSON.parse(JSON.stringify(e.data)); //:TODO other way to remove ref/proxy?
+    dataAfterUpdated.value = data;
 
     props.tool.optionDataUpdate(props.tool, data)
 

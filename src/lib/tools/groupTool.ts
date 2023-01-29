@@ -5,13 +5,20 @@ import type {ToolInterface} from "../models";
 import {Tool, ToolProps} from "../models";
 import flexArea from "../../components/tools/flexArea.vue";
 import {jsonForms as toolOptionsLabelProperty} from "../../schema/toolOptionsLabelProperty";
+import {jsonForms as toolOptionsGroup} from "../../schema/toolOptionsGroup";
+import {resolveSchema} from "../formbuilder";
 
 export const groupTool = new Tool('flexArea', ToolProps.create({
     toolType: 'group',
     jsonForms: {uischema: {type: 'Group'}}
 }), rankWith(1, uiTypeIs('Group')));
 groupTool.importer = () => flexArea;
-groupTool.optionJsonforms = toolOptionsLabelProperty;
+groupTool.optionJsonforms = async () => {
+    return {
+        schema:await resolveSchema(toolOptionsGroup.schema),
+        uischema:await resolveSchema(toolOptionsGroup.uischema),
+    }
+};
 
 groupTool.optionDataPrepare = (tool: ToolInterface) => {
     const data = {} as any;

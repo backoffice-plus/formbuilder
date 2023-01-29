@@ -1,7 +1,7 @@
 import {registerExamples} from "@jsonforms/examples/src/register";
 
 const schema = {
-  $id: "http://localhost:5173/schemas/customer",
+  //$id: "http://localhost:5173/schemas/customer",
 
   "type": "object",
   "properties": {
@@ -12,7 +12,9 @@ const schema = {
       "i18n": "nameI18n"
     },
     address: {
-      $ref: '/schemas/address'
+      //$ref: '/schemas/address',
+      //$ref: "http://localhost:5173/schemas/address",
+      $ref: "https://json-schema.org/learn/examples/address.schema.json",
     }
   },
 };
@@ -23,11 +25,6 @@ const uischema = {
     {
       "type": "Control",
       "scope": "#/properties/name",
-      "label": "name",
-      //"i18n": "customName",
-      "options": {
-        "placeholder": "Your Name",
-      }
     },
     {
       "type": "Control",
@@ -45,6 +42,6 @@ registerExamples([
     label: 'FormBuilder - latest example',
     data,
     schema,
-    uischema
+    undefined,//uischema
   }
 ]);

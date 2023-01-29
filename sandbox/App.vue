@@ -15,11 +15,11 @@
       <FormBuilder
           :jsonForms="jsonForms"
           :schemaReadOnly="schemaReadOnly"
-          :key="example + (schemaReadOnly?1:0)"
           v-if="!disableFormbuilder"
       />
+    <!--           :key="example + (schemaReadOnly?1:0)" -->
 
-      <FormBuilderDetails  :jsonForms="jsonForms" :key="(disableFormbuilder?1:0)" />
+      <FormBuilderDetails :jsonForms="jsonFormsResolved" :key="(disableFormbuilder?1:0)" />
 
   </div>
 
@@ -29,10 +29,11 @@
 
 import {FormBuilder} from "../src/index.ts";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
-import {computed, ref} from "vue";
+import {computed, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
 import {getExamples} from '@jsonforms/examples/src'
 import {generateDefaultUISchema} from "@jsonforms/core";
+import {resolveSchema} from "../src";
 
 const oe = ownExamples;//import own examples
 
@@ -40,6 +41,7 @@ const examples = computed(() => getExamples().sort((a,b)=>a.label.toLowerCase()>
 const example = ref('');
 const schemaReadOnly = ref(false);
 const disableFormbuilder = ref(false);
+const jsonFormsResolved = ref({});
 
 const jsonForms = computed(() => {
   const exampleData = getExamples().find(item => item.label===example.value);
@@ -56,6 +58,12 @@ const jsonForms = computed(() => {
 
   return exampleData
 });
+
+
+watch(() => jsonForms.value, async () => {
+  jsonFormsResolved.value = unref(jsonForms.value);
+  jsonFormsResolved.value.schema = await resolveSchema(jsonFormsResolved.value.schema);
+})
 
 </script>
 

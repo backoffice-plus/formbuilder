@@ -24,9 +24,101 @@ export const schema = {
                 }
             },
         },
+        rule: {
+            $ref:'toolOptionsSchemaRule.schema#/definitions/rule'
+        }
+        //
+        // rule: {
+        //     type: 'object',
+        //     properties: {
+        //         effect: {type:'string',enum:['SHOW','HIDE','ENABLE','DISABLE']},
+        //         condition: {
+        //             title: "ConditionType",
+        //             oneOf: [
+        //                 {$ref: '#/definitions/ruleCondition',title:'SingleCondition'},
+        //                 {$ref: '#/definitions/ruleConditions',title:'CombinedConditions'}
+        //             ]
+        //         }
+        //     }
+        // },
+        // ruleCondition: {
+        //     type: 'object',
+        //     properties: {
+        //         scope: {type:'string'},
+        //         schema: {
+        //             type: 'object',
+        //             properties: {
+        //                 //const: {type:['string','number','boolean']}
+        //                 const: {
+        //                     oneOf: [
+        //                         {type:'string',title:'string'},
+        //                         {type:'number',title:'number'},
+        //                         {type:'boolean',title:'boolean'},
+        //                     ]
+        //                 }
+        //             }
+        //
+        //             // oneOf: [
+        //             //     {$ref:'#/definitions/ruleConditionSchemaConst',title:'Const'},
+        //             //     // {$ref:'#/definitions/ruleConditionSchemaConstString',title:'String'},
+        //             //     // {$ref:'#/definitions/ruleConditionSchemaConstNumber',title:'Number'},
+        //             //     // {$ref:'#/definitions/ruleConditionSchemaConstBoolean',title:'Boolean'},
+        //             // ]
+        //         }
+        //     }
+        // },
+        // ruleConditions: {
+        //     type: 'object',
+        //     properties: {
+        //         type: {type:'string',enum:['AND','OR']},
+        //         conditions: {
+        //             type: 'array',
+        //             minItems: 1,
+        //             items: {
+        //                // $ref: '#/definitions/ruleCondition'
+        //
+        //                 //$ref not working?!?!?!
+        //                 type: 'object',
+        //                 properties: {
+        //                     scope: {type:'string'},
+        //                     schema: {
+        //                         type: 'object',
+        //                         properties: {
+        //                             const: {type:'string'}
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     },
+        // },
+        // ruleConditionSchemaConst: {
+        //     type: 'object',
+        //     properties: { const: {type:['string','number','boolean']} }
+        // },
+        // // ruleConditionSchemaConstString: {
+        // //     type: 'object',
+        // //     properties: { const: {type:'string'} }
+        // // },
+        // // ruleConditionSchemaConstNumber: {
+        // //     type: 'object',
+        // //     properties: { const: {type:'number'} }
+        // // },
+        // // ruleConditionSchemaConstBoolean: {
+        // //     type: 'object',
+        // //     properties: { const: {type:'boolean'} }
+        // // },
+
     },
     "type": "object",
     "properties": {
+        validation: {
+            $ref:'toolOptionsSchemaValidation.schema#/properties/validation'
+        },
+        rule: {
+            $ref:'toolOptionsSchemaRule.schema#/properties/rule'
+        },
+
         "propertyName": {
             "type": "string"
         },
@@ -64,55 +156,6 @@ export const schema = {
         //     },
         // },
 
-        rule: {
-            type: "object",
-            properties: {
-                effect: {
-                    type: "string",
-                    enum: ['HIDE','SHOW','DISABLE','ENABLE']
-                },
-                condition: {
-                    type: "object",
-                    properties: {
-                        // scope: {
-                        //     type: "string",
-                        //     description: "like \"#/properties/name\""
-                        // },
-                        //"schema": { const: true }
-                        //"schema": { const: 1 }
-                        //"schema": { const: "sometext" }
-                        //"schema": { enum: ["radio"] }
-
-                        _scopePropertyName: {
-                            type: "string",
-                        },
-                        _schema: {
-                            type: "string",
-                            enum: ['const', 'enum']
-                        },
-                        _schemaConstType: {
-                            type: "string",
-                            enum: ['string', 'number', 'boolean'],
-                        },
-                        _schemaConstAsString: {type:'string'},
-                        _schemaConstAsNumber: {type:'number'},
-                        _schemaConstAsBoolean: {type:'boolean'},
-                        schema: {
-                            type: "object",
-                            properties: {
-                                //_constAsNumber: {type:'number'},
-                                // const: {
-                                //     type: ['number', 'string', 'boolean'],
-                                // },
-                                // enum: {
-                                //     type: "array",
-                                // },
-                            },
-                        },
-                    }
-                },
-            }
-        },
 
         select: {
             type: 'object',
@@ -139,22 +182,6 @@ export const schema = {
         },
 
 
-        maximum: {
-            type: "number"
-        },
-        minimum: {
-            type: "number"
-        },
-        minLength: {
-            "type": "number"
-        },
-        maxLength: {
-            "type": "number"
-        },
-        "pattern": {
-            "type": "string",
-            description: "for examples: \"[abc]+\""
-        },
         required: {
             "type": "boolean"
         },
@@ -180,6 +207,7 @@ export const schema = {
     "required": [
         "propertyName"
     ]
+
 }
 
 export const uischema = {
@@ -324,144 +352,26 @@ export const uischema = {
             "label": "Validation",
             "elements": [
                 {
-                    "type": "VerticalLayout",
-                    "elements": [
-                        {
-                            "type": "HorizontalLayout",
-                            "elements": [
-                                {
-                                    "scope": "#/properties/minimum",
-                                    "type": "Control"
-                                },
-                                {
-                                    "scope": "#/properties/maximum",
-                                    "type": "Control"
-                                },
-                            ],
-                            "rule": {
-                                "effect": "SHOW",
-                                "condition": {
-                                    "scope": "#/properties/inputType",
-                                    "schema": { enum: ["number"] }
-                                }
-                            }
-                        },
-                        {
-                            "type": "HorizontalLayout",
-                            "elements": [
-                                {
-                                    "scope": "#/properties/minLength",
-                                    "type": "Control"
-                                },
-                                {
-                                    "scope": "#/properties/maxLength",
-                                    "type": "Control"
-                                },
-                            ],
-                            "rule": {
-                                "effect": "SHOW",
-                                "condition": {
-                                    "scope": "#/properties/inputType",
-                                    "schema": { enum: ["text"] }
-                                }
-                            }
-                        },
-                        {
-                            "scope": "#/properties/pattern",
-                            "type": "Control"
-                        },
-                    ],
+                    $ref:'toolOptionsSchemaValidation.uischema'
                 }
-            ]
+            ],
+            "rule": {
+                //"effect": "DISABLE",:TODO fix it CategorizationRenderer
+                "effect": "HIDE",
+                "condition": {
+                    "scope": "#/properties/type",
+                    "schema": { enum: ["boolean"] }
+                }
+            }
         },
 
-
-        /**
-         * Tab - Rule
-         */
         {
             "type": "Category",
             "label": "Rule",
             "elements": [
                 {
-                    "type": "VerticalLayout",
-                    "elements": [
-                        {
-                            "scope": "#/properties/rule/properties/effect",
-                            "type": "Control"
-                        },
-                        {
-                            "scope": "#/properties/rule/properties/condition/properties/_scopePropertyName",
-                            "type": "Control",
-                            label: 'Property Name',
-                        },
-                        {
-                            type: "Group",
-                            label: "Schema based condition",
-                            elements: [
-
-                                {
-                                    type: "HorizontalLayout",
-                                    elements: [
-                                        {
-                                            type: "Control",
-                                            label: "Schema Type",
-                                            scope: "#/properties/rule/properties/condition/properties/_schema"
-                                        },
-                                        {
-                                            type: "Control",
-                                            label: "Const Type",
-                                            scope: "#/properties/rule/properties/condition/properties/_schemaConstType",
-                                            rule: {
-                                                effect: "ENABLE",
-                                                condition: {
-                                                    scope: "#/properties/rule/properties/condition/properties/_schema",
-                                                    schema: { const: "const" }
-                                                }
-                                            }
-                                        },
-                                    ],
-                                },
-                                {
-                                    scope: "#/properties/rule/properties/condition/properties/_schemaConstAsString",
-                                    type: "Control",
-                                    rule: {
-                                        effect: "SHOW",
-                                        condition: {
-                                            scope: "#/properties/rule/properties/condition/properties/_schemaConstType",
-                                            //schema: { enum: ["string"] }
-                                            schema: { const: "string" }
-                                        }
-                                    }
-                                },
-                                {
-                                    scope: "#/properties/rule/properties/condition/properties/_schemaConstAsNumber",
-                                    type: "Control",
-                                    rule: {
-                                        effect: "SHOW",
-                                        condition: {
-                                            scope: "#/properties/rule/properties/condition/properties/_schemaConstType",
-                                            //schema: { enum: ["string"] }
-                                            schema: { const: "number" }
-                                        }
-                                    }
-                                },
-                                {
-                                    scope: "#/properties/rule/properties/condition/properties/_schemaConstAsBoolean",
-                                    type: "Control",
-                                    rule: {
-                                        effect: "SHOW",
-                                        condition: {
-                                            scope: "#/properties/rule/properties/condition/properties/_schemaConstType",
-                                            schema: { const: "boolean" }
-                                        }
-                                    }
-                                },
-
-                            ]
-                        },
-                    ],
-                }
+                    $ref:'toolOptionsSchemaRule.uischema'
+                },
             ]
         },
 

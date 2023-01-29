@@ -17,7 +17,7 @@ export const selectTool = new Tool('formInputByType', ToolProps.create({
 }), rankWith(2, and(isStringControl, or(isOneOfControl, isEnumControl)))); //TODO: isOneOfEnumControl needed?
 
 selectTool.importer = () => formInputByType;
-selectTool.optionJsonforms = toolOptionsControl;
+selectTool.optionJsonforms = async () => toolOptionsControl;
 
 type schemaValidationKey = | 'minimum' | 'maximum' | 'pattern' | 'minLength' | 'maxLength';
 type schemaKeyDefault = 'type' | 'format' | 'description' | schemaValidationKey;
@@ -41,6 +41,10 @@ selectTool.optionDataPrepare = (tool: ToolInterface) => {
         if (undefined !== uischema[key]) data[key] = uischema[key]
     });
 
+    if(uischema.rule) {
+        data.rule = uischema.rule;
+    }
+
     /**
      * :TODO right now its not possible to change from oneOf to enum
      * - the jsonforms renderer throws error at isOneOfEnumControl
@@ -57,13 +61,6 @@ selectTool.optionDataPrepare = (tool: ToolInterface) => {
             _type: 'oneOf'
         }
     }
-    /**
-     * :TODO better modeling without converting
-     */
-    //convert enum to object
-    // if(options?.rule?.condition?.schema) {
-    //     options.rule.condition.schema = JSON.stringify(options.rule.condition.schema);
-    // }
 
 
     return data;

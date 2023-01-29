@@ -27,6 +27,7 @@ export interface ToolInterface {
 
     optionDataPrepare: (tool:ToolInterface) => Record<string, any>;
     optionDataUpdate: (tool:ToolInterface, data:Record<string, any>) => void;
+    optionJsonforms: (tool:ToolInterface) => Promise<JsonFormsInterface|undefined>;
 
     clone: (schema:JsonFormsSchema|undefined, uischema:JsonFormsUISchema|undefined) => ToolInterface;
 }
@@ -38,7 +39,7 @@ export class Tool implements ToolInterface{
     isRequired:boolean = false;
     tester: undefined|any = undefined;
     importer: () => any = ()=>undefined;
-    optionJsonforms: JsonFormsInterface|undefined = undefined;
+    optionJsonforms: (tool:ToolInterface) => Promise<JsonFormsInterface|undefined> = () => new Promise(()=>undefined);
     optionDataPrepare: (tool:ToolInterface) => Record<string, any> = () => {return{}};
     optionDataUpdate: (tool:ToolInterface, data:any) => void = ()=> {};
 

@@ -15,7 +15,7 @@ export const labelTool = new Tool('label', ToolProps.create({
 }), rankWith(1, uiTypeIs('Label')));
 
 labelTool.importer = () => labelComp;
-labelTool.optionJsonforms = toolOptionsLabelElement;
+labelTool.optionJsonforms = async () => toolOptionsLabelElement;
 
 labelTool.optionDataPrepare = (tool: ToolInterface) => {
     const data = {} as any;

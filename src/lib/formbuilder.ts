@@ -23,6 +23,9 @@ import {
 import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
 import {unref} from "vue";
+import {jsonForms as toolOptionsSchemaValidation} from "../schema/toolOptionsSchemaValidation";
+import {jsonForms as toolOptionsSchemaRule} from "../schema/toolOptionsSchemaRule";
+import {Resolver} from "@stoplight/json-ref-resolver";
 
 export const updatePropertyNameAndScope = (propertyName:string|undefined, tool:ToolInterface) : string => {
     if (!propertyName) {
@@ -301,3 +304,23 @@ export const findAllScopes = (uischema:ControlElement|Layout|UISchemaElement) : 
     return scopes;
 };
 
+export const resolveSchema = async (schema:any) => {
+    const schemaMap = {
+        'toolOptionsSchemaValidation.schema': toolOptionsSchemaValidation.schema,
+        'toolOptionsSchemaValidation.uischema': toolOptionsSchemaValidation.uischema,
+        'toolOptionsSchemaRule.schema': toolOptionsSchemaRule.schema,
+        'toolOptionsSchemaRule.uischema': toolOptionsSchemaRule.uischema,
+    } as Record<string, any>
+
+    const resolver = new Resolver({
+        resolvers: {
+            file: {
+                async resolve(ref:URI) {
+                    return schemaMap[String(ref)] ?? {}
+                }
+            },
+        }
+    });
+
+    return await resolver.resolve(schema).then(resolved => resolved.result)
+}

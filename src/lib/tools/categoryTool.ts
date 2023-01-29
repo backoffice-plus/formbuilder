@@ -13,7 +13,7 @@ export const categoryTool = new Tool('flexArea', ToolProps.create({
 }), rankWith(1, uiTypeIs('Category')));
 
 categoryTool.importer = () => flexArea;
-categoryTool.optionJsonforms = toolOptionsLabelProperty;
+categoryTool.optionJsonforms = async () => toolOptionsLabelProperty;
 
 categoryTool.optionDataPrepare = (tool: ToolInterface) => {
     const data = {} as any;
