@@ -7,7 +7,7 @@
       <!--
       :TODO how to change class from jsonForms?
       -->
-      {{ options?.rule }}
+<!--      options: {{ options }}-->
       <JsonForms
           :class="'styleA'"
           :schema="jsonFormSchema?.schema"
@@ -20,7 +20,7 @@
           v-if="jsonFormSchema?.schema"
       />
 
-      a: {{ dataAfterUpdated?.rule }}
+<!--      Data: {{ dataAfterUpdated }}-->
 
 <!--      <div class="mt-4 flex justify-center">-->
 <!--        <button class="button blue">Submit</button>-->

@@ -16,8 +16,9 @@
           :jsonForms="jsonForms"
           :schemaReadOnly="schemaReadOnly"
           v-if="!disableFormbuilder"
+          :key="example + (schemaReadOnly?1:0)"
       />
-    <!--           :key="example + (schemaReadOnly?1:0)" -->
+    <!--            -->
 
       <FormBuilderDetails :jsonForms="jsonFormsResolved" :key="(disableFormbuilder?1:0)" />
 
@@ -62,7 +63,7 @@ const jsonForms = computed(() => {
 
 watch(() => jsonForms.value, async () => {
   jsonFormsResolved.value = unref(jsonForms.value);
-  jsonFormsResolved.value.schema = await resolveSchema(jsonFormsResolved.value.schema);
+  //jsonFormsResolved.value.schema = await resolveSchema(jsonFormsResolved.value.schema);
 })
 
 </script>

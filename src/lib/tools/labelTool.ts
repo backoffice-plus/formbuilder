@@ -1,12 +1,13 @@
 import {rankWith} from "@jsonforms/core";
+import type {JsonSchema} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import type {LabelElement} from "@jsonforms/core/src/models/uischema";
-
 import type {ToolInterface} from "../models";
 import {Tool, ToolProps} from "../models";
 import labelComp from "../../components/tools/label.vue";
-import {jsonForms as toolOptionsLabelElement} from "../../schema/toolOptionsLabel";
-import {normalizeRule} from "../normalizer";
+import {jsonForms as toolOptionsLabel, prepareOptionDataRule, setOptionDataRule} from "./schema/toolLabel";
+import _ from "lodash";
+import {resolveSchema} from "../formbuilder";
 
 
 export const labelTool = new Tool('label', ToolProps.create({
@@ -15,35 +16,33 @@ export const labelTool = new Tool('label', ToolProps.create({
 }), rankWith(1, uiTypeIs('Label')));
 
 labelTool.importer = () => labelComp;
-labelTool.optionJsonforms = async () => toolOptionsLabelElement;
+
+labelTool.optionJsonforms = async () => {
+    return {
+        schema: await resolveSchema(toolOptionsLabel.schema),
+        uischema: await resolveSchema(toolOptionsLabel.uischema),
+    }
+};
 
 labelTool.optionDataPrepare = (tool: ToolInterface) => {
-    const data = {} as any;
-
+    const schema = tool.props.jsonForms.schema as JsonSchema;
     const uischema = tool.props.jsonForms.uischema as LabelElement;
 
-    if (uischema.text !== undefined) {
-        data.text = uischema.text;
-    }
-    if (uischema.rule !== undefined) {
-        data.rule = normalizeRule(uischema.rule);
-    }
-    if (uischema.options !== undefined) {
-        data.options = uischema.options;
-    }
-    if (uischema.i18n !== undefined) {
-        data.i18n = uischema.i18n;
-    }
-
-    return data;
+    return {
+        text: uischema.text,
+        i18n: uischema.i18n,
+        options: uischema.i18n ?? {},
+        ...prepareOptionDataRule(schema, uischema),
+    } as any;
 };
 
 labelTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
-    const uiSchema = tool.props.jsonForms.uischema as LabelElement;
-    uiSchema.text = data.text;
-    uiSchema.i18n = data.i18n;
+    const schema = tool.props.jsonForms.schema as JsonSchema | Record<string, any>;
+    const uischema = tool.props.jsonForms.uischema as LabelElement;
+    uischema.text = data.text;
+    uischema.i18n = data.i18n;
 
-    //:TODO
-    // uiSchema.rule = data.rule;
-    // uiSchema.options = data.options;
+    uischema.options = data.options ?? {};
+
+    setOptionDataRule(schema, uischema, data);
 };

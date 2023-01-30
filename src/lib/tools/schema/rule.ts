@@ -1,6 +1,13 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-import type {JsonFormsInterface} from "../lib/models";
+import type {JsonFormsInterface} from "../../models";
+
+export const prepareOptionData = (schema:JsonSchema, uischema:UISchemaElement) : Record<string, any> => {
+    return {rule:uischema.rule};
+}
+export const setOptionData = (schema: JsonSchema, uischema: UISchemaElement, data: Record<string, any>): void => {
+    uischema.rule = data.rule;
+}
 
 export const schema = {
     definitions: {

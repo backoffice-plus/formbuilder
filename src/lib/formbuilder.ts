@@ -23,8 +23,9 @@ import {
 import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
 import {unref} from "vue";
-import {jsonForms as toolOptionsSchemaValidation} from "../schema/toolOptionsSchemaValidation";
-import {jsonForms as toolOptionsSchemaRule} from "../schema/toolOptionsSchemaRule";
+import {jsonForms as toolOptionsSchemaValidation} from "./tools/schema/validation";
+import {jsonForms as toolOptionsSchemaRule} from "./tools/schema/rule";
+import {jsonForms as toolOptionsSchemaLabelAndI18n} from "./tools/schema/labelAndI18n";
 import {Resolver} from "@stoplight/json-ref-resolver";
 
 export const updatePropertyNameAndScope = (propertyName:string|undefined, tool:ToolInterface) : string => {
@@ -297,10 +298,12 @@ export const findAllScopes = (uischema:ControlElement|Layout|UISchemaElement) : 
 
 export const resolveSchema = async (schema:any) => {
     const schemaMap = {
-        'toolOptionsSchemaValidation.schema': toolOptionsSchemaValidation.schema,
-        'toolOptionsSchemaValidation.uischema': toolOptionsSchemaValidation.uischema,
-        'toolOptionsSchemaRule.schema': toolOptionsSchemaRule.schema,
-        'toolOptionsSchemaRule.uischema': toolOptionsSchemaRule.uischema,
+        'validation.schema': toolOptionsSchemaValidation.schema,
+        'validation.uischema': toolOptionsSchemaValidation.uischema,
+        'rule.schema': toolOptionsSchemaRule.schema,
+        'rule.uischema': toolOptionsSchemaRule.uischema,
+        'labelAndI18n.schema': toolOptionsSchemaLabelAndI18n.schema,
+        'labelAndI18n.uischema': toolOptionsSchemaLabelAndI18n.uischema,
     } as Record<string, any>
 
     const resolver = new Resolver({

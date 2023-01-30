@@ -1,6 +1,30 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-import type {JsonFormsInterface} from "../lib/models";
+import type {JsonFormsInterface} from "../../models";
+
+export type schemaKey = | 'minimum' | 'maximum' | 'pattern' | 'minLength' | 'maxLength';
+export const schemaKeys = ['minimum', 'maximum', 'pattern', 'minLength', 'maxLength'] as Array<schemaKey>;
+
+export const prepareOptionData = (schema: JsonSchema, uischema: UISchemaElement): Record<string, any> => {
+    const data = {} as Record<string, any>;
+
+    schemaKeys.forEach(key => {
+        if (undefined !== schema[key]) {
+            data[key] = schema[key]
+        }
+    });
+
+    return {validation: data};
+}
+
+export const setOptionData = (schema: JsonSchema, uischema: UISchemaElement, data: Record<string, any>): void => {
+    schemaKeys.forEach(key => {
+        if (undefined !== data.validation[key]) {
+            schema[key] = data.validation[key]
+        }
+    });
+}
+
 
 export const schema = {
     type: "object",
@@ -48,7 +72,7 @@ export const uischema = {
                 "effect": "SHOW",
                 "condition": {
                     "scope": "#/properties/type",
-                    "schema": { enum: ["number", "integer"] }
+                    "schema": {enum: ["number", "integer"]}
                 }
             }
         },
@@ -68,7 +92,7 @@ export const uischema = {
                 "effect": "SHOW",
                 "condition": {
                     "scope": "#/properties/type",
-                    "schema": { enum: ["string"] }
+                    "schema": {enum: ["string"]}
                 }
             }
         },
@@ -79,14 +103,11 @@ export const uischema = {
                 "effect": "SHOW",
                 "condition": {
                     "scope": "#/properties/type",
-                    "schema": { enum: ["string"] }
+                    "schema": {enum: ["string"]}
                 }
             }
         },
     ],
 }
 
-export type schemaValidationKey = | 'minimum' | 'maximum' | 'pattern' | 'minLength' | 'maxLength';
-export const schemaValidationKeys = ['minimum', 'maximum', 'pattern', 'minLength', 'maxLength'] as Array<schemaValidationKey>;
-
-export const jsonForms = {schema:schema as JsonSchema, uischema:uischema as UISchemaElement} as JsonFormsInterface;
+export const jsonForms = {schema: schema as JsonSchema, uischema: uischema as UISchemaElement} as JsonFormsInterface;
