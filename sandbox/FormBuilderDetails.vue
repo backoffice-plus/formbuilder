@@ -26,7 +26,7 @@
                 :schema="jsonFormsSchema"
                 :uischema="jsonFormsUiSchema"
                 :data="jsonFormsData"
-                :renderers="jsonFormRenderes"
+                :renderers="jsonFormRenderesMore"
                 :ajv="ajv"
                 :i18n="{translate: createI18nTranslate(localeCatalogue)}"
                 v-if="jsonFormsSchema"
@@ -59,6 +59,7 @@ import SchemaCode from './SchemaCode.vue'
 import ResizeArea from "./ResizeArea.vue";
 import {translationsErrors as localeCatalogue} from "../src/translations/de";
 import {useJsonforms} from "../src/composable/jsonforms";
+import {entry as htmlRenderer} from "./tool/htmlRenderer.vue";
 
 const props = defineProps({
   jsonForms: Object, //read from store
@@ -69,6 +70,11 @@ const jsonFormsSchema = schema;
 const jsonFormsUiSchema = uischema;
 const jsonFormsData = ref({});
 const jsonFormsUpdated = ref({});
+
+const jsonFormRenderesMore = Object.freeze([
+  ...jsonFormRenderes,
+  htmlRenderer,
+]);
 
 watch(() => props.jsonForms, () => {
    jsonFormsSchema.value = props.jsonForms?.schema;

@@ -35,6 +35,11 @@ import * as ownExamples from "./jsonForms/examples";
 import {getExamples} from '@jsonforms/examples/src'
 import {generateDefaultUISchema} from "@jsonforms/core";
 import {resolveSchema} from "../src";
+import {tool as htmlTool} from "./tool/htmlTool";
+import {useTools} from "../src/composable/tools";
+
+const {registerTools} = useTools();
+registerTools([htmlTool]);
 
 const oe = ownExamples;//import own examples
 
