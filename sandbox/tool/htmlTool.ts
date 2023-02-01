@@ -7,6 +7,7 @@ import {
 } from "../../src/lib/tools/schema/toolLayout";
 import htmlToolComponent from "./htmlToolComponent.vue";
 import htmlRenderer from "./htmlRenderer.vue";
+import {entry as htmlControlRenderer} from "./htmlControlRenderer.vue";
 import {schema,uischema} from "./htmlToolSchema";
 
 
@@ -16,6 +17,11 @@ export const tool = new Tool('html', ToolProps.create({
 }), htmlRenderer.tester);
 
 tool.importer = () => htmlToolComponent;
+tool.optionJsonformsRenderer = () : any => {
+    return [
+        htmlControlRenderer
+    ]
+};
 
 tool.optionJsonforms = async () => {
     return {

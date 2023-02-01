@@ -31,7 +31,7 @@ export const uischema = {
                     type:'Control',
                     scope:'#/properties/options/properties/body',
                     options: {
-                        multi: true,
+                        html: true,
                     }
                 },
             ]

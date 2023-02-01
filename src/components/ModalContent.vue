@@ -13,7 +13,7 @@
           :schema="jsonFormSchema?.schema"
           :uischema="jsonFormSchema?.uischema"
           :data="options"
-          :renderers="jsonFormRenderes"
+          :renderers="mergedJsonFormRenderes"
           :ajv="ajv"
           :i18n="{translate: createI18nTranslate(formBuilderCatalogue)}"
           @change="onChange"
@@ -60,12 +60,21 @@ const ajv = createAjv();//is needed because reactive :schema & :uischema will th
 const options = ref({});
 const jsonFormSchema = ref({});
 const dataAfterUpdated = ref({});
+const mergedJsonFormRenderes = ref(jsonFormRenderes);
 
 onMounted(async () => {
   options.value = props.tool.optionDataPrepare(props.tool)
   jsonFormSchema.value = await props.tool.optionJsonforms(props.tool)
 
-  console.log("jsonFormSchema.value",jsonFormSchema.value);
+  if(props.tool.optionJsonformsRenderer) {
+    const renderer = props.tool.optionJsonformsRenderer();
+    if(renderer?.length) {
+      mergedJsonFormRenderes.value = Object.freeze([
+          ...mergedJsonFormRenderes.value,
+          ...renderer,
+      ])
+    }
+  }
 })
 
 const onChange = (e) => {

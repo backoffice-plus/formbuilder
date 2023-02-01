@@ -40,6 +40,7 @@ export class Tool implements ToolInterface{
     tester: undefined|any = undefined;
     importer: () => any = ()=>undefined;
     optionJsonforms: (tool:ToolInterface) => Promise<JsonFormsInterface|undefined> = () => new Promise(()=>undefined);
+    optionJsonformsRenderer: () => any = ()=>undefined;
     optionDataPrepare: (tool:ToolInterface) => Record<string, any> = () => {return{}};
     optionDataUpdate: (tool:ToolInterface, data:any) => void = ()=> {};
 
@@ -80,6 +81,7 @@ export class Tool implements ToolInterface{
 
         tool.importer = this.importer;
         tool.optionJsonforms = this.optionJsonforms;
+        tool.optionJsonformsRenderer = this.optionJsonformsRenderer;
         tool.optionDataPrepare = this.optionDataPrepare;
         tool.optionDataUpdate = this.optionDataUpdate;
 
