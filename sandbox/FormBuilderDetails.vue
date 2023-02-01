@@ -30,6 +30,7 @@
                 :ajv="ajv"
                 :i18n="{translate: createI18nTranslate(localeCatalogue)}"
                 v-if="jsonFormsSchema"
+                :key="newKey"
                 @change="r => jsonFormsUpdated=r"
             />
         </div>
@@ -50,7 +51,7 @@
 
 
 <script setup>
-import { ref, watch} from 'vue'
+import {computed, ref, watch} from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv} from "@jsonforms/core";
@@ -70,6 +71,8 @@ const jsonFormsSchema = schema;
 const jsonFormsUiSchema = uischema;
 const jsonFormsData = ref({});
 const jsonFormsUpdated = ref({});
+
+const newKey = computed(() => JSON.stringify([schema.value,uischema.value]));
 
 const jsonFormRenderesMore = Object.freeze([
   ...jsonFormRenderes,
