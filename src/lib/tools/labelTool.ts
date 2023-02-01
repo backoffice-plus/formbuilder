@@ -5,8 +5,7 @@ import type {LabelElement} from "@jsonforms/core/src/models/uischema";
 import type {ToolInterface} from "../models";
 import {Tool, ToolProps} from "../models";
 import labelComp from "../../components/tools/label.vue";
-import {jsonForms as toolOptionsLabel, prepareOptionDataRule, setOptionDataRule} from "./schema/toolLabel";
-import _ from "lodash";
+import {schema, uischema, prepareOptionDataRule, setOptionDataRule} from "./schema/toolLabel";
 import {resolveSchema} from "../formbuilder";
 
 
@@ -19,8 +18,8 @@ labelTool.importer = () => labelComp;
 
 labelTool.optionJsonforms = async () => {
     return {
-        schema: await resolveSchema(toolOptionsLabel.schema),
-        uischema: await resolveSchema(toolOptionsLabel.uischema),
+        schema: await resolveSchema(schema),
+        uischema: await resolveSchema(uischema),
     }
 };
 
@@ -39,9 +38,9 @@ labelTool.optionDataPrepare = (tool: ToolInterface) => {
 labelTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
     const schema = tool.props.jsonForms.schema as JsonSchema | Record<string, any>;
     const uischema = tool.props.jsonForms.uischema as LabelElement;
+
     uischema.text = data.text;
     uischema.i18n = data.i18n;
-
     uischema.options = data.options ?? {};
 
     setOptionDataRule(schema, uischema, data);

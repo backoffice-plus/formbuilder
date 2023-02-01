@@ -6,7 +6,7 @@ import type {ToolInterface} from "../models";
 import {Tool, ToolProps} from "../models";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {
-    jsonForms as toolOptionsControl,
+    schema, uischema,
     prepareOptionDataLabel, prepareOptionDataValidation, prepareOptionDataRule,
     setOptionDataValidation, setOptionDataLabel, setOptionDataRule
 } from "./schema/toolControl";
@@ -21,8 +21,8 @@ export const controlTool = new Tool('formInputByType', ToolProps.create({
 controlTool.importer = () => formInputByType;
 controlTool.optionJsonforms = async (tool) => {
     return {
-        schema:await resolveSchema(toolOptionsControl.schema),
-        uischema:await resolveSchema(toolOptionsControl.uischema),
+        schema:await resolveSchema(schema),
+        uischema:await resolveSchema(uischema),
     }
 };
 

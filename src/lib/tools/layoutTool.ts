@@ -6,7 +6,7 @@ import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
 import type {ToolInterface} from "../models";
 import {Tool, ToolProps} from "../models";
-import {jsonForms as toolOptionsLayout, prepareOptionDataRule, setOptionDataRule} from "./schema/toolLayout";
+import {schema, uischema, prepareOptionDataRule, setOptionDataRule} from "./schema/toolLayout";
 
 
 export const verticalLayout = new Tool('flexArea', ToolProps.create({
@@ -18,8 +18,8 @@ verticalLayout.importer = () => flexArea;
 
 verticalLayout.optionJsonforms = async () => {
     return {
-        schema: await resolveSchema(toolOptionsLayout.schema),
-        uischema: await resolveSchema(toolOptionsLayout.uischema),
+        schema: await resolveSchema(schema),
+        uischema: await resolveSchema(uischema),
     }
 };
 

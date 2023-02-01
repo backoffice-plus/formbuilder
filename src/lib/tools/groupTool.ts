@@ -6,13 +6,12 @@ import {Tool, ToolProps} from "../models";
 import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
 import {
-    jsonForms as toolOptionsGroup,
+    schema,uischema,
     prepareOptionDataLabel,
     prepareOptionDataRule,
     setOptionDataLabel,
     setOptionDataRule
 } from "./schema/toolGroup";
-import type {ControlElement} from "@jsonforms/core/src/models/uischema";
 import _ from "lodash";
 
 export const groupTool = new Tool('flexArea', ToolProps.create({
@@ -24,14 +23,14 @@ groupTool.importer = () => flexArea;
 
 groupTool.optionJsonforms = async () => {
     return {
-        schema: await resolveSchema(toolOptionsGroup.schema),
-        uischema: await resolveSchema(toolOptionsGroup.uischema),
+        schema: await resolveSchema(schema),
+        uischema: await resolveSchema(uischema),
     }
 };
 
 groupTool.optionDataPrepare = (tool: ToolInterface) => {
     const schema = tool.props.jsonForms.schema as JsonSchema;
-    const uischema = tool.props.jsonForms.uischema as ControlElement;
+    const uischema = tool.props.jsonForms.uischema as GroupLayout;
 
     const data = {};
 

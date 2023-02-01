@@ -1,6 +1,5 @@
-import type {JsonSchema} from "@jsonforms/core";
+import type {Categorization, JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-import type {JsonFormsInterface} from "../../models";
 export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './rule'
 
 export const schema = {
@@ -10,7 +9,7 @@ export const schema = {
             $ref:'rule.schema#/properties/rule'
         },
     }
-}
+} as JsonSchema;
 
 export const uischema = {
 
@@ -26,7 +25,5 @@ export const uischema = {
             ]
         },
     ]
-}
-
-export const jsonForms = {schema:schema as JsonSchema, uischema:uischema as UISchemaElement} as JsonFormsInterface;
+} as Categorization|UISchemaElement;
 

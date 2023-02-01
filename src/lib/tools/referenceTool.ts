@@ -4,9 +4,9 @@ import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import referenceComp from "../../components/tools/reference.vue";
 import type {ToolInterface} from "../models";
 import {Tool, ToolProps} from "../models";
-import {jsonForms as toolOptionsReference} from "../../schema/toolOptionsReference";
+import {schema, uischema} from "../../schema/toolOptionsReference";
 import type {ControlElement} from "@jsonforms/core/src/models/uischema";
-import {updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 
 
 export const referenceTool = new Tool('reference', ToolProps.create({
@@ -20,7 +20,12 @@ export const referenceTool = new Tool('reference', ToolProps.create({
         )
     ));
 referenceTool.importer = () => referenceComp;
-referenceTool.optionJsonforms = async () => toolOptionsReference;
+referenceTool.optionJsonforms = async (tool) => {
+    return {
+        schema:await resolveSchema(schema),
+        uischema:await resolveSchema(uischema),
+    }
+};
 
 referenceTool.optionDataPrepare = (tool: ToolInterface) => {
     const data = {} as any;

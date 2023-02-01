@@ -1,6 +1,5 @@
-import type {JsonSchema} from "@jsonforms/core";
+import type {Categorization, JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-import type {JsonFormsInterface} from "../../models";
 
 export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './labelAndI18n'
 export { prepareOptionData as prepareOptionDataValidation, setOptionData as setOptionDataValidation } from './validation'
@@ -63,7 +62,7 @@ export const schema = {
         "propertyName"
     ]
 
-}
+} as JsonSchema;
 
 export const uischema = {
 
@@ -334,7 +333,5 @@ export const uischema = {
         //     }
         // },
     ]
-}
-
-export const jsonForms = {schema:schema as JsonSchema, uischema:uischema as UISchemaElement} as JsonFormsInterface;
+} as Categorization|UISchemaElement;
 
