@@ -1,5 +1,4 @@
-import type {JsonSchema} from "@jsonforms/core";
-import type {LabelElement, UISchemaElement} from "@jsonforms/core/src/models/uischema";
+import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {ToolInterface} from "../../src";
 import {resolveSchema, Tool, ToolProps} from "../../src";
 import {
@@ -7,39 +6,37 @@ import {
     setOptionDataRule
 } from "../../src/lib/tools/schema/toolLayout";
 import htmlToolComponent from "./htmlToolComponent.vue";
-import {jsonForms} from "./htmlToolSchema";
-import {rankWith} from "@jsonforms/core";
-import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
+import htmlRenderer from "./htmlRenderer.vue";
+import {schema,uischema} from "./htmlToolSchema";
 
 
 export const tool = new Tool('html', ToolProps.create({
     toolType: 'html',
     jsonForms: {schema:{}, uischema: {type: 'Html', options: {body: '<code>HTML Tool</code>'}}},
-}), rankWith(1, uiTypeIs('Html')));
-//}), rendererEntry.tester);
+}), htmlRenderer.tester);
 
 tool.importer = () => htmlToolComponent;
 
 tool.optionJsonforms = async () => {
     return {
-        schema: await resolveSchema(jsonForms.schema),
-        uischema: await resolveSchema(jsonForms.uischema),
+        schema: await resolveSchema(schema),
+        uischema: await resolveSchema(uischema),
     }
 };
 
-tool.optionDataPrepare = (tool: ToolInterface) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema;
+tool.optionDataPrepare = (tool: ToolInterface) : any => {
+    const schema = tool.props.jsonForms.schema;
     const uischema = tool.props.jsonForms.uischema as UISchemaElement;
 
     return {
         options: uischema.options ?? {},
         ...prepareOptionDataRule(schema, uischema),
-    } as any;
+    };
 };
 
-tool.optionDataUpdate = (tool: ToolInterface, data: any) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema | Record<string, any>;
-    const uischema = tool.props.jsonForms.uischema as LabelElement;
+tool.optionDataUpdate = (tool: ToolInterface, data: any) : void => {
+    const schema = tool.props.jsonForms.schema;
+    const uischema = tool.props.jsonForms.uischema as UISchemaElement;
 
     uischema.options = data.options ?? {};
 

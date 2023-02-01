@@ -1,6 +1,5 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-import type {JsonFormsInterface} from "../../src/lib/models";
 
 export const schema = {
     type: 'object',
@@ -17,7 +16,7 @@ export const schema = {
             $ref:'rule.schema#/properties/rule'
         },
     }
-}
+} as JsonSchema;
 
 export const uischema = {
 
@@ -48,7 +47,5 @@ export const uischema = {
             ]
         },
     ]
-}
-
-export const jsonForms = {schema:schema as JsonSchema, uischema:uischema as UISchemaElement} as JsonFormsInterface;
+} as UISchemaElement;
 

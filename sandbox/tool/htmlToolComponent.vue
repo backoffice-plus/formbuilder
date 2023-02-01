@@ -23,7 +23,6 @@
 
 <script setup>
 
-
 import Actions from "../../src/components/tools/utils/Actions.vue";
 import ElementHeadOrToolIcon from "../../src/components/tools/utils/ElementHeadOrToolIcon.vue";
 import {Tool} from "../../src/index";

@@ -136,7 +136,7 @@ export class ToolProps {
 
 export class JsonForms {
     constructor(
-        public schema: JsonFormsSchema = {} as JsonFormsSchema,
+        public schema: JsonFormsSchema = {} as JsonSchema,
         public uischema: JsonFormsUISchema = {} as JsonFormsUISchema
     )
     {
