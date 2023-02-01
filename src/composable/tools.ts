@@ -44,7 +44,7 @@ export function useTools() {
         const toolsWithScore = tools.value.map((tool: ToolInterface, index) => {
             return {
                 tool: tool,
-                score: tool?.tester(itemUischema, itemSchema, {rootSchema: schema, config: null}) ?? -1,
+                score: (tool?.tester && tool.tester(itemUischema, itemSchema, {rootSchema: schema, config: null})) ?? -1,
             }
         });
 
