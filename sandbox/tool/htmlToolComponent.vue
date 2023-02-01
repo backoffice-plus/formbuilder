@@ -1,5 +1,5 @@
 <template>
-  <div class="labelTool">
+  <div class="htmlTool">
 
     HTML
 
@@ -12,9 +12,15 @@
   </div>
 </template>
 
+<style>
+.htmlTool {
+  @apply
+  bg-yellow-100 !important
+}
+</style>
 
 <style scoped>
-.labelTool {
+.htmlTool {
   min-height:auto;
   @apply
   relative
