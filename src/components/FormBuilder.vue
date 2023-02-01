@@ -69,6 +69,7 @@ import {JsonForms} from "../lib/models";
 const props = defineProps({
   jsonForms: Object,
   schemaReadOnly: Boolean,
+  tools: Array,
 })
 
 const emit = defineEmits(['schemaUpdated']);
@@ -82,7 +83,6 @@ const toolEdit = ref(null);
 const showBuilder = ref('uischema');
 
 const {registerTools, unregisterAllTools, findLayoutToolByUiType} = useTools();
-registerTools(defaultTools);
 
 const {update} = useJsonforms();
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
@@ -123,6 +123,9 @@ const setRootForm = (e) => {
 }
 
 onMounted(() => {
+  unregisterAllTools();   //is that a good behavior?
+  registerTools(props.tools);
+
   window.setTimeout(() => emitter.emit('formBuilderUpdated'),50);
 
   emitter.on('formBuilderModal', (data) => {
@@ -134,8 +137,6 @@ onMounted(() => {
   });
 });
 onBeforeUnmount(() => {
-  unregisterAllTools();
-
   emitter.off('formBuilderModal');
   emitter.off('formBuilderUpdated');
 })

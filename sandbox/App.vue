@@ -15,6 +15,7 @@
       <FormBuilder
           :jsonForms="jsonForms"
           :schemaReadOnly="schemaReadOnly"
+          :tools="tools"
           v-if="!disableFormbuilder"
           :key="example + (schemaReadOnly?1:0)"
       />
@@ -28,7 +29,7 @@
 
 <script setup lang="ts">
 
-import {FormBuilder} from "../src/index.ts";
+import {defaultTools, FormBuilder} from "../src/index.ts";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
 import {computed, onMounted, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
@@ -36,9 +37,11 @@ import {getExamples} from '@jsonforms/examples/src'
 import {generateDefaultUISchema} from "@jsonforms/core";
 import {resolveSchema} from "../src";
 import {tool as htmlTool} from "./tool/htmlTool";
-import {useTools} from "../src/composable/tools";
 
-const {registerTools} = useTools();
+const tools = [
+    ...defaultTools,
+    htmlTool,
+]
 
 const oe = ownExamples;//import own examples
 
@@ -68,10 +71,6 @@ const jsonForms = computed(() => {
 watch(() => jsonForms.value, async () => {
   jsonFormsResolved.value = unref(jsonForms.value);
   //jsonFormsResolved.value.schema = await resolveSchema(jsonFormsResolved.value.schema);
-})
-
-onMounted(() => {
-  registerTools([htmlTool]);
 })
 
 </script>
