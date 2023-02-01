@@ -30,7 +30,7 @@
 
 import {FormBuilder} from "../src/index.ts";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
-import {computed, ref, unref, watch} from "vue";
+import {computed, onMounted, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
 import {getExamples} from '@jsonforms/examples/src'
 import {generateDefaultUISchema} from "@jsonforms/core";
@@ -39,7 +39,6 @@ import {tool as htmlTool} from "./tool/htmlTool";
 import {useTools} from "../src/composable/tools";
 
 const {registerTools} = useTools();
-registerTools([htmlTool]);
 
 const oe = ownExamples;//import own examples
 
@@ -69,6 +68,10 @@ const jsonForms = computed(() => {
 watch(() => jsonForms.value, async () => {
   jsonFormsResolved.value = unref(jsonForms.value);
   //jsonFormsResolved.value.schema = await resolveSchema(jsonFormsResolved.value.schema);
+})
+
+onMounted(() => {
+  registerTools([htmlTool]);
 })
 
 </script>
