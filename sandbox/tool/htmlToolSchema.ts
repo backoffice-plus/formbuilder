@@ -1,6 +1,6 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-import {JsonFormsInterface} from "../../src/lib/models";
+import type {JsonFormsInterface} from "../../src/lib/models";
 
 export const schema = {
     type: 'object',
