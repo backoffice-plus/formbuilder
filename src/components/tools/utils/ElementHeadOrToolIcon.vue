@@ -134,9 +134,10 @@
 
 <script setup>
 import {ref, computed} from 'vue'
+import {AbstractTool} from "../../../lib/models";
 
 const props = defineProps({
-  tool: Object,
+  tool: Object,//ToolInterface
   isToolbar: Boolean,
   index: Number //for deleting correct element in list
 })

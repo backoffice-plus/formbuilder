@@ -49,9 +49,10 @@ import {emitter} from "../lib/mitt";
 import {onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
+import {AbstractTool} from "../lib/models";
 
 const props = defineProps({
-  tool: Tool,
+  tool: Object,//ToolInterface,
   data: Object,
   schemaReadOnly: Boolean,
 })

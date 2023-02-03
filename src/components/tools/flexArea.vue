@@ -141,10 +141,10 @@ import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import Vuedraggable from 'vuedraggable'
 import {ref, computed, onMounted} from 'vue';
-import {Tool} from "../../lib/models";
+import {AbstractTool, Tool} from "../../lib/models";
 
 const props = defineProps({
-  tool: Tool,
+  tool: Object,//ToolInterface,
   isRoot: Boolean,
   isToolbar: Boolean,
   index: Number, //for deleting correct element in list

@@ -66,11 +66,11 @@ import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import {guessInputType} from '../../lib/normalizer'
 import {computed} from 'vue';
-import {Tool} from "../../lib/models";
+import {AbstractTool, Tool} from "../../lib/models";
 import {useTemplateRefsList} from "@vueuse/core";
 
 const props = defineProps({
-  tool: Tool,
+  tool: Object,//ToolInterface,
   isToolbar: Boolean,
   index: Number, //for deleting correct element in list
 
