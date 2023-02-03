@@ -27,7 +27,6 @@
 
 import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
-import {normalizeModalOptions} from '../../lib/normalizer'
 import {computed} from 'vue';
 import {Tool} from "../../lib/models";
 
@@ -43,14 +42,10 @@ const emit = defineEmits(['deleteByIndex']);
 
 defineExpose({ tool:props.tool })
 
-const data = computed(() => {
-  return !props.isToolbar ? normalizeModalOptions(props.tool) : {};
-});
-
 const keyword = computed(() => {
   let keyword = undefined;
   ['oneOf', 'anyOf', 'allOf'].forEach(key => {
-    if (undefined !== props.tool.props.jsonForms.schema[key]) {
+    if (undefined !== props.schema[key]) {
       keyword = key;
     }
   })
@@ -58,7 +53,7 @@ const keyword = computed(() => {
 });
 
 const items = computed(() => {
-  return props.tool.props.jsonForms.schema[keyword] ?? [];
+  return props.tool.schema[keyword] ?? [];
 });
 
 const onDelete = () => {

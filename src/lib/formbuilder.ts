@@ -1,24 +1,11 @@
 // @ts-ignore
 import _ from "lodash";
-import {
-    JsonForms,
-    Tool,
-    ToolProps
-} from "./models";
-import type {
-    JsonFormsSchema,
-    JsonFormsUISchema,
-    ToolInterface,
-} from "./models";
+import type {JsonFormsUISchema, ToolInterface,} from "./models";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {
-    normalizeScope,
-    normalizePath,
-    denormalizePath,
-    denormalizeScope,
-    fromPropertyToScope,
-    getPlainProperty, fromPropertyToBasePath, guessInputType, fromScopeToProperty
+    normalizeScope, normalizePath, denormalizePath, fromPropertyToScope,
+    getPlainProperty, fromPropertyToBasePath, fromScopeToProperty
 } from './normalizer';
 import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
@@ -27,13 +14,15 @@ import {jsonForms as toolOptionsSchemaValidation} from "./tools/schema/validatio
 import {jsonForms as toolOptionsSchemaRule} from "./tools/schema/rule";
 import {jsonForms as toolOptionsSchemaLabelAndI18n} from "./tools/schema/labelAndI18n";
 import {Resolver} from "@stoplight/json-ref-resolver";
+import type {JsonFormsInterface} from "./models";
+import {Generate} from "@jsonforms/core";
 
-export const updatePropertyNameAndScope = (propertyName:string|undefined, tool:ToolInterface) : string => {
+export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {
         throw "invalid propertyName";
     }
-    tool.props.propertyName = propertyName;
-    tool.props.jsonForms.uischema.scope = fromPropertyToScope(tool.props.propertyName)
+    tool.propertyName = propertyName;
+    tool.uischema.scope = fromPropertyToScope(tool.propertyName)
 
     return propertyName;
 };
@@ -41,30 +30,23 @@ export const updatePropertyNameAndScope = (propertyName:string|undefined, tool:T
 /**
  * - prop = data.personal.age
  * - subpaths = ['data', 'data.personal','data.personal.age']
-*/
-export const getAllSubpaths = (prop:string, startIndex:number=0) => {
-    const allParts:Array<string> = [];
+ */
+export const getAllSubpaths = (prop: string, startIndex: number = 0) => {
+    const allParts: Array<string> = [];
 
     return _.toPath(prop)
-        .map((part:string) => {
+        .map((part: string) => {
             allParts.push(part);
             return allParts.join('.')
         })
         .slice(startIndex);
 }
 
-let cloneCounter=0;
-export const cloneTool = (tool:ToolInterface, schema:JsonFormsSchema|undefined, uischema:JsonFormsUISchema|undefined) => {
-    const clone = tool.clone(schema, uischema);
+let cloneCounter = 0;
+export const cloneEmptyTool = (tool: ToolInterface) => {
 
-    if('Control' === clone.props.jsonForms.uischema.type) {
-        if(uischema?.scope) {
-            clone.props.propertyName = fromScopeToProperty(uischema.scope)
-        }
-        if(undefined === clone.props.propertyName) {
-            clone.props.propertyName = (tool.props.jsonForms.uischema.type + ++cloneCounter).toLowerCase();
-        }
-    }
+    const clone = tool.clone();
+    clone.propertyName = (tool.uischema.type + ++cloneCounter).toLowerCase();
 
     //set default data
     const defaultData = clone.optionDataPrepare(clone)
@@ -73,118 +55,133 @@ export const cloneTool = (tool:ToolInterface, schema:JsonFormsSchema|undefined, 
     return clone;
 };
 
-export const initElementsByToolProps = (toolProps:ToolProps): Array<any> => {
-    //console.log("initElementsByToolProps" , toolProps);
 
-    const jsonFromSchema = toolProps.jsonForms?.schema ?? {};
-    const jsonFormUischema = toolProps.jsonForms?.uischema ?? {} as any;
+export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: JsonFormsUISchema) => {
 
-    const pushableElements = [] as any;
+    //clone
+    const clone = tool.clone();
+    _.merge(clone.schema, {...schema})
+    _.merge(clone.uischema, {...uischema})
+
+    if ('Control' === clone.uischema.type) {
+        if (clone.uischema?.scope) {
+            clone.propertyName = fromScopeToProperty(clone.uischema.scope)
+        }
+    }
+
+    //set default data :TODO needed ?
+    //const defaultData = clone.optionDataPrepare(clone)
+    //clone.optionDataUpdate(clone, defaultData);
+
+    return clone;
+};
+
+export const initElements = (tool: ToolInterface): Array<ToolInterface> => {
+    const tools = [] as any;
 
     const {findMatchingTool, findLayoutToolByUiType} = useTools();
 
-    jsonFormUischema?.elements?.forEach((itemUischema:any) => {
-        let tool;
+    tool.uischema?.elements?.forEach((itemUischema: any) => {
+        let clone;
         switch (itemUischema.type) {
             case 'Control':
                 const propertyPath = normalizeScope(itemUischema.scope);
-                const itemSchema = _.get(jsonFromSchema, propertyPath);
+                const itemSchema = _.get(tool.schema, propertyPath);
 
-                tool = cloneTool(findMatchingTool(jsonFromSchema,itemSchema, itemUischema), itemSchema, itemUischema)
-                tool.props.propertyName = normalizePath(propertyPath);
+                clone = cloneToolWithSchema(findMatchingTool(tool.schema, itemSchema, itemUischema), itemSchema, itemUischema)
+                clone.propertyName = normalizePath(propertyPath);
 
                 //required
-                const required = getRequiredFromSchema(tool.props.propertyName, jsonFromSchema);
-                if(required?.includes(getPlainProperty(tool.props.propertyName))) {
-                    tool.isRequired = true;
+                const required = getRequiredFromSchema(clone.propertyName, tool.schema);
+                if (required?.includes(getPlainProperty(clone.propertyName))) {
+                    clone.isRequired = true;
                 }
                 break;
 
             default:
-                tool = cloneTool(findLayoutToolByUiType(itemUischema.type) ?? unknownTool, jsonFromSchema, itemUischema);
+                clone = cloneToolWithSchema(findLayoutToolByUiType(itemUischema.type) ?? unknownTool, tool.schema, itemUischema);
                 break;
         }
 
-        pushableElements.push(tool);
+        tools.push(clone);
     });
 
-    return pushableElements;
+    return tools;
 };
 
-export const createJsonForms = (rootForm:any, rootSchema:JsonFormsSchema, schemaReadOnly:boolean) : JsonForms => {
+export const createJsonForms = (rootForm: any, rootSchema: JsonSchema, schemaReadOnly: boolean): JsonFormsInterface => {
+
+    if(!rootSchema) {
+        rootSchema = Generate.jsonSchema({})
+    }
 
     const schema = _.clone(rootSchema);
-    if(!schemaReadOnly) {
+    if (!schemaReadOnly) {
         schema.properties = {}; //clear properties
         schema.required = undefined;
     }
 
-    //console.log("formbuilder.ts","createJsonForms",rootForm)
-
-    return new JsonForms(
-        schemaReadOnly ? rootSchema : schema,
-        createJsonUiSchema(rootForm, schema)
-    );
+    return {
+        schema: schemaReadOnly ? rootSchema : schema,
+        uischema: createJsonUiSchema(rootForm, schema)
+    } as JsonFormsInterface;
 }
 
-export const setItemSchemaToSchema = (tool:ToolInterface, propertyName:string, itemSchema:JsonSchema, rootSchema:JsonFormsSchema) : void => {
+export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchema): void => {
 
     //create type=object in subpaths
-    getAllSubpaths(propertyName, 1)
-        .forEach((subProp:string) => {
-            const subPath = denormalizePath(subProp)+'.type'
-            if(!_.get(rootSchema, subPath)) {
-                _.set(rootSchema, subPath, 'object')
+    getAllSubpaths(tool.propertyName, 1)
+        .forEach((subProp: string) => {
+                const subPath = denormalizePath(subProp) + '.type'
+                if (!_.get(rootSchema, subPath)) {
+                    _.set(rootSchema, subPath, 'object')
+                }
             }
-        }
-    )
+        )
+    _.set(rootSchema, denormalizePath(tool.propertyName), tool.schema)
 
-    _.set(rootSchema, denormalizePath(propertyName), itemSchema)
-
-    if(tool.isRequired) {
-        setRequiredToSchema(propertyName, rootSchema, true);
+    if (tool.isRequired) {
+        setRequiredToSchema(tool.propertyName, rootSchema, true);
     }
 }
 
-export const getRequiredPath = (propertyName:string) : string =>  {
-    return (fromPropertyToBasePath(propertyName)+'.required').replace(/^\./,'')
+export const getRequiredPath = (propertyName: string): string => {
+    return (fromPropertyToBasePath(propertyName) + '.required').replace(/^\./, '')
 }
-export const getRequiredFromSchema = (propertyName:string, schema:JsonSchema) : Array<string> =>  {
+export const getRequiredFromSchema = (propertyName: string, schema: JsonSchema): Array<string> => {
     return _.get(schema, getRequiredPath(propertyName)) ?? [];
 }
-export const setRequiredToSchema = (propertyName:string, schema:JsonSchema, isRequired:boolean=false) : void =>  {
+export const setRequiredToSchema = (propertyName: string, schema: JsonSchema, isRequired: boolean = false): void => {
     const plainProp = getPlainProperty(propertyName);
     let required = getRequiredFromSchema(propertyName, schema);
-    if(isRequired) {
-        if(!required.includes(plainProp)) {
+    if (isRequired) {
+        if (!required.includes(plainProp)) {
             required.push(plainProp);
         }
-    }
-    else {
-        if(required.includes(plainProp)) {
-            required = required.filter((item:string) => item !== plainProp)
+    } else {
+        if (required.includes(plainProp)) {
+            required = required.filter((item: string) => item !== plainProp)
         }
     }
     _.set(schema, getRequiredPath(propertyName), required.length ? required : undefined)
 }
 
-export const createJsonUiSchema = (refElm:any, rootSchema:JsonFormsSchema) : JsonFormsUISchema => {
+export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFormsUISchema => {
     refElm = unref(refElm)
 
+
     //from defineExpose() in tool components
-    const tool = refElm?.tool as Tool;
+    const tool = refElm?.tool as ToolInterface;
     const childTools = refElm?.childTools;
     const childComponents = refElm?.childComponents;
 
-    const propName = tool.props?.propertyName ?? "UNKNOWN";
-    const schema = tool.props.jsonForms.schema;
-    const uischema = tool.props.jsonForms.uischema;
+    const uischema = tool.uischema;
 
     const created = _.cloneDeep(uischema) as JsonFormsUISchema;
 
     switch (uischema.type) {
         case 'Control':
-            setItemSchemaToSchema(tool, propName, schema, rootSchema);
+            setItemSchemaToSchema(tool, rootSchema);
             break;
 
         case 'VerticalLayout':
@@ -192,9 +189,9 @@ export const createJsonUiSchema = (refElm:any, rootSchema:JsonFormsSchema) : Jso
         case 'Categorization':
         case 'Category':
         case 'Group':
-            created.elements = childTools.map((tool:Tool) => {
-                if(!childComponents[tool.uuid]) {
-                    throw "no child with uuid "+ tool.uuid +" found";
+            created.elements = childTools.map((tool: ToolInterface) => {
+                if (!childComponents[tool.uuid]) {
+                    throw "no child with uuid " + tool.uuid + " found";
                 }
                 return createJsonUiSchema(childComponents[tool.uuid], rootSchema)
             }) ?? [];
@@ -234,7 +231,7 @@ export const createJsonUiSchema = (refElm:any, rootSchema:JsonFormsSchema) : Jso
 // };
 
 
-export const createI18nTranslate = (localeCatalogue:Record<string, string>) => {
+export const createI18nTranslate = (localeCatalogue: Record<string, string>) => {
     // $KEY can be propertyName or i18n
     // const translations = {
     //    '$KEY.label': 'TEXT',
@@ -242,12 +239,12 @@ export const createI18nTranslate = (localeCatalogue:Record<string, string>) => {
     //    '$KEY.error.minLength': 'ERROR TEXT',
     // }
 
-    return  (key:string, defaultMessage:string, context:any) => {
+    return (key: string, defaultMessage: string, context: any) => {
         //console.log("translate", {key,defaultMessage, context}, localeCatalogue[key]);
 
         let params = {};
 
-        if(context?.error) {
+        if (context?.error) {
             //console.log("translate error", {key, defaultMessage}, context.error);
             params = {...params, ...context.error?.params};
         }
@@ -256,16 +253,15 @@ export const createI18nTranslate = (localeCatalogue:Record<string, string>) => {
     };
 }
 
-export const findAllProperties = (schema: JsonFormsSchema, rootPath = "") : Record<string, JsonFormsSchema> => {
-    let all = {} as Record<string, JsonFormsSchema>
+export const findAllProperties = (schema: JsonSchema, rootPath = ""): Record<string, JsonSchema> => {
+    let all = {} as Record<string, JsonSchema>
 
     schema?.properties && Object.keys(schema.properties ?? {}).map(name => {
-        const path = (rootPath ? rootPath+'.' : '') + name;
-        if(schema.properties && schema?.properties[name]) {
-            if('object' === schema?.properties[name]?.type) {
-                all = {...all,...findAllProperties(schema.properties[name], path)}
-            }
-            else {
+        const path = (rootPath ? rootPath + '.' : '') + name;
+        if (schema.properties && schema?.properties[name]) {
+            if ('object' === schema?.properties[name]?.type) {
+                all = {...all, ...findAllProperties(schema.properties[name], path)}
+            } else {
                 all[path] = schema?.properties[name];
             }
         }
@@ -275,7 +271,7 @@ export const findAllProperties = (schema: JsonFormsSchema, rootPath = "") : Reco
 }
 
 
-export const findAllScopes = (uischema:ControlElement|Layout|UISchemaElement) : Array<string> => {
+export const findAllScopes = (uischema: ControlElement | Layout | UISchemaElement): Array<string> => {
 
     const scopes = [] as Array<string>;
 
@@ -296,7 +292,7 @@ export const findAllScopes = (uischema:ControlElement|Layout|UISchemaElement) : 
     return scopes;
 };
 
-export const resolveSchema = async (schema:any) => {
+export const resolveSchema = async (schema: any): Promise<any> => {
     const schemaMap = {
         'validation.schema': toolOptionsSchemaValidation.schema,
         'validation.uischema': toolOptionsSchemaValidation.uischema,
@@ -309,14 +305,20 @@ export const resolveSchema = async (schema:any) => {
     const resolver = new Resolver({
         resolvers: {
             file: {
-                async resolve(ref:URI) {
+                async resolve(ref: URI) {
                     return schemaMap[String(ref)] ?? {}
                 }
             },
         }
     });
 
-    return await resolver.resolve(schema).then(resolved => resolved.result)
+    return await resolver.resolve(schema)
+        .then(resolved => {
+            if (resolved.errors.length) {
+                throw resolved.errors.map(error => error.message);
+            }
+            return resolved.result
+        })
 }
 
 

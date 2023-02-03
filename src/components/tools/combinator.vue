@@ -7,7 +7,7 @@
 
         <Actions :tool="tool" @delete="onDelete" />
 
-      REF: {{ tool.props.jsonForms.schema?.$ref }}
+      REF: {{ tool.schema?.$ref }}
 
     </div>
 
@@ -27,7 +27,6 @@
 
 import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
-import {normalizeModalOptions} from '../../lib/normalizer'
 import {computed} from 'vue';
 import {Tool} from "../../lib/models";
 

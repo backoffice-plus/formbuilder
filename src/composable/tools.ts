@@ -18,27 +18,27 @@ export function useTools() {
 
     const getControlTools = (): Array<ToolInterface> => {
         return tools.value.filter((tool: ToolInterface) => {
-            const uiSchemaType = tool.props.jsonForms.uischema.type;
+            const uiSchemaType = tool.uischema.type;
             return uiSchemaType && uiSchemaType === 'Control'
         })
     }
     const getLayoutTools = (): Array<ToolInterface> => {
         return tools.value.filter((tool: ToolInterface) => {
-            const uiSchemaType = tool.props.jsonForms.uischema.type;
+            const uiSchemaType = tool.uischema.type;
             return uiSchemaType && uiSchemaType !== 'Control'
         })
     }
 
     const findLayoutToolByUiType = (uiType: string): ToolInterface | undefined => {
-        return getLayoutTools().find((tool: ToolInterface) => tool.props.jsonForms.uischema.type === uiType)
+        return getLayoutTools().find((tool: ToolInterface) => tool.uischema.type === uiType)
     }
 
     const unregisterAllTools = (): void => {
         tools.value = [];
     };
-    const unregisterToolByType = (type: string): void => {
-        tools.value = tools.value.filter((tool: ToolInterface) => tool.props.toolType !== type);
-    }
+    // const unregisterToolByType = (type: string): void => {
+    //     tools.value = tools.value.filter((tool: ToolInterface) => tool.uischemyType !== type);
+    // }
 
     const findMatchingTool = (schema: any, itemSchema: any, itemUischema: any): ToolInterface => {
         const toolsWithScore = tools.value.map((tool: ToolInterface, index) => {
@@ -60,7 +60,7 @@ export function useTools() {
         registerTool,
         registerTools,
         unregisterAllTools,
-        unregisterToolByType,
+        //unregisterToolByType,
         getControlTools,
         getLayoutTools,
         findLayoutToolByUiType,

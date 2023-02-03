@@ -2,8 +2,8 @@ import type {JsonSchema} from "@jsonforms/core";
 import {isBooleanControl, isNumberControl, isStringControl, or, rankWith} from "@jsonforms/core";
 import type {ControlElement} from "@jsonforms/core/src/models/uischema";
 import {isIntegerControl} from "@jsonforms/core/src/testers/testers";
-import type {ToolInterface} from "../models";
-import {Tool, ToolProps} from "../models";
+import type {JsonFormsInterface, JsonFormsUISchema, ToolInterface} from "../models";
+import {Tool} from "../models";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {
     schema, uischema,
@@ -13,13 +13,12 @@ import {
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
 
-export const controlTool = new Tool('formInputByType', ToolProps.create({
-    toolType: 'control',
-    toolName: 'Control',
-    jsonForms: {schema: {type: 'string'}, uischema: {type: 'Control'}}
-}), rankWith(1, or(isStringControl, isBooleanControl, isNumberControl, isIntegerControl)));
+export const controlTool = new Tool('Control');
+
+controlTool.tester = rankWith(1, or(isStringControl, isBooleanControl, isNumberControl, isIntegerControl));
+controlTool.schema = {type: 'string'}; //needed??
 controlTool.importer = () => formInputByType;
-controlTool.optionJsonforms = async (tool) => {
+controlTool.optionJsonforms = async (tool) : Promise<JsonFormsInterface> => {
     return {
         schema:await resolveSchema(schema),
         uischema:await resolveSchema(uischema),
@@ -27,11 +26,11 @@ controlTool.optionJsonforms = async (tool) => {
 };
 
 controlTool.optionDataPrepare = (tool: ToolInterface) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema;
-    const uischema = tool.props.jsonForms.uischema as ControlElement;
+    const schema = tool.schema as JsonSchema;
+    const uischema = tool.uischema as ControlElement;
 
     const data = {
-        propertyName: tool.props.propertyName,
+        propertyName: tool.propertyName,
         type: schema.type,
         format: schema.format,
         options: uischema.options,
@@ -50,8 +49,8 @@ controlTool.optionDataPrepare = (tool: ToolInterface) => {
 };
 
 controlTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema|Record<string, any>;
-    const uischema = tool.props.jsonForms.uischema as ControlElement;
+    const schema = tool.schema as JsonSchema|Record<string, any>;
+    const uischema = tool.uischema as ControlElement;
 
     updatePropertyNameAndScope(data?.propertyName, tool)
 

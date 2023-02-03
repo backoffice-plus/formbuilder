@@ -1,183 +1,110 @@
-import type {JsonSchema} from "@jsonforms/core";
+import type {JsonSchema, Tester} from "@jsonforms/core";
 import type {
+    Layout,
     LabelElement,
     ControlElement,
     Categorization,
     Category,
     UISchemaElement,
 } from "@jsonforms/core/src/models/uischema";
+import type {RankedTester} from "@jsonforms/core/src/testers/testers";
 
-export type JsonFormsSchema = JsonSchema;
+
 // @ts-ignore
 export interface JsonFormsUISchema extends UISchemaElement, LabelElement, ControlElement, Category, Categorization {
     type:string
 }
-
+//root JsonForms
 export interface JsonFormsInterface {
-    schema: JsonFormsSchema;
-    uischema: JsonFormsUISchema;
+    schema: JsonSchema;
+    uischema: Layout;
 }
 
 export interface ToolInterface {
-    componentName: string;
     uuid: string;
-    props: ToolProps;
-    isRequired:boolean;
-    tester: undefined|any;
+    toolType: string;
 
+    propertyName: string;
+    isRequired:boolean;
+
+    schema: JsonSchema;
+    uischema: JsonFormsUISchema;
+    schemaReadOnly: boolean;
+
+    tester:RankedTester|undefined,
+    importer:() => any,
     optionDataPrepare: (tool:ToolInterface) => Record<string, any>;
     optionDataUpdate: (tool:ToolInterface, data:Record<string, any>) => void;
     optionJsonforms: (tool:ToolInterface) => Promise<JsonFormsInterface|undefined>;
 
-    clone: (schema:JsonFormsSchema|undefined, uischema:JsonFormsUISchema|undefined) => ToolInterface;
+    clone: () => ToolInterface;
 }
 
+/** @deprecated create own tool classes with ToolInterface **/
 export class Tool implements ToolInterface{
-    componentName: string;
+    tester: RankedTester|undefined = undefined;
+
+    //constructor
     uuid: string;
-    props: ToolProps;
-    isRequired:boolean = false;
-    tester: undefined|any = undefined;
+    toolType: string; //to distinguish between difference Control types
+
+    propertyName: string = 'Unknown';
+    isRequired:boolean = false;//neccesary because required is stored in parentNode
+    schemaReadOnly: boolean = false; //only neccesary to show at toolbar :TODO: remove it and find other solution
+
+    //from props
+    schema: JsonSchema = {};
+    uischema: JsonFormsUISchema;
+
+    /** @deprecated */
+    get toolName() {
+        return this.uischema.type;
+    }
+    get uischemyType() {
+        return this.uischema.type;
+    }
+
     importer: () => any = ()=>undefined;
     optionJsonforms: (tool:ToolInterface) => Promise<JsonFormsInterface|undefined> = () => new Promise(()=>undefined);
     optionJsonformsRenderer: () => any = ()=>undefined;
     optionDataPrepare: (tool:ToolInterface) => Record<string, any> = () => {return{}};
     optionDataUpdate: (tool:ToolInterface, data:any) => void = ()=> {};
 
-    constructor(componentName: string, props: ToolProps, tester:undefined|any = undefined) {
-        this.componentName = componentName;
-        this.props = props;
-        this.tester = tester;
+    constructor(uischemaType:string='Unknown', toolType:string|undefined = undefined) {
+        this.uischema = {
+            type: uischemaType
+        } as JsonFormsUISchema;
+
+        this.toolType = toolType ?? uischemaType.toLowerCase();
 
         //this.uuid = crypto.randomUUID();
         this.uuid = String(Date.now().toString(32)+Math.random().toString(16)).replace(/\./g, '');
     }
 
-    clone(schema:JsonFormsSchema|undefined = undefined, uischema:JsonFormsUISchema|undefined = undefined): Tool {
+    clone() : ToolInterface {
+        const clone = new Tool(this.uischema.type);
 
-        const props = this.props.clone();
-        let jsonForms = this.props.jsonForms;
-        if(schema && uischema) {
-            props.jsonForms = new JsonForms(schema, uischema)
-        }
-        else {
-            props.jsonForms = jsonForms.clone();
-        }
+        clone.propertyName = this.propertyName;
+        clone.isRequired = this.isRequired;
 
+        clone.schema= {...this.schema};
+        clone.uischema= {...this.uischema};
 
+        clone.schemaReadOnly= this.schemaReadOnly;
 
-        const tool = new Tool(
-            this.componentName,
-            props,
-            this.tester,
-            // new ToolProps(
-            //     this.props.inputType,
-            //     this.props.toolType,
-            //     jsonForms,
-            //     this.props.propertyName,
-            // )
-        );
-        tool.isRequired = this.isRequired;
+        clone.importer = this.importer;
+        clone.tester = this.tester;
+        clone.optionJsonforms = this.optionJsonforms;
+        clone.optionJsonformsRenderer = this.optionJsonformsRenderer;
+        clone.optionDataPrepare = this.optionDataPrepare;
+        clone.optionDataUpdate = this.optionDataUpdate;
 
-        tool.importer = this.importer;
-        tool.optionJsonforms = this.optionJsonforms;
-        tool.optionJsonformsRenderer = this.optionJsonformsRenderer;
-        tool.optionDataPrepare = this.optionDataPrepare;
-        tool.optionDataUpdate = this.optionDataUpdate;
-
-        return tool;
+        return clone;
     }
 }
 
 
-export class ToolProps {
-    constructor(
-        public readonly toolType: string,
-        private _jsonForms: JsonForms|any = new JsonForms(),
-        public propertyName: string|undefined = undefined,
-        public toolName: string|undefined = undefined,
-        public schemaReadOnly: boolean = false,
-    ) {
-        if(!(this._jsonForms instanceof JsonForms)) {
-            this._jsonForms = new JsonForms(
-                this._jsonForms?.schema ?? {},
-                this._jsonForms?.uischema ?? {},
-            )
-        }
-    }
-
-
-    get jsonForms() : JsonForms {
-        return this._jsonForms as JsonForms;
-    }
-    set jsonForms(jsonForms:JsonForms) {
-        this._jsonForms = jsonForms;
-    }
-
-    static create(props:any) : ToolProps {
-        return new ToolProps(
-            props?.toolType,
-            props?.jsonForms,
-            props?.propertyName,
-            props?.toolName,
-            props?.schemaReadOnly,
-        )
-    }
-
-    clone() : ToolProps {
-        return new ToolProps(
-            this.toolType,
-            this.jsonForms.clone(),
-            this.propertyName,
-            this.toolName,
-            this.schemaReadOnly,
-        )
-    }
-}
-
-
-export class JsonForms {
-    constructor(
-        public schema: JsonFormsSchema = {} as JsonSchema,
-        public uischema: JsonFormsUISchema = {} as JsonFormsUISchema
-    )
-    {
-    }
-
-    update(data:Record<string, any>) {
-        Object.keys(data).forEach(key => {
-            if(updatableSchemaKeys.includes(key)) {
-                //@ts-ignore
-                this.schema[key] = data[key];
-            }
-            if(updatableUischemaKeys.includes(key)) {
-                //@ts-ignore
-                this.uischema[key] = data[key];
-            }
-        });
-
-        if(undefined !== data.rule) {
-            if(undefined !== data.rule.condition) {
-                this.uischema.rule = data.rule;
-            }
-        }
-
-        //:TODO fix required
-        // //just a workaround to "send" required info from this tool to root schema
-        // if(undefined !== data?.required) {
-        //     this.schema.required = [data?.required ? "true" : "false"];
-        // }
-    }
-
-    clone() : JsonForms {
-        return new JsonForms(
-            {...this.schema},
-            {...this.uischema}
-        )
-    }
-}
-
-
+/** @deprecated */
 export const updatableSchemaKeys = ['type', 'format', 'enum', 'oneOf', 'description', 'minimum','maximum', 'pattern', 'minLength', 'maxLength' , '$ref'];
 // export interface JsonFormsSchema {
 //     type: string;
@@ -195,6 +122,7 @@ export const updatableSchemaKeys = ['type', 'format', 'enum', 'oneOf', 'descript
 //     customType: string;
 // }
 
+/** @deprecated */
 export const updatableUischemaKeys = ['label', 'i18n', 'options', 'text'];
 // export interface JsonFormsUISchema {
 //     type: string;
@@ -206,13 +134,4 @@ export const updatableUischemaKeys = ['label', 'i18n', 'options', 'text'];
 //     suggestion?: string;
 //     options?: Record<string, any>;
 //     rule?: JsonFormsRule;
-// }
-
-// export interface JsonFormsRule {
-//     effect: string;
-//     condition: JsonFormsRuleCondition;
-// }
-// export interface JsonFormsRuleCondition {
-//     scope: string;
-//     schema: Record<string, any>; //const: true|"Value",
 // }

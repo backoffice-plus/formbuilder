@@ -5,15 +5,13 @@ import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
 import type {ToolInterface} from "../models";
-import {Tool, ToolProps} from "../models";
+import {Tool} from "../models";
 import {schema, uischema, prepareOptionDataRule, setOptionDataRule} from "./schema/toolLayout";
 
 
-export const verticalLayout = new Tool('flexArea', ToolProps.create({
-    toolType: 'flex',
-    jsonForms: {uischema: {type: 'VerticalLayout'}},
-    toolName: 'Vertical Layout',
-}), rankWith(1, uiTypeIs('VerticalLayout')));
+export const verticalLayout = new Tool('VerticalLayout', );
+
+verticalLayout.tester = rankWith(1, uiTypeIs('VerticalLayout'));
 verticalLayout.importer = () => flexArea;
 
 verticalLayout.optionJsonforms = async () => {
@@ -24,8 +22,8 @@ verticalLayout.optionJsonforms = async () => {
 };
 
 verticalLayout.optionDataPrepare = (tool: ToolInterface) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema;
-    const uischema = tool.props.jsonForms.uischema as Layout;
+    const schema = tool.schema as JsonSchema;
+    const uischema = tool.uischema as Layout;
 
     return {
         options: uischema?.options,
@@ -34,8 +32,8 @@ verticalLayout.optionDataPrepare = (tool: ToolInterface) => {
 };
 
 verticalLayout.optionDataUpdate = (tool: ToolInterface, data: Record<string, any>) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema | Record<string, any>;
-    const uischema = tool.props.jsonForms.uischema as Layout;
+    const schema = tool.schema as JsonSchema | Record<string, any>;
+    const uischema = tool.uischema as Layout;
 
     uischema.options = data.options ?? {};
 
@@ -43,11 +41,8 @@ verticalLayout.optionDataUpdate = (tool: ToolInterface, data: Record<string, any
 };
 
 
-export const horizontalLayout = new Tool('flexArea', ToolProps.create({
-    toolType: 'flexRow',
-    jsonForms: {uischema: {type: 'HorizontalLayout'}},
-    toolName: 'Horizontal Layout',
-}), rankWith(1, uiTypeIs('HorizontalLayout')));
+export const horizontalLayout = new Tool('HorizontalLayout');
+horizontalLayout.tester = rankWith(1, uiTypeIs('HorizontalLayout'));
 horizontalLayout.importer = () => flexArea;
 horizontalLayout.optionJsonforms = verticalLayout.optionJsonforms;
 horizontalLayout.optionDataPrepare = verticalLayout.optionDataPrepare;

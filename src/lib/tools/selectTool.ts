@@ -2,22 +2,27 @@ import type {JsonSchema} from "@jsonforms/core";
 import {and, or, isEnumControl, isOneOfControl, isStringControl, rankWith} from "@jsonforms/core";
 import type {ControlElement} from "@jsonforms/core/src/models/uischema";
 
-import type {ToolInterface} from "../models";
-import {Tool, ToolProps} from "../models";
+import type {JsonFormsInterface, ToolInterface} from "../models";
+import {Tool} from "../models";
 import formInputByType from "../../components/tools/formInputByType.vue";
-import {jsonForms as toolOptionsControl} from "../../schema/toolOptionsControl";
+import {schema, uischema} from "./schema/toolControl";
 import {denormalizeRule} from "../normalizer";
-import {updatePropertyNameAndScope} from "../formbuilder";
-import {unref} from "vue";
+import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {controlTool} from "./controlTool";
+import {reject} from "lodash";
 
 
-export const selectTool = new Tool('formInputByType', ToolProps.create({
-    toolName: 'select',
-    jsonForms: {schema: {type: 'string', oneOf: [{const:"a",title:"A"}]}, uischema: {type: 'Control'}}
-}), rankWith(2, and(isStringControl, or(isOneOfControl, isEnumControl)))); //TODO: isOneOfEnumControl needed?
+export const selectTool = new Tool('Control', 'select');
 
+selectTool.schema={type: 'string', oneOf: [{const:"a",title:"A"}]};
+selectTool.tester = rankWith(2, and(isStringControl, or(isOneOfControl, isEnumControl))); //TODO: isOneOfEnumControl needed?
 selectTool.importer = () => formInputByType;
-selectTool.optionJsonforms = async () => toolOptionsControl;
+selectTool.optionJsonforms = async (tool) : Promise<JsonFormsInterface> => {
+    return {
+        schema:await resolveSchema(schema),
+        uischema:await resolveSchema(uischema),
+    }
+};
 
 type schemaValidationKey = | 'minimum' | 'maximum' | 'pattern' | 'minLength' | 'maxLength';
 type schemaKeyDefault = 'type' | 'format' | 'description' | schemaValidationKey;
@@ -27,12 +32,12 @@ type uiSchemaKey = 'label' | 'i18n' | 'options';
 const uiSchemaKeys = ['label', 'i18n', 'options'] as Array<uiSchemaKey>;
 
 selectTool.optionDataPrepare = (tool: ToolInterface) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema;
-    const uischema = tool.props.jsonForms.uischema as ControlElement;
+    const schema = tool.schema as JsonSchema;
+    const uischema = tool.uischema as ControlElement;
 
     const data = {} as any;
 
-    data.propertyName = tool.props.propertyName;
+    data.propertyName = tool.propertyName;
 
     schemaKeys.forEach(key => {
         if (undefined !== schema[key]) data[key] = schema[key]
@@ -67,8 +72,8 @@ selectTool.optionDataPrepare = (tool: ToolInterface) => {
 };
 
 selectTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema|Record<string, any>;
-    const uischema = tool.props.jsonForms.uischema as ControlElement;
+    const schema = tool.schema as JsonSchema|Record<string, any>;
+    const uischema = tool.uischema as ControlElement;
 
     updatePropertyNameAndScope(data?.propertyName, tool)
 

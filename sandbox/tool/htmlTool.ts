@@ -11,10 +11,8 @@ import {entry as htmlControlRenderer} from "./htmlControlRenderer.vue";
 import {schema,uischema} from "./htmlToolSchema";
 
 
-export const tool = new Tool('html', ToolProps.create({
-    toolType: 'html',
-    jsonForms: {schema:{}, uischema: {type: 'Html', options: {body: '<code>HTML Tool</code>'}}},
-}), htmlRenderer.tester);
+export const tool = new Tool('html','Html', htmlRenderer.tester);
+tool.uischema.options = {body: '<code>HTML Tool</code>'};
 
 tool.importer = () => htmlToolComponent;
 tool.optionJsonformsRenderer = () : any => {
@@ -31,20 +29,15 @@ tool.optionJsonforms = async () => {
 };
 
 tool.optionDataPrepare = (tool: ToolInterface) : any => {
-    const schema = tool.props.jsonForms.schema;
-    const uischema = tool.props.jsonForms.uischema as UISchemaElement;
 
     return {
-        options: uischema.options ?? {},
-        ...prepareOptionDataRule(schema, uischema),
+        options: tool.uischema.options ?? {},
+        ...prepareOptionDataRule(tool.schema, uischema),
     };
 };
 
 tool.optionDataUpdate = (tool: ToolInterface, data: any) : void => {
-    const schema = tool.props.jsonForms.schema;
-    const uischema = tool.props.jsonForms.uischema as UISchemaElement;
+    tool.uischema.options = data.options ?? {};
 
-    uischema.options = data.options ?? {};
-
-    setOptionDataRule(schema, uischema, data);
+    setOptionDataRule(tool.schema, tool.uischema, data);
 };

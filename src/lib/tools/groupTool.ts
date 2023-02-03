@@ -2,7 +2,7 @@ import type {GroupLayout, JsonSchema} from "@jsonforms/core";
 import {rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import type {ToolInterface} from "../models";
-import {Tool, ToolProps} from "../models";
+import {Tool} from "../models";
 import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
 import {
@@ -14,11 +14,9 @@ import {
 } from "./schema/toolGroup";
 import _ from "lodash";
 
-export const groupTool = new Tool('flexArea', ToolProps.create({
-    toolType: 'group',
-    jsonForms: {uischema: {type: 'Group'}}
-}), rankWith(1, uiTypeIs('Group')));
+export const groupTool = new Tool('Group');
 
+groupTool.tester = rankWith(1, uiTypeIs('Group'));
 groupTool.importer = () => flexArea;
 
 groupTool.optionJsonforms = async () => {
@@ -29,8 +27,8 @@ groupTool.optionJsonforms = async () => {
 };
 
 groupTool.optionDataPrepare = (tool: ToolInterface) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema;
-    const uischema = tool.props.jsonForms.uischema as GroupLayout;
+    const schema = tool.schema as JsonSchema;
+    const uischema = tool.uischema as GroupLayout;
 
     const data = {};
 
@@ -43,8 +41,8 @@ groupTool.optionDataPrepare = (tool: ToolInterface) => {
 };
 
 groupTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema | Record<string, any>;
-    const uischema = tool.props.jsonForms.uischema as GroupLayout;
+    const schema = tool.schema as JsonSchema | Record<string, any>;
+    const uischema = tool.uischema as GroupLayout;
 
     uischema.options = data.options ?? {};
 

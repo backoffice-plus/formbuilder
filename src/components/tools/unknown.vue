@@ -1,9 +1,9 @@
 <template>
   <div class="unknownTool">
 
-    UNKNOWN {{ tool.props.propertyName }}
+    UNKNOWN {{ tool.propertyName }}
 
-    {{ tool.props?.jsonForms?.schema }}
+    {{ tool.schema }}
 
   </div>
 </template>

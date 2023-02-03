@@ -51,20 +51,18 @@
 
 
 <script setup>
-import {computed, ref, onMounted, onBeforeUnmount, watch} from 'vue'
+import {computed, ref, unref, onMounted, onBeforeUnmount, watch} from 'vue'
 import {
   FormBuilderBar,
-  createJsonForms, defaultTools,
-  emitter, cloneTool,
+  createJsonForms,
+  emitter, cloneToolWithSchema,
 } from "../index";
-import {denormalizeModalOptions} from '../lib/normalizer'
 import Modal from "./Modal.vue";
 import {Generate} from "@jsonforms/core/src/generators/Generate";
 import FormBuilderDefinitions from "./FormBuilderDefinitions.vue";
 import {useTools} from "../composable/tools";
 import {unknownTool} from "../lib/tools/unknownTool";
 import {useJsonforms} from "../composable/jsonforms";
-import {JsonForms} from "../lib/models";
 
 const props = defineProps({
   jsonForms: Object,
@@ -76,8 +74,8 @@ const emit = defineEmits(['schemaUpdated']);
 
 const rootForm = ref(null);
 const drag = ref(false);
-const jsonFormsUiSchema = ref(props?.jsonForms?.uischema ?? {});
-const jsonFormsSchema = ref(props?.jsonForms?.schema ?? Generate.jsonSchema({}));
+const jsonFormsUiSchema = ref(props?.jsonForms?.uischema);
+const jsonFormsSchema = ref(props?.jsonForms?.schema);
 const isModalOpen = ref(false);
 const toolEdit = ref(null);
 const showBuilder = ref('uischema');
@@ -88,8 +86,11 @@ const {update} = useJsonforms();
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
 
 const baseTool = computed(() => {
-  const uiSchema = (jsonFormsUiSchema.value?.type && jsonFormsUiSchema.value) ?? {type:'VerticalLayout'};
-  return cloneTool(findLayoutToolByUiType(uiSchema.type) ?? unknownTool, jsonFormsSchema.value, uiSchema);
+  const schema = unref(jsonFormsSchema);
+  const uischema = unref(jsonFormsUiSchema);
+  const uiSchemaType = (uischema?.type && uischema.type) ?? 'VerticalLayout';
+  const tool = findLayoutToolByUiType(uiSchemaType) ?? unknownTool;
+  return cloneToolWithSchema(tool, schema, uischema);
 })
 
 const onChange = (data) => {
@@ -97,7 +98,6 @@ const onChange = (data) => {
     // if(data.propertyName) {
     //   toolEdit.value.props.propertyName = data.propertyName;
     // }
-    // toolEdit.value.props.jsonForms.update(denormalizeModalOptions(data));
     updateJsonForm();
   }
 }
@@ -111,7 +111,6 @@ const updateJsonForm = () => {
   jsonFormsSchema.value = newJsonForms.schema;
   jsonFormsUiSchema.value = newJsonForms.uischema;
 
-  //console.log("formbukder","uodate",newJsonForms.schema);
   update(newJsonForms.schema, newJsonForms.uischema)
 
   emit('schemaUpdated', newJsonForms)

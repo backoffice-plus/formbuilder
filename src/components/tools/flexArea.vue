@@ -11,7 +11,7 @@
         @see http://sortablejs.github.io/Sortable/#thresholds
       -->
       <Vuedraggable
-          :class="['dropArea bg-dotted nestedFlexArea', toolType, {drag:isDragging||drag}]"
+          :class="['dropArea bg-dotted nestedFlexArea', tool.uischemyType, {drag:isDragging||drag}]"
           :list="childTools"
           group="formBuilder"
           item-key="uuid"
@@ -86,12 +86,12 @@
   flex items-stretch
 }
 
-.nestedFlexArea:not(.flexRow) {
+.nestedFlexArea:not(.HorizontalLayout) {
   @apply
   flex-col
 }
 
-.nestedFlexArea.flexRow {
+.nestedFlexArea.HorizontalLayout {
   @apply
   flex-row
 }
@@ -135,12 +135,11 @@
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {  initElementsByToolProps} from "../../lib/formbuilder";
+import {  initElements} from "../../lib/formbuilder";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import Vuedraggable from 'vuedraggable'
-import {normalizeModalOptions} from '../../lib/normalizer'
 import {ref, computed, onMounted} from 'vue';
 import {Tool} from "../../lib/models";
 
@@ -157,13 +156,7 @@ const emit = defineEmits(['deleteByIndex']);
 
 const drag = ref(false);
 const childTools = ref([]);
-const toolProps = ref( props?.tool?.props);
-const toolType = ref( props?.tool?.props?.toolType);
 const childComponents = ref({});
-
-const data = computed(() => {
-  return !props.isToolbar ? normalizeModalOptions(props.tool) : {};
-});
 
 const addChildComponent = (e) => {
   if(e?.tool?.uuid) {
@@ -181,8 +174,7 @@ onMounted(() => {
 
 const init = () => {
   childTools.value = [];
-  toolProps && initElementsByToolProps(toolProps.value)
-      .map(elm => childTools.value.push(elm));
+  childTools.value.push(...initElements(props.tool))
 
   if (childTools.value.length) {
     //wait to render dom (:TODO use nextTick)

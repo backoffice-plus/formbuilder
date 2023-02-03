@@ -5,7 +5,7 @@ export { default as Actions } from './components/tools/utils/Actions.vue'
 
 //lib
 export * from './lib/formbuilder';
-export {Tool, ToolProps, updatableUischemaKeys, updatableSchemaKeys} from "./lib/models";
+export {Tool, updatableUischemaKeys, updatableSchemaKeys} from "./lib/models";
 export type {ToolInterface, JsonFormsInterface} from "./lib/models";
 export const defaultTools = [...controlTools, ...layoutTools]
 

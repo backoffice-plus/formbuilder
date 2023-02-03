@@ -4,7 +4,7 @@
     tag="aside"
     :list="tools"
     :group="{name:'formBuilder', pull: 'clone', put: false}"
-    :clone="cloneTool"
+    :clone="cloneEmptyTool"
     :sort="false"
     drag-class="dragging"
     @choose="() => {}"
@@ -94,7 +94,7 @@ aside .toolItem.formInputByTypeTool {
 
 import {computed, ref} from 'vue';
 import Vuedraggable from 'vuedraggable'
-import {Tool, ToolProps, findAllProperties, findAllScopes, cloneTool,} from "../index";
+import {findAllProperties, findAllScopes, cloneEmptyTool,} from "../index";
 import {guessInputType, normalizeScope, normalizePath} from '../lib/normalizer'
 import {useTools} from "../composable/tools";
 import {useJsonforms} from "../composable/jsonforms";
@@ -110,7 +110,7 @@ const props = defineProps(
 const emits = defineEmits(['drag']);
 
 
-const {getControlTools, getLayoutTools} = useTools();
+const {getControlTools, getLayoutTools, findMatchingTool} = useTools();
 const {schema, uischema} = useJsonforms();
 
 const drag = ref(false);
@@ -127,20 +127,15 @@ const tools = computed(() => {
     const allProps = findAllProperties(schema.value);
     const readOnlyControlTools = Object.keys(allProps)?.map(name => {
 
-      //const tool = findControlTool(allProps[name], {}).clone();
-      // tool.props.propertyName = name;
-      // tool.props.schemaReadOnly = true;
-      const tool = new Tool('formInputByType', ToolProps.create({
-        propertyName: name,
-        toolType: 'control',
-        toolName: 'Control',
-        schemaReadOnly: true,
-        jsonForms: {schema:allProps[name], uischema:{type:'Control'}}
-      }));
-      tool.importer = () => formInputByType
+      const itemSchema = allProps[name];
 
-      return tool;
-    }).filter(tool => !usedProps.value.includes(tool.props.propertyName))
+      const clone = cloneTool(findMatchingTool(schema, itemSchema, {type:'Control'}))
+      clone.schema = itemSchema;
+      clone.propertyName = name;
+      clone.schemaReadOnly = true;
+
+      return clone;
+    }).filter(tool => !usedProps.value.includes(tool.propertyName))
 
     all = [...readOnlyControlTools, ...all]
   }
@@ -149,7 +144,7 @@ const tools = computed(() => {
   }
 
   //:TODO add property to tool to hide tools
-  all = all.filter(tool => tool.props.toolType !== 'tab');
+  all = all.filter(tool => tool.uischemyType !== 'Category');
 
   return all;
 });

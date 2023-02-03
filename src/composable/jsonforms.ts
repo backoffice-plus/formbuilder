@@ -1,16 +1,14 @@
 import {ref, unref} from 'vue'
 import type {Ref} from 'vue'
-import type {JsonFormsSchema, JsonFormsUISchema} from "../lib/models";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-import {denormalizePath, fromPropertyToBasePath, fromPropertyToPath, getPlainProperty} from "../lib/normalizer";
-import _ from "lodash";
+import type {JsonSchema} from "@jsonforms/core";
 
-const schema: Ref<JsonFormsSchema> = ref({});
+const schema: Ref<JsonSchema> = ref({});
 const uischema: Ref<UISchemaElement> = ref({type:''});
 
 export function useJsonforms() {
 
-    const update = (updateSchema: JsonFormsSchema, updateUiSchema: UISchemaElement): void => {
+    const update = (updateSchema: JsonSchema, updateUiSchema: UISchemaElement): void => {
         schema.value = updateSchema;
         uischema.value = updateUiSchema;
     };

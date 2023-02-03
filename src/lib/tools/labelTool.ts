@@ -3,17 +3,15 @@ import type {JsonSchema} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import type {LabelElement} from "@jsonforms/core/src/models/uischema";
 import type {ToolInterface} from "../models";
-import {Tool, ToolProps} from "../models";
+import {Tool} from "../models";
 import labelComp from "../../components/tools/label.vue";
 import {schema, uischema, prepareOptionDataRule, setOptionDataRule} from "./schema/toolLabel";
 import {resolveSchema} from "../formbuilder";
 
 
-export const labelTool = new Tool('label', ToolProps.create({
-    toolType: 'label',
-    jsonForms: {uischema: {type: 'Label', text: 'label'}},
-}), rankWith(1, uiTypeIs('Label')));
+export const labelTool = new Tool('Label');
 
+labelTool.tester = rankWith(1, uiTypeIs('Label'));
 labelTool.importer = () => labelComp;
 
 labelTool.optionJsonforms = async () => {
@@ -24,8 +22,8 @@ labelTool.optionJsonforms = async () => {
 };
 
 labelTool.optionDataPrepare = (tool: ToolInterface) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema;
-    const uischema = tool.props.jsonForms.uischema as LabelElement;
+    const schema = tool.schema as JsonSchema;
+    const uischema = tool.uischema as LabelElement;
 
     return {
         text: uischema.text,
@@ -36,8 +34,8 @@ labelTool.optionDataPrepare = (tool: ToolInterface) => {
 };
 
 labelTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
-    const schema = tool.props.jsonForms.schema as JsonSchema | Record<string, any>;
-    const uischema = tool.props.jsonForms.uischema as LabelElement;
+    const schema = tool.schema as JsonSchema | Record<string, any>;
+    const uischema = tool.uischema as LabelElement;
 
     uischema.text = data.text;
     uischema.i18n = data.i18n;

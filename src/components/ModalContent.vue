@@ -20,6 +20,8 @@
           v-if="jsonFormSchema?.schema"
       />
 
+      <div v-if="error">{{error}}</div>
+
 <!--      Data: {{ dataAfterUpdated }}-->
 
 <!--      <div class="mt-4 flex justify-center">-->
@@ -61,20 +63,23 @@ const options = ref({});
 const jsonFormSchema = ref({});
 const dataAfterUpdated = ref({});
 const mergedJsonFormRenderes = ref(jsonFormRenderes);
+const error = ref('');
 
 onMounted(async () => {
-  options.value = props.tool.optionDataPrepare(props.tool)
-  jsonFormSchema.value = await props.tool.optionJsonforms(props.tool)
 
-  if(props.tool.optionJsonformsRenderer) {
-    const renderer = props.tool.optionJsonformsRenderer();
-    if(renderer?.length) {
-      mergedJsonFormRenderes.value = Object.freeze([
-          ...mergedJsonFormRenderes.value,
-          ...renderer,
-      ])
+    options.value = props.tool.optionDataPrepare(props.tool)
+    jsonFormSchema.value = await props.tool.optionJsonforms(props.tool).catch(e => error.value=e)
+
+    if(props.tool.optionJsonformsRenderer) {
+      const renderer = props.tool.optionJsonformsRenderer();
+      if(renderer?.length) {
+        mergedJsonFormRenderes.value = Object.freeze([
+            ...mergedJsonFormRenderes.value,
+            ...renderer,
+        ])
+      }
     }
-  }
+
 })
 
 const onChange = (e) => {

@@ -1,9 +1,9 @@
 // @ts-ignore
 import _ from "lodash";
-import {    JsonForms,    updatableSchemaKeys, updatableUischemaKeys} from "../models";
+import {updatableSchemaKeys, updatableUischemaKeys} from "../models";
 import type {ToolInterface} from "../models";
 import type { SchemaBasedCondition} from "@jsonforms/core/src/models/uischema";
-import type {JsonSchema, Rule} from "@jsonforms/core";
+import type {JsonSchema, Rule, UISchemaElement} from "@jsonforms/core";
 
 export const isScope = (scope:string) : boolean => {
     return scope.startsWith('#/properties/')
@@ -32,10 +32,10 @@ export const denormalizeCombinators = (items:Array<any>) => {
 }
 
 
-export const guessInputType = (jsonForms:JsonForms) => {
-    const type = jsonForms?.schema?.type;
-    const format = jsonForms.schema?.format;
-    const options = jsonForms.uischema?.options;
+export const guessInputType = (schema:JsonSchema, uischema:UISchemaElement) => {
+    const type = schema?.type;
+    const format = schema?.format;
+    const options = uischema?.options;
 
     const byType = {
         'number': 'number',
@@ -54,7 +54,7 @@ export const guessInputType = (jsonForms:JsonForms) => {
             if(format && stringByFormat[format]) {
                 inputType = stringByFormat[format];
             }
-            else if(jsonForms?.schema?.enum || jsonForms?.schema?.oneOf) {
+            else if(schema?.enum || schema?.oneOf) {
                 inputType = 'select'
             }
             else if(options) {
@@ -185,89 +185,6 @@ export const getPlainProperty = (propertyName:string) : string => {
     return propertyName.split('.').pop() ?? '';
 }
 
-export const normalizeModalOptions = (tool:ToolInterface) : Object => {
-
-
-    const jsonForms = tool.props.jsonForms as any;
-
-    const options = {} as any;
-
-    options.inputType = guessInputType(jsonForms);
-    options.propertyName = tool.props.propertyName;
-
-    const schema = jsonForms.schema;
-    if(schema.oneOf !== undefined && !schema.oneOf.length) {
-        jsonForms.schema.oneOf = [{}]
-    }
-    if(schema.enum !== undefined && !schema.enum.length) {
-        jsonForms.schema.enum = ['']
-    }
-
-    updatableSchemaKeys.forEach(key => {
-        if(jsonForms.schema[key] !== undefined) {
-            options[key] = jsonForms.schema[key];
-        }
-    });
-    updatableUischemaKeys.forEach(key => {
-        if(jsonForms.uischema[key] !== undefined) {
-            options[key] = jsonForms.uischema[key];
-        }
-    });
-
-    //rename $ref
-    if(undefined !== schema.$ref) {
-        options._reference = schema.$ref
-    }
-
-    //combinator
-    ['oneOf', 'anyOf', 'allOf'].forEach(key => {
-        if(jsonForms.schema[key] !== undefined && jsonForms.schema[key]?.length > 0) {
-            options.keyword = key;
-        }
-    })
-
-    //let refOrRefs = {} as any;
-    // else {
-    //     ['oneOf', 'anyOf', 'allOf'].forEach(key => {
-    //         if(jsonForms.schema[key] !== undefined && jsonForms.schema[key]?.length > 0) {
-    //             jsonForms.schema[key].map((schema:any) => {
-    //                 refOrRefs[key] = [];
-    //                 if(undefined !== schema.$ref) {
-    //                     refOrRefs[key] = {
-    //                         _ref: schema.$ref,
-    //                     }
-    //                 }
-    //             })
-    //         }
-    //     })
-    // }
-    //options.refOrRefs = refOrRefs;
-
-    const ruleData = jsonForms.uischema.rule && normalizeRule(jsonForms.uischema.rule)
-    if(ruleData) {
-        options.rule = ruleData;
-    }
-
-    //convert enum to object
-    // if(options?.enum) {
-    //     options.enum = options.enum.map((name: any) => {return {name: String(name)} });
-    // }
-    // if(options?.rule?.condition?.schema) {
-    //     options.rule.condition.schema = JSON.stringify(options.rule.condition.schema);
-    // }
-
-    //:TODO fix required
-    // //workaround to check
-    // if(undefined !== schema?.required)  {
-    //     if(schema?.required?.includes('true')) {
-    //         options.required = true;
-    //     }
-    // }
-
-    //console.log("normalizeModalOption",options);
-
-    return options;
-};
 
 export const normalizeRule = (rule:Rule) : any => {
     const ruleData = JSON.parse(JSON.stringify(rule)); //deepCopy with refs :TOD0 find better solution
@@ -334,34 +251,4 @@ export const denormalizeRule = (data:any) : Rule => {
         effect: data.effect,
         condition: condition,
     } as Rule;
-}
-
-export const denormalizeModalOptions = (data:any) : any => {
-
-    //convert enum to map
-    if(data?.enum) {
-        data.enum = data.enum?.map((item:any)=>String(item?.name ?? '')) ?? [''];
-        data.enum = [...new Set(data.enum)];
-    }
-
-
-    //rename $ref
-    if(undefined !== data._reference) {
-        data.$ref = data._reference;
-    }
-
-    // if(undefined !== data.refOrRefs) {
-    //     if(typeof data.refOrRefs === 'string') {
-    //         data.refOrRefs.$ref = data.refOrRefs._ref;
-    //     }
-    //     else {
-    //         ['oneOf', 'anyOf', 'allOf'].forEach(key => {
-    //             if(data[key] !== undefined && data[key]?.length > 0) {
-    //                 data[key] = denormalizeCombinators(data[key])
-    //             }
-    //         })
-    //     }
-    // }
-
-    return data;
 }

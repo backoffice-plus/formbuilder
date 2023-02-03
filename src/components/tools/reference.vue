@@ -7,7 +7,7 @@
 
         <Actions :tool="tool" @delete="onDelete" />
 
-      <pre class="bg-gray-200 inline p-0.5 px-2 rounded text-sm">{{ props.tool.props.jsonForms.schema?.$ref }}</pre>
+      <pre class="bg-gray-200 inline p-0.5 px-2 rounded text-sm">{{ props.tool.schema?.$ref }}</pre>
 
     </div>
 

@@ -121,12 +121,11 @@ button.add::before {
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {  initElementsByToolProps} from "../../lib/formbuilder";
+import {cloneEmptyTool, cloneToolWithSchema, initElements} from "../../lib/formbuilder";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import Vuedraggable from 'vuedraggable'
-import {normalizeModalOptions} from '../../lib/normalizer'
 import {ref, computed, onMounted} from 'vue';
 import {Tool} from "../../lib/models";
 import {useTools} from "../../composable/tools";
@@ -146,17 +145,10 @@ const emit = defineEmits(['deleteByIndex']);
 const drag = ref(false);
 const dragTab = ref(false);
 const childTools = ref([]);
-const toolProps = ref( props?.tool?.props);
-const toolType = ref( props?.tool?.props?.toolType);
 const childComponents = ref({});
 const tabs = ref([]);
 const currentTab = ref(-1);
 const tabLabels = ref({});
-
-
-const data = computed(() => {
-  return !props.isToolbar ? normalizeModalOptions(props.tool) : {};
-});
 
 const addChildComponent = (e) => {
   if(e?.tool?.uuid) {
@@ -168,9 +160,8 @@ defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComp
 
 onMounted(() => {
   if (!props.isToolbar) {
-    if (props?.tool?.props.jsonForms?.uischema?.elements?.length) {
-      initElementsByToolProps(props?.tool?.props)
-          .map(elm => childTools.value.push(elm));
+    if (props?.tool?.uischema?.elements?.length) {
+      childTools.value.push(...initElements(props.tool));
 
       //wait to render dom
       if(childTools.value.length) {
@@ -188,23 +179,23 @@ onMounted(() => {
 })
 
 
-const init = () => {
-  childTools.value = [];
-  props?.tool?.props && initElementsByToolProps(props?.tool?.props)
-      .map(elm => childTools.value.push(elm));
-
-  if (childTools.value.length) {
-    //wait to render dom (:TODO use nextTick)
-    setTimeout(onDropAreaChange, 50);
-  }
-};
+// const init = () => {
+//   childTools.value = [];
+//   childTools.value.push(...initElements(props.tool))
+//
+//   if (childTools.value.length) {
+//     //wait to render dom (:TODO use nextTick)
+//     setTimeout(onDropAreaChange, 50);
+//   }
+// };
 
 
 const addTab = () => {
   const {findLayoutToolByUiType} = useTools();
-  const tabTool = (findLayoutToolByUiType('Category') ?? unknownTool).clone(undefined, {type: 'Category'})
 
-  tabTool.props.jsonForms.uischema.label = 'Tab';
+  const tabTool = cloneEmptyTool(findLayoutToolByUiType('Category') ?? unknownTool);
+  tabTool.uischema.label = 'Tab';
+
   childTools.value.push(tabTool);
   window.setTimeout(buildTabLabels,50);
 };
@@ -212,8 +203,8 @@ const addTab = () => {
 
 const buildTabLabels = (e) => {
   Object.keys(childComponents).map(uuid => {
-    if(childComponents[uuid]?.tool?.toolProps.jsonForms.uischema.label) {
-      tabLabels.value[uuid] = childComponents[uuid].tool?.toolProps.jsonForms.uischema.label;
+    if(childComponents[uuid]?.tool?.uischema.label) {
+      tabLabels.value[uuid] = childComponents[uuid].tool?.uischema.label;
     }
   });
 };

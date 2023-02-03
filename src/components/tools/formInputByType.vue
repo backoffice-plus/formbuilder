@@ -9,10 +9,10 @@
 
       <div>
 
-        <template v-if="'select' === data.inputType">
+        <template v-if="'select' === inputType">
           <select>
-            <option v-for="item in data.enum" v-if="data.enum">{{ item }}</option>
-            <option v-for="item in data.oneOf" v-else-if="data.oneOf">{{ item }}</option>
+            <option v-for="item in schema.enum" v-if="schema.enum">{{ item }}</option>
+            <option v-for="item in schema.oneOf" v-else-if="schema.oneOf">{{ item }}</option>
           </select>
         </template>
 
@@ -25,16 +25,16 @@
         <!--          </div>-->
         <!--        </template>-->
 
-        <template v-else-if="'textarea' === data.inputType">
+        <template v-else-if="'textarea' === inputType">
           <textarea></textarea>
         </template>
 
         <template v-else>
-          <input :type="'number'" v-if="'number' === data.inputType" :step="data.type==='integer' ? 1 : 0.1"/>
-          <input :type="data.inputType" v-else/>
+          <input :type="'number'" v-if="'number' === inputType" :step="schema.type==='integer' ? 1 : 0.1"/>
+          <input :type="inputType" v-else/>
         </template>
 
-        <div>{{ data.description }}</div>
+        <div>{{ schema.description }}</div>
         <Actions :class="['opacity-0', 'group-hover/item:opacity-100']" :tool="tool" @delete="onDelete"/>
 
       </div>
@@ -64,7 +64,7 @@ select {
 
 import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
-import {normalizeModalOptions} from '../../lib/normalizer'
+import {guessInputType} from '../../lib/normalizer'
 import {computed} from 'vue';
 import {Tool} from "../../lib/models";
 import {useTemplateRefsList} from "@vueuse/core";
@@ -81,9 +81,9 @@ const emit = defineEmits(['deleteByIndex']);
 
 defineExpose({ tool:props.tool })
 
-const data = computed(() => {
-  return !props.isToolbar ? normalizeModalOptions(props.tool) : {};
-});
+const schema = props.tool.schema;
+const uischema = props.tool.uischema;
+const inputType = computed(() => guessInputType(props.tool.schema, props.tool.uischema));
 
 const onDelete = () => {
   if (confirm("Wirklich löschen?")) {
