@@ -31,7 +31,7 @@ export interface ToolInterface {
     uischema: JsonFormsUISchema;
     schemaReadOnly: boolean;
 
-    tester:() => RankedTester|undefined,
+    tester:RankedTester|undefined,
     importer:() => any,
     optionDataPrepare: (tool:ToolInterface) => Record<string, any>;
     optionDataUpdate: (tool:ToolInterface, data:Record<string, any>) => void;
@@ -71,7 +71,7 @@ export abstract class AbstractTool implements ToolInterface {
     abstract optionDataPrepare(tool: ToolInterface): Record<string, any> ;
     abstract optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void;
     abstract optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface | undefined>;
-    abstract tester(): RankedTester | undefined;
+    abstract tester: RankedTester | undefined;
 }
 
 /** @deprecated create own tool classes with ToolInterface **/

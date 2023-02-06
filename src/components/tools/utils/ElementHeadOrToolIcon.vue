@@ -154,8 +154,6 @@ const name = computed(() => {
   let uischema = tool.uischema;
   let label = uischema?.label;
 
-  console.log("tool?.uischema.type",tool?.uischema.type);
-
   if(!tool) {
     return '';
   }

@@ -1,4 +1,3 @@
-import type {RankedTester,} from "@jsonforms/core";
 import {rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import {resolveSchema} from "../../index";
@@ -10,7 +9,7 @@ import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./sche
 export class LabelTool extends AbstractTool implements ToolInterface {
 
     importer = () => labelComp;
-    tester = (): RankedTester => rankWith(1, uiTypeIs('Label'))
+    tester = rankWith(1, uiTypeIs('Label'));
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
         return {
