@@ -9,13 +9,8 @@ import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./sche
 
 export class LabelTool extends AbstractTool implements ToolInterface {
 
-    importer(): any {
-        return labelComp;
-    }
-
-    tester(): RankedTester {
-        return rankWith(1, uiTypeIs('Label'));
-    }
+    importer = () => labelComp;
+    tester = (): RankedTester => rankWith(1, uiTypeIs('Label'))
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
         return {

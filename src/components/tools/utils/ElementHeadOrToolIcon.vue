@@ -20,7 +20,7 @@
       <template v-else>
 
         <div class="flex gap-2 items-center">
-          <span :class="['toolIcon',  tool.uischemyType]" v-if="showIcon"><span class="icon"/></span>
+          <span :class="['toolIcon', tool.uischemyType, tool.toolType]" v-if="showIcon"><span class="icon"/></span>
 
           <label :class="{'font-medium':isControl}">{{ name }}</label>
 
@@ -56,12 +56,12 @@
   @apply hidden
 }
 
-.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .Label, .Control:not(.readOnly), .reference, .combinator) label {
+.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .label, .Control:not(.readOnly), .reference, .combinator) label {
   @apply hidden
 }
 
 .toolIcon .icon::before,
-.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .Label, .Control:not(.readOnly), .reference, .combinator) .icon::before {
+.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .label, .Control:not(.readOnly), .reference, .combinator) .icon::before {
   content: '';
   width: 20px;
   height: 20px;
@@ -103,8 +103,8 @@
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3,3A2,2 0 0,0 1,5V19A2,2 0 0,0 3,21H21A2,2 0 0,0 23,19V5A2,2 0 0,0 21,3H3M3,5H13V9H21V19H3V5M10,10V13H7V15H10V18H12V15H15V13H12V10H10Z"/></svg>');
 }
 
-.toolIcon.Label .icon::before,
-.toolItem .tool.Label .icon::before {
+.toolIcon.label .icon::before,
+.toolItem .tool.label .icon::before {
   /* mdi:tab-plus */
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="m21.41 11.58l-9-9A2 2 0 0 0 11 2H4a2 2 0 0 0-2 2v7a2 2 0 0 0 .59 1.41l9 9A2 2 0 0 0 13 22a2 2 0 0 0 1.41-.59l7-7A2 2 0 0 0 22 13a2 2 0 0 0-.59-1.42M6.5 8A1.5 1.5 0 1 1 8 6.5A1.5 1.5 0 0 1 6.5 8m5.09 7.41l-4-4L9 10l4 4m2.59.41l-5.5-5.5L11.5 7.5L17 13Z"/></svg>');
 }
@@ -153,6 +153,8 @@ const name = computed(() => {
 
   let uischema = tool.uischema;
   let label = uischema?.label;
+
+  console.log("tool?.uischema.type",tool?.uischema.type);
 
   if(!tool) {
     return '';
