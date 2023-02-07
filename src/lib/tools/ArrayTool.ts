@@ -4,7 +4,7 @@ import type {JsonFormsInterface, ToolInterface} from "../models";
 import {AbstractTool, scalarTypes,} from "../models";
 import toolComponent from "../../components/tools/array.component.vue";
 import {schema, uischema} from "./schema/array.schema";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {getItemsType, resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
 
 export class ArrayTool extends AbstractTool implements ToolInterface {
@@ -22,8 +22,8 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         // let items = {...this.schema?.items};
         //
         // const hasRef = undefined !== items?.$ref
-         const hasItemType = undefined !== this.schema.items?.type;
-         const itemsType = this.schema.items?.type;
+         const hasItemType = undefined !== getItemsType(this.schema)
+         const itemsType = getItemsType(this.schema)
         // const canHaveChilds = true;//:TODO need new "canHaveObject"
         //
         // if(canHaveChilds && !hasItemType && !hasRef) {
@@ -54,7 +54,8 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         const isSingleChild = data?.singleChild ?? false;
 
         if(isSingleChild) {
-            if(this.schema?.items?.type) {
+            if(getItemsType(this.schema)) {
+                /** @ts-ignore **/
                 delete this.schema.items.type;
             }
         }

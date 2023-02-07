@@ -61,7 +61,7 @@ export const cloneEmptyTool = (tool: ToolInterface, schema:JsonSchema|undefined 
 };
 
 
-export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: JsonFormsUISchema) => {
+export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: UISchemaElement) => {
 
     //clone
     const clone = tool.clone();
@@ -86,8 +86,8 @@ export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => 
     const {findMatchingTool, findLayoutToolByUiType} = useTools();
 
     const isItemsObject = 'object' === typeof tool.schema?.items;
-    const isItemsTypeObject = 'object' === tool.schema?.items?.type;
-
+    const isItemsTypeObject = 'object' === getItemsType(tool.schema);
+    /** @ts-ignore */
     const properties = tool.schema?.items?.properties;
 
     /**
@@ -98,7 +98,8 @@ export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => 
         properties && Object.keys(properties).forEach((propertyName:string) => {
             const itemSchema = properties[propertyName];
 
-            const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema, {type:'Control',scope:'#'}), itemSchema, {})
+            const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+            const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
             clone.propertyName = propertyName;
 
             //required
@@ -118,7 +119,10 @@ export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => 
      *   items: {  oneOf: [...] }
      */
     else {
-        const clone = cloneToolWithSchema(findMatchingTool({}, tool.schema?.items, {type:'Control',scope:'#'}), tool.schema?.items, {})
+
+        const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+        /** @ts-ignore */
+        const clone = cloneToolWithSchema(findMatchingTool({}, tool.schema?.items, uischema), tool.schema?.items, uischema)
         //console.info("initArrayElements", 'array of schema', clone)
         tools.push(clone);
     }
@@ -238,6 +242,12 @@ const getChildComponent = (tool:ToolInterface, childComponents:any) : any =>  {
     return childComponents[tool.uuid];
 };
 
+export const getItemsType = (schema:JsonSchema):string|undefined => {
+    const items = schema?.items;
+    // @ts-ignore
+    return items?.type;
+}
+
 export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> => {
     refElm = unref(refElm)
 
@@ -248,6 +258,7 @@ export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> =
 
     const schemas = {} as Record<string, JsonSchema>;
 
+    /** @ts-ignore */
     if('object' === tool?.schema?.items?.type) {
         const properties = {} as Record<string, JsonSchema>;
         const required = [] as Array<string>;
