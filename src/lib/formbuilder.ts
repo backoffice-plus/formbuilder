@@ -80,50 +80,50 @@ export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uis
 
     return clone;
 };
-export const initSchemaElements = (tool: ToolInterface): Array<ToolInterface> => {
+export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => {
     const tools = [] as any;
 
     const {findMatchingTool, findLayoutToolByUiType} = useTools();
 
-    if('array' === tool.schema.type) {
-        if('object' === typeof tool.schema?.items) {
-            const itemType = tool.schema?.items?.type;
+    const isItemsObject = 'object' === typeof tool.schema?.items;
+    const isItemsTypeObject = 'object' === tool.schema?.items?.type;
 
-            if('object' === itemType) {
+    const properties = tool.schema?.items?.properties;
 
-                const properties = tool.schema?.items?.properties;
+    /**
+     * Array of Object
+     *   items: {  type: 'object', properties: { ... } }*
+     */
+    if(isItemsTypeObject) {
+        properties && Object.keys(properties).forEach((propertyName:string) => {
+            const itemSchema = properties[propertyName];
 
-                properties && Object.keys(properties).forEach((propertyName:string) => {
-                    const itemSchema = properties[propertyName];
+            const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema, {type:'Control',scope:'#'}), itemSchema, {})
+            clone.propertyName = propertyName;
 
-                    const clone = cloneToolWithSchema(tool, itemSchema, {})
-                    clone.propertyName = propertyName;
-
-                    //required
-                    const required = getRequiredFromSchema(clone.propertyName, tool.schema);
-                    if (required?.includes(getPlainProperty(clone.propertyName))) {
-                        clone.isRequired = true;
-                    }
-
-                    console.info("initSchemaElements", 'push tool', clone.propertyName)
-                    tools.push(clone);
-                });
+            //required
+            const required = getRequiredFromSchema(clone.propertyName, tool.schema);
+            if (required?.includes(getPlainProperty(clone.propertyName))) {
+                clone.isRequired = true;
             }
-            // else if(undefined === itemType) {
-            //     const clone = cloneToolWithSchema(tool, tool.schema?.items, {})
-            //     tools.push(clone);
-            // }
-            else {
-                console.info("initSchemaElements", 'schema.items.type ==', tool.schema?.items?.type)
-            }
-        }
-        else {
-            console.info("initSchemaElements", 'schema.items typeof ', typeof tool.schema?.items)
-        }
+
+            //console.info("initArrayElements", 'push Array of Object', clone.propertyName)
+            tools.push(clone);
+        });
     }
+    /**
+     * Array of Schema
+     *   items: {  type: 'string' }
+     *   items: {  $ref: '#/...' }
+     *   items: {  oneOf: [...] }
+     */
     else {
-        console.info("initSchemaElements", 'schema.type == ', tool.schema.type)
+        const clone = cloneToolWithSchema(findMatchingTool({}, tool.schema?.items, {type:'Control',scope:'#'}), tool.schema?.items, {})
+        //console.info("initArrayElements", 'array of schema', clone)
+        tools.push(clone);
     }
+
+
 
     return tools;
 };

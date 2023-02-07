@@ -77,7 +77,7 @@ import {AbstractTool, Tool} from "../../lib/models";
 import {computed, onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
 import {useTools} from "../../composable/tools";
-import {cloneEmptyTool, cloneToolWithSchema, initElements, initSchemaElements} from "../../lib/formbuilder";
+import {cloneEmptyTool, cloneToolWithSchema, initElements, initArrayElements} from "../../lib/formbuilder";
 import {unknownTool} from "../../lib/tools/unknownTool";
 import {findMatchingUISchema} from "@jsonforms/core";
 import {useJsonforms} from "../../composable/jsonforms";
@@ -104,7 +104,7 @@ const getSingleChild = computed(() => childTools.value[0]);
 onMounted(() => {
   if (!props.isToolbar) {
     if (['array'].includes(props?.tool?.schema?.type)) {
-      childTools.value.push(...initSchemaElements(props.tool));
+      childTools.value.push(...initArrayElements(props.tool));
 
       //wait to render dom
       if(childTools.value.length) {

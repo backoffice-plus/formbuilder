@@ -10,7 +10,8 @@ import _ from "lodash";
 export class ArrayTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
-    tester = rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl));
+    //tester = rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl));//not working for $ref (we want unresolved schema)
+    tester = rankWith(3,(uischema, schema, rootSchema) => 'array' === schema?.type && 'object' === typeof schema?.items);
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
         this.schema.type = 'array';
