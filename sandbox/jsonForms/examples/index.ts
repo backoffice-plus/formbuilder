@@ -4,6 +4,9 @@ import * as optionModalControl from './optionModalControl';
 import * as optionModaCombinator from './optionModaCombinator';
 import * as enumError from './enum';
 import * as rules from './rules';
+import * as oneOfRefs from './oneOfRefs';
+import * as arrayofenum from './arrayofenum';
+import * as arrayarray from './arrayarray';
 
 export {
   _default,
@@ -12,4 +15,7 @@ export {
   optionModaCombinator,
   enumError,
   rules,
+  oneOfRefs,
+  arrayofenum,
+  arrayarray,
 }
