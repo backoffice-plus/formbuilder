@@ -154,5 +154,11 @@ const onDrag = (drag) => {
   emits('drag', drag);
 };
 
+// const onStart = (e) => {
+//   console.log("onStart",e)
+//   e.pullMode='formBuilderArray'
+//   onDrag(true)
+// };
 
 </script>
+

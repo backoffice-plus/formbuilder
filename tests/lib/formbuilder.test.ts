@@ -1,5 +1,11 @@
 import { expect, test } from 'vitest'
-import {getAllSubpaths, getRequiredFromSchema, getRequiredPath, setRequiredToSchema} from '../../src'
+import {
+    getAllSubpaths,
+    getRequiredFromSchema,
+    getRequiredPath,
+    setItemSchemaToSchema,
+    setRequiredToSchema, ToolInterface
+} from '../../src'
 import {
     normalizeScope,
     normalizePath,

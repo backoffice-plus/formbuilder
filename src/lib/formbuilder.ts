@@ -16,6 +16,7 @@ import {jsonForms as toolOptionsSchemaLabelAndI18n} from "./tools/schema/labelAn
 import {Resolver} from "@stoplight/json-ref-resolver";
 import type {JsonFormsInterface} from "./models";
 import {Generate} from "@jsonforms/core";
+import {scalarTypes} from "./models";
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {
@@ -43,10 +44,14 @@ export const getAllSubpaths = (prop: string, startIndex: number = 0) => {
 }
 
 let cloneCounter = 0;
-export const cloneEmptyTool = (tool: ToolInterface) => {
+export const cloneEmptyTool = (tool: ToolInterface, schema:JsonSchema|undefined = undefined) => {
 
     const clone = tool.clone();
     clone.propertyName = (tool.uischema.type + ++cloneCounter).toLowerCase();
+
+    if(schema) {
+        _.merge(clone.schema, {...schema})
+    }
 
     //set default data
     const defaultData = clone.optionDataPrepare(clone)
@@ -74,6 +79,53 @@ export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uis
     //clone.optionDataUpdate(clone, defaultData);
 
     return clone;
+};
+export const initSchemaElements = (tool: ToolInterface): Array<ToolInterface> => {
+    const tools = [] as any;
+
+    const {findMatchingTool, findLayoutToolByUiType} = useTools();
+
+    if('array' === tool.schema.type) {
+        if('object' === typeof tool.schema?.items) {
+            const itemType = tool.schema?.items?.type;
+
+            if('object' === itemType) {
+
+                const properties = tool.schema?.items?.properties;
+
+                properties && Object.keys(properties).forEach((propertyName:string) => {
+                    const itemSchema = properties[propertyName];
+
+                    const clone = cloneToolWithSchema(tool, itemSchema, {})
+                    clone.propertyName = propertyName;
+
+                    //required
+                    const required = getRequiredFromSchema(clone.propertyName, tool.schema);
+                    if (required?.includes(getPlainProperty(clone.propertyName))) {
+                        clone.isRequired = true;
+                    }
+
+                    console.info("initSchemaElements", 'push tool', clone.propertyName)
+                    tools.push(clone);
+                });
+            }
+            // else if(undefined === itemType) {
+            //     const clone = cloneToolWithSchema(tool, tool.schema?.items, {})
+            //     tools.push(clone);
+            // }
+            else {
+                console.info("initSchemaElements", 'schema.items.type ==', tool.schema?.items?.type)
+            }
+        }
+        else {
+            console.info("initSchemaElements", 'schema.items typeof ', typeof tool.schema?.items)
+        }
+    }
+    else {
+        console.info("initSchemaElements", 'schema.type == ', tool.schema.type)
+    }
+
+    return tools;
 };
 
 export const initElements = (tool: ToolInterface): Array<ToolInterface> => {
@@ -129,16 +181,29 @@ export const createJsonForms = (rootForm: any, rootSchema: JsonSchema, schemaRea
 
 export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchema): void => {
 
-    //create type=object in subpaths
-    getAllSubpaths(tool.propertyName, 1)
-        .forEach((subProp: string) => {
-                const subPath = denormalizePath(subProp) + '.type'
-                if (!_.get(rootSchema, subPath)) {
-                    _.set(rootSchema, subPath, 'object')
-                }
-            }
-        )
-    _.set(rootSchema, denormalizePath(tool.propertyName), tool.schema)
+    const subpaths = getAllSubpaths(tool.propertyName, 1);
+
+    //create type=object in subpaths if not exists
+    subpaths.forEach((subProp: string) => {
+        const subPath = denormalizePath(subProp) + '.type'
+        if (!_.get(rootSchema, subPath)) {
+            _.set(rootSchema, subPath, 'object')
+        }
+    });
+
+    let path = denormalizePath(tool.propertyName);
+    let set = {...tool.schema};
+
+    // //array items :TODO find better implementation (its not working for multiple nested objects)
+    // const isRef = undefined !== tool?.schema?.items?.$ref;
+    // if('array' === tool?.schema?.type && undefined === tool?.schema?.items?.type && !isRef ) {
+    //     set.items = {type:'object'}
+    // }
+    // if('array' === parentTool?.schema?.type) {
+    //     path = path.replace(/^properties\./, 'items.properties.');
+    // }
+
+    _.set(rootSchema, path, set)
 
     if (tool.isRequired) {
         setRequiredToSchema(tool.propertyName, rootSchema, true);
@@ -166,6 +231,66 @@ export const setRequiredToSchema = (propertyName: string, schema: JsonSchema, is
     _.set(schema, getRequiredPath(propertyName), required.length ? required : undefined)
 }
 
+const getChildComponent = (tool:ToolInterface, childComponents:any) : any =>  {
+    if (!childComponents[tool.uuid]) {
+        throw "no child with uuid " + tool.uuid + " found";
+    }
+    return childComponents[tool.uuid];
+};
+
+export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> => {
+    refElm = unref(refElm)
+
+    //from defineExpose() in tool components
+    const tool = refElm?.tool as ToolInterface;
+    const childTools = refElm?.childTools;
+    const childComponents = refElm?.childComponents;
+
+    const schemas = {} as Record<string, JsonSchema>;
+
+    if('object' === tool?.schema?.items?.type) {
+        const properties = {} as Record<string, JsonSchema>;
+        const required = [] as Array<string>;
+
+        childTools.forEach((t: ToolInterface) => {
+            const childComponent = getChildComponent(t, childComponents);
+            const childTool = childComponent.tool;
+
+            if('array' === childTool?.schema?.type) {
+                const childSchema = createTypeArraySchema(childComponent);
+                properties[childTool.propertyName] = childSchema[childTool.propertyName];
+
+            }
+            else {
+                properties[childTool.propertyName] = childTool.schema;
+            }
+
+            if(childTool.isRequired) {
+                required.push(childTool.propertyName);
+            }
+        });
+
+        schemas[tool.propertyName] = {
+            type: 'array',
+            items: {
+                type: "object",
+                properties: properties,
+                required: required.length ? required : undefined,
+            }
+        } as JsonSchema;
+
+    }
+    else{
+        schemas[tool.propertyName] = {
+            type: 'array',
+            items: childTools?.length ? childTools[0].schema : {type:'null'}
+        } as JsonSchema;
+    }
+
+    return schemas;
+};
+
+
 export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFormsUISchema => {
     refElm = unref(refElm)
 
@@ -181,7 +306,13 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
 
     switch (uischema.type) {
         case 'Control':
-            setItemSchemaToSchema(tool, rootSchema);
+            if('array' === tool?.schema?.type) {
+                const schemasToPush = createTypeArraySchema(refElm);
+                _.merge(rootSchema,{properties:schemasToPush})
+            }
+            else {
+                setItemSchemaToSchema(tool, rootSchema);
+            }
             break;
 
         case 'VerticalLayout':

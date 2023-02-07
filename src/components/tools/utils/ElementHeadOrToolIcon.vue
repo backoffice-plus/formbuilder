@@ -6,7 +6,7 @@
 
         <span :title="name">
 
-            <span class="tool" :class="[tool.uischemyType, tool.toolType, {readOnly:tool.schemaReadOnly}]">
+            <span class="tool" :class="[tool.uischemyType, tool.toolType, {readOnly:tool.itemsReadOnly}]">
               <label>{{ name }}</label>
               <span class="icon"/>
             </span>
@@ -56,12 +56,12 @@
   @apply hidden
 }
 
-.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .label, .Control:not(.readOnly), .reference, .combinator) label {
+.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .label, .Control:not(.readOnly), .reference, .combinator, .array) label {
   @apply hidden
 }
 
 .toolIcon .icon::before,
-.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .label, .Control:not(.readOnly), .reference, .combinator) .icon::before {
+.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .label, .Control:not(.readOnly), .reference, .combinator, .array) .icon::before {
   content: '';
   width: 20px;
   height: 20px;
@@ -115,19 +115,25 @@
 }
 .toolIcon.reference .icon::before,
 .toolItem .tool.Control.reference .icon::before {
-  /* mdi:tab-plus */
+  /* mdi:link-box-variant  */
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2m-5.06 11.81L11.73 17c-.65.67-1.51 1-2.37 1c-.86 0-1.72-.33-2.36-1c-1.33-1.29-1.33-3.42 0-4.74l1.35-1.36l-.01.6c-.01.5.07 1 .23 1.44l.05.15l-.4.41a1.597 1.597 0 0 0 0 2.28c.61.62 1.67.62 2.28 0l2.2-2.19c.3-.31.48-.72.48-1.15c0-.44-.18-.83-.48-1.14a.87.87 0 0 1 0-1.24c.33-.33.91-.32 1.24 0c.63.64.98 1.48.98 2.38c0 .9-.35 1.74-.98 2.37M17 11.74l-1.34 1.36v-.6c.01-.5-.07-1-.23-1.44l-.05-.14l.4-.42a1.597 1.597 0 0 0 0-2.28c-.61-.62-1.68-.61-2.28 0l-2.2 2.2c-.3.3-.48.71-.48 1.14c0 .44.18.83.48 1.14c.17.16.26.38.26.62s-.09.46-.26.62a.86.86 0 0 1-.62.25c-.22 0-.45-.08-.62-.25a3.362 3.362 0 0 1 0-4.75L12.27 7A3.311 3.311 0 0 1 17 7c.65.62 1 1.46 1 2.36c0 .9-.35 1.74-1 2.38Z"/></svg>');
 }
 
 .toolIcon.combinator .icon::before,
 .toolItem .tool.Control.combinator .icon::before {
-  /* mdi:tab-plus */
+  /* mdi:code-array */
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5m3 1v12h4v-2H8V8h2V6H6m10 10h-2v2h4V6h-4v2h2v8Z"/></svg>');
 }
 .toolIcon.select .icon::before,
 .toolItem .tool.Control.select .icon::before {
   /* mdi:form-select */
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M15 5h3l-1.5 2L15 5M5 2h14a2 2 0 0 1 2 2v16c0 1.11-.89 2-2 2H5a2 2 0 0 1-2-2V4c0-1.1.9-2 2-2m0 2v4h14V4H5m0 16h14V10H5v10m2-8h10v2H7v-2m0 4h10v2H7v-2Z"/></svg>');
+}
+
+.toolIcon.array .icon::before,
+.toolItem .tool.array .icon::before {
+  /* mdi:file-tree */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h6v4H3V3m12 7h6v4h-6v-4m0 7h6v4h-6v-4m-2-4H7v5h6v2H5V9h2v2h6v2Z"/></svg>');
 }
 
 </style>
@@ -147,7 +153,7 @@ const tool = props?.tool;
 const extraLabel = ref('');
 
 const isControl = computed(() => 'Control' === tool.uischema.type);
-const showIcon = computed(() => !isControl.value || ['reference','combinator'].includes(tool.toolType));
+const showIcon = computed(() => !isControl.value || ['reference','combinator','array'].includes(tool.toolType));
 
 const name = computed(() => {
 
@@ -158,11 +164,11 @@ const name = computed(() => {
     return '';
   }
 
-  if(tool.schemaReadOnly) {
+  if(tool.itemsReadOnly) {
     return tool.propertyName;
   }
 
-  if(['reference','combinator'].includes(tool.toolType)) {
+  if(['reference','combinator','array'].includes(tool.toolType)) {
     label = null;
   }
 

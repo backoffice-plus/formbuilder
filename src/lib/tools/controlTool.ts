@@ -16,7 +16,6 @@ import _ from "lodash";
 export const controlTool = new Tool('Control');
 
 controlTool.tester = rankWith(1, or(isStringControl, isBooleanControl, isNumberControl, isIntegerControl));
-controlTool.schema = {type: 'string'}; //needed??
 controlTool.importer = () => formInputByType;
 controlTool.optionJsonforms = async (tool) : Promise<JsonFormsInterface> => {
     return {
@@ -28,6 +27,9 @@ controlTool.optionJsonforms = async (tool) : Promise<JsonFormsInterface> => {
 controlTool.optionDataPrepare = (tool: ToolInterface) => {
     const schema = tool.schema as JsonSchema;
     const uischema = tool.uischema as ControlElement;
+
+    //default schema
+    schema.type ??= 'string';
 
     const data = {
         propertyName: tool.propertyName,

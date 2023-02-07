@@ -9,6 +9,8 @@ import type {
 } from "@jsonforms/core/src/models/uischema";
 import type {RankedTester} from "@jsonforms/core/src/testers/testers";
 
+export const scalarTypes = ['string','number','integer','boolean','null'];
+export const noneScalarTypes = ['array','object'];
 
 // @ts-ignore
 export interface JsonFormsUISchema extends UISchemaElement, LabelElement, ControlElement, Category, Categorization {
