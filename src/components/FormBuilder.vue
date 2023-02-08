@@ -94,7 +94,15 @@ const baseTool = computed(() => {
 
   //specialcase - some examples use none-Layout-elements as root
   if('Control' === uischema?.type) {
-    const itemSchema = _.get(schema, normalizeScope(uischema.scope));
+    let itemSchema;
+    //not working well!!!
+    if('#' === uischema.scope) {
+      const propKeys = Object.keys(schema.properties);
+      itemSchema = propKeys[0] && schema.properties[propKeys[0]]
+    }
+    else {
+      itemSchema = _.get(schema, normalizeScope(uischema.scope));
+    }
     const tool = findMatchingTool(schema, itemSchema, uischema) ?? unknownTool;
     return cloneToolWithSchema(tool, itemSchema, uischema);
   }
