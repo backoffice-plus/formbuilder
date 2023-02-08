@@ -36,7 +36,7 @@ import * as ownExamples from "./jsonForms/examples";
 import {getExamples} from '@jsonforms/examples/src'
 import {generateDefaultUISchema} from "@jsonforms/core";
 import {resolveSchema} from "../src";
-import {tool as htmlTool} from "./tool/htmlTool";
+import {htmlTool} from "./tool/htmlTool";
 
 const tools = [
     ...defaultTools,

@@ -1,43 +1,43 @@
-import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-import type {ToolInterface} from "../../src";
-import {resolveSchema, Tool, ToolProps} from "../../src";
-import {
-    prepareOptionDataRule,
-    setOptionDataRule
-} from "../../src/lib/tools/schema/toolLayout";
+import type {JsonFormsInterface, ToolInterface} from "../../src";
+import {prepareOptionDataRule, setOptionDataRule, resolveSchema, AbstractTool} from "../../src";
 import htmlToolComponent from "./htmlToolComponent.vue";
 import htmlRenderer from "./htmlRenderer.vue";
 import {entry as htmlControlRenderer} from "./htmlControlRenderer.vue";
-import {schema,uischema} from "./htmlToolSchema";
+import {schema, uischema} from "./htmlToolSchema";
 
 
-export const tool = new Tool('html','Html', htmlRenderer.tester);
-tool.uischema.options = {body: '<code>HTML Tool</code>'};
+export class HtmlTool extends AbstractTool implements ToolInterface {
 
-tool.importer = () => htmlToolComponent;
-tool.optionJsonformsRenderer = () : any => {
-    return [
-        htmlControlRenderer
-    ]
-};
+    importer = () => htmlToolComponent;
+    optionJsonformsRenderer = () => [htmlControlRenderer];
+    clone = (): ToolInterface => new HtmlTool(this.uischema.type);
+    tester = htmlRenderer.tester;
 
-tool.optionJsonforms = async () => {
-    return {
-        schema: await resolveSchema(schema),
-        uischema: await resolveSchema(uischema),
-    }
-};
+    optionDataPrepare(tool: ToolInterface): Record<string, any> {
 
-tool.optionDataPrepare = (tool: ToolInterface) : any => {
+        //init data
+        if (this.uischema?.options?.body) {
+            this.uischema.options = {body: '<code>HTML Tool</code>'};
+        }
 
-    return {
-        options: tool.uischema.options ?? {},
-        ...prepareOptionDataRule(tool.schema, uischema),
+        return {
+            options: this.uischema.options ?? {},
+            ...prepareOptionDataRule(tool.schema, uischema),
+        };
     };
-};
 
-tool.optionDataUpdate = (tool: ToolInterface, data: any) : void => {
-    tool.uischema.options = data.options ?? {};
+    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+        this.uischema.options = data.options ?? {};
 
-    setOptionDataRule(tool.schema, tool.uischema, data);
-};
+        setOptionDataRule(this.schema, this.uischema, data);
+    };
+
+    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+        return {
+            schema: await resolveSchema(schema),
+            uischema: await resolveSchema(uischema),
+        }
+    };
+}
+
+export const htmlTool = new HtmlTool('Html')

@@ -29,12 +29,10 @@
 
 <script setup>
 
-import Actions from "../../src/components/tools/utils/Actions.vue";
-import ElementHeadOrToolIcon from "../../src/components/tools/utils/ElementHeadOrToolIcon.vue";
-import {Tool} from "../../src/index";
+import {Actions} from "../../src";
 
 const props = defineProps({
-  tool: Tool,
+  tool: Object,
   isToolbar: Boolean,
   index: Number, //for deleting correct element in list
 
