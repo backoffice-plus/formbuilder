@@ -346,6 +346,7 @@ export const createCombinatorSchema = (refElm: any): Record<string, JsonSchema> 
     });
 
     const schema = {};
+    /** @ts-ignore */
     schema[keyword] = schemas;
 
     return schema;
