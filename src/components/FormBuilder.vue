@@ -63,6 +63,8 @@ import FormBuilderDefinitions from "./FormBuilderDefinitions.vue";
 import {useTools} from "../composable/tools";
 import {unknownTool} from "../lib/tools/unknownTool";
 import {useJsonforms} from "../composable/jsonforms";
+import {normalizeScope} from "../lib/normalizer";
+import _ from "lodash";
 
 const props = defineProps({
   jsonForms: Object,
@@ -80,7 +82,7 @@ const isModalOpen = ref(false);
 const toolEdit = ref(null);
 const showBuilder = ref('uischema');
 
-const {registerTools, unregisterAllTools, findLayoutToolByUiType} = useTools();
+const {registerTools, unregisterAllTools, findLayoutToolByUiType, findMatchingTool} = useTools();
 
 const {update} = useJsonforms();
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
@@ -89,6 +91,14 @@ const baseTool = computed(() => {
   const schema = unref(jsonFormsSchema);
   const uischema = unref(jsonFormsUiSchema);
   const uiSchemaType = (uischema?.type && uischema.type) ?? 'VerticalLayout';
+
+  //specialcase - some examples use none-Layout-elements as root
+  if('Control' === uischema?.type) {
+    const itemSchema = _.get(schema, normalizeScope(uischema.scope));
+    const tool = findMatchingTool(schema, itemSchema, uischema) ?? unknownTool;
+    return cloneToolWithSchema(tool, itemSchema, uischema);
+  }
+
   const tool = findLayoutToolByUiType(uiSchemaType) ?? unknownTool;
   return cloneToolWithSchema(tool, schema, uischema);
 })
