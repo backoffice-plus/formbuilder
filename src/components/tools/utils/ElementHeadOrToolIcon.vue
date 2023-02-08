@@ -6,7 +6,7 @@
 
         <span :title="name">
 
-            <span class="tool" :class="[tool.uischemyType, tool.toolType, {readOnly:tool.itemsReadOnly}]">
+            <span class="tool" :class="[uiSchemaType, tool.toolType, {readOnly:tool.itemsReadOnly}]">
               <label>{{ name }}</label>
               <span class="icon"/>
             </span>
@@ -20,7 +20,7 @@
       <template v-else>
 
         <div class="flex gap-2 items-center">
-          <span :class="['toolIcon', tool.uischemyType, tool.toolType]" v-if="showIcon"><span class="icon"/></span>
+          <span :class="['toolIcon', uiSchemaType, tool.toolType]" v-if="showIcon"><span class="icon"/></span>
 
           <label :class="{'font-medium':isControl}">{{ name }}</label>
 
@@ -131,7 +131,7 @@
 }
 
 .toolIcon.array .icon::before,
-.toolItem .tool.array .icon::before {
+.toolItem .tool.Control.array .icon::before {
   /* mdi:file-tree */
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h6v4H3V3m12 7h6v4h-6v-4m0 7h6v4h-6v-4m-2-4H7v5h6v2H5V9h2v2h6v2Z"/></svg>');
 }
@@ -149,6 +149,7 @@ const props = defineProps({
 })
 
 const tool = props?.tool;
+const uiSchemaType = tool.uischema?.type;
 
 const extraLabel = ref('');
 
