@@ -3,7 +3,7 @@ import {categoryTool} from "./categoryTool";
 import {categorizationTool} from "./categorizationTool";
 import {groupTool} from "./groupTool";
 import {horizontalLayout, verticalLayout} from "./layoutTool";
-import {selectTool} from "./selectTool";
+import {selectTool} from "./SelectTool";
 import {referenceTool} from "./referenceTool";
 import {combinatorTool} from "./combinatorTool";
 import {controlTool} from "./controlTool";
@@ -24,5 +24,4 @@ export const controlTools = [
     arrayTool,
     referenceTool,
     combinatorTool,
-    itemsTool,
 ]

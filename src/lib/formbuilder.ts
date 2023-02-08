@@ -74,9 +74,9 @@ export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uis
         }
     }
 
-    //set default data :TODO needed ?
-    //const defaultData = clone.optionDataPrepare(clone)
-    //clone.optionDataUpdate(clone, defaultData);
+    //set default data (sets init data if schema hasnt)
+    const defaultData = clone.optionDataPrepare(clone)
+    clone.optionDataUpdate(clone, defaultData);
 
     return clone;
 };
