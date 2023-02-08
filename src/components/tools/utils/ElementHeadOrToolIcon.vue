@@ -56,7 +56,7 @@
   @apply hidden
 }
 
-.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .label, .Control:not(.readOnly), .reference, .combinator, .array) label {
+.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .label, .Control:not(.readOnly):not(.schema), .reference, .combinator, .array) label {
   @apply hidden
 }
 
@@ -134,6 +134,11 @@
 .toolItem .tool.Control.array .icon::before {
   /* mdi:file-tree */
   background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h6v4H3V3m12 7h6v4h-6v-4m0 7h6v4h-6v-4m-2-4H7v5h6v2H5V9h2v2h6v2Z"/></svg>');
+}
+.toolIcon.schema .icon::before,
+.toolItem .tool.Control.schema .icon::before {
+  /* mdi:file-code */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5l3.74 3.74l1.42-1.41l-2.33-2.33l2.33-2.33l-1.42-1.41l-3.74 3.74m11.16 0l-3.74-3.74l-1.42 1.41l2.33 2.33l-2.33 2.33l1.42 1.41l3.74-3.74Z"/></svg>');
 }
 
 </style>

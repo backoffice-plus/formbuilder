@@ -17,6 +17,7 @@ import {Resolver} from "@stoplight/json-ref-resolver";
 import type {JsonFormsInterface} from "./models";
 import {Generate} from "@jsonforms/core";
 import {CombinatorTool} from "./tools/combinatorTool";
+import {SchemaTool} from "./tools/SchemaTool";
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {
@@ -327,6 +328,48 @@ export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> =
     return schemas;
 };
 
+export const createTypeSchemaSchema = (refElm: any): Record<string, JsonSchema> => {
+    refElm = unref(refElm)
+
+    //from defineExpose() in tool components
+    const tool = refElm?.tool as ToolInterface;
+    const childTools = refElm?.childTools;
+    const childComponents = refElm?.childComponents;
+
+    const schemas = {} as Record<string, JsonSchema>;
+
+    if('object' === tool?.schema?.type) {
+        const properties = {} as Record<string, JsonSchema>;
+        const required = [] as Array<string>;
+
+        childTools.forEach((t: ToolInterface) => {
+            const childComponent = getChildComponent(t, childComponents);
+            const childTool = childComponent.tool;
+
+            if('object' === childTool?.schema?.type) {
+                const childSchema = createTypeSchemaSchema(childComponent);
+                properties[childTool.propertyName] = childSchema[childTool.propertyName];
+
+            }
+            else {
+                properties[childTool.propertyName] = childTool.schema;
+            }
+
+            if(childTool.isRequired) {
+                required.push(childTool.propertyName);
+            }
+        });
+
+        schemas[tool.propertyName] = {
+            type: 'object',
+            properties: properties,
+            required: required.length ? required : undefined,
+        } as JsonSchema;
+
+    }
+
+    return schemas;
+};
 
 export const createCombinatorSchema = (refElm: any): Record<string, JsonSchema> => {
     refElm = unref(refElm)
@@ -371,7 +414,11 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
                 const schemasToPush = createTypeArraySchema(refElm);
                 _.merge(rootSchema,{properties:schemasToPush})
             }
-            if(tool instanceof CombinatorTool) {
+            else if(tool instanceof SchemaTool) {
+                const schemasToPush = createTypeSchemaSchema(refElm);
+                _.merge(rootSchema,{properties:schemasToPush,type:'object'})
+            }
+            else if(tool instanceof CombinatorTool) {
                 tool.schema = createCombinatorSchema(refElm);
                 setItemSchemaToSchema(tool, rootSchema);
             }
