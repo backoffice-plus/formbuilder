@@ -1,52 +1,64 @@
 import type {JsonSchema} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
-import type {ToolInterface} from "../models";
-import {Tool} from "../models";
-import combinatorAsTabs from "../../components/tools/combinatorAsTabs.vue";
-import {jsonForms as toolOptionsCombinator} from "../../schema/toolOptionsCombinator";
-import {updatePropertyNameAndScope} from "../formbuilder";
-import type {ControlElement} from "@jsonforms/core/src/models/uischema";
+import type {JsonFormsInterface, ToolInterface} from "../models";
+import {AbstractTool} from "../models";
+import toolComponent from "../../components/tools/combinator.component.vue";
+import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {schema, uischema} from "./schema/combinator.schema";
 
+export class CombinatorTool extends AbstractTool implements ToolInterface {
 
-export const combinatorTool = new Tool('Control', 'combinator');
+    keyword: 'oneOf' | 'allOf' | 'anyOf' | undefined = undefined;
 
-combinatorTool.tester = rankWith(2,
-    and(
-        uiTypeIs('Control'),
-        (uischema, schema) => {
-            const hasKeyword = undefined !== schema?.allOf || undefined !== schema?.anyOf || undefined !== schema?.oneOf;
-            const noType = undefined === schema?.type
-            return hasKeyword && noType
+    importer = () => toolComponent;
+    tester = rankWith(2, and(uiTypeIs('Control'), (uischema, schema) => {
+        const hasKeyword = undefined !== schema?.allOf || undefined !== schema?.anyOf || undefined !== schema?.oneOf;
+        const noType = undefined === schema?.type
+        return hasKeyword && noType
+    }));
+    clone = (): ToolInterface => new CombinatorTool(this.uischema.type, 'combinator');
+
+    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+        return {
+            propertyName: this.propertyName,
+            keyword: CombinatorTool.getKeyword(this.schema),
+            options: this.uischema?.options ?? {}
+        } as any;
+    }
+
+    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+        updatePropertyNameAndScope(data?.propertyName, tool)
+
+        this.keyword = data?.keyword ?? 'anyOf';
+    }
+
+    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+        return {
+            schema: await resolveSchema(schema),
+            uischema: await resolveSchema(uischema),
+        } as JsonFormsInterface
+    }
+
+    static getKeyword(schema: JsonSchema): string | undefined {
+        if (schema?.oneOf && schema.oneOf?.length > 0) {
+            return 'oneOf';
         }
-    )
-);
-combinatorTool.importer = () => combinatorAsTabs;
-combinatorTool.importer = () => combinatorAsTabs;
-combinatorTool.optionJsonforms = async () => toolOptionsCombinator;
-
-type keyword = "oneOf" | "anyOf" | "allOf";
-const keywords = ['oneOf', 'anyOf', 'allOf'] as Array<keyword>
-
-combinatorTool.optionDataPrepare = (tool: ToolInterface) => {
-    const data = {} as any;
-
-    const schema = tool.schema;
-
-    data.propertyName = tool.propertyName;
-
-    keywords.forEach((key:keyword) => {
-        const combining = schema[key];
-        if(combining && combining?.length > 0) {
-            data.keyword = key;
+        if (schema?.anyOf && schema.anyOf?.length > 0) {
+            return 'anyOf';
         }
-    })
+        if (schema?.allOf && schema.allOf?.length > 0) {
+            return 'allOf';
+        }
+        return undefined;
+    }
 
-    return data;
-};
+    static getKeywordSchemas(schema: JsonSchema): JsonSchema[] | undefined {
+        const keyword = CombinatorTool.getKeyword(schema);
+        /** @ts-ignore */
+        return keyword && schema[keyword];
+    }
+}
 
-combinatorTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
-    updatePropertyNameAndScope(data?.propertyName, tool)
-
-    //:TODO
-};
+// @ts-ignore
+export const combinatorTool = new CombinatorTool('Control', 'combinator');

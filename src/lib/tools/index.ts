@@ -21,7 +21,7 @@ export const layoutTools = [
 export const controlTools = [
     controlTool,
     selectTool,
-    arrayTool,
     referenceTool,
+    arrayTool,
     combinatorTool,
 ]

@@ -16,7 +16,7 @@ import {jsonForms as toolOptionsSchemaLabelAndI18n} from "./tools/schema/labelAn
 import {Resolver} from "@stoplight/json-ref-resolver";
 import type {JsonFormsInterface} from "./models";
 import {Generate} from "@jsonforms/core";
-import {scalarTypes} from "./models";
+import {CombinatorTool} from "./tools/combinatorTool";
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {
@@ -130,6 +130,32 @@ export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => 
 
 
     return tools;
+};
+
+export const initCombinatorElements = (tool: ToolInterface): Array<ToolInterface> => {
+    const ctools = [] as any;
+
+    /** @ts-ignore */
+    const schemaOfKeyword = CombinatorTool.getKeywordSchemas(tool.schema)
+
+    const {findMatchingTool, findLayoutToolByUiType} = useTools();
+
+    schemaOfKeyword && schemaOfKeyword.forEach((itemSchema:JsonSchema) => {
+
+        const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+        const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
+
+        // //required
+        // const required = getRequiredFromSchema(clone.propertyName, tool.schema);
+        // if (required?.includes(getPlainProperty(clone.propertyName))) {
+        //     clone.isRequired = true;
+        // }
+
+        //console.info("initArrayElements", 'push Array of Object', clone.propertyName)
+        ctools.push(clone);
+    });
+
+    return ctools;
 };
 
 export const initElements = (tool: ToolInterface): Array<ToolInterface> => {
@@ -302,6 +328,29 @@ export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> =
 };
 
 
+export const createCombinatorSchema = (refElm: any): Record<string, JsonSchema> => {
+    refElm = unref(refElm)
+
+    //from defineExpose() in tool components
+    const tool = refElm?.tool as ToolInterface;
+    const childTools = refElm?.childTools;
+    const childComponents = refElm?.childComponents;
+
+    const keyword = (tool instanceof CombinatorTool && tool.keyword) ?? 'anyOf';
+
+    const schemas = childTools.map((t: ToolInterface) => {
+        const childComponent = getChildComponent(t, childComponents);
+        const childTool = childComponent.tool;
+
+        return childTool.schema;
+    });
+
+    const schema = {};
+    schema[keyword] = schemas;
+
+    return schema;
+};
+
 export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFormsUISchema => {
     refElm = unref(refElm)
 
@@ -320,6 +369,10 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
             if('array' === tool?.schema?.type) {
                 const schemasToPush = createTypeArraySchema(refElm);
                 _.merge(rootSchema,{properties:schemasToPush})
+            }
+            if(tool instanceof CombinatorTool) {
+                tool.schema = createCombinatorSchema(refElm);
+                setItemSchemaToSchema(tool, rootSchema);
             }
             else {
                 setItemSchemaToSchema(tool, rootSchema);
