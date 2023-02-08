@@ -7,7 +7,7 @@ import {selectTool} from "./selectTool";
 import {referenceTool} from "./referenceTool";
 import {combinatorTool} from "./combinatorTool";
 import {controlTool} from "./controlTool";
-import {itemsTool} from "./ArrayTool";
+import {arrayTool} from "./ArrayTool";
 
 export const layoutTools = [
     verticalLayout,
@@ -21,6 +21,7 @@ export const layoutTools = [
 export const controlTools = [
     controlTool,
     selectTool,
+    arrayTool,
     referenceTool,
     combinatorTool,
     itemsTool,

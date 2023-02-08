@@ -118,4 +118,4 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     }
 }
 
-export const itemsTool = new ArrayTool('Control', 'array')
+export const arrayTool = new ArrayTool('Control', 'array')
