@@ -13,7 +13,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@babel/types": "^7.20.7",
     "@jsonforms/examples": "^3.0.0",
