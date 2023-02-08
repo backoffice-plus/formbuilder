@@ -32,7 +32,7 @@ export const uischema = {
     elements: [
         {
             type: 'Control',
-            scope: '#/properties/arrayarray'
+            scope: '#/properties/usercolors',
         }
     ]
 };
