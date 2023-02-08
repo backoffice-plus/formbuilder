@@ -3,10 +3,12 @@ import {AbstractTool} from "../models";
 import toolComponent from "../../components/tools/schema.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/schema.schema";
+import {rankWith} from "@jsonforms/core";
 
 export class SchemaTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
+    tester = rankWith(-1, () => false)
     clone = (): ToolInterface => new SchemaTool(this.uischema.type, 'schema');
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
