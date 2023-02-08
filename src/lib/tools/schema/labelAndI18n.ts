@@ -51,8 +51,13 @@ export const schema = {
                     title: 'i18n',
                     description: "alternative lookup key for translation catalogue",
                 },
-                showUnfocusedDescription: {
-                    type: "boolean",
+                options: {
+                    type: "object",
+                    properties: {
+                        showUnfocusedDescription: {
+                            type: "boolean",
+                        },
+                    },
                 },
             }
         },
@@ -80,7 +85,7 @@ export const uischema = {
             type: "Control"
         },
         {
-            scope: "#/properties/labelAndI18n/properties/showUnfocusedDescription",
+            scope: "#/properties/labelAndI18n/properties/options/properties/showUnfocusedDescription",
             type: "Control",
             rule: {
                 effect: 'SHOW',
