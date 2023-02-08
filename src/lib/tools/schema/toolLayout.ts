@@ -5,6 +5,10 @@ export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionD
 export const schema = {
     type: 'object',
     properties: {
+        uischemaType: {
+            type:'string',
+            enum: ['VerticalLayout','HorizontalLayout']
+        },
         rule: {
             $ref:'rule.schema#/properties/rule'
         },
@@ -15,6 +19,35 @@ export const uischema = {
 
     "type": "Categorization",
     "elements": [
+
+
+        /**
+         * Tab - Base
+         */
+        {
+            type: "Category",
+            label: "Validation",
+            elements: [
+                {
+                     scope: "#/properties/uischemaType",
+                     type: "Control",
+                }
+            ],
+            rule: {
+                //effect: "DISABLE",:TODO fix it CategorizationRenderer
+                effect: "HIDE",
+                condition: {
+                    scope: "#/properties/type",
+                    schema: { enum: ["boolean"] }
+                }
+            }
+        },
+
+
+
+        /**
+         * Tab - Category
+         */
         {
             "type": "Category",
             "label": "Rule",

@@ -27,6 +27,7 @@ verticalLayout.optionDataPrepare = (tool: ToolInterface) => {
 
     return {
         options: uischema?.options,
+        uischemaType: uischema.type,
         ...prepareOptionDataRule(schema, uischema),
     };
 };
@@ -34,6 +35,10 @@ verticalLayout.optionDataPrepare = (tool: ToolInterface) => {
 verticalLayout.optionDataUpdate = (tool: ToolInterface, data: Record<string, any>) => {
     const schema = tool.schema as JsonSchema | Record<string, any>;
     const uischema = tool.uischema as Layout;
+
+    if(data.uischemaType) {
+        uischema.type = data.uischemaType;
+    }
 
     uischema.options = data.options ?? {};
 

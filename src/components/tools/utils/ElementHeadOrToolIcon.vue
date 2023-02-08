@@ -149,7 +149,7 @@ const props = defineProps({
 })
 
 const tool = props?.tool;
-const uiSchemaType = tool.uischema?.type;
+const uiSchemaType = computed(() => tool.uischema?.type);
 
 const extraLabel = ref('');
 
