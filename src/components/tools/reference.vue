@@ -14,12 +14,12 @@
   </div>
 </template>
 
-
-<style scoped>
+<style>
 .referenceTool {
   min-height:auto;
   @apply
   relative
+  bg-blue-200 !important
 }
 </style>
 
