@@ -1,29 +1,29 @@
 import type {JsonFormsInterface, ToolInterface} from "../models";
 import {AbstractTool} from "../models";
-import toolComponent from "../../components/tools/schema.component.vue";
+import toolComponent from "../../components/tools/object.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
-import {schema, uischema} from "./schema/schema.schema";
+import {schema, uischema} from "./schema/object.schema";
 import {rankWith} from "@jsonforms/core";
 
-export class SchemaTool extends AbstractTool implements ToolInterface {
+export class ObjectTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
     tester = rankWith(1, (uischema, schema, context) => {
         return uischema?.type === 'Control' && schema?.type === 'object' && undefined !== schema?.properties
     })
-    clone = (): ToolInterface => new SchemaTool(this.uischema.type, 'schema');
+    clone = (): ToolInterface => new ObjectTool(this.uischema.type, 'object');
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
+        if(!this.schema.type) {
+            this.schema.type = 'object'
+        }
         return {
             propertyName: this.propertyName,
-            type: this.schema.type ?? 'object',
         } as any;
     }
 
     optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, tool)
-
-        this.schema.type = data?.type ?? 'object';
     }
 
     async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
@@ -35,4 +35,4 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
 }
 
 // @ts-ignore
-export const schemaTool = new SchemaTool('Control', 'schema');
+export const objectTool = new ObjectTool('Control', 'object');

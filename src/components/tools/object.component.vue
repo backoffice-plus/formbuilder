@@ -1,13 +1,11 @@
 <template>
-  <div class="schemaTool" :class="[{root:isRoot}]">
+  <div class="objectTool" :class="[{root:isRoot}]">
 
     <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool"/>
 
     <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
       <Actions :tool="tool" @delete="onDelete" v-if="!isRoot"/>
-
-      <span v-if="!isRoot">type: {{ props.tool.schema.type }}</span>
 
       <template v-if="['object','array'].includes(props.tool.schema.type)">
 
@@ -51,19 +49,19 @@
 </template>
 
 <style>
-.schemaTool {
+.objectTool {
   @apply
   bg-green-100 !important
 }
 
-.schemaTool.root {
+.objectTool.root {
   @apply
   bg-transparent !important
 }
 </style>
 
 <style scoped>
-.schemaTool {
+.objectTool {
   min-height: auto;
   @apply
   relative
@@ -80,7 +78,7 @@ import Vuedraggable from 'vuedraggable'
 import {onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
 import {useTools} from "../../composable/tools";
-import {cloneEmptyTool, initSchemaElements} from "../../lib/formbuilder";
+import {cloneEmptyTool, initObjectElements} from "../../lib/formbuilder";
 import {useJsonforms} from "../../composable/jsonforms";
 import _ from "lodash";
 
@@ -103,7 +101,7 @@ const childComponents = ref({});
 onMounted(() => {
   if (!props.isToolbar) {
     if (!_.isEmpty(props?.tool?.schema?.properties)) {
-      childTools.value.push(...initSchemaElements(props?.tool));
+      childTools.value.push(...initObjectElements(props?.tool));
 
       //wait to render dom
       if (childTools.value.length) {
@@ -137,7 +135,7 @@ const addItem = (type) => {
 
 const groupPut = (from, to, node, dragEvent) => {
   const tool = node._underlying_vm_;
-  const isControlTool = ['control', 'select', 'array', 'schema'].includes(tool.toolType);//;
+  const isControlTool = ['control', 'select', 'array', 'object', 'combinator'].includes(tool.toolType);//;
   return isControlTool
 };
 

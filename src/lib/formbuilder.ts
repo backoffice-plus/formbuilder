@@ -17,7 +17,7 @@ import {Resolver} from "@stoplight/json-ref-resolver";
 import type {JsonFormsInterface} from "./models";
 import {Generate} from "@jsonforms/core";
 import {CombinatorTool} from "./tools/combinatorTool";
-import {schemaTool, SchemaTool} from "./tools/SchemaTool";
+import {objectTool, ObjectTool} from "./tools/ObjectTool";
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {
@@ -159,7 +159,7 @@ export const initCombinatorElements = (tool: ToolInterface): Array<ToolInterface
     return ctools;
 };
 
-export const initSchemaElements = (tool: ToolInterface): Array<ToolInterface> => {
+export const initObjectElements = (tool: ToolInterface): Array<ToolInterface> => {
     const tools = [] as Array<ToolInterface>;
 
     const {findMatchingTool, findLayoutToolByUiType} = useTools();
@@ -353,7 +353,7 @@ export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> =
     return schemas;
 };
 
-export const createTypeSchemaSchema = (refElm: any): Record<string, JsonSchema> => {
+export const createTypeObjectSchema = (refElm: any): Record<string, JsonSchema> => {
     refElm = unref(refElm)
 
     //from defineExpose() in tool components
@@ -372,7 +372,7 @@ export const createTypeSchemaSchema = (refElm: any): Record<string, JsonSchema> 
             const childTool = childComponent.tool;
 
             if('object' === childTool?.schema?.type) {
-                const childSchema = createTypeSchemaSchema(childComponent);
+                const childSchema = createTypeObjectSchema(childComponent);
                 properties[childTool.propertyName] = childSchema[childTool.propertyName];
 
             }
@@ -439,8 +439,8 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
                 const schemasToPush = createTypeArraySchema(refElm);
                 _.merge(rootSchema,{properties:schemasToPush})
             }
-            else if(tool instanceof SchemaTool) {
-                const schemasToPush = createTypeSchemaSchema(refElm);
+            else if(tool instanceof ObjectTool) {
+                const schemasToPush = createTypeObjectSchema(refElm);
                 _.merge(rootSchema,{properties:schemasToPush,type:'object'})
             }
             else if(tool instanceof CombinatorTool) {

@@ -77,7 +77,7 @@ import {computed, ref, unref, onMounted, onBeforeUnmount, watch} from 'vue'
 import {
   FormBuilderBar,
   createJsonForms,
-  emitter, cloneToolWithSchema, createTypeSchemaSchema,
+  emitter, cloneToolWithSchema, createTypeObjectSchema,
 } from "../index";
 import Modal from "./Modal.vue";
 import {Generate} from "@jsonforms/core/src/generators/Generate";
@@ -86,7 +86,7 @@ import {unknownTool} from "../lib/tools/unknownTool";
 import {useJsonforms} from "../composable/jsonforms";
 import {normalizeScope} from "../lib/normalizer";
 import _ from "lodash";
-import {schemaTool} from "../lib/tools/SchemaTool";
+import {objectTool} from "../lib/tools/ObjectTool";
 
 const props = defineProps({
   jsonForms: Object,
@@ -138,7 +138,7 @@ const baseDefinitionTool = computed(() => {
     type:'object',
     properties: jsonFormsSchema.value.definitions
   };
-  const basetool = cloneToolWithSchema(schemaTool,schema , {});
+  const basetool = cloneToolWithSchema(objectTool,schema , {});
   basetool.propertyName = 'definitions';
   return basetool;
 })
@@ -157,7 +157,7 @@ const updateJsonForm = () => {
   let newJsonForms;
 
   if (rootDefinitionForm.value) {
-    const def = createTypeSchemaSchema(rootDefinitionForm);
+    const def = createTypeObjectSchema(rootDefinitionForm);
     newJsonForms = {
       schema: jsonFormsSchema.value,
       uischema: jsonFormsUiSchema.value,

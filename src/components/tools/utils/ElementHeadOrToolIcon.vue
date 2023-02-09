@@ -56,7 +56,7 @@
   @apply hidden
 }
 
-.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .label, .Control:not(.readOnly):not(.schema), .reference, .combinator, .array) label {
+.toolItem .tool:where(.Group, .VerticalLayout, .HorizontalLayout, .Categorization, .label, .Control:not(.readOnly), .reference, .combinator, .array) label {
   @apply hidden
 }
 
@@ -121,8 +121,8 @@
 
 .toolIcon.combinator .icon::before,
 .toolItem .tool.Control.combinator .icon::before {
-  /* mdi:code-array */
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5m3 1v12h4v-2H8V8h2V6H6m10 10h-2v2h4V6h-4v2h2v8Z"/></svg>');
+  /* mdi:folder-pound */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M15.25 13h2l-.5 2h-2l.5-2M22 8v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6c0-1.11.89-2 2-2h6l2 2h8a2 2 0 0 1 2 2m-2 4h-1.5l.5-2h-1l-.5 2h-2l.5-2h-1l-.5 2H13v1h1.25l-.5 2H12v1h1.5l-.5 2h1l.5-2h2l-.5 2h1l.5-2H19v-1h-1.25l.5-2H20v-1Z"/></svg>');
 }
 .toolIcon.select .icon::before,
 .toolItem .tool.Control.select .icon::before {
@@ -132,13 +132,13 @@
 
 .toolIcon.array .icon::before,
 .toolItem .tool.Control.array .icon::before {
-  /* mdi:file-tree */
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M3 3h6v4H3V3m12 7h6v4h-6v-4m0 7h6v4h-6v-4m-2-4H7v5h6v2H5V9h2v2h6v2Z"/></svg>');
+  /* mdi:code-array */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M3 5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5m3 1v12h4v-2H8V8h2V6H6m10 10h-2v2h4V6h-4v2h2v8Z"/></svg>');
 }
-.toolIcon.schema .icon::before,
-.toolItem .tool.Control.schema .icon::before {
-  /* mdi:file-code */
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M13 9h5.5L13 3.5V9M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4c0-1.11.89-2 2-2m.12 13.5l3.74 3.74l1.42-1.41l-2.33-2.33l2.33-2.33l-1.42-1.41l-3.74 3.74m11.16 0l-3.74-3.74l-1.42 1.41l2.33 2.33l-2.33 2.33l1.42 1.41l3.74-3.74Z"/></svg>');
+.toolIcon.object .icon::before,
+.toolItem .tool.Control.object .icon::before {
+  /* mdi:code-braces-box */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2m-8 5H9v2c0 1.1-.9 2-2 2c1.1 0 2 .9 2 2v2h2v2H9c-1.1 0-2-.9-2-2v-1c0-1.1-.9-2-2-2v-2c1.1 0 2-.9 2-2V8c0-1.1.9-2 2-2h2v2m8 5c-1.1 0-2 .9-2 2v1c0 1.1-.9 2-2 2h-2v-2h2v-2c0-1.1.9-2 2-2c-1.1 0-2-.9-2-2V8h-2V6h2c1.1 0 2 .9 2 2v1c0 1.1.9 2 2 2v2Z"/></svg>');
 }
 
 </style>
@@ -159,7 +159,7 @@ const uiSchemaType = computed(() => tool.uischema?.type);
 const extraLabel = ref('');
 
 const isControl = computed(() => 'Control' === tool.uischema.type);
-const showIcon = computed(() => !isControl.value || ['reference','combinator','array','schema'].includes(tool.toolType));
+const showIcon = computed(() => !isControl.value || ['reference','combinator','array','object'].includes(tool.toolType));
 
 const name = computed(() => {
 
@@ -174,7 +174,7 @@ const name = computed(() => {
     return tool.propertyName;
   }
 
-  if(['reference','combinator','array','schema'].includes(tool.toolType)) {
+  if(['reference','combinator','array','object'].includes(tool.toolType)) {
     label = null;
   }
 

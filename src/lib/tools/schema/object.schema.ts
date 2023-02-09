@@ -7,11 +7,6 @@ export const schema = {
         propertyName: {
             type: "string"
         },
-        type: {
-            type: "string",
-            enum: ['object', 'array', 'string', 'number', 'integer', 'boolean'],
-        },
-
         required: {
             type: "boolean"
         },
@@ -37,10 +32,6 @@ export const uischema = {
                             "type": "Control"
                         },
                     ],
-                },
-                {
-                    "scope": "#/properties/type",
-                    "type": "Control"
                 },
             ]
         },
