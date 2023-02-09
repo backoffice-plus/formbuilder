@@ -1,13 +1,16 @@
 <template>
   <div class="objectTool" :class="[{root:isRoot}]">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool"/>
+    <ToolIcon :tool="tool" :isToolbar="isToolbar">
+      <template v-slot:droparea>
+        <b>{{ tool.propertyName }}</b>
+      </template>
+    </ToolIcon>
 
     <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
       <Actions :tool="tool" @delete="onDelete" v-if="!isRoot"/>
 
-      <template v-if="['object','array'].includes(props.tool.schema.type)">
 
 <!--        <div class="tabs">-->
 <!--          <div class="flex items-center">-->
@@ -42,7 +45,7 @@
             </div>
           </template>
         </Vuedraggable>
-      </template>
+
     </div>
 
   </div>
@@ -81,6 +84,7 @@ import {useTools} from "../../composable/tools";
 import {cloneEmptyTool, initObjectElements} from "../../lib/formbuilder";
 import {useJsonforms} from "../../composable/jsonforms";
 import _ from "lodash";
+import ToolIcon from "./utils/ToolIcon.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,

@@ -58,6 +58,15 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         /** @ts-ignore */
         return keyword && schema[keyword];
     }
+
+    toolbarOptions():Record<string, any> {
+        return {
+            title:'Combinator',
+            icon:'mdi:folder-pound',
+          //  labelAtDropArea:this.keyword ?? 'anyOf',
+
+        }
+    }
 }
 
 // @ts-ignore

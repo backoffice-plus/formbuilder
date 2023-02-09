@@ -1,14 +1,15 @@
 <template>
   <div class="combinatorTool">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool"/>
+    <ToolIcon :tool="tool" :isToolbar="isToolbar">
+      <template v-slot:droparea>
+        <b>{{ tool.propertyName }}:</b> {{ tool?.keyword }}
+      </template>
+    </ToolIcon>
 
     <div v-if="!isToolbar">
 
       <Actions :tool="tool" @delete="onDelete"/>
-
-
-      type: {{ tool?.keyword }}
 
       <div class="tabs">
         <div class="flex items-center">
@@ -76,6 +77,7 @@ import {useTools} from "../../composable/tools";
 import {cloneEmptyTool, initCombinatorElements} from "../../lib/formbuilder";
 import {useJsonforms} from "../../composable/jsonforms";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
+import ToolIcon from "./utils/ToolIcon.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,

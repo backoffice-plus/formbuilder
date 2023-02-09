@@ -32,6 +32,14 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
             uischema: await resolveSchema(uischema),
         } as JsonFormsInterface
     }
+
+    toolbarOptions():Record<string, any> {
+        return {
+            title:'Object',
+            icon:'mdi:code-braces-box',
+
+        }
+    }
 }
 
 // @ts-ignore

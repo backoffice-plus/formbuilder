@@ -1,22 +1,18 @@
 <template>
-  <div class="arrayTool">
+  <div class="arrayTool" :title="toolOptions.title">
 
-<!--    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />-->
+    <ToolIcon :tool="tool" :isToolbar="isToolbar">
+      <template v-slot:droparea>
+        <b>{{ tool.propertyName }}:</b> Array&nbsp;
+        <span v-if="!hasSingleChild && props.tool.schema?.items?.type"> of {{ props.tool.schema.items.type }}</span>
+        <span v-if="hasSingleChild && getSingleChild"> of {{ getSingleChild?.schema?.type }}</span>
+      </template>
 
-    <template v-if="isToolbar">
-      <Icon :icon="toolOptions.icon" v-if="toolOptions.icon" height="24"  />
-    </template>
+    </ToolIcon>
 
-    <div v-else>
-
-      {{ tool.toolbarOptions().title }}
+    <div v-if="!isToolbar">
 
       <Actions :tool="tool" @delete="onDelete" />
-
-
-      type: array
-      <span v-if="!hasSingleChild && props.tool.schema?.items?.type">of {{ props.tool.schema.items.type }}</span>
-      <span v-if="hasSingleChild && getSingleChild">of {{ getSingleChild?.schema?.type }}</span>
 
         <div class="tabs" v-if="!hasSingleChild">
           <div class="flex items-center">
@@ -88,6 +84,7 @@ import {unknownTool} from "../../lib/tools/unknownTool";
 import {findMatchingUISchema} from "@jsonforms/core";
 import {useJsonforms} from "../../composable/jsonforms";
 import {Icon} from "@iconify/vue";
+import ToolIcon from "./utils/ToolIcon.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
