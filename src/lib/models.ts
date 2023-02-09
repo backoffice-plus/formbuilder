@@ -40,6 +40,7 @@ export interface ToolInterface {
     optionJsonforms: (tool:ToolInterface) => Promise<JsonFormsInterface|undefined>;
 
     clone: () => ToolInterface;
+    toolbarOptions: () => Record<string, any>;
 }
 
 export abstract class AbstractTool implements ToolInterface {
@@ -74,6 +75,10 @@ export abstract class AbstractTool implements ToolInterface {
     abstract optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void;
     abstract optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface | undefined>;
     abstract tester: RankedTester | undefined;
+
+    toolbarOptions():Record<string, any> {
+        return {}
+    }
 }
 
 /** @deprecated create own tool classes with ToolInterface **/

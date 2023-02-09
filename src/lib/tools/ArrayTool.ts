@@ -116,6 +116,14 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     clone(): ToolInterface {
         return new ArrayTool(this.uischema.type, this.toolType);
     }
+
+    toolbarOptions():Record<string, any> {
+        return {
+            title:'Array',
+            icon:'mdi:code-array',
+
+        }
+    }
 }
 
 export const arrayTool = new ArrayTool('Control', 'array')

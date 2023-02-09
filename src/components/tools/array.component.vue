@@ -1,9 +1,15 @@
 <template>
   <div class="arrayTool">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
+<!--    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />-->
 
-    <div v-if="!isToolbar">
+    <template v-if="isToolbar">
+      <Icon :icon="toolOptions.icon" v-if="toolOptions.icon" height="24"  />
+    </template>
+
+    <div v-else>
+
+      {{ tool.toolbarOptions().title }}
 
       <Actions :tool="tool" @delete="onDelete" />
 
@@ -81,6 +87,7 @@ import {cloneEmptyTool, cloneToolWithSchema, initElements, initArrayElements} fr
 import {unknownTool} from "../../lib/tools/unknownTool";
 import {findMatchingUISchema} from "@jsonforms/core";
 import {useJsonforms} from "../../composable/jsonforms";
+import {Icon} from "@iconify/vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -100,6 +107,7 @@ const childComponents = ref({});
 const isArrayOfObject = computed(() => 'object' === props.tool.schema?.items?.type);
 const hasSingleChild = computed(() => !isArrayOfObject.value && childTools.value.length >= 1);
 const getSingleChild = computed(() => childTools.value[0]);
+const toolOptions = computed(() => props.tool?.toolbarOptions() ?? {});
 
 onMounted(() => {
   if (!props.isToolbar) {
