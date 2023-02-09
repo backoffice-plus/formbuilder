@@ -1,21 +1,22 @@
 <template>
-  <div class="schemaTool">
+  <div class="schemaTool" :class="[{root:isRoot}]">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
+    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool"/>
 
-    <div v-if="!isToolbar">
+    <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
-      <Actions :tool="tool" @delete="onDelete" />
+      <Actions :tool="tool" @delete="onDelete" v-if="!isRoot"/>
 
-      type: {{ props.tool.schema.type }}
+      <span v-if="!isRoot">type: {{ props.tool.schema.type }}</span>
 
-      <template  v-if="['object','array'].includes(props.tool.schema.type)">
+      <template v-if="['object','array'].includes(props.tool.schema.type)">
 
-        <div class="tabs">
-          <div class="flex items-center">
-            <button type="button" class="add" @click="addItem" v-text="'[Add]'" />
-          </div>
-        </div>
+<!--        <div class="tabs">-->
+<!--          <div class="flex items-center">-->
+<!--            <button type="button" class="add" @click="addItem('object')" v-text="'[Object]'"/>-->
+<!--            <button type="button" class="add" @click="addItem('string')" v-text="'[String]'"/>-->
+<!--          </div>-->
+<!--        </div>-->
 
         <Vuedraggable
             :class="['dropArea bg-dotted nestedFlexArea flex-col', {drag:dragSchema}]"
@@ -54,11 +55,16 @@
   @apply
   bg-green-100 !important
 }
+
+.schemaTool.root {
+  @apply
+  bg-transparent !important
+}
 </style>
 
 <style scoped>
 .schemaTool {
-  min-height:auto;
+  min-height: auto;
   @apply
   relative
   bg-green-100
@@ -71,18 +77,16 @@ import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 
 import Vuedraggable from 'vuedraggable'
-
-import {AbstractTool, Tool} from "../../lib/models";
-import {computed, onMounted, ref} from "vue";
+import {onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
 import {useTools} from "../../composable/tools";
-import {cloneEmptyTool, cloneToolWithSchema, initElements, initArrayElements} from "../../lib/formbuilder";
-import {unknownTool} from "../../lib/tools/unknownTool";
-import {findMatchingUISchema} from "@jsonforms/core";
+import {cloneEmptyTool, initSchemaElements} from "../../lib/formbuilder";
 import {useJsonforms} from "../../composable/jsonforms";
+import _ from "lodash";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
+  isRoot: Boolean,
   isToolbar: Boolean,
   index: Number, //for deleting correct element in list
 
@@ -98,23 +102,20 @@ const childComponents = ref({});
 
 onMounted(() => {
   if (!props.isToolbar) {
-    if (['array'].includes(props?.tool?.schema?.type)) {
-      childTools.value.push(...initArrayElements(props.tool));
+    if (!_.isEmpty(props?.tool?.schema?.properties)) {
+      childTools.value.push(...initSchemaElements(props?.tool));
 
       //wait to render dom
-      if(childTools.value.length) {
+      if (childTools.value.length) {
         setTimeout(onDropAreaChange, 20);
       }
     }
-    // else {
-    //   addSchema();
-    // }
   }
 })
 
 const addChildComponent = (e) => {
-  if(e?.tool?.uuid) {
-    childComponents.value[e.tool.uuid]=e;
+  if (e?.tool?.uuid) {
+    childComponents.value[e.tool.uuid] = e;
   }
 }
 const onDropAreaChange = (e) => {
@@ -122,11 +123,11 @@ const onDropAreaChange = (e) => {
   emitter.emit('formBuilderUpdated')
 };
 
-const addItem = () => {
+const addItem = (type) => {
   const {schema} = useJsonforms();
   const {findMatchingTool} = useTools();
 
-  const tool = cloneEmptyTool(props.tool,{type:'object'});
+  const tool = cloneEmptyTool(props.tool, {type: type});
 
   childTools.value.push(tool);
   //window.setTimeout(buildTabLabels,50);
@@ -134,13 +135,13 @@ const addItem = () => {
 };
 
 
-const groupPut = (from,to,node,dragEvent) => {
+const groupPut = (from, to, node, dragEvent) => {
   const tool = node._underlying_vm_;
-  const isControlTool = ['control','select','array'].includes(tool.toolType);//;
+  const isControlTool = ['control', 'select', 'array', 'schema'].includes(tool.toolType);//;
   return isControlTool
 };
 
-defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComponents })
+defineExpose({tool: props.tool, childTools: childTools, childComponents: childComponents})
 
 const onDeleteByIndex = (e) => {
   const index = e.index;

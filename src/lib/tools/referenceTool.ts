@@ -7,6 +7,7 @@ import {Tool} from "../models";
 import {schema, uischema} from "../../schema/toolOptionsReference";
 import type {ControlElement} from "@jsonforms/core/src/models/uischema";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {useJsonforms} from "../../composable/jsonforms";
 
 
 export const referenceTool = new Tool('Control','reference');
@@ -20,8 +21,20 @@ referenceTool.tester =
     );
 referenceTool.importer = () => referenceComp;
 referenceTool.optionJsonforms = async (tool) => {
+    const definitionResolver = (ref:URI) => {
+        if('referenceTool.definitions' === String(ref)) {
+            const {schema:s} = useJsonforms();
+            const definitionPaths = Object.keys(s.value?.definitions ?? []).map(key => '#/definitions/'+key);
+            return {
+                type: 'string',
+                title: 'Select',
+                enum: definitionPaths
+            } as JsonSchema
+        }
+        return undefined;
+    }
     return {
-        schema:await resolveSchema(schema),
+        schema:await resolveSchema(schema, definitionResolver),
         uischema:await resolveSchema(uischema),
     }
 };

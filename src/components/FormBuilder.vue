@@ -13,32 +13,38 @@
         v-if="isModalOpen && toolEdit"
     />
 
-    <div class="flex gap-2">
-     <button @click="showBuilder='uischema'" class="hover:bg-gray-200">UI Schema</button>
-     <button @click="showBuilder='definitions'" class="hover:bg-gray-200">Definitions</button>
+    <div class="tabs">
+      <button @click="showBuilder='uischema'" :class="{active:showBuilder==='uischema'}">UI Schema</button>
+      <button @click="showBuilder='definitions'" :class="{active:showBuilder==='definitions'}">Definitions</button>
     </div>
+
+    <FormBuilderBar
+        :jsonForms="schemaReadOnly ? props.jsonForms : {}"
+        :schemaReadOnly="!!schemaReadOnly"
+        @drag="e=>drag = !!e"
+    />
 
     <!-- UISchema -->
     <template v-if="'uischema' === showBuilder">
-        <FormBuilderBar
-            :jsonForms="schemaReadOnly ? props.jsonForms : {}"
-            :schemaReadOnly="!!schemaReadOnly"
-            @drag="e=>drag = !!e"
-        />
-
-        <component :is="baseTool.importer()"
-                   :tool="baseTool"
-                   :isRoot="true"
-                   :isDragging="!!drag"
-                  class="my-4"
-                   :ref="setRootForm"
-        />
+      <component :is="baseTool.importer()"
+                 :tool="baseTool"
+                 :isRoot="true"
+                 :isDragging="!!drag"
+                 class="my-4"
+                 :ref="setRootForm"
+      />
     </template>
 
 
     <!-- Definitions -->
     <template v-if="'definitions' === showBuilder">
-      <FormBuilderDefinitions :definitions="jsonFormsSchema.definitions"/>
+      <component :is="baseDefinitionTool.importer()"
+                 :tool="baseDefinitionTool"
+                 :isRoot="true"
+                 :isDragging="!!drag"
+                 class="my-4"
+                 :ref="setRootDefinitionForm"
+      />
     </template>
 
   </div>
@@ -46,6 +52,22 @@
 </template>
 
 <style scoped>
+.tabs {
+  @apply
+  flex gap-2
+}
+.tabs > button {
+  @apply
+  p-1 px-4
+  rounded-t
+  hover:bg-gray-200
+  hover:bg-opacity-50
+}
+
+.tabs > button.active {
+  @apply
+  bg-gray-200
+}
 
 </style>
 
@@ -55,16 +77,16 @@ import {computed, ref, unref, onMounted, onBeforeUnmount, watch} from 'vue'
 import {
   FormBuilderBar,
   createJsonForms,
-  emitter, cloneToolWithSchema,
+  emitter, cloneToolWithSchema, createTypeSchemaSchema,
 } from "../index";
 import Modal from "./Modal.vue";
 import {Generate} from "@jsonforms/core/src/generators/Generate";
-import FormBuilderDefinitions from "./FormBuilderDefinitions.vue";
 import {useTools} from "../composable/tools";
 import {unknownTool} from "../lib/tools/unknownTool";
 import {useJsonforms} from "../composable/jsonforms";
 import {normalizeScope} from "../lib/normalizer";
 import _ from "lodash";
+import {schemaTool} from "../lib/tools/SchemaTool";
 
 const props = defineProps({
   jsonForms: Object,
@@ -75,6 +97,7 @@ const props = defineProps({
 const emit = defineEmits(['schemaUpdated']);
 
 const rootForm = ref(null);
+const rootDefinitionForm = ref(null);
 const drag = ref(false);
 const jsonFormsUiSchema = ref(props?.jsonForms?.uischema);
 const jsonFormsSchema = ref(props?.jsonForms?.schema);
@@ -93,14 +116,13 @@ const baseTool = computed(() => {
   const uiSchemaType = (uischema?.type && uischema.type) ?? 'VerticalLayout';
 
   //specialcase - some examples use none-Layout-elements as root
-  if('Control' === uischema?.type) {
+  if ('Control' === uischema?.type) {
     let itemSchema;
     //not working well!!!
-    if('#' === uischema.scope) {
+    if ('#' === uischema.scope) {
       const propKeys = Object.keys(schema.properties);
       itemSchema = propKeys[0] && schema.properties[propKeys[0]]
-    }
-    else {
+    } else {
       itemSchema = _.get(schema, normalizeScope(uischema.scope));
     }
     const tool = findMatchingTool(schema, itemSchema, uischema) ?? unknownTool;
@@ -111,8 +133,18 @@ const baseTool = computed(() => {
   return cloneToolWithSchema(tool, schema, uischema);
 })
 
+const baseDefinitionTool = computed(() => {
+  const schema = {
+    type:'object',
+    properties: jsonFormsSchema.value.definitions
+  };
+  const basetool = cloneToolWithSchema(schemaTool,schema , {});
+  basetool.propertyName = 'definitions';
+  return basetool;
+})
+
 const onChange = (data) => {
-  if(toolEdit.value) {
+  if (toolEdit.value) {
     // if(data.propertyName) {
     //   toolEdit.value.props.propertyName = data.propertyName;
     // }
@@ -121,36 +153,52 @@ const onChange = (data) => {
 }
 
 const updateJsonForm = () => {
-  if(!rootForm?.value) {
-    return;
+
+  let newJsonForms;
+
+  if (rootDefinitionForm.value) {
+    const def = createTypeSchemaSchema(rootDefinitionForm);
+    newJsonForms = {
+      schema: jsonFormsSchema.value,
+      uischema: jsonFormsUiSchema.value,
+    }
+    if (!_.isEmpty(def.definitions?.properties ?? {})) {
+      newJsonForms.schema.definitions = def.definitions.properties;
+    }
+    else {
+      delete newJsonForms.schema.definitions;
+    }
   }
 
-  const newJsonForms = createJsonForms(rootForm, jsonFormsSchema.value, props.schemaReadOnly);
-  jsonFormsSchema.value = newJsonForms.schema;
-  jsonFormsUiSchema.value = newJsonForms.uischema;
+  if (rootForm?.value) {
+    newJsonForms = createJsonForms(rootForm, jsonFormsSchema.value, props.schemaReadOnly);
+    jsonFormsSchema.value = newJsonForms.schema;
+    jsonFormsUiSchema.value = newJsonForms.uischema;
+  }
 
-  update(newJsonForms.schema, newJsonForms.uischema)
+  if (newJsonForms) {
+    update(jsonFormsSchema.value, jsonFormsUiSchema.value)
+    emit('schemaUpdated', newJsonForms)
+  }
 
-  emit('schemaUpdated', newJsonForms)
   //emitter.emit('formBuilderSchemaUpdated', newJsonForms)
 }
 
-const setRootForm = (e) => {
-  rootForm.value = e;
-}
+const setRootForm = (e) => rootForm.value = e
+const setRootDefinitionForm = (e) => rootDefinitionForm.value = e
 
 onMounted(() => {
   unregisterAllTools();   //is that a good behavior?
   registerTools(props.tools);
 
-  window.setTimeout(() => emitter.emit('formBuilderUpdated'),50);
+  window.setTimeout(() => emitter.emit('formBuilderUpdated'), 50);
 
   emitter.on('formBuilderModal', (data) => {
     isModalOpen.value = true;
     toolEdit.value = data.tool;
   })
   emitter.on('formBuilderUpdated', (data) => {
-    window.setTimeout(updateJsonForm,100);
+    window.setTimeout(updateJsonForm, 100);
   });
 });
 onBeforeUnmount(() => {

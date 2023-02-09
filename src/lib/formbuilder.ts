@@ -17,7 +17,7 @@ import {Resolver} from "@stoplight/json-ref-resolver";
 import type {JsonFormsInterface} from "./models";
 import {Generate} from "@jsonforms/core";
 import {CombinatorTool} from "./tools/combinatorTool";
-import {SchemaTool} from "./tools/SchemaTool";
+import {schemaTool, SchemaTool} from "./tools/SchemaTool";
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {
@@ -157,6 +157,31 @@ export const initCombinatorElements = (tool: ToolInterface): Array<ToolInterface
     });
 
     return ctools;
+};
+
+export const initSchemaElements = (tool: ToolInterface): Array<ToolInterface> => {
+    const tools = [] as Array<ToolInterface>;
+
+    const {findMatchingTool, findLayoutToolByUiType} = useTools();
+
+    const properties = tool.schema?.properties;
+    properties && Object.keys(properties).forEach((propertyName:string) => {
+        const itemSchema = properties[propertyName];
+        const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+        //const clone = cloneToolWithSchema(schemaTool, itemSchema, {});
+        const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
+        clone.propertyName = propertyName;
+
+        //required :TODO
+        // const required = getRequiredFromSchema(clone.propertyName, tool.schema);
+        // if (required?.includes(getPlainProperty(clone.propertyName))) {
+        //     clone.isRequired = true;
+        // }
+
+        tools.push(clone);
+    });
+
+    return tools;
 };
 
 export const initElements = (tool: ToolInterface): Array<ToolInterface> => {
@@ -342,7 +367,7 @@ export const createTypeSchemaSchema = (refElm: any): Record<string, JsonSchema> 
         const properties = {} as Record<string, JsonSchema>;
         const required = [] as Array<string>;
 
-        childTools.forEach((t: ToolInterface) => {
+        childTools?.forEach((t: ToolInterface) => {
             const childComponent = getChildComponent(t, childComponents);
             const childTool = childComponent.tool;
 
@@ -535,7 +560,8 @@ export const findAllScopes = (uischema: ControlElement | Layout | UISchemaElemen
     return scopes;
 };
 
-export const resolveSchema = async (schema: any): Promise<any> => {
+type Callback = (ref:URI) => JsonSchema|undefined;
+export const resolveSchema = async (schema: any, callback:Callback|undefined = undefined): Promise<any> => {
     const schemaMap = {
         'validation.schema': toolOptionsSchemaValidation.schema,
         'validation.uischema': toolOptionsSchemaValidation.uischema,
@@ -549,7 +575,7 @@ export const resolveSchema = async (schema: any): Promise<any> => {
         resolvers: {
             file: {
                 async resolve(ref: URI) {
-                    return schemaMap[String(ref)] ?? {}
+                    return schemaMap[String(ref)] ?? (callback && callback(ref)) ?? {}
                 }
             },
         }

@@ -4,7 +4,7 @@
 
       <template v-if="isToolbar">
 
-        <span :title="name">
+        <span :title="name ?? tool.toolType">
 
             <span class="tool" :class="[uiSchemaType, tool.toolType, {readOnly:tool.itemsReadOnly}]">
               <label>{{ name }}</label>
@@ -159,7 +159,7 @@ const uiSchemaType = computed(() => tool.uischema?.type);
 const extraLabel = ref('');
 
 const isControl = computed(() => 'Control' === tool.uischema.type);
-const showIcon = computed(() => !isControl.value || ['reference','combinator','array'].includes(tool.toolType));
+const showIcon = computed(() => !isControl.value || ['reference','combinator','array','schema'].includes(tool.toolType));
 
 const name = computed(() => {
 
@@ -174,7 +174,7 @@ const name = computed(() => {
     return tool.propertyName;
   }
 
-  if(['reference','combinator','array'].includes(tool.toolType)) {
+  if(['reference','combinator','array','schema'].includes(tool.toolType)) {
     label = null;
   }
 

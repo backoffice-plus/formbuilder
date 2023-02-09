@@ -3,14 +3,22 @@ import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 
 export const schema = {
     type: "object",
+    definitions: {
+        refString: {
+            type: "string",
+            title: "Reference",
+            description: "#/definitions/NAME",
+        },
+    },
     properties: {
         propertyName: {
             type: "string"
         },
         _reference: {
-            type: "string",
-            title: "Reference",
-            description: "#/definitions/NAME"
+            anyOf: [
+                {$ref:'referenceTool.definitions',title:"asdasd"},
+                {$ref:'#/definitions/refString'},
+            ],
         }
     },
 } as JsonSchema;
