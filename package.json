@@ -1,9 +1,16 @@
 {
   "name": "@backoffice-plus/formbuilder",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "",
-  "main": "dist/formbuilder.umd.js",
-  "module": "dist/formbuilder.es.js",
+  "files": ["dist"],
+  "main": "./dist/formbuilder.umd.js",
+  "module": "./dist/formbuilder.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist/formbuilder.es.js",
+      "require": "./dist/formbuilder.umd.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "patch-package && vite build && npm run build:types",
