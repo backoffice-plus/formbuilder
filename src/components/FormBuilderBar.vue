@@ -4,7 +4,7 @@
     tag="aside"
     :list="tools"
     :group="{name:'formBuilder', pull: 'clone', put: false}"
-    :clone="cloneEmptyTool"
+    :clone="onClone"
     :sort="false"
     drag-class="dragging"
     @choose="() => {}"
@@ -92,67 +92,36 @@ aside .toolItem.formInputByTypeTool {
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
 
-import {computed, ref} from 'vue';
+import {ref} from 'vue';
 import Vuedraggable from 'vuedraggable'
-import {findAllProperties, findAllScopes, cloneEmptyTool,} from "../index";
-import {guessInputType, normalizeScope, normalizePath} from '../lib/normalizer'
-import {useTools} from "../composable/tools";
-import {useJsonforms} from "../composable/jsonforms";
-import formInputByType from "../components/tools/formInputByType.vue";
+import {cloneEmptyTool, cloneToolWithSchema} from "../index";
+
 
 const props = defineProps(
     {
       schemaReadOnly: {type:Boolean, default: false},
       jsonForms: {type:Object, default: {}},
+      tools: {type:Array, default: []},
     }
 );
 
 const emits = defineEmits(['drag']);
 
-
-const {getControlTools, getLayoutTools, findMatchingTool} = useTools();
-const {schema, uischema} = useJsonforms();
-
 const drag = ref(false);
-const cloneCounter = ref({});
-
-const usedProps = computed(() => findAllScopes(uischema.value).map(scope=>normalizePath(normalizeScope(scope))));
-
-const tools = computed(() => {
-
-  let all = [...getLayoutTools()];
-
-  //:TODO find better solution!! use toolStore
-  if(props.schemaReadOnly) {
-    const allProps = findAllProperties(schema.value);
-    const readOnlyControlTools = Object.keys(allProps)?.map(name => {
-
-      const itemSchema = allProps[name];
-
-      const clone = cloneTool(findMatchingTool(schema, itemSchema, {type:'Control'}))
-      clone.schema = itemSchema;
-      clone.propertyName = name;
-      clone.schemaReadOnly = true;
-
-      return clone;
-    }).filter(tool => !usedProps.value.includes(tool.propertyName))
-
-    all = [...readOnlyControlTools, ...all]
-  }
-  else {
-    all = [...getControlTools(), ...all]
-  }
-
-  //:TODO add property to tool to hide tools
-  all = all.filter(tool => tool.uischemyType !== 'Category');
-
-  return all;
-});
-
 
 const onDrag = (drag) => {
   emits('drag', drag);
 };
+
+const onClone = (tool) => {
+  if(props.schemaReadOnly) {
+    tool.optionDataUpdate(tool, tool.optionDataPrepare(tool));
+
+    return tool;
+  }
+  //return props.schemaReadOnly ? tool : cloneEmptyTool(tool);
+  return cloneEmptyTool(tool)
+}
 
 // const onStart = (e) => {
 //   console.log("onStart",e)

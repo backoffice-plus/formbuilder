@@ -14,12 +14,14 @@
     />
 
     <div class="tabs">
-      <button @click="showBuilder='uischema'" :class="{active:showBuilder==='uischema'}">UI Schema</button>
-      <button @click="showBuilder='definitions'" :class="{active:showBuilder==='definitions'}">Definitions</button>
+      <button @click="showBuilder='uischema';showBar='uischema';" :class="{active:'uischema'===showBuilder&&'uischema'===showBar}">UI Schema</button>
+      <button @click="showBuilder='definitions';showBar='uischema';" :class="{active:'definitions'===showBuilder&&'uischema'===showBar}" v-if="!schemaReadOnly">Definitions</button>
+      <button @click="showBuilder='uischema';showBar='properties';" :class="{active:'uischema'===showBuilder&&'properties'===showBar}" v-if="schemaReadOnly">Properties</button>
     </div>
 
     <FormBuilderBar
         :jsonForms="schemaReadOnly ? props.jsonForms : {}"
+        :tools="'properties'===showBar ? readonlyTools : tools"
         :schemaReadOnly="!!schemaReadOnly"
         @drag="e=>drag = !!e"
     />
@@ -77,14 +79,14 @@ import {computed, ref, unref, onMounted, onBeforeUnmount, watch} from 'vue'
 import {
   FormBuilderBar,
   createJsonForms,
-  emitter, cloneToolWithSchema, createTypeObjectSchema,
+  emitter, cloneToolWithSchema, createTypeObjectSchema, findAllProperties, findAllScopes, cloneEmptyTool,
 } from "../index";
 import Modal from "./Modal.vue";
 import {Generate} from "@jsonforms/core/src/generators/Generate";
 import {useTools} from "../composable/tools";
 import {unknownTool} from "../lib/tools/unknownTool";
 import {useJsonforms} from "../composable/jsonforms";
-import {normalizeScope} from "../lib/normalizer";
+import {normalizePath, normalizeScope} from "../lib/normalizer";
 import _ from "lodash";
 import {objectTool} from "../lib/tools/ObjectTool";
 
@@ -104,8 +106,10 @@ const jsonFormsSchema = ref(props?.jsonForms?.schema);
 const isModalOpen = ref(false);
 const toolEdit = ref(null);
 const showBuilder = ref('uischema');
+const showBar = ref('uischema');
 
 const {registerTools, unregisterAllTools, findLayoutToolByUiType, findMatchingTool} = useTools();
+const {getControlTools, getLayoutTools} = useTools();
 
 const {update} = useJsonforms();
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
@@ -142,6 +146,56 @@ const baseDefinitionTool = computed(() => {
   basetool.propertyName = 'definitions';
   return basetool;
 })
+
+
+const tools = computed(() => {
+
+  let all = [];
+
+  if(!props.schemaReadOnly) {
+    all.push(...getControlTools())
+  }
+
+  if('uischema' === showBuilder.value) {
+    all.push(...getLayoutTools())
+  }
+
+  //:TODO add property to tool to hide tools
+  all = all.filter(tool => tool.uischemyType !== 'Category');
+
+  return all;
+});
+
+const readonlyTools = computed(() => {
+
+  let all = [];
+
+
+  //:TODO find better solution!! use toolStore
+  if(props.schemaReadOnly) {
+
+    const {schema, uischema} = useJsonforms();
+
+    const usedProps = findAllScopes(uischema.value).map(scope=>normalizePath(normalizeScope(scope)));
+
+    const allProps = findAllProperties(schema.value);
+    const readOnlyControlTools = Object.keys(allProps)?.map(name => {
+
+      const itemSchema = allProps[name];
+      const itemUischema = {type:'Control',scope:'#'};
+
+      const clone = cloneToolWithSchema(findMatchingTool(schema, itemSchema, itemUischema),  itemSchema, itemUischema)
+      clone.propertyName = name;
+      clone.schemaReadOnly = true;
+
+      return clone;
+    }).filter(tool => !usedProps.includes(tool.propertyName))
+
+    all = [...readOnlyControlTools, ...all]
+  }
+
+  return all;
+});
 
 const onChange = (data) => {
   if (toolEdit.value) {
