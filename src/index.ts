@@ -42,4 +42,4 @@ export const jsonFormRenderes = Object.freeze([
 export {emitter} from './lib/mitt'
 
 
-export {default as Vuedraggable} from "../packages/_vuedraggable/";
+export {default as Vuedraggable} from "../packages/_vuedraggable/src/vuedraggable.js";
