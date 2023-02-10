@@ -3,39 +3,25 @@ import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 
 export const schema = {
     type: 'object',
-    // definitions: {
-    //     itemsWithType: {
-    //         title: 'items.type',
-    //         type: 'object',
-    //         properties: {
-    //             type: {type: 'string', enum: ['string', 'object']},
-    //         },
-    //         required: ["type"],
-    //     },
-    //     itemsByRef: {
-    //         title: 'items.$ref',
-    //         type: 'object',
-    //         properties: {
-    //             _reference: {type: 'string'},
-    //         },
-    //         required: ["_reference"],
-    //     }
-    // },
     properties: {
+
+        validation: {
+            $ref:'validation.schema#/properties/validation'
+        },
+        rule: {
+            $ref:'rule.schema#/properties/rule'
+        },
+        labelAndI18n: {
+            $ref:'labelAndI18n.schema#/properties/labelAndI18n'
+        },
+
+
         propertyName: {
             type: "string"
         },
         singleChild: {
             type: "boolean"
         },
-        // items: {
-        //     type: 'object',
-        //     title: 'Schema',
-        //     oneOf: [
-        //         {$ref: '#/definitions/itemsWithType'},
-        //         {$ref: '#/definitions/itemsByRef'}
-        //     ],
-        // },
         options: {
             type: "object",
             properties: {
@@ -52,6 +38,10 @@ export const uischema = {
 
     type: "Categorization",
     elements: [
+
+        /**
+         * Tab - Base
+         */
         {
             type: "Category",
             label: "Base",
@@ -71,18 +61,54 @@ export const uischema = {
                             scope: "#/properties/options/properties/elementLabelProp",
                             type: "Control",
                         },
-                        // {
-                        //     type: "Group",
-                        //     label: "Items",
-                        //     elements: [
-                        //         {
-                        //             scope: "#/properties/items",
-                        //             type: "Control",
-                        //         },
-                        //     ],
-                        // },
+                        {
+                            type: "Group",
+                            label: "Label & Description",
+                            elements: [
+                                {
+                                    $ref:'labelAndI18n.uischema'
+                                },
+                            ]
+                        },
                     ],
                 }
+            ]
+        },
+
+
+        /**
+         * Tab - Validation
+         */
+        {
+            type: "Category",
+            label: "Validation",
+            elements: [
+                {
+                    $ref:'validation.uischema'
+                }
+            ],
+            rule: {
+                //effect: "DISABLE",:TODO fix it CategorizationRenderer
+                effect: "HIDE",
+                condition: {
+                    scope: "#/properties/type",
+                    schema: { enum: ["boolean"] }
+                }
+            }
+        },
+
+
+
+        /**
+         * Tab - Rule
+         */
+        {
+            type: "Category",
+            label: "Rule",
+            elements: [
+                {
+                    $ref:'rule.uischema'
+                },
             ]
         },
     ]

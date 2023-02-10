@@ -5,6 +5,12 @@ import {schema, uischema} from "./schema/array.schema";
 import {getItemsType, resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
 import {AbstractTool} from "./AbstractTool";
+import {
+    prepareOptionDataLabel,
+    prepareOptionDataRule,
+    prepareOptionDataValidation, setOptionDataLabel, setOptionDataRule,
+    setOptionDataValidation
+} from "./schema/toolControl";
 
 export class ArrayTool extends AbstractTool implements ToolInterface {
 
@@ -13,7 +19,9 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     tester = rankWith(3, (uischema, schema, rootSchema) => 'array' === schema?.type && 'object' === typeof schema?.items);
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
-        this.schema.type = 'array';
+        //default schema
+        this.schema.type ??= 'array';
+
         if (undefined === this.schema.items) {
             this.schema.items = {type: 'object'}
         }
@@ -40,9 +48,18 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         const data = {
             propertyName: tool.propertyName,
+            type: this.schema.type,
             singleChild: 'object' !== itemsType,
             options: this.uischema?.options ?? {}
         } as any;
+
+
+        _.merge(
+            data,
+            prepareOptionDataValidation(this.schema, this.uischema),
+            prepareOptionDataLabel(this.schema, this.uischema),
+            prepareOptionDataRule(this.schema, this.uischema),
+        )
 
         return data;
     }
@@ -61,47 +78,14 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             _.set(this.schema, 'items.type', 'object');
         }
 
-        //this.schema.items = data?.items;
-
-        // //items.type
-        // let itemsType = data?.items?.type;
-        // const isItemsScalar = scalarTypes.includes(itemsType);
-        //
-        // //type
-        // const isScalar = scalarTypes.includes(data.type);
-        // const canHaveChilds = !isScalar && 'object'===itemsType;
-        //
-        // //items.type
-        // if(!isScalar) {
-        //     if(itemsType && canHaveChilds) {
-        //         if(undefined === this.schema.items) {
-        //             this.schema.items = {type:itemsType}
-        //         }
-        //         else {
-        //             this.schema.items.type = itemsType;
-        //         }
-        //     }
-        //
-        //     if (undefined !== data.items._reference) {
-        //         this.schema.items = {$ref: data.items._reference};
-        //     }
-        // }
-        //
-        // const isItemsExists = undefined !== this.schema?.items;
-        // const isItemsEmpty = isItemsExists && !Object.keys(this.schema?.items);
-        // const isPropertiesExists = isItemsExists && undefined !== this.schema?.items?.properties;
-        //
-        // //remove items.properties
-        // if(isPropertiesExists && isItemsScalar) {
-        //     delete this.schema.items.properties;
-        // }
-        //
-        // //remove items object (empty or not necessary)
-        // if(isItemsExists && (isScalar || (!canHaveChilds && isItemsEmpty)) ) {
-        //     delete this.schema.items;
-        // }
-
         this.uischema.options = data.options ?? {};
+
+        setOptionDataValidation(this.schema, this.uischema, data);
+        setOptionDataLabel(this.schema, this.uischema, data);
+        setOptionDataRule(this.schema, this.uischema, data);
+
+        console.log("data",this.schema);
+        //this.isRequired = data.required;
     }
 
     async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {

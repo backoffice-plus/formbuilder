@@ -2,8 +2,8 @@ import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {JsonFormsInterface} from "../../models";
 
-export type schemaKey = | 'minimum' | 'maximum' | 'pattern' | 'minLength' | 'maxLength';
-export const schemaKeys = ['minimum', 'maximum', 'pattern', 'minLength', 'maxLength'] as Array<schemaKey>;
+export type schemaKey = | 'minimum' | 'maximum' | 'pattern' | 'minLength' | 'maxLength' | 'minItems' | 'maxItems' | 'uniqueItems';
+export const schemaKeys = ['minimum', 'maximum', 'pattern', 'minLength', 'maxLength', 'minItems', 'maxItems', 'uniqueItems'] as Array<schemaKey>;
 
 export const prepareOptionData = (schema: JsonSchema, uischema: UISchemaElement): Record<string, any> => {
     const data = {} as Record<string, any>;
@@ -45,6 +45,18 @@ export const schema = {
                 pattern: {
                     "type": "string",
                     description: "for examples: \"[abc]+\""
+                },
+
+
+                //array
+                minItems: {
+                    type: "integer"
+                },
+                maxItems: {
+                    type: "integer"
+                },
+                uniqueItems: {
+                    type: "boolean"
                 },
             }
         },
@@ -105,6 +117,39 @@ export const uischema = {
                 }
             }
         },
+
+
+        {
+            "type": "VerticalLayout",
+            "elements": [
+                {
+                    "type": "HorizontalLayout",
+                    "elements": [
+                        {
+                            "scope": "#/properties/validation/properties/minItems",
+                            "type": "Control"
+                        },
+                        {
+                            "scope": "#/properties/validation/properties/maxItems",
+                            "type": "Control"
+                        },
+                    ],
+                },
+                {
+                    "scope": "#/properties/validation/properties/uniqueItems",
+                    "type": "Control"
+                },
+            ],
+            "rule": {
+                "effect": "SHOW",
+                "condition": {
+                    "scope": "#/properties/type",
+                    "schema": {enum: ["array"]}
+                }
+            }
+        },
+
+
     ],
 }
 

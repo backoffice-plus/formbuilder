@@ -334,6 +334,7 @@ export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> =
         });
 
         schemas[tool.propertyName] = {
+            ...tool.schema,
             type: 'array',
             items: {
                 type: "object",
@@ -345,6 +346,7 @@ export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> =
     }
     else{
         schemas[tool.propertyName] = {
+            ...tool.schema,
             type: 'array',
             items: childTools?.length ? childTools[0].schema : {type:'null'}
         } as JsonSchema;
