@@ -1,6 +1,6 @@
 {
   "name": "@backoffice-plus/formbuilder",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "",
   "files": [
     "dist"
@@ -26,7 +26,7 @@
     "test": "vitest"
   },
   "keywords": [],
-  "author": "",
+  "author": "David Wolter <david@dampfer.net>",
   "license": "MIT",
   "devDependencies": {
     "@babel/types": "^7.20.7",
