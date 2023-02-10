@@ -7,7 +7,7 @@
 
     <div v-if="!isToolbar" class="mr-5">
 
-      <Actions :class="['opacity-0', 'group-hover/itemC:opacity-100']" :tool="tool" @delete="onDelete" />
+      <Actions :class="['opacity-0', 'group-hover/itemC:opacity-100']" :tool="tool" @delete="onDelete" :deletable="!isRoot" />
 
       <div class="flex items-center">
         <div class="tabs">

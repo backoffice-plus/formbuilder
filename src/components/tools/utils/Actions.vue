@@ -2,7 +2,7 @@
 
   <div class="toolActions">
     <button type="button" class="options" @click="openModal" />
-    <button type="button" class="remove" @click="emit('delete')" />
+    <button type="button" class="remove" @click="emit('delete')" v-if="props.deletable"/>
   </div>
 
 </template>
@@ -45,7 +45,12 @@
 
 import {emitter} from "../../../lib/mitt";
 
-const props = defineProps(['tool'])
+const props = defineProps(
+    {
+      tool: {type:Object,require:true},
+      deletable: {type:Boolean,default:true},
+    }
+)
 const emit = defineEmits(['gear', 'delete'])
 
 const openModal = () => {
