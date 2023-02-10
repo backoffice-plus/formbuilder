@@ -1,10 +1,18 @@
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import Vue from '@vitejs/plugin-vue'
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
     // If our .vue files have a style, it will be compiled as a single `.css` file under /dist.
-    plugins: [Vue({ style: { filename: 'style.css' } })],
+    plugins: [
+        Vue({ style: { filename: 'style.css' } }),
+        visualizer({
+            filename: resolve(__dirname, 'stats.html'),
+            template: 'treemap', // sunburst|treemap|network
+            sourcemap: true
+        }),
+    ],
 
     build: {
         // Output compiled files to /dist.
@@ -21,7 +29,10 @@ export default defineConfig({
         rollupOptions: {
             // Vue is provided by the parent project, don't compile Vue source-code inside our library.
             external: ['vue'],
-            output: { globals: { vue: 'Vue' } },
+            output: {
+                globals: { vue: 'Vue' },
+                sourcemap: true
+            },
         },
     },
 
