@@ -79,7 +79,7 @@
 import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 
-import Vuedraggable from 'vuedraggable'
+import {Vuedraggable} from '../../index'
 import {onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
 import {useTools} from "../../composable/tools";

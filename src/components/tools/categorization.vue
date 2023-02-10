@@ -126,7 +126,7 @@ button.add::before {
 import {cloneEmptyTool, cloneToolWithSchema, initElements} from "../../lib/formbuilder";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
-import Vuedraggable from 'vuedraggable'
+import {Vuedraggable} from '../../index'
 import {ref, computed, onMounted} from 'vue';
 import {useTools} from "../../composable/tools";
 import {unknownTool} from "../../lib/tools/unknownTool";

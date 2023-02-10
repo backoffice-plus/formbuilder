@@ -93,7 +93,7 @@ aside .toolItem.formInputByTypeTool {
  */
 
 import {ref} from 'vue';
-import Vuedraggable from 'vuedraggable'
+import {Vuedraggable} from '../index'
 import {cloneEmptyTool, cloneToolWithSchema} from "../index";
 
 
