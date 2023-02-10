@@ -160,8 +160,7 @@ const tools = computed(() => {
     all.push(...getLayoutTools())
   }
 
-  //:TODO add property to tool to hide tools
-  all = all.filter(tool => tool.uischemyType !== 'Category');
+  all = all.filter(tool => !tool.toolbarOptions()?.hideToolAtBar);
 
   return all;
 });

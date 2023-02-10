@@ -43,13 +43,12 @@
 <script setup>
 
 import {JsonForms} from "@jsonforms/vue";
-import {jsonFormRenderes, Tool} from "../index";
+import {jsonFormRenderes} from "../index";
 import {createI18nTranslate} from "../lib/formbuilder";
 import {emitter} from "../lib/mitt";
 import {onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
-import {AbstractTool} from "../lib/models";
 
 const props = defineProps({
   tool: Object,//ToolInterface,

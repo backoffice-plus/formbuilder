@@ -1,29 +1,28 @@
-import type {RankedTester,} from "@jsonforms/core";
-import {isObjectArrayControl, isPrimitiveArrayControl, or, rankWith} from '@jsonforms/core';
-import type {JsonFormsInterface, ToolInterface} from "../models";
-import {AbstractTool, scalarTypes,} from "../models";
+import {rankWith} from '@jsonforms/core';
+import type {JsonFormsInterface, ToolInterface} from "./index";
 import toolComponent from "../../components/tools/array.component.vue";
 import {schema, uischema} from "./schema/array.schema";
 import {getItemsType, resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
+import {AbstractTool} from "./AbstractTool";
 
 export class ArrayTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
     //tester = rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl));//not working for $ref (we want unresolved schema)
-    tester = rankWith(3,(uischema, schema, rootSchema) => 'array' === schema?.type && 'object' === typeof schema?.items);
+    tester = rankWith(3, (uischema, schema, rootSchema) => 'array' === schema?.type && 'object' === typeof schema?.items);
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
         this.schema.type = 'array';
-        if(undefined === this.schema.items) {
-            this.schema.items = {type:'object'}
+        if (undefined === this.schema.items) {
+            this.schema.items = {type: 'object'}
         }
 
         // let items = {...this.schema?.items};
         //
         // const hasRef = undefined !== items?.$ref
-         const hasItemType = undefined !== getItemsType(this.schema)
-         const itemsType = getItemsType(this.schema)
+        const hasItemType = undefined !== getItemsType(this.schema)
+        const itemsType = getItemsType(this.schema)
         // const canHaveChilds = true;//:TODO need new "canHaveObject"
         //
         // if(canHaveChilds && !hasItemType && !hasRef) {
@@ -53,14 +52,13 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         const isSingleChild = data?.singleChild ?? false;
 
-        if(isSingleChild) {
-            if(getItemsType(this.schema)) {
+        if (isSingleChild) {
+            if (getItemsType(this.schema)) {
                 /** @ts-ignore **/
                 delete this.schema.items.type;
             }
-        }
-        else {
-            _.set(this.schema,'items.type','object');
+        } else {
+            _.set(this.schema, 'items.type', 'object');
         }
 
         //this.schema.items = data?.items;
@@ -117,10 +115,10 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         return new ArrayTool(this.uischema.type, this.toolType);
     }
 
-    toolbarOptions():Record<string, any> {
+    toolbarOptions(): Record<string, any> {
         return {
-            title:'Array',
-            icon:'mdi:code-array',
+            title: 'Array',
+            icon: 'mdi:code-array',
 
         }
     }

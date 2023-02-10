@@ -1,8 +1,9 @@
 import type {JsonSchema} from "@jsonforms/core";
 import {and, isEnumControl, isOneOfControl, isStringControl, or, rankWith} from "@jsonforms/core";
 import type {ControlElement} from "@jsonforms/core/src/models/uischema";
-import {AbstractTool} from "../models";
-import type {JsonFormsInterface, ToolInterface} from "../models";
+import type {JsonFormsInterface, ToolInterface} from "./index";
+
+import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {
     prepareOptionDataLabel, prepareOptionDataRule, prepareOptionDataValidation,
@@ -106,6 +107,16 @@ export class SelectTool extends AbstractTool implements ToolInterface {
 
     clone(): ToolInterface {
         return new SelectTool(this.uischema.type, this.toolType);
+    }
+
+    toolbarOptions():Record<string, any> {
+        return {
+            title:'Control',
+            icon:'mdi:form-select',
+            hideIconAtDropArea:true,
+            labelAtDropArea:'Control'
+
+        }
     }
 }
 

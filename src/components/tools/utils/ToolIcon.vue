@@ -1,9 +1,12 @@
 <template>
 
-  <div class="flex items-center gap-1">
+  <div class="toolIcon">
 
     <slot name="icon">
-      <Icon :icon="toolOptions.icon" v-if="toolOptions.icon"/>
+      <Icon :icon="toolOptions.icon"
+            v-if="toolOptions.icon"
+            :class="{hideAtDropArea:toolOptions.hideIconAtDropArea ?? false}"
+      />
       <span v-else v-text="toolOptions.title" />
     </slot>
 
@@ -30,6 +33,16 @@
 
 
 <style scoped>
+
+
+.toolIcon {
+  @apply flex items-center
+}
+:not(.toolItem) .toolIcon {
+  @apply gap-1
+}
+
+  /* special Label for AtBar or AtDropArea */
 .toolItem .labelAtBar,
 .dropArea .labelAtDropArea {
   @apply inline
@@ -38,12 +51,17 @@
 .dropArea .labelAtBar {
   @apply hidden
 }
+.dropArea .hideAtDropArea {
+  @apply hidden
+}
+
+
 
 .toolItem svg.iconify {
   height:24px;
   width:24px;
 }
-.dropArea svg.iconify {
+.flexAreaTool svg.iconify {
   height:22px;
   width:22px;
 }

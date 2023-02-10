@@ -1,7 +1,8 @@
 <template>
   <div class="flexAreaTool" :class="['group/itemF']" ref="flexAreaTool">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool"/>
+    <ToolIcon :tool="tool" :isToolbar="isToolbar">
+    </ToolIcon>
 
     <div v-if="!isToolbar" :class="['flex',{'mr-5':!isRoot}]">
 
@@ -138,10 +139,9 @@
 import {  initElements} from "../../lib/formbuilder";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
-import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import Vuedraggable from 'vuedraggable'
 import {ref, computed, onMounted} from 'vue';
-import {AbstractTool, Tool} from "../../lib/models";
+import ToolIcon from "./utils/ToolIcon.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,

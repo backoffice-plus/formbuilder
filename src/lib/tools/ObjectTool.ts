@@ -1,5 +1,5 @@
-import type {JsonFormsInterface, ToolInterface} from "../models";
-import {AbstractTool} from "../models";
+import type {JsonFormsInterface, ToolInterface} from "./index";
+import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/object.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/object.schema";
@@ -14,7 +14,7 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
     clone = (): ToolInterface => new ObjectTool(this.uischema.type, 'object');
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
-        if(!this.schema.type) {
+        if (!this.schema.type) {
             this.schema.type = 'object'
         }
         return {
@@ -33,10 +33,10 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
         } as JsonFormsInterface
     }
 
-    toolbarOptions():Record<string, any> {
+    toolbarOptions(): Record<string, any> {
         return {
-            title:'Object',
-            icon:'mdi:code-braces-box',
+            title: 'Object',
+            icon: 'mdi:code-braces-box',
 
         }
     }

@@ -1,6 +1,6 @@
 // @ts-ignore
 import _ from "lodash";
-import type {JsonFormsUISchema, ToolInterface,} from "./models";
+import type {JsonFormsUISchema, ToolInterface,} from "./tools/index";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {

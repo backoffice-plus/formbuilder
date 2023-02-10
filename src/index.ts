@@ -3,8 +3,8 @@ import {controlTools, layoutTools} from "./lib/tools";
 
 //lib
 export * from './lib/formbuilder';
-export {AbstractTool, Tool, updatableUischemaKeys, updatableSchemaKeys} from "./lib/models";
-export type {ToolInterface, JsonFormsInterface} from "./lib/models";
+export {AbstractTool} from "./lib/tools/AbstractTool";
+export type {ToolInterface, JsonFormsInterface} from "./lib/tools";
 export const defaultTools = [...controlTools, ...layoutTools]
 
 export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './lib/tools/schema/rule'
@@ -16,6 +16,7 @@ export { default as FormBuilder } from './components/FormBuilder.vue';
 export { default as FormBuilderBar } from './components/FormBuilderBar.vue';
 export { default as FlexArea } from './components/tools/flexArea.vue'
 export { default as ElementHeadOrToolIcon } from './components/tools/utils/ElementHeadOrToolIcon.vue'
+export { default as ToolIcon } from './components/tools/utils/ToolIcon.vue'
 export { default as Actions } from './components/tools/utils/Actions.vue'
 
 //jsonForms Renderer

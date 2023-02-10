@@ -1,14 +1,22 @@
-import {rankWith} from "@jsonforms/core";
-import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
-import {Tool} from "../models";
 import categorizationComp from "../../components/tools/categorization.vue";
-import {verticalLayout} from "./layoutTool";
+import {VerticalLayout} from "./layoutTool";
+import type {ToolInterface} from "./index";
 
-export const categorizationTool = new Tool('Categorization');
+export class CategorizationTool extends VerticalLayout {
+    importer = () => categorizationComp;
 
-categorizationTool.importer = () => categorizationComp;
-categorizationTool.tester = rankWith(1, uiTypeIs('Categorization'));
+    clone(): ToolInterface {
+        return new CategorizationTool(this.uischema.type);
+    }
 
-categorizationTool.optionJsonforms = verticalLayout.optionJsonforms
-categorizationTool.optionDataPrepare = verticalLayout.optionDataPrepare;
-categorizationTool.optionDataUpdate = verticalLayout.optionDataUpdate
+    toolbarOptions(): Record<string, any> {
+        return {
+            title: 'Tabs',//this.uischema.type,
+            labelAtDropArea: 'Tabs',//this.uischema.type,
+            icon: 'mdi:tab',
+        }
+    }
+}
+
+export const categorizationTool = new CategorizationTool('Categorization');
+

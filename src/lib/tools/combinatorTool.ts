@@ -1,8 +1,8 @@
 import type {JsonSchema} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
-import type {JsonFormsInterface, ToolInterface} from "../models";
-import {AbstractTool} from "../models";
+import type {JsonFormsInterface, ToolInterface} from "./index";
+import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/combinator.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/combinator.schema";
@@ -59,11 +59,11 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         return keyword && schema[keyword];
     }
 
-    toolbarOptions():Record<string, any> {
+    toolbarOptions(): Record<string, any> {
         return {
-            title:'Combinator',
-            icon:'mdi:folder-pound',
-          //  labelAtDropArea:this.keyword ?? 'anyOf',
+            title: 'Combinator',
+            icon: 'mdi:folder-pound',
+            //  labelAtDropArea:this.keyword ?? 'anyOf',
 
         }
     }

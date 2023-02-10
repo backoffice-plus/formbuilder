@@ -58,11 +58,13 @@
 
 <style scoped>
 .combinatorTool {
-  min-height: auto;
   @apply
   relative
   bg-green-100
 }
+.dropArea .combinatorTool {
+   min-height:200px !important;
+ }
 </style>
 
 <script setup>

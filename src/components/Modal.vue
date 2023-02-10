@@ -50,7 +50,6 @@
 import ModalContent from "./ModalContent.vue";
 import {onClickOutside, onKeyStroke} from "@vueuse/core";
 import {onMounted, onUnmounted, ref, watch} from "vue";
-import {AbstractTool} from "../lib/models";
 
 const props = defineProps({
   tool: Object,//ToolInterface,

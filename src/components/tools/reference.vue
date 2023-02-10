@@ -1,13 +1,18 @@
 <template>
   <div class="referenceTool">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
+    <ToolIcon :tool="tool" :isToolbar="isToolbar">
+      <template v-slot:droparea>
+        <!-- TODO: there is no propName in: anyOf[{$ref:'...}] -->
+        <b>{{ tool.propertyName }}</b>
 
-    <div v-if="!isToolbar">
+        <pre class="bg-gray-200 inline p-0.5 px-2 rounded text-sm">{{ props.tool.schema?.$ref ?? ' ' }}</pre>
+      </template>
+    </ToolIcon>
 
-        <Actions :tool="tool" @delete="onDelete" />
+    <div v-if="!isToolbar" class="inline">
 
-      <pre class="bg-gray-200 inline p-0.5 px-2 rounded text-sm">{{ props.tool.schema?.$ref }}</pre>
+      <Actions :tool="tool" @delete="onDelete"/>
 
     </div>
 
@@ -16,7 +21,7 @@
 
 <style>
 .referenceTool {
-  min-height:auto;
+  min-height: auto !important;
   @apply
   relative
   bg-blue-200 !important
@@ -24,10 +29,8 @@
 </style>
 
 <script setup>
-
 import Actions from "./utils/Actions.vue";
-import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
-import {AbstractTool, Tool} from "../../lib/models";
+import ToolIcon from "./utils/ToolIcon.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -39,7 +42,7 @@ const props = defineProps({
 
 const emit = defineEmits(['deleteByIndex']);
 
-defineExpose({ tool:props.tool })
+defineExpose({tool: props.tool})
 
 const onDelete = () => {
   if (confirm("Wirklich löschen?")) {

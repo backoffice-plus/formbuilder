@@ -1,51 +1,54 @@
-import type {GroupLayout, JsonSchema} from "@jsonforms/core";
-import {rankWith} from "@jsonforms/core";
-import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
-import type {ToolInterface} from "../models";
-import {Tool} from "../models";
-import flexArea from "../../components/tools/flexArea.vue";
+import type {JsonFormsInterface, ToolInterface} from "./index";
 import {resolveSchema} from "../formbuilder";
 import {
-    schema,uischema,
     prepareOptionDataLabel,
     prepareOptionDataRule,
+    schema,
     setOptionDataLabel,
-    setOptionDataRule
+    setOptionDataRule,
+    uischema
 } from "./schema/toolGroup";
 import _ from "lodash";
+import {VerticalLayout} from "./layoutTool";
 
-export const groupTool = new Tool('Group');
 
-groupTool.tester = rankWith(1, uiTypeIs('Group'));
-groupTool.importer = () => flexArea;
+export class GroupTool extends VerticalLayout {
 
-groupTool.optionJsonforms = async () => {
-    return {
-        schema: await resolveSchema(schema),
-        uischema: await resolveSchema(uischema),
+    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+        const data = {};
+
+        _.merge(
+            data,
+            prepareOptionDataLabel(this.schema, this.uischema),
+            prepareOptionDataRule(this.schema, this.uischema),
+        )
+        return data;
     }
-};
 
-groupTool.optionDataPrepare = (tool: ToolInterface) => {
-    const schema = tool.schema as JsonSchema;
-    const uischema = tool.uischema as GroupLayout;
+    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+        this.uischema.options = data.options ?? {};
 
-    const data = {};
+        setOptionDataLabel(this.schema, this.uischema, data);
+        setOptionDataRule(this.schema, this.uischema, data);
+    }
 
-    _.merge(
-        data,
-        prepareOptionDataLabel(schema, uischema),
-        prepareOptionDataRule(schema, uischema),
-    )
-    return data;
-};
+    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+        return {
+            schema: await resolveSchema(schema),
+            uischema: await resolveSchema(uischema),
+        } as JsonFormsInterface
+    }
 
-groupTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
-    const schema = tool.schema as JsonSchema | Record<string, any>;
-    const uischema = tool.uischema as GroupLayout;
+    clone(): ToolInterface {
+        return new GroupTool(this.uischema.type);
+    }
 
-    uischema.options = data.options ?? {};
+    toolbarOptions(): Record<string, any> {
+        return {
+            title: this.uischema.label,
+            icon: 'mdi:application-outline',
+        }
+    }
+}
 
-    setOptionDataLabel(schema, uischema, data);
-    setOptionDataRule(schema, uischema, data);
-};
+export const groupTool = new GroupTool('Group');

@@ -1,9 +1,12 @@
 <template>
   <div class="formInputByTypeTool" :class="['group/item']">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool"/>
-
-    <!--    <span class="font-mono text-xs" v-if="!tool">[{{ tool.uuid }}]</span>-->
+    <ToolIcon :tool="tool" :isToolbar="isToolbar">
+      <template v-slot:droparea>
+        <b>{{ tool.propertyName }}</b>
+        {{ tool.uischema?.label }}
+      </template>
+    </ToolIcon>
 
     <div v-if="!isToolbar">
 
@@ -63,11 +66,9 @@ select {
 <script setup>
 
 import Actions from "./utils/Actions.vue";
-import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import {guessInputType} from '../../lib/normalizer'
 import {computed} from 'vue';
-import {AbstractTool, Tool} from "../../lib/models";
-import {useTemplateRefsList} from "@vueuse/core";
+import ToolIcon from "./utils/ToolIcon.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -79,7 +80,7 @@ const props = defineProps({
 
 const emit = defineEmits(['deleteByIndex']);
 
-defineExpose({ tool:props.tool })
+defineExpose({tool: props.tool})
 
 const schema = props.tool.schema;
 const uischema = props.tool.uischema;

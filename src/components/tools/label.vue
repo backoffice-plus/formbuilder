@@ -1,11 +1,14 @@
 <template>
   <div class="labelTool">
-
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
+    <ToolIcon :tool="tool" :isToolbar="isToolbar">
+      <template v-slot:droparea>
+        {{ tool.uischema.text }}
+      </template>
+    </ToolIcon>
 
     <div v-if="!isToolbar">
 
-        <Actions :tool="tool" @delete="onDelete" />
+      <Actions :tool="tool" @delete="onDelete"/>
 
     </div>
 
@@ -15,19 +18,15 @@
 
 <style scoped>
 .labelTool {
-  min-height:auto;
+  min-height: auto !important;
   @apply
   relative
 }
 </style>
 
 <script setup>
-
-
 import Actions from "./utils/Actions.vue";
-import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
-
-import {AbstractTool, Tool} from "../../lib/models";
+import ToolIcon from "./utils/ToolIcon.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -39,7 +38,7 @@ const props = defineProps({
 
 const emit = defineEmits(['deleteByIndex']);
 
-defineExpose({ tool:props.tool })
+defineExpose({tool: props.tool})
 
 const onDelete = () => {
   if (confirm("Wirklich löschen?")) {

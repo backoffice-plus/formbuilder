@@ -1,13 +1,21 @@
-import {rankWith} from "@jsonforms/core";
-import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
-import {Tool} from "../models";
-import {groupTool} from "./groupTool";
+import {GroupTool,} from "./groupTool";
+import type {ToolInterface} from "./index";
 
+export class CategoryTool extends GroupTool {
 
-export const categoryTool = new Tool('Category', );
+    clone(): ToolInterface {
+        return new CategoryTool(this.uischema.type);
+    }
 
-categoryTool.importer = groupTool.importer;
-categoryTool.tester = groupTool.tester;
-categoryTool.optionJsonforms = groupTool.optionJsonforms
-categoryTool.optionDataPrepare = groupTool.optionDataPrepare;
-categoryTool.optionDataUpdate = groupTool.optionDataUpdate
+    toolbarOptions(): Record<string, any> {
+        return {
+            title: this.uischema.label,
+            //hideIconAtDropArea: true,
+            //icon: 'mdi:tab-plus',
+            hideToolAtBar: true,
+            icon: 'mdi:tab',
+        }
+    }
+}
+
+export const categoryTool = new CategoryTool('Category');

@@ -1,7 +1,5 @@
 // @ts-ignore
 import _ from "lodash";
-import {updatableSchemaKeys, updatableUischemaKeys} from "../models";
-import type {ToolInterface} from "../models";
 import type { SchemaBasedCondition} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Rule, UISchemaElement} from "@jsonforms/core";
 

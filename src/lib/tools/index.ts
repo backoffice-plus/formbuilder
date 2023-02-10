@@ -9,6 +9,10 @@ import {combinatorTool} from "./combinatorTool";
 import {controlTool} from "./controlTool";
 import {arrayTool} from "./ArrayTool";
 import {objectTool} from "./ObjectTool";
+import type {JsonSchema} from "@jsonforms/core";
+import type {RankedTester} from "@jsonforms/core/src/testers/testers";
+import type {JsonFormsInterface, JsonFormsUISchema} from "../models";
+export type {JsonFormsInterface, JsonFormsUISchema}
 
 export const layoutTools = [
     verticalLayout,
@@ -27,3 +31,25 @@ export const controlTools = [
     objectTool,
     combinatorTool,
 ]
+
+
+export interface ToolInterface {
+    uuid: string;
+    toolType: string;
+
+    propertyName: string;
+    isRequired: boolean;
+
+    schema: JsonSchema;
+    uischema: JsonFormsUISchema;
+    schemaReadOnly: boolean;
+
+    tester: RankedTester | undefined,
+    importer: () => any,
+    optionDataPrepare: (tool: ToolInterface) => Record<string, any>;
+    optionDataUpdate: (tool: ToolInterface, data: Record<string, any>) => void;
+    optionJsonforms: (tool: ToolInterface) => Promise<JsonFormsInterface | undefined>;
+
+    clone: () => ToolInterface;
+    toolbarOptions: () => Record<string, any>;
+}

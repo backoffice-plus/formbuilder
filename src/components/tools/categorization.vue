@@ -1,7 +1,9 @@
 <template>
   <div class="categorizationTool" :class="['group/itemC']">
 
-    <ElementHeadOrToolIcon :isToolbar="isToolbar" :tool="tool" />
+    <ToolIcon :tool="tool" :isToolbar="isToolbar">
+
+    </ToolIcon>
 
     <div v-if="!isToolbar" class="mr-5">
 
@@ -124,12 +126,11 @@ button.add::before {
 import {cloneEmptyTool, cloneToolWithSchema, initElements} from "../../lib/formbuilder";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
-import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import Vuedraggable from 'vuedraggable'
 import {ref, computed, onMounted} from 'vue';
-import {AbstractTool, Tool} from "../../lib/models";
 import {useTools} from "../../composable/tools";
 import {unknownTool} from "../../lib/tools/unknownTool";
+import ToolIcon from "./utils/ToolIcon.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,

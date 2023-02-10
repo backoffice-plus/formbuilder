@@ -1,8 +1,8 @@
 import {rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
+import {AbstractTool} from "./AbstractTool";
+import type {JsonFormsInterface, ToolInterface} from "../../index";
 import {resolveSchema} from "../../index";
-import type {JsonFormsInterface, ToolInterface} from "../models";
-import {AbstractTool,} from "../models";
 import labelComp from "../../components/tools/label.vue";
 import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./schema/toolLabel";
 
@@ -37,6 +37,13 @@ export class LabelTool extends AbstractTool implements ToolInterface {
 
     clone(): ToolInterface {
         return new LabelTool(this.uischema.type, this.toolType);
+    }
+
+    toolbarOptions(): Record<string, any> {
+        return {
+            title: 'Label',
+            icon: 'mdi:tag-text',
+        }
     }
 }
 

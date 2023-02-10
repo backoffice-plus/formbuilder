@@ -3,7 +3,13 @@
 
     UNKNOWN {{ tool.propertyName }}
 
-    {{ tool.schema }}
+
+    <div v-if="!isToolbar">
+
+      <Actions :tool="tool" @delete="onDelete" />
+
+      <pre>{{ tool.schema }}</pre>
+    </div>
 
   </div>
 </template>
@@ -19,7 +25,7 @@
 
 <script setup>
 
-import {AbstractTool, Tool} from "../../lib/models";
+import Actions from "./utils/Actions.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -29,6 +35,14 @@ const props = defineProps({
   isDragging: Boolean, //needed in flexarea
 })
 
+const emit = defineEmits(['deleteByIndex']);
+
 defineExpose({ tool:props.tool })
+
+const onDelete = () => {
+  if (confirm("Wirklich löschen?")) {
+    emit('deleteByIndex', {index: props.index});
+  }
+};
 
 </script>

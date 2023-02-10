@@ -145,7 +145,6 @@
 
 <script setup>
 import {ref, computed} from 'vue'
-import {AbstractTool} from "../../../lib/models";
 
 const props = defineProps({
   tool: Object,//ToolInterface

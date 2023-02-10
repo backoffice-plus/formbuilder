@@ -1,71 +1,89 @@
-import type {JsonSchema} from "@jsonforms/core";
 import {isBooleanControl, isNumberControl, isStringControl, or, rankWith} from "@jsonforms/core";
-import type {ControlElement} from "@jsonforms/core/src/models/uischema";
 import {isIntegerControl} from "@jsonforms/core/src/testers/testers";
-import type {JsonFormsInterface, JsonFormsUISchema, ToolInterface} from "../models";
-import {Tool} from "../models";
+import type {JsonFormsInterface, ToolInterface} from "./index";
+import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {
-    schema, uischema,
-    prepareOptionDataLabel, prepareOptionDataValidation, prepareOptionDataRule,
-    setOptionDataValidation, setOptionDataLabel, setOptionDataRule
+    prepareOptionDataLabel,
+    prepareOptionDataRule,
+    prepareOptionDataValidation,
+    schema,
+    setOptionDataLabel,
+    setOptionDataRule,
+    setOptionDataValidation,
+    uischema
 } from "./schema/toolControl";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
 
-export const controlTool = new Tool('Control');
 
-controlTool.tester = rankWith(1, or(isStringControl, isBooleanControl, isNumberControl, isIntegerControl));
-controlTool.importer = () => formInputByType;
-controlTool.optionJsonforms = async (tool) : Promise<JsonFormsInterface> => {
-    return {
-        schema:await resolveSchema(schema),
-        uischema:await resolveSchema(uischema),
+export class ControlTool extends AbstractTool implements ToolInterface {
+
+    importer = () => formInputByType;
+    tester = rankWith(1, or(isStringControl, isBooleanControl, isNumberControl, isIntegerControl));
+
+    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+        //default schema
+        this.schema.type ??= 'string';
+
+        const data = {
+            propertyName: tool.propertyName,
+            type: this.schema.type,
+            format: this.schema.format,
+            options: this.uischema.options,
+
+            required: tool.isRequired,
+        } as any;
+
+        _.merge(
+            data,
+            prepareOptionDataValidation(this.schema, this.uischema),
+            prepareOptionDataLabel(this.schema, this.uischema),
+            prepareOptionDataRule(this.schema, this.uischema),
+        )
+
+        return data;
     }
-};
 
-controlTool.optionDataPrepare = (tool: ToolInterface) => {
-    const schema = tool.schema as JsonSchema;
-    const uischema = tool.uischema as ControlElement;
+    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+        updatePropertyNameAndScope(data?.propertyName, this)
 
-    //default schema
-    schema.type ??= 'string';
+        this.schema.type = data.type;
+        this.schema.format = data.format;
+        this.uischema.options = data.options ?? {};
 
-    const data = {
-        propertyName: tool.propertyName,
-        type: schema.type,
-        format: schema.format,
-        options: uischema.options,
+        setOptionDataValidation(this.schema, this.uischema, data);
+        setOptionDataLabel(this.schema, this.uischema, data);
+        setOptionDataRule(this.schema, this.uischema, data);
 
-        required: tool.isRequired,
-    } as any;
+        this.isRequired = data.required;
+    }
 
-    _.merge(
-        data,
-        prepareOptionDataValidation(schema, uischema),
-        prepareOptionDataLabel(schema, uischema),
-        prepareOptionDataRule(schema, uischema),
-    )
+    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+        return {
+            schema: await resolveSchema(schema),
+            uischema: await resolveSchema(uischema),
+        } as JsonFormsInterface
+    }
 
-    return data;
-};
+    clone(): ToolInterface {
+        return new ControlTool(this.uischema.type);
+    }
 
-controlTool.optionDataUpdate = (tool: ToolInterface, data: any) => {
-    const schema = tool.schema as JsonSchema|Record<string, any>;
-    const uischema = tool.uischema as ControlElement;
 
-    updatePropertyNameAndScope(data?.propertyName, tool)
+    toolbarOptions():Record<string, any> {
+        return {
+            title:'Control',
+            icon:'mdi:form-textbox',
+            hideIconAtDropArea:true,
+            labelAtDropArea:'Control'
 
-    schema.type = data.type;
-    schema.format = data.format;
-    uischema.options = data.options ?? {};
+        }
+    }
 
-    setOptionDataValidation(schema, uischema, data);
-    setOptionDataLabel(schema, uischema, data);
-    setOptionDataRule(schema, uischema, data);
+}
 
-    tool.isRequired = data.required;
-};
+export const controlTool = new ControlTool('Control');
 
 
 /**

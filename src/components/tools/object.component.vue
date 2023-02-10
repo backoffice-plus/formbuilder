@@ -65,11 +65,13 @@
 
 <style scoped>
 .objectTool {
-  min-height: auto;
   @apply
   relative
   bg-green-100
 }
+.dropArea .objectTool {
+   min-height:140px !important;
+ }
 </style>
 
 <script setup>

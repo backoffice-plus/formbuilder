@@ -1,8 +1,8 @@
 import type {Ref} from 'vue'
 import {ref} from 'vue'
-import type {ToolInterface} from "../lib/models";
 import _ from "lodash";
 import {unknownTool} from "../lib/tools/unknownTool";
+import type {ToolInterface} from "../lib/tools";
 
 const tools: Ref<Array<ToolInterface>> = ref([]);
 
@@ -44,7 +44,10 @@ export function useTools() {
         const toolsWithScore = tools.value.map((tool: ToolInterface, index) => {
             return {
                 tool: tool,
-                score: (tool?.tester && tool.tester(itemUischema, itemSchema, {rootSchema: schema, config: null})) ?? -1,
+                score: (tool?.tester && tool.tester(itemUischema, itemSchema, {
+                    rootSchema: schema,
+                    config: null
+                })) ?? -1,
             }
         });
 
