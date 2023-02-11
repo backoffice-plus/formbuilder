@@ -8,7 +8,7 @@
       Select Example:
       <select v-model="example" class="inline" >
         <option></option>
-        <option v-for="name in examples">{{name.label}}</option>
+        <option v-for="e in examples" :value="e.name">{{e.label}}</option>
       </select>
       <a :href="'#/jsonforms?example=' + example" v-if="example" class="ml-1 text-sm">[open Jsonforms]</a>
     </div>
@@ -55,7 +55,7 @@ const disableFormbuilder = ref(false);
 const jsonFormsResolved = ref({});
 
 const jsonForms = computed(() => {
-  const exampleData = getExamples().find(item => item.label===example.value);
+  const exampleData = getExamples().find(item => item.name===example.value);
 
   if(exampleData) {
     if(exampleData?.uischema && schemaReadOnly.value) {

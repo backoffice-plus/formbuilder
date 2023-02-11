@@ -15,6 +15,7 @@
             :data="jsonFormsData"
             :renderers="jsonFormRenderesMore"
             :ajv="ajv"
+            @change="r => jsonFormsUpdated=r"
         />
       </div>
     </details>
@@ -61,9 +62,7 @@ const jsonFormsData = ref({});
 const jsonFormsUpdated = ref({});
 
 const jsonForms = computed(() => {
-  const exampleData = getExamples().find(item => {
-    return item.label === example.value
-  });
+  const exampleData = getExamples().find(item => item.name === example.value);
 
   if (!exampleData?.uischema) {
     exampleData.uischema = generateDefaultUISchema(exampleData.schema)
