@@ -3,6 +3,10 @@ import _ from "lodash";
 import type { SchemaBasedCondition} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Rule, UISchemaElement} from "@jsonforms/core";
 
+/**
+ * :TODO check @jsonforms\core\src\util\path.ts -> decode() & co
+
+ */
 export const isScope = (scope:string) : boolean => {
     return scope.startsWith('#/properties/')
 }
