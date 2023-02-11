@@ -20,6 +20,9 @@
       </div>
     </details>
 
+    Data
+    <textarea class="w-full h-60 p-4 bg-white rounded" readonly disabled>{{ jsonFormsUpdated?.data }}</textarea>
+
     <details open="true">
       <summary class="cursor-pointer">JSON</summary>
       <div class="card p-4">
