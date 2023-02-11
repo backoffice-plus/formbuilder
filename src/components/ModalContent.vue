@@ -20,7 +20,10 @@
           v-if="jsonFormSchema?.schema"
       />
 
-      <div v-if="error">{{error}}</div>
+      <div v-if="error" class="text-red-500">{{error}}</div>
+      <div v-if="errorAfterUpdated" class="flex flex-col gap-1">
+        <div v-for="e in errorAfterUpdated" class="bg-red-100 text-red-500 px-1">{{ e.instancePath }}: {{e.message}}</div>
+      </div>
 
 <!--      Data: {{ dataAfterUpdated }}-->
 
@@ -62,6 +65,7 @@ const ajv = createAjv();//is needed because reactive :schema & :uischema will th
 const options = ref({});
 const jsonFormSchema = ref({});
 const dataAfterUpdated = ref({});
+const errorAfterUpdated = ref([]);
 const mergedJsonFormRenderes = ref(jsonFormRenderes);
 const error = ref('');
 
@@ -86,6 +90,7 @@ const onChange = (e) => {
 
   if(e.errors.length) {
     console.warn("ModalOption", "errors at onChange", e.errors, e.data);
+    errorAfterUpdated.value = e.errors;
   }
   else {
     //const data = {...e.data};//:TODO deep copy
