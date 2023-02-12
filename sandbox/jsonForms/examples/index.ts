@@ -7,6 +7,7 @@ import * as rules from './rules';
 import * as oneOfRefs from './oneOfRefs';
 import * as arrayofenum from './arrayofenum';
 import * as arrayarray from './arrayarray';
+import * as optionsdetail from './optionsdetail';
 
 export {
   _default,
@@ -18,4 +19,5 @@ export {
   oneOfRefs,
   arrayofenum,
   arrayarray,
+  optionsdetail,
 }

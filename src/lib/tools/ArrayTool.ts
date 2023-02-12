@@ -46,11 +46,17 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         // }
 
 
+        //convert option.detail.elements
+        const options = {...this.uischema?.options ?? {}}
+        if(options?.detail?.elements) {
+            options.detail.elements = JSON.stringify(options.detail.elements);
+        }
+
         const data = {
             propertyName: tool.propertyName,
             type: this.schema.type,
             singleChild: 'object' !== itemsType,
-            options: this.uischema?.options ?? {}
+            options: options
         } as any;
 
 
@@ -78,13 +84,26 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             _.set(this.schema, 'items.type', 'object');
         }
 
-        this.uischema.options = data.options ?? {};
+        const options = {...data.options ?? {}};
+
+        //convert option.detail.elements
+        if(options?.detail?.elements) {
+            let parsed =[];
+            try {
+                parsed = JSON.parse(options.detail.elements);
+            }
+            catch (e) {
+                parsed = [];
+            }
+            options.detail.elements = parsed;
+        }
+
+        this.uischema.options = options;
 
         setOptionDataValidation(this.schema, this.uischema, data);
         setOptionDataLabel(this.schema, this.uischema, data);
         setOptionDataRule(this.schema, this.uischema, data);
 
-        console.log("data",this.schema);
         //this.isRequired = data.required;
     }
 
