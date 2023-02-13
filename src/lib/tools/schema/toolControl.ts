@@ -7,6 +7,24 @@ export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionD
 
 export const schema = {
     type: "object",
+
+    definitions: {
+
+        //@see https://json-schema.org/understanding-json-schema/reference/string.html?highlight=format#built-in-formats
+        formats: {
+            type: "string",
+            enum: [
+                'date', 'time', 'date-time', 'duration',
+                'email',
+                'uuid',
+                'regex',
+                'hostname', 'ipv4', 'ipv6',
+                'uri','uri-reference','iri','iri-reference',
+            ],
+        }
+    },
+
+
     "properties": {
         validation: {
             $ref:'validation.schema#/properties/validation'
@@ -19,7 +37,8 @@ export const schema = {
         },
 
         propertyName: {
-            type: "string"
+            type: "string",
+            pattern: "^[a-z]"
         },
 
         // schema: {
@@ -29,10 +48,7 @@ export const schema = {
                     type: "string",
                     enum: ['string', 'number', 'integer', 'boolean'],
                 },
-                format: {
-                    type: "string",
-                    enum: ['date', 'time', 'date-time'],
-                },
+                format:{$ref:'#/definitions/formats'},
         //     },
         // },
 

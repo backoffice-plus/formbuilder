@@ -2,14 +2,17 @@ import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {JsonFormsInterface} from "../../models";
 
-export type schemaKey = | 'minimum' | 'maximum' | 'pattern' | 'minLength' | 'maxLength' | 'minItems' | 'maxItems' | 'uniqueItems';
-export const schemaKeys = ['minimum', 'maximum', 'pattern', 'minLength', 'maxLength', 'minItems', 'maxItems', 'uniqueItems'] as Array<schemaKey>;
+export const schemaKeysString = ['minLength', 'maxLength', 'pattern'] as Array<string>;
+export const schemaKeysNumber = ['minimum', 'maximum', 'multipleOf', 'exclusiveMinimum', 'exclusiveMaximum'] as Array<string>;
+export const schemaKeys = [...schemaKeysString, ...schemaKeysNumber, 'minItems', 'maxItems', 'uniqueItems'] as Array<string>;
 
 export const prepareOptionData = (schema: JsonSchema, uischema: UISchemaElement): Record<string, any> => {
     const data = {} as Record<string, any>;
 
     schemaKeys.forEach(key => {
+        /* @ts-ignore */
         if (undefined !== schema[key]) {
+            /* @ts-ignore */
             data[key] = schema[key]
         }
     });
@@ -30,12 +33,16 @@ export const schema = {
         validation: {
             type: "object",
             properties: {
-                maximum: {
-                    type: "number"
-                },
-                minimum: {
-                    type: "number"
-                },
+
+                //number
+                maximum: { type: "number" },
+                minimum: {type: "number"},
+                multipleOf: {type: "number"},
+                exclusiveMinimum: {type: "number"},
+                exclusiveMaximum: {type: "number"},
+
+
+                //string
                 minLength: {
                     "type": "number"
                 },
@@ -44,6 +51,7 @@ export const schema = {
                 },
                 pattern: {
                     "type": "string",
+                    format: 'regex',
                     description: "for examples: \"[abc]+\""
                 },
 
@@ -66,16 +74,47 @@ export const schema = {
 export const uischema = {
     "type": "VerticalLayout",
     "elements": [
+
         {
-            "type": "HorizontalLayout",
+            /**
+             * Number
+             */
+            "type": "VerticalLayout",
             "elements": [
                 {
-                    "scope": "#/properties/validation/properties/minimum",
-                    "type": "Control"
+                    "type": "HorizontalLayout",
+                    "elements": [
+                        {
+                            "scope": "#/properties/validation/properties/minimum",
+                            "type": "Control"
+                        },
+                        {
+                            "scope": "#/properties/validation/properties/maximum",
+                            "type": "Control"
+                        },
+                    ],
                 },
                 {
-                    "scope": "#/properties/validation/properties/maximum",
-                    "type": "Control"
+                    "type": "HorizontalLayout",
+                    "elements": [
+                        {
+                            "scope": "#/properties/validation/properties/exclusiveMinimum",
+                            "type": "Control"
+                        },
+                        {
+                            "scope": "#/properties/validation/properties/exclusiveMaximum",
+                            "type": "Control"
+                        },
+                    ],
+                },
+                {
+                    "type": "HorizontalLayout",
+                    "elements": [
+                        {
+                            "scope": "#/properties/validation/properties/multipleOf",
+                            "type": "Control"
+                        },
+                    ],
                 },
             ],
             "rule": {
@@ -86,6 +125,10 @@ export const uischema = {
                 }
             }
         },
+
+
+
+
         {
             "type": "HorizontalLayout",
             "elements": [
