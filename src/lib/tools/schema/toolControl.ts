@@ -68,6 +68,10 @@ export const uischema = {
 
     type: "Categorization",
     elements: [
+
+        /**
+         * Tab - Base
+         */
         {
             type: "Category",
             label: "Base",
@@ -217,50 +221,50 @@ export const uischema = {
         /**
          * Tab - Items oneOf
          */
-        {
-            type: "Category",
-            label: "Select Items",
-            elements: [
-                {
-                    type: "VerticalLayout",
-                    elements: [
-                        // {
-                        //     scope: "#/properties/select/properties/_type",
-                        //     type: "Control",
-                        // },
-                        {
-                            type: "Control",
-                            scope: "#/properties/select/properties/enum",
-                            rule: {
-                                effect: "SHOW",
-                                condition: {
-                                    scope: "#/properties/select/properties/_type",
-                                    schema: { const: "enum" }
-                                }
-                            }
-                        },
-                        {
-                            type: "Control",
-                            scope: "#/properties/select/properties/oneOf",
-                            rule: {
-                                effect: "SHOW",
-                                condition: {
-                                    scope: "#/properties/select/properties/_type",
-                                    schema: { const: "oneOf" }
-                                }
-                            }
-                        },
-                    ],
-                }
-            ],
-            rule: {
-                effect: "SHOW",
-                condition: {
-                    scope: "#/properties/select/properties/_type",
-                    schema: { enum: ["oneOf", "enum"] }
-                }
-            }
-        },
+        // {
+        //     type: "Category",
+        //     label: "Select Items",
+        //     elements: [
+        //         {
+        //             type: "VerticalLayout",
+        //             elements: [
+        //                 // {
+        //                 //     scope: "#/properties/select/properties/_type",
+        //                 //     type: "Control",
+        //                 // },
+        //                 {
+        //                     type: "Control",
+        //                     scope: "#/properties/select/properties/enum",
+        //                     rule: {
+        //                         effect: "SHOW",
+        //                         condition: {
+        //                             scope: "#/properties/select/properties/_type",
+        //                             schema: { const: "enum" }
+        //                         }
+        //                     }
+        //                 },
+        //                 {
+        //                     type: "Control",
+        //                     scope: "#/properties/select/properties/oneOf",
+        //                     rule: {
+        //                         effect: "SHOW",
+        //                         condition: {
+        //                             scope: "#/properties/select/properties/_type",
+        //                             schema: { const: "oneOf" }
+        //                         }
+        //                     }
+        //                 },
+        //             ],
+        //         }
+        //     ],
+        //     rule: {
+        //         effect: "SHOW",
+        //         condition: {
+        //             scope: "#/properties/select/properties/_type",
+        //             schema: { enum: ["oneOf", "enum"] }
+        //         }
+        //     }
+        // },
 
 
 

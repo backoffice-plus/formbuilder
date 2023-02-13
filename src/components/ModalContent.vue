@@ -87,6 +87,8 @@ onMounted(async () => {
 })
 
 const onChange = (e) => {
+  errorAfterUpdated.value = [];
+  dataAfterUpdated.value = {};
 
   if(e.errors.length) {
     console.warn("ModalOption", "errors at onChange", e.errors, e.data);

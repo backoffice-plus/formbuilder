@@ -4,17 +4,180 @@ import type {JsonFormsInterface} from "../../models";
 import _ from "lodash";
 
 export const prepareOptionData = (schema:JsonSchema, uischema:UISchemaElement) : Record<string, any> => {
-    return {rule:uischema.rule};
+    const rule = uischema.rule;
+    return {rule:{rule:rule}};
 }
 export const setOptionData = (schema: JsonSchema, uischema: UISchemaElement, data: Record<string, any>): void => {
-    uischema.rule = data.rule;
+
+    const rule = data?.rule?.rule;
+
+    uischema.rule = rule;
+
     if(_.isEmpty(uischema.rule)) {
         delete uischema.rule;
     }
 }
 
 export const schema = {
+
+    type: "object",
     definitions: {
+        schemaConstTypes: {
+            oneOf: [
+                {type:'string',title:'string'},
+                {type:'number',title:'number'},
+                {type:'boolean',title:'boolean'},
+            ] ,
+           // default:{type:'string'}
+            //required:['type']
+        },
+
+        schema: {
+            type: 'object',
+            properties: {
+                //const: {type:'string', enum:['string','number','boolean']                        }
+                const: {
+                    oneOf: [
+                        {type:'string',title:'string'},
+                        {type:'number',title:'number'},
+                        {type:'boolean',title:'boolean'},
+                    ]
+                }
+            },
+            required:['const'],
+        },
+
+        ruleCondition: {
+            type: 'object',
+            title:'Single Condition',
+            properties: {
+                scope: {type:'string'},
+               // schema: {$ref:'#/definitions/schema'},
+                //schema: {allOf:[{$ref:'#/definitions/schema'}]},
+                // schema: {
+                //     type: 'object',
+                //     properties: {
+                //         //const: {type:'string', enum:['string','number','boolean']                        }
+                //        // string: { type:'string' },
+                //       //  typeString: {  $ref:'#/definitions/typeString' },
+                //         typeNumber: {  $ref:'#/definitions/ruleCondition/definitions/typeNumber' },
+                //         // const: {
+                //         //     oneOf: [
+                //         //         {type:'string',title:'string'},
+                //         //         {type:'number',title:'number'},
+                //         //         {type:'boolean',title:'boolean'},
+                //         //     ]
+                //         // }
+                //     }
+                //
+                //     // oneOf: [
+                //     //     {$ref:'#/definitions/ruleConditionSchemaConst',title:'Const'},
+                //     //     // {$ref:'#/definitions/ruleConditionSchemaConstString',title:'String'},
+                //     //     // {$ref:'#/definitions/ruleConditionSchemaConstNumber',title:'Number'},
+                //     //     // {$ref:'#/definitions/ruleConditionSchemaConstBoolean',title:'Boolean'},
+                //     // ]
+                // }
+                schema: {
+                    type: 'object',
+                    properties: {
+                        const: {
+                            oneOf: [
+                                {type:'string',title:'string'},
+                                {type:'number',title:'number'},
+                                {type:'boolean',title:'boolean'},
+                            ]
+                        }
+                    },
+                    required:['const'],
+                },
+            },
+            required: ['scope','schema']//
+        },
+
+
+        ruleConditions: {
+            type: 'object',
+            title:'Combined Conditions',
+            properties: {
+                type: {type:'string',enum:['AND','OR'],default:'AND'},
+                conditions: {
+                    type: 'array',
+                    minItems: 1,
+                    items: {
+                        //$ref: '#/definitions/ruleCondition'
+                       // allOf: [{$ref: '#/definitions/ruleCondition'}]
+                        //
+
+                        type: 'object',
+                        properties: {
+                            scope: {type:'string',description:'like: #/properties/name'},
+                            schema: {
+                                type: 'object',
+                                properties: {
+                                   // const: {$ref:'#/definitions/schemaConstTypes'},
+                                   // const: {anyOf: [{$ref: '#/definitions/schemaConstTypes'}]},
+                                    const: {
+                                        oneOf: [
+                                            {type:'string',title:'string'},
+                                            {type:'number',title:'number'},
+                                            {type:'boolean',title:'boolean'},
+                                        ]
+                                    }
+                                },
+                              //  required:['const'],
+                            },
+                        }
+                    }
+                }
+            },
+            required: ['type']//,'conditions'
+        },
+
+
+        // rule: {
+        //     type: 'object',
+        //     properties: {
+        //         rule: {
+        //             type: 'object',
+        //             properties: {
+        //                 effect: {type:'string',enum:['SHOW','HIDE','ENABLE','DISABLE']},
+        //                 condition: {
+        //                     title: "ConditionType",
+        //                     oneOf: [
+        //                         {$ref: '#/definitions/ruleCondition'},
+        //                         {$ref: '#/definitions/ruleConditions'}
+        //                     ]
+        //                 }
+        //             }
+        //         },
+        //         ruleConditionSchemaConst: {
+        //             type: 'object',
+        //             properties: { const: {type:['string','number','boolean']} }
+        //         },
+        //         // ruleConditionSchemaConstString: {
+        //         //     type: 'object',
+        //         //     properties: { const: {type:'string'} }
+        //         // },
+        //         // ruleConditionSchemaConstNumber: {
+        //         //     type: 'object',
+        //         //     properties: { const: {type:'number'} }
+        //         // },
+        //         // ruleConditionSchemaConstBoolean: {
+        //         //     type: 'object',
+        //         //     properties: { const: {type:'boolean'} }
+        //         // },
+        //
+        //     }
+        // }
+
+    },
+
+    properties: {
+        // rule: {
+        //     type: "object",
+        //     $ref:'#/definitions/rule/properties/rule'
+        // },
+
         rule: {
             type: 'object',
             properties: {
@@ -25,138 +188,17 @@ export const schema = {
                         condition: {
                             title: "ConditionType",
                             oneOf: [
-                                {$ref: '#/definitions/rule/properties/ruleCondition',title:'SingleCondition'},
-                                {$ref: '#/definitions/rule/properties/ruleConditions',title:'CombinedConditions'}
+                                {$ref: '#/definitions/ruleCondition',title:'SingleCondition'},
+                                {$ref: '#/definitions/ruleConditions',title:'CombinedConditions'}
                             ]
                         }
-                    }
-                },
-                ruleCondition: {
-                    type: 'object',
-                    properties: {
-                        scope: {type:'string'},
-                        schema: {
-                            type: 'object',
-                            properties: {
-                                //const: {type:['string','number','boolean']}
-                                const: {
-                                    oneOf: [
-                                        {type:'string',title:'string'},
-                                        {type:'number',title:'number'},
-                                        {type:'boolean',title:'boolean'},
-                                    ]
-                                }
-                            }
-
-                            // oneOf: [
-                            //     {$ref:'#/definitions/ruleConditionSchemaConst',title:'Const'},
-                            //     // {$ref:'#/definitions/ruleConditionSchemaConstString',title:'String'},
-                            //     // {$ref:'#/definitions/ruleConditionSchemaConstNumber',title:'Number'},
-                            //     // {$ref:'#/definitions/ruleConditionSchemaConstBoolean',title:'Boolean'},
-                            // ]
-                        }
-                    }
-                },
-                ruleConditions: {
-                    type: 'object',
-                    properties: {
-                        type: {type:'string',enum:['AND','OR']},
-                        conditions: {
-                            type: 'array',
-                            minItems: 1,
-                            items: {
-                                // $ref: '#/definitions/ruleCondition'
-
-                                //$ref not working?!?!?!
-                                type: 'object',
-                                properties: {
-                                    scope: {type:'string'},
-                                    schema: {
-                                        type: 'object',
-                                        properties: {
-                                            const: {type:'string'}
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     },
+                    required:['effect','condition']
                 },
-                ruleConditionSchemaConst: {
-                    type: 'object',
-                    properties: { const: {type:['string','number','boolean']} }
-                },
-                // ruleConditionSchemaConstString: {
+                // ruleConditionSchemaConst: {
                 //     type: 'object',
-                //     properties: { const: {type:'string'} }
+                //     properties: { const: {type:['string','number','boolean']} }
                 // },
-                // ruleConditionSchemaConstNumber: {
-                //     type: 'object',
-                //     properties: { const: {type:'number'} }
-                // },
-                // ruleConditionSchemaConstBoolean: {
-                //     type: 'object',
-                //     properties: { const: {type:'boolean'} }
-                // },
-
-            }
-        }
-
-    },
-    "type": "object",
-    "properties": {
-        rule: {
-            type: "object",
-            $ref:'#/definitions/rule/properties/rule'
-        },
-
-        ruleOLD: {
-            type: "object",
-            properties: {
-                effect: {
-                    type: "string",
-                    enum: ['HIDE','SHOW','DISABLE','ENABLE']
-                },
-                condition: {
-                    type: "object",
-                    properties: {
-                        // scope: {
-                        //     type: "string",
-                        //     description: "like \"#/properties/name\""
-                        // },
-                        //"schema": { const: true }
-                        //"schema": { const: 1 }
-                        //"schema": { const: "sometext" }
-                        //"schema": { enum: ["radio"] }
-
-                        _scopePropertyName: {
-                            type: "string",
-                        },
-                        _schema: {
-                            type: "string",
-                            enum: ['const', 'enum']
-                        },
-                        _schemaConstType: {
-                            type: "string",
-                            enum: ['string', 'number', 'boolean'],
-                        },
-                        _schemaConstAsString: {type:'string'},
-                        _schemaConstAsNumber: {type:'number'},
-                        _schemaConstAsBoolean: {type:'boolean'},
-                        schema: {
-                            type: "object",
-                            properties: {
-                                //_constAsNumber: {type:'number'},
-                                // const: {
-                                //     type: ['number', 'string', 'boolean'],
-                                // },
-                                // enum: {
-                                //     type: "array",
-                                // },
-                            },
-                        },
-                    }
-                },
             }
         },
     },
@@ -164,7 +206,7 @@ export const schema = {
 
 export const uischema = {
 
-    "scope": "#/properties/rule",
+    "scope": "#/properties/rule/properties/rule",
     "type": "Control",
 
         //     "type": "VerticalLayout",

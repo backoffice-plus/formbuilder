@@ -8,6 +8,8 @@ import * as oneOfRefs from './oneOfRefs';
 import * as arrayofenum from './arrayofenum';
 import * as arrayarray from './arrayarray';
 import * as optionsdetail from './optionsdetail';
+import * as optionModaRule from './optionModaRule';
+import * as nestedRefs from './nestedRefs';
 
 export {
   _default,
@@ -20,4 +22,6 @@ export {
   arrayofenum,
   arrayarray,
   optionsdetail,
+  optionModaRule,
+  nestedRefs,
 }
