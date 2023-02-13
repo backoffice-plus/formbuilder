@@ -1,11 +1,11 @@
 <template>
-  <div class="arrayTool" :title="toolOptions.title">
+  <div class="arrayTool" :class={isInlineType:isInlineType} :title="toolOptions.title">
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
         <b>{{ tool.propertyName }}:</b> Array&nbsp;
-        <span v-if="!hasSingleChild && props.tool.schema?.items?.type"> of {{ props.tool.schema.items.type }}</span>
-        <span v-if="hasSingleChild && getSingleChild"> of {{ getSingleChild?.schema?.type }}</span>
+        <span v-if="!isInlineType && props.tool.schema?.items?.type"> of {{ props.tool.schema.items.type }}</span>
+        <span v-if="isInlineType && getInlineType"> of {{ getInlineType?.schema?.type }}</span>
       </template>
 
     </ToolIcon>
@@ -14,7 +14,7 @@
 
       <Actions :tool="tool" @delete="onDelete"/>
 
-      <div class="tabs" v-if="!hasSingleChild">
+      <div class="tabs" v-if="!isInlineType">
         <div class="flex items-center">
           <button type="button" class="add" @click="addItem" v-text="'[Add]'"/>
         </div>
@@ -37,6 +37,7 @@
                        :isToolbar="false"
                        :isDragging=isDragging
                        :index="index"
+                       :isInlineType="isInlineType"
 
                        @deleteByIndex="onDeleteByIndex"
 
@@ -99,8 +100,8 @@ const childTools = ref([]);
 const childComponents = ref({});
 
 const isArrayOfObject = computed(() => 'object' === props.tool.schema?.items?.type);
-const hasSingleChild = computed(() => !isArrayOfObject.value && childTools.value.length >= 1);
-const getSingleChild = computed(() => childTools.value[0]);
+const isInlineType = computed(() => !isArrayOfObject.value && childTools.value.length >= 1);
+const getInlineType = computed(() => childTools.value[0]);
 const toolOptions = computed(() => props.tool?.toolbarOptions() ?? {});
 
 onMounted(() => {
@@ -147,9 +148,9 @@ const addItem = () => {
 const groupPut = (from, to, node, dragEvent) => {
   const tool = node._underlying_vm_;
   const isControlTool = ['control', 'select', 'array'].includes(tool.toolType);//;
-  const canHaveMoreThenOneChild = true; //:TODO
+  const isInlineType = 'object' !== props.tool?.schema?.items?.type
   const hasOneItem = from.el.children.length > 0;
-  return isControlTool && (canHaveMoreThenOneChild || !hasOneItem);
+  return isControlTool && (!isInlineType || (isInlineType && !hasOneItem));
 };
 
 defineExpose({tool: props.tool, childTools: childTools, childComponents: childComponents})

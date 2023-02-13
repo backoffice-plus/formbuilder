@@ -40,8 +40,9 @@ export const schema = {
         propertyName: {
             type: "string"
         },
-        singleChild: {
-            type: "boolean"
+        asInlineType: {
+            type: "boolean",
+            description: "for Array of Strings",
         },
         options: {
             type: "object",
@@ -88,85 +89,16 @@ export const uischema = {
                             type: "Control"
                         },
                         {
-                            scope: "#/properties/singleChild",
-                            type: "Control"
+                            scope: "#/properties/asInlineType",
+                            type: "Control",
+                            options: {
+                                showUnfocusedDescription: true
+                            }
                         },
                         {
                             scope: "#/properties/options/properties/elementLabelProp",
                             type: "Control",
                         },
-
-                        {
-                            type: "Group",
-                            label: "Detail",
-                            elements: [
-                                {
-                                    scope: "#/properties/options/properties/detail",
-                                    type: "Control",
-                                    // options: {
-                                    //     detail: {
-                                    //         type: 'Label',
-                                    //         elements: []
-                                    //     }
-                                    // }
-                                },
-
-
-                                // /**
-                                //  * Detail as String
-                                //  */
-                                // {
-                                //     type: "GROUP",
-                                //     label: "details as string AGAIN",
-                                //     elements: [
-                                //         {
-                                //             scope: "#/properties/options/properties/detail",
-                                //             label: 'Detail as String',
-                                //             type: "Control"
-                                //         },
-                                //     ],
-                                //     rule: {
-                                //         effect: 'SHOW',
-                                //         condition: {
-                                //             scope: "#/properties/options/properties/detail",
-                                //             schema: { type: 'string' }
-                                //         }
-                                //     }
-                                // },
-                                //
-                                //
-                                // /**
-                                //  * Detail as Obj
-                                //  */
-                                // {
-                                //     type: "VerticalLayout",
-                                //     elements: [
-                                //         {
-                                //             scope: "#/properties/options/properties/detail/properties/type",
-                                //             type: "Control",
-                                //         },
-                                //         {
-                                //
-                                //             scope: "#/properties/options/properties/detail/properties/elements",
-                                //             type: "Control",
-                                //             options: {
-                                //                 "multi": true
-                                //             }
-                                //         }
-                                //     ],
-                                //     rule: {
-                                //         effect: 'ENABLE',
-                                //         condition: {
-                                //             scope: "#/properties/options/properties/detail",
-                                //             schema: { type: 'object' }
-                                //         }
-                                //     }
-                                // },
-
-                            ],
-                        },
-
-
                         {
                             type: "Group",
                             label: "Label & Description",
@@ -179,6 +111,85 @@ export const uischema = {
                     ],
                 }
             ]
+        },
+
+
+        /**
+         * Tab - options.detail
+         */
+        {
+            type: "Category",
+            label: "Subschema",
+            elements: [
+
+                {
+                    type: 'Label',
+                    text: ':TODO'
+                },
+
+                {
+                    scope: "#/properties/options/properties/detail",
+                    type: "Control",
+                    // options: {
+                    //     detail: {
+                    //         type: 'Label',
+                    //         elements: []
+                    //     }
+                    // }
+                },
+
+
+                // /**
+                //  * Detail as String
+                //  */
+                // {
+                //     type: "GROUP",
+                //     label: "details as string AGAIN",
+                //     elements: [
+                //         {
+                //             scope: "#/properties/options/properties/detail",
+                //             label: 'Detail as String',
+                //             type: "Control"
+                //         },
+                //     ],
+                //     rule: {
+                //         effect: 'SHOW',
+                //         condition: {
+                //             scope: "#/properties/options/properties/detail",
+                //             schema: { type: 'string' }
+                //         }
+                //     }
+                // },
+                //
+                //
+                // /**
+                //  * Detail as Obj
+                //  */
+                // {
+                //     type: "VerticalLayout",
+                //     elements: [
+                //         {
+                //             scope: "#/properties/options/properties/detail/properties/type",
+                //             type: "Control",
+                //         },
+                //         {
+                //
+                //             scope: "#/properties/options/properties/detail/properties/elements",
+                //             type: "Control",
+                //             options: {
+                //                 "multi": true
+                //             }
+                //         }
+                //     ],
+                //     rule: {
+                //         effect: 'ENABLE',
+                //         condition: {
+                //             scope: "#/properties/options/properties/detail",
+                //             schema: { type: 'object' }
+                //         }
+                //     }
+                // },
+            ],
         },
 
 

@@ -99,7 +99,7 @@ export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => 
         properties && Object.keys(properties).forEach((propertyName:string) => {
             const itemSchema = properties[propertyName];
 
-            const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+            const uischema = {type:'Control',scope:'#/properties/unnamed'} as UISchemaElement;
             const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
             clone.propertyName = propertyName;
 
@@ -121,10 +121,9 @@ export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => 
      */
     else {
 
-        const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+        const uischema = {type:'Control',scope:'#/properties/unnamed'} as UISchemaElement;
         /** @ts-ignore */
         const clone = cloneToolWithSchema(findMatchingTool({}, tool.schema?.items, uischema), tool.schema?.items, uischema)
-        //console.info("initArrayElements", 'array of schema', clone)
         tools.push(clone);
     }
 

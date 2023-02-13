@@ -31,6 +31,10 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         // const hasRef = undefined !== items?.$ref
         const hasItemType = undefined !== getItemsType(this.schema)
         const itemsType = getItemsType(this.schema)
+
+        console.log("ArrayTool optionDataPrepare","itemsType", itemsType);
+
+
         // const canHaveChilds = true;//:TODO need new "canHaveObject"
         //
         // if(canHaveChilds && !hasItemType && !hasRef) {
@@ -55,7 +59,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         const data = {
             propertyName: tool.propertyName,
             type: this.schema.type,
-            singleChild: 'object' !== itemsType,
+            asInlineType: 'object' !== itemsType,
             options: options
         } as any;
 
@@ -73,16 +77,17 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, tool)
 
-        const isSingleChild = data?.singleChild ?? false;
+        const asInlineType = data?.asInlineType ?? false;
 
-        if (isSingleChild) {
-            if (getItemsType(this.schema)) {
-                /** @ts-ignore **/
-                delete this.schema.items.type;
+        let inlineType = getItemsType(this.schema);
+        if (asInlineType) {
+            if('object' === inlineType || !inlineType) {
+                inlineType = 'string'
             }
         } else {
-            _.set(this.schema, 'items.type', 'object');
+            inlineType = 'object';
         }
+        _.set(this.schema, 'items.type', inlineType);
 
         const options = {...data.options ?? {}};
 
