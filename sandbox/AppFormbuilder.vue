@@ -15,6 +15,7 @@
 
       <FormBuilder
           :jsonForms="jsonForms"
+          :jsonFormsRenderers="jsonFormsRenderers"
           :schemaReadOnly="schemaReadOnly"
           :tools="tools"
           v-if="!disableFormbuilder"
@@ -39,11 +40,20 @@ import {generateDefaultUISchema} from "@jsonforms/core";
 import {resolveSchema} from "../src";
 import {htmlTool} from "./tool/htmlTool";
 import {getExampleFromUrl, getUrl} from "./lib";
+import {vanillaRenderers} from "@jsonforms/vue-vanilla";
+import {boplusVueVanillaRenderers} from "../src/index";
+import {entry as htmlRenderer} from "./tool/htmlRenderer.vue";
 
 const tools = [
     ...defaultTools,
     htmlTool,
 ]
+
+const jsonFormsRenderers = Object.freeze([
+  ...vanillaRenderers,
+  ...boplusVueVanillaRenderers,
+  htmlRenderer,
+]);
 
 const oe = ownExamples;//import own examples
 

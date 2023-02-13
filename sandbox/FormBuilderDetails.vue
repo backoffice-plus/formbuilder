@@ -60,12 +60,14 @@ import {computed, ref, watch} from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv} from "@jsonforms/core";
-import {jsonFormRenderes, emitter, createI18nTranslate} from "../src/index";
+import {createI18nTranslate} from "../src/index";
 import SchemaCode from './SchemaCode.vue'
 import ResizeArea from "./ResizeArea.vue";
 import {translationsErrors as localeCatalogue} from "../src/translations/de";
-import {useJsonforms} from "../src/composable/jsonforms";
+import {useJsonforms} from "../src";
 import {entry as htmlRenderer} from "./tool/htmlRenderer.vue";
+import {vanillaRenderers} from "@jsonforms/vue-vanilla";
+import {boplusVueVanillaRenderers} from "../packages/boplus-vue-vanilla/src";
 
 const props = defineProps({
   jsonForms: Object, //read from store
@@ -80,7 +82,8 @@ const jsonFormsUpdated = ref({});
 const newKey = computed(() => JSON.stringify([schema.value,uischema.value]));
 
 const jsonFormRenderesMore = Object.freeze([
-  ...jsonFormRenderes,
+  ...vanillaRenderers,
+  ...boplusVueVanillaRenderers,
   htmlRenderer,
 ]);
 

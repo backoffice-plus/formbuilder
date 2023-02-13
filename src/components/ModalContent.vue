@@ -13,7 +13,7 @@
           :schema="jsonFormSchema?.schema"
           :uischema="jsonFormSchema?.uischema"
           :data="options"
-          :renderers="mergedJsonFormRenderes"
+          :renderers="mergedJsonFormsRenderers"
           :ajv="ajv"
           :i18n="{translate: createI18nTranslate(formBuilderCatalogue)}"
           @change="onChange"
@@ -46,7 +46,6 @@
 <script setup>
 
 import {JsonForms} from "@jsonforms/vue";
-import {jsonFormRenderes} from "../index";
 import {createI18nTranslate} from "../lib/formbuilder";
 import {emitter} from "../lib/mitt";
 import {onMounted, ref} from "vue";
@@ -56,6 +55,7 @@ import {formBuilderCatalogue} from "../translations/de";
 const props = defineProps({
   tool: Object,//ToolInterface,
   data: Object,
+  jsonFormsRenderers: Array,
   schemaReadOnly: Boolean,
 })
 const emit = defineEmits(['change']);
@@ -66,7 +66,7 @@ const options = ref({});
 const jsonFormSchema = ref({});
 const dataAfterUpdated = ref({});
 const errorAfterUpdated = ref([]);
-const mergedJsonFormRenderes = ref(jsonFormRenderes);
+const mergedJsonFormsRenderers = ref(Object.freeze(props.jsonFormsRenderers));
 const error = ref('');
 
 onMounted(async () => {
@@ -77,8 +77,8 @@ onMounted(async () => {
     if(props.tool.optionJsonformsRenderer) {
       const renderer = props.tool.optionJsonformsRenderer();
       if(renderer?.length) {
-        mergedJsonFormRenderes.value = Object.freeze([
-            ...mergedJsonFormRenderes.value,
+        mergedJsonFormsRenderers.value = Object.freeze([
+            ...mergedJsonFormsRenderers.value,
             ...renderer,
         ])
       }

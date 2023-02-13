@@ -5,6 +5,7 @@
 
     <Modal
         :tool="toolEdit"
+        :jsonFormsRenderers="jsonFormsRenderers"
         :schemaReadOnly="schemaReadOnly"
 
         @change="onChange"
@@ -89,9 +90,12 @@ import {useJsonforms} from "../composable/jsonforms";
 import {normalizePath, normalizeScope} from "../lib/normalizer";
 import _ from "lodash";
 import {objectTool} from "../lib/tools/ObjectTool";
+import {vanillaRenderers} from "@jsonforms/vue-vanilla";
+import {boplusVueVanillaRenderers} from "../../packages/boplus-vue-vanilla/src";
 
 const props = defineProps({
   jsonForms: Object,
+  jsonFormsRenderers: Array,
   schemaReadOnly: Boolean,
   tools: Array,
 })

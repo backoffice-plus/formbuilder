@@ -4,7 +4,7 @@
     <div class="modalBg">
       <div class="centerItem">
         <div class="panel">
-          <ModalContent :tool="tool" :schemaReadOnly="schemaReadOnly" @change="data=>emit('change', data)" ref="modal"/>
+          <ModalContent :tool="tool" :jsonFormsRenderers="jsonFormsRenderers" :schemaReadOnly="schemaReadOnly" @change="data=>emit('change', data)" ref="modal"/>
         </div>
       </div>
     </div>
@@ -53,6 +53,7 @@ import {onMounted, onUnmounted, ref, watch} from "vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
+  jsonFormsRenderers: Array,
   schemaReadOnly: Boolean
 })
 

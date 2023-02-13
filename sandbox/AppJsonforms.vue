@@ -46,12 +46,13 @@
 import {computed, ref} from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv, generateDefaultUISchema} from "@jsonforms/core";
-import {jsonFormRenderes} from "../src/index";
 import SchemaCode from './SchemaCode.vue'
-import {useJsonforms} from "../src/composable/jsonforms";
+import {useJsonforms} from "../src";
 import {entry as htmlRenderer} from "./tool/htmlRenderer.vue";
 import {getExamples} from "@jsonforms/examples/src";
 import {getExampleFromUrl, getUrl} from "./lib";
+import {vanillaRenderers} from "@jsonforms/vue-vanilla";
+import {boplusVueVanillaRenderers} from "../src/index";
 
 const url = computed(() => getUrl());
 const examples = computed(() => getExamples().sort((a, b) => a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1));
@@ -63,6 +64,13 @@ const jsonFormsSchema = schema;
 const jsonFormsUiSchema = uischema;
 const jsonFormsData = ref({});
 const jsonFormsUpdated = ref({});
+
+const jsonFormRenderes = Object.freeze([
+  ...vanillaRenderers,
+  ...boplusVueVanillaRenderers,
+  htmlRenderer,
+]);
+
 
 const jsonForms = computed(() => {
   const exampleData = getExamples().find(item => item.name === example.value);
