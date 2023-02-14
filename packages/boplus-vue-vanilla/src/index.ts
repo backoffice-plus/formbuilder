@@ -4,16 +4,13 @@ import AnyOfRenderer from "./components/AnyOfRenderer.vue";
 import OneOfRenderer from "./components/OneOfRenderer.vue";
 import ObjectRenderer from "./components/ObjectRenderer.vue";
 import EnumArrayRenderer from "./components/EnumArrayRenderer.vue";
-
-//:TODO
-//import {entry as arrayControlRenderer} from "./components/ArrayControlRenderer.vue";
+import ArrayControlRenderer from "./components/ArrayControlRenderer.vue";
 
 import {
-    and,
+    and,or,
     categorizationHasCategory, hasType,
-    isAllOfControl,
-    isObjectControl,
-    isOneOfControl,
+    isAllOfControl, isOneOfControl,
+    isObjectControl, isObjectArrayControl, isPrimitiveArrayControl,
     rankWith, schemaMatches, schemaSubPathMatches
 } from "@jsonforms/core";
 import type {JsonSchema} from "@jsonforms/core";
@@ -57,12 +54,17 @@ export const enumArrayRendererEntry = {
         ))
 };
 
+export const arrayControlRendererEntry = {
+    renderer: ArrayControlRenderer,
+    tester: rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl))
+};
+
 export const boplusVueVanillaRenderers = [
     categorizationRendererEntry,
     OneOfRendererEntry,
     allOfRendererEntry,
     anyOfRendererEntry,
     objectRendererEntry,
-    //arrayControlRenderer,
+    arrayControlRendererEntry,
     enumArrayRendererEntry,
 ];
