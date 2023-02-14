@@ -1,63 +1,62 @@
 <template>
 
-  <div class="border border-black p-4 ">
-    :TODO EnumControlRenderer
+  <!--
+  :TODO add style classes
+  -->
+  <div class="flex gap-2" v-if="control.visible">
+    <div v-for="(o, index) in control.options" :key="o.value">
+
+      <ControlWrapper
+          v-bind="input.controlWrapper.value"
+          :styles="input.styles"
+          :isFocused="!!input.isFocused"
+          :appliedOptions="input.appliedOptions"
+      >
+        <input
+            type="checkbox"
+            :id="control.id + `-input-${index}`"
+            :checked="dataHasEnum(o.value)"
+            :disabled="!control.enabled"
+            @change="(value) => toggle(o.value, value.target.checked)"
+        />
+        <!--
+            :label="o.label"
+            :input-value="dataHasEnum(o.value)"
+            :indeterminate="control.data === undefined"
+            :path="composePaths(control.path, `${index}`)"
+            :error-messages="control.errors"
+            v-bind="vuetifyProps(`v-checkbox[${o.value}]`)"
+            -->
+      </ControlWrapper>
+    </div>
   </div>
 
 </template>
 
 
-<script lang="ts">
-import {defineComponent} from 'vue';
-import type {ControlElement, JsonFormsRendererRegistryEntry, JsonSchema} from '@jsonforms/core';
-import {and, hasType, rankWith, schemaMatches, schemaSubPathMatches, uiTypeIs} from '@jsonforms/core';
-import type {RendererProps} from '@jsonforms/vue';
-import {DispatchRenderer, rendererProps} from '@jsonforms/vue';
+<script setup lang="ts">
+import type {ControlElement} from '@jsonforms/core';
+import {mapDispatchToMultiEnumProps, mapStateToMultiEnumControlProps} from '@jsonforms/core';
+import {rendererProps, useControl} from '@jsonforms/vue';
+import {ControlWrapper, useVanillaControl} from "@jsonforms/vue-vanilla";
 
-const controlRenderer = defineComponent({
-  name: 'enum-array-renderer',
-  components: {DispatchRenderer},
-  props: {
-    ...rendererProps<ControlElement>()
-  },
+/**
+ * @see https://jsonforms-vuetify-renderers.netlify.app/#/example/multi-array
+ * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/EnumArrayRenderer.vue
+ */
 
-  /**
-   * @see https://jsonforms-vuetify-renderers.netlify.app/#/example/multi-array
-   * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/EnumArrayRenderer.vue
-   */
-  setup(props: RendererProps<ControlElement>) {
-    return {props}
+const props = defineProps(rendererProps<ControlElement>());
+
+const input = useVanillaControl(useControl(props, mapStateToMultiEnumControlProps, mapDispatchToMultiEnumProps)) as any
+const control = input.control;
+
+const dataHasEnum = (value: any) => !!input.control.value.data?.includes(value);
+const toggle = (value: any, add: boolean) => {
+  if (add) {
+    input.addItem(input.control.value.path, value);
+  } else {
+    input.removeItem?.(input.control.value.path, value);
   }
-});
-
-export default controlRenderer;
-
-const hasOneOfItems = (schema: JsonSchema): boolean =>
-    schema.oneOf !== undefined &&
-    schema.oneOf.length > 0 &&
-    (schema.oneOf as JsonSchema[]).every((entry: JsonSchema) => {
-      return entry.const !== undefined;
-    });
-const hasEnumItems = (schema: JsonSchema): boolean =>
-    schema.type === 'string' && schema.enum !== undefined;
-
-
-export const entry: JsonFormsRendererRegistryEntry = {
-  renderer: controlRenderer,
-  tester: rankWith(5,
-      and(
-          uiTypeIs('Control'),
-          and(
-              schemaMatches(
-                  (schema) =>
-                      hasType(schema, 'array') &&
-                      !Array.isArray(schema.items) &&
-                      schema.uniqueItems === true
-              ),
-              schemaSubPathMatches('items', (schema) => {
-                return hasOneOfItems(schema) || hasEnumItems(schema);
-              })
-          )
-      ))
 };
+
 </script>

@@ -3,19 +3,20 @@ import AllOfRenderer from "./components/AllOfRenderer.vue";
 import AnyOfRenderer from "./components/AnyOfRenderer.vue";
 import OneOfRenderer from "./components/OneOfRenderer.vue";
 import ObjectRenderer from "./components/ObjectRenderer.vue";
+import EnumArrayRenderer from "./components/EnumArrayRenderer.vue";
 
 //:TODO
 //import {entry as arrayControlRenderer} from "./components/ArrayControlRenderer.vue";
-//import {entry as enumArrayRenderer} from "./components/EnumArrayRenderer.vue";
 
 import {
     and,
-    categorizationHasCategory,
+    categorizationHasCategory, hasType,
     isAllOfControl,
     isObjectControl,
     isOneOfControl,
-    rankWith
+    rankWith, schemaMatches, schemaSubPathMatches
 } from "@jsonforms/core";
+import type {JsonSchema} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 
 export const categorizationRendererEntry = {
@@ -41,6 +42,21 @@ export const OneOfRendererEntry = {
     tester: rankWith(2, isOneOfControl)
 };
 
+const hasOneOfItems = (schema: JsonSchema): boolean => (schema?.oneOf ?? [] as JsonSchema[]).every((entry: JsonSchema) => entry.const !== undefined);
+const hasEnumItems = (schema: JsonSchema): boolean => schema.type === 'string' && schema.enum !== undefined;
+
+export const enumArrayRendererEntry = {
+    renderer: EnumArrayRenderer,
+    tester: rankWith(5,
+        and(
+            uiTypeIs('Control'),
+            and(
+                schemaMatches((schema) => hasType(schema, 'array') && !Array.isArray(schema.items) && schema.uniqueItems === true),
+                schemaSubPathMatches('items', (schema) => hasOneOfItems(schema) || hasEnumItems(schema))
+            )
+        ))
+};
+
 export const boplusVueVanillaRenderers = [
     categorizationRendererEntry,
     OneOfRendererEntry,
@@ -48,5 +64,5 @@ export const boplusVueVanillaRenderers = [
     anyOfRendererEntry,
     objectRendererEntry,
     //arrayControlRenderer,
-    //  enumArrayRenderer,
+    enumArrayRendererEntry,
 ];
