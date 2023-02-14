@@ -259,7 +259,7 @@ fieldset.styleA.group .group-item {
 .styleA .tabs button {
     min-width: 100px;
     @apply
-    py-1
+    py-1 px-2
 
     focus:outline-none
 
@@ -278,4 +278,9 @@ fieldset.styleA.group .group-item {
     @apply
     text-gray-800
     border-gray-800
+}
+.styleA .tabs button:disabled {
+    @apply
+    opacity-50
+    hover:bg-opacity-0
 }
