@@ -96,33 +96,4 @@ const categories = computed((): any => {
       });
 });
 
-
-// const controlRenderer = defineComponent({
-//   name: 'tabs-categorization-renderer',
-//   methods: {isVisible},
-//   components: {DispatchRenderer},
-//   // props: {
-//   //   ...rendererProps<Layout>()
-//   // },
-//
-//   /**
-//    * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/layouts/CategorizationRenderer.vue
-//    */
-//   setup(props: RendererProps<Layout>) {
-//
-//     const selected = ref(0);
-//
-//     const ajv = createAjv();
-//
-//     return {
-//       ...useVanillaLayout(useJsonFormsLayout(props)),
-//       ajv,
-//       selected
-//     };
-//   },
-//   computed: {
-//
-//   },
-// });
-
 </script>

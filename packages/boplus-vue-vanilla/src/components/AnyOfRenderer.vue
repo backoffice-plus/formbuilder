@@ -44,55 +44,34 @@
 </template>
 
 
-<script lang="ts">
-import type {CombinatorSubSchemaRenderInfo, ControlElement, JsonFormsRendererRegistryEntry} from '@jsonforms/core';
-import {createCombinatorRenderInfos, isAnyOfControl, isVisible, rankWith} from '@jsonforms/core';
-import {computed, defineComponent, ref} from 'vue';
-import type {RendererProps} from '@jsonforms/vue';
+<script setup lang="ts">
+import type {CombinatorSubSchemaRenderInfo, ControlElement} from '@jsonforms/core';
+import {createCombinatorRenderInfos} from '@jsonforms/core';
+import {computed, ref} from 'vue';
 import {DispatchRenderer, rendererProps, useJsonFormsAnyOfControl} from '@jsonforms/vue';
 import {useVanillaControl} from "@jsonforms/vue-vanilla";
 
+/**
+ * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/AnyOfRenderer.vue
+ */
 
-const anyOfRenderer = defineComponent({
-  name: 'any-of-renderer',
-  methods: {isVisible},
-  components: {DispatchRenderer},
-  props: {
-    ...rendererProps<ControlElement>()
-  },
+const props = defineProps(rendererProps<ControlElement>());
 
-  /**
-   * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/AnyOfRenderer.vue
-   */
-  setup(props: RendererProps<ControlElement>) {
-    const input = useJsonFormsAnyOfControl(props);
-    const control = (input.control as any).value as typeof input.control;
-    const selectedIndex = ref(control.indexOfFittingSchema || 0);
+const input = useVanillaControl(useJsonFormsAnyOfControl(props)) as any
+const control = input.control.value as any;
 
-    const anyOfRenderInfos = computed((): CombinatorSubSchemaRenderInfo[] => {
-      const result = createCombinatorRenderInfos(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          control.schema.anyOf!,
-          control.rootSchema,
-          'anyOf',
-          control.uischema,
-          control.path,
-          control.uischemas
-      );
-      return result.filter((info) => info.uischema);
-    })
+const selectedIndex = ref(control.indexOfFittingSchema || 0);
 
-    return {
-      ...useVanillaControl(input),
-      selectedIndex,
-      anyOfRenderInfos
-    };
-  },
-});
-
-export default anyOfRenderer;
-export const entry: JsonFormsRendererRegistryEntry = {
-  renderer: anyOfRenderer,
-  tester: rankWith(3, isAnyOfControl)
-};
+const anyOfRenderInfos = computed((): CombinatorSubSchemaRenderInfo[] => {
+  const result = createCombinatorRenderInfos(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      control.schema.anyOf!,
+      control.rootSchema,
+      'anyOf',
+      control.uischema,
+      control.path,
+      control.uischemas
+  );
+  return result.filter((info) => info.uischema);
+})
 </script>

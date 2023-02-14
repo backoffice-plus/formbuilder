@@ -6,20 +6,20 @@
     <CompinatorProperties
         :schema="control.schema"
         combinatorKeyword="oneOf"
-        :path="path"
+        :path="control.path"
     />
 
-    <controlWrapper
-        v-bind="controlWrapper"
-        :styles="styles"
-        :isFocused="isFocused"
-        :appliedOptions="appliedOptions"
+    <ControlWrapper
+        v-bind="input.controlWrapper.value"
+        :styles="input.styles"
+        :isFocused="!!input.isFocused"
+        :appliedOptions="input.appliedOptions"
     >
       <select
           :id="control.id + '-input'"
-          :class="styles.control.input"
+          :class="input.styles.control.input"
           :disabled="!control.enabled"
-          :autofocus="appliedOptions.focus"
+          :autofocus="input.appliedOptions.focus"
           :required="control.required"
           v-model="selectIndex"
       >
@@ -39,98 +39,70 @@
           :cells="control.cells"
           :enabled="control.enabled"
       />
-    </controlWrapper>
+    </ControlWrapper>
 
   </div>
 
 </template>
 
 
-<script lang="ts">
-import {computed, defineComponent, ref,} from 'vue';
-import {
-  createAjv,
-  createCombinatorRenderInfos,
-  createDefaultValue,
-  isOneOfControl,
-  isVisible,  rankWith
-
-} from '@jsonforms/core';
-import type {ControlElement, JsonFormsRendererRegistryEntry} from '@jsonforms/core';
+<script setup lang="ts">
+import {computed, ref, watch,} from 'vue';
+import type {ControlElement} from '@jsonforms/core';
+import {createAjv, createCombinatorRenderInfos, createDefaultValue} from '@jsonforms/core';
 import {DispatchRenderer, rendererProps, useJsonFormsOneOfControl} from '@jsonforms/vue';
-import type {RendererProps} from '@jsonforms/vue';
 import {ControlWrapper, useVanillaControl} from "@jsonforms/vue-vanilla";
 import CompinatorProperties from "./CompinatorProperties.vue";
 
-const oneOfRenderer = defineComponent({
-  name: 'one-of-select-renderer',
-  methods: {isVisible},
-  components: {ControlWrapper, CompinatorProperties, DispatchRenderer},
-  props: {
-    ...rendererProps<ControlElement>()
-  },
 
-  /**
-   * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/OneOfRenderer.vue
-   */
-  setup(props: RendererProps<ControlElement>) {
-    const input = useJsonFormsOneOfControl(props);
-    const control = (input.control as any).value as typeof input.control;
+/**
+ * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/OneOfRenderer.vue
+ */
 
-    const confirmedIndex = ref(control.indexOfFittingSchema);
-    const selectIndex = ref(confirmedIndex.value);
+const props = defineProps(rendererProps<ControlElement>());
 
-    const ajv = createAjv();
+const input = useVanillaControl(useJsonFormsOneOfControl(props)) as any
+const control = input.control.value as any;
 
-    const indexedOneOfRenderInfos = computed(() => {
-      return createCombinatorRenderInfos(
-          control.schema.oneOf!,
-          control.rootSchema,
-          'oneOf',
-          control.uischema,
-          control.path,
-          control.uischemas
-      )
-    })
+const confirmedIndex = ref(input.control.value.indexOfFittingSchema);
+const selectIndex = ref(confirmedIndex.value);
 
-    return {
-      ...useVanillaControl(input),
-      input,
-      control,
-      ajv,
-      selectIndex,
-      confirmedIndex,
-      indexedOneOfRenderInfos
-    };
-  },
-  watch: {
-    selectIndex(newIndex, oldIndex) {
-      if (this.control.enabled && this.confirmedIndex !== newIndex) {
-        let confirmAlert = true;
+const ajv = createAjv();
 
-        //:TODO read the current data (they are not in this.control.data!!!)
-        const hasData = false;//!isEmpty(this.control.data);
-        if(hasData) {
-          confirmAlert = confirm("Your data will be cleared if you select this new option. Do you want to proceed?");
-        }
+const indexedOneOfRenderInfos = computed(() => {
+  return createCombinatorRenderInfos(
+      input.control.value.schema.oneOf!,
+      input.control.value.rootSchema,
+      'oneOf',
+      input.control.value.uischema,
+      input.control.value.path,
+      input.control.value.uischemas
+  )
+})
 
-        if (confirmAlert) {
-          this.confirmedIndex = newIndex;
-        } else {
-          this.selectIndex = oldIndex;
-        }
-      }
-    },
-    confirmedIndex(newIndex) {
-      const schema = this.indexedOneOfRenderInfos[newIndex]?.schema;
-      this.handleChange(this.control.path, (schema && createDefaultValue(schema)) ?? {});
+watch(selectIndex, (newIndex, oldIndex) => {
+  if (input.control.value.enabled && confirmedIndex.value !== newIndex) {
+    let confirmAlert = true;
+
+    //:TODO read the current data (they are not in this.control.data!!!)
+    const hasData = false;//!isEmpty(this.control.data);
+    if (hasData) {
+      confirmAlert = confirm("Your data will be cleared if you select this new option. Do you want to proceed?");
+    }
+
+    if (confirmAlert) {
+      confirmedIndex.value = newIndex;
+    } else {
+      selectIndex.value = oldIndex;
     }
   }
 });
 
-export default oneOfRenderer;
-export const entry: JsonFormsRendererRegistryEntry = {
-  renderer: oneOfRenderer,
-  tester: rankWith(2, isOneOfControl)
-};
+watch(confirmedIndex, (newIndex, oldIndex) => {
+  /** @ts-ignore */
+  const schema = indexedOneOfRenderInfos.value[newIndex]?.schema;
+  input.handleChange(input.control.value.path, (schema && createDefaultValue(schema)) ?? {})
+});
+
+
 </script>

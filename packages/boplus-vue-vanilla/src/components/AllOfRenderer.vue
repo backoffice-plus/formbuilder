@@ -19,7 +19,7 @@
         <CompinatorProperties
             :schema="control.schema"
             combinatorKeyword="allOf"
-            :path="path"
+            :path="control.path"
         />
         <dispatch-renderer
             v-for="(allOfRenderInfo, allOfIndex) in allOfRenderInfos"
@@ -39,7 +39,7 @@
 </template>
 
 
-<script lang="ts">
+<script setup lang="ts">
 import {computed, defineComponent} from 'vue';
 import {
   createCombinatorRenderInfos,
@@ -53,57 +53,40 @@ import type {
   UISchemaElement,
   CombinatorSubSchemaRenderInfo
 } from '@jsonforms/core';
-import {DispatchRenderer, rendererProps, useJsonFormsAllOfControl} from '@jsonforms/vue';
+import {DispatchRenderer, rendererProps, useJsonFormsAllOfControl, useJsonFormsControlWithDetail} from '@jsonforms/vue';
 import type {RendererProps} from '@jsonforms/vue';
 import {ControlWrapper, useVanillaControl} from "@jsonforms/vue-vanilla";
 import CompinatorProperties from "./CompinatorProperties.vue";
 
-const allOfRenderer = defineComponent({
-  name: 'all-of-renderer',
-  components: {ControlWrapper, CompinatorProperties, DispatchRenderer},
-  props: {
-    ...rendererProps<ControlElement>()
-  },
 
-  /**
-   * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/AllOfRenderer.vue
-   */
-  setup(props: RendererProps<ControlElement>) {
-    const input = useJsonFormsAllOfControl(props);
-    const control = (input.control as any).value as typeof input.control;
 
-    const delegateUISchema = computed((): UISchemaElement => {
-      return findMatchingUISchema(control.uischemas)(
-          control.schema,
-          control.uischema.scope,
-          control.path
-      );
-    });
+/**
+ * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/AllOfRenderer.vue
+ */
+const props = defineProps(rendererProps<ControlElement>());
 
-    const allOfRenderInfos =  computed((): CombinatorSubSchemaRenderInfo[] => {
-      const result = createCombinatorRenderInfos(
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          control.schema.allOf!,
-          control.rootSchema,
-          'allOf',
-          control.uischema,
-          control.path,
-          control.uischemas
-      );
-      return result.filter((info) => info.uischema);
-    });
+const input = useVanillaControl(useJsonFormsAllOfControl(props)) as any
+const control = input.control.value as any;
 
-    return {
-      ...useVanillaControl(input),
-      delegateUISchema,
-      allOfRenderInfos,
-    };
-  }
+const delegateUISchema = computed((): UISchemaElement => {
+  return findMatchingUISchema(control.uischemas)(
+      control.schema,
+      control.uischema.scope,
+      control.path
+  );
 });
 
-export default allOfRenderer;
-export const entry: JsonFormsRendererRegistryEntry = {
-  renderer: allOfRenderer,
-  tester: rankWith(3, isAllOfControl)
-};
+const allOfRenderInfos =  computed((): CombinatorSubSchemaRenderInfo[] => {
+  const result = createCombinatorRenderInfos(
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      control.schema.allOf!,
+      control.rootSchema,
+      'allOf',
+      control.uischema,
+      control.path,
+      control.uischemas
+  );
+  return result.filter((info) => info.uischema);
+});
+
 </script>
