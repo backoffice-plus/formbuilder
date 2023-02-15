@@ -12,7 +12,7 @@
         @see http://sortablejs.github.io/Sortable/#thresholds
       -->
       <Vuedraggable
-          :class="['dropArea bg-dotted nestedFlexArea', tool.uischemyType, {drag:isDragging||drag}]"
+          :class="['dropArea bg-dotted nestedFlexArea', tool.uischema.type, {drag:isDragging||drag}]"
           :list="childTools"
           group="formBuilder"
           item-key="uuid"
