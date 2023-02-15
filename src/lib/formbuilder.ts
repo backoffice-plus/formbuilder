@@ -437,8 +437,24 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
     switch (uischema.type) {
         case 'Control':
             if('array' === tool?.schema?.type) {
-                const schemasToPush = createTypeArraySchema(refElm);
-                _.merge(rootSchema,{properties:schemasToPush})
+
+                const firstChild = childTools[0];
+                const isFirstChildLayout = firstChild && 'Control' !== firstChild.uischema.type; //:TODO add better check!
+
+                if(isFirstChildLayout) {
+                    const subSchema = { type: 'object' };
+                    const detailSchema = createJsonUiSchema(childComponents[firstChild.uuid], subSchema);
+
+                    tool.schema['items'] = subSchema;
+                    setItemSchemaToSchema(tool, rootSchema);
+
+                    created.options['detail'] = detailSchema
+                }
+                else {
+                    const schemasToPush = createTypeArraySchema(refElm);
+                    _.merge(rootSchema,{properties:schemasToPush})
+                }
+
             }
             else if(tool instanceof ObjectTool) {
                 const schemasToPush = createTypeObjectSchema(refElm);

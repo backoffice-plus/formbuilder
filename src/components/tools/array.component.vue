@@ -150,7 +150,15 @@ const groupPut = (from, to, node, dragEvent) => {
   const isControlTool = ['control', 'select', 'array'].includes(tool.toolType);//;
   const isInlineType = 'object' !== props.tool?.schema?.items?.type
   const hasOneItem = from.el.children.length > 0;
-  return isControlTool && (!isInlineType || (isInlineType && !hasOneItem));
+
+  const childLayoutTools = childTools.value.filter(tool => 'Control' !== tool.uischema.type);
+  const hasOneLayoutTool = childLayoutTools.length>=1;
+
+  if(hasOneLayoutTool || (hasOneItem && !isControlTool)) {
+    return false;
+  }
+
+  return (!isInlineType || (isInlineType && !hasOneItem));
 };
 
 defineExpose({tool: props.tool, childTools: childTools, childComponents: childComponents})
