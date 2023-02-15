@@ -6,13 +6,14 @@ import ObjectRenderer from "./components/ObjectRenderer.vue";
 import EnumArrayRenderer from "./components/EnumArrayRenderer.vue";
 import ArrayControlRenderer from "./components/ArrayControlRenderer.vue";
 import ArrayLayoutRenderer from "./components/ArrayLayoutRenderer.vue";
+import BooleanToggleControlRenderer from "./components/BooleanToggleControlRenderer.vue";
 
 import {
     and,or,
     categorizationHasCategory, hasType,
     isAllOfControl, isOneOfControl, isAnyOfControl,
     isObjectControl, isObjectArrayControl, isPrimitiveArrayControl,
-    rankWith, schemaMatches, schemaSubPathMatches, isObjectArrayWithNesting
+    rankWith, schemaMatches, schemaSubPathMatches, isObjectArrayWithNesting, isBooleanControl, optionIs
 } from "@jsonforms/core";
 import type {JsonSchema} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
@@ -65,6 +66,11 @@ export const arrayLayoutRendererEntry = {
     tester: rankWith(4, isObjectArrayWithNesting)
 };
 
+export const booleanToggleControlRendererEntry = {
+    renderer: BooleanToggleControlRenderer,
+    tester: rankWith(3, and(isBooleanControl, optionIs('toggle', true))),
+};
+
 export const boplusVueVanillaRenderers = [
     categorizationRendererEntry,
     OneOfRendererEntry,
@@ -74,4 +80,5 @@ export const boplusVueVanillaRenderers = [
     arrayControlRendererEntry,
     enumArrayRendererEntry,
     arrayLayoutRendererEntry,
+    booleanToggleControlRendererEntry,
 ];

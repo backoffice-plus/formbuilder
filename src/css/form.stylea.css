@@ -80,7 +80,8 @@
 .styleA input:where([type="file"]) {
      @apply p-0 m-0
 }
-.styleA input:where([type="checkbox"], [type="radio"]) {
+.styleA input:where([type="checkbox"], [type="radio"]),
+.styleA label.toggle {
     @apply p-2 m-2 pl-0 ml-0
 }
 .styleA input:where([type="range"]) {

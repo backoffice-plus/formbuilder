@@ -71,6 +71,9 @@ export const schema = {
                 multi: {
                     type: "boolean",
                 },
+                toggle: {
+                    type: "boolean",
+                },
             },
         },
     },
@@ -155,6 +158,23 @@ export const uischema = {
                                                     }
                                                 }
                                             ]
+                                        }
+                                    }
+                                },
+                                {
+                                    scope: "#/properties/options/properties/toggle",
+                                    label: "as Toggle",
+                                    type: "Control",
+                                    options: {
+                                        toggle: true,
+                                    },
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition: {
+                                            scope: "#/properties/type",
+                                            schema: {
+                                                const: "boolean"
+                                            }
                                         }
                                     }
                                 }

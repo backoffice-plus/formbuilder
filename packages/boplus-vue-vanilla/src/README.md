@@ -4,7 +4,7 @@
 
 | JSON Schema           | Renderer         | Vue Vanilla | Vue2 Vuetify | Bo+ Vue Vanilla |
 |-----------------------|------------------|:-----------:|:------------:|:---------------:|
-| boolean               | Toggle           |      ❌      |      ✔️      |        ❓        |
+| boolean               | Toggle           |      ❌      |      ✔️      |       ✔️        |
 | Enum                  | Autocomplete     |      ❌      |      ✔️      |        ❓        |
 | oneOf (const / title) | Autocomplete     |      ❌      |      ✔️      |        ❓        |
 | Object                | Vertical grid    |      ❌      |      ✔️      |       ✔️        |
