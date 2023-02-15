@@ -75,6 +75,10 @@ export const schema = {
                 readonly: {
                     type: "boolean",
                 },
+                format: {
+                    type: "string",
+                    enum: ['radio']
+                },
             },
         },
 
@@ -141,34 +145,34 @@ export const uischema = {
                             ]
                         },
 
-                        // {
-                        //     type: "Group",
-                        //     label: "Form Type",
-                        //     elements: [
-                        //         {
-                        //             type: "HorizontalLayout",
-                        //             // elements: [
-                        //             //     {
-                        //             //         scope: "#/properties/type",
-                        //             //         type: "Control"
-                        //             //     },
-                        //                 // {
-                        //                 //     scope: "#/properties/format",
-                        //                 //     type: "Control",
-                        //                 //     rule: {
-                        //                 //         effect: "ENABLE",
-                        //                 //         condition: {
-                        //                 //             scope: "#/properties/type",
-                        //                 //             schema: {
-                        //                 //                 "const": "string"
-                        //                 //             }
-                        //                 //         }
-                        //                 //     }
-                        //                 // }
-                        //             ]
-                        //         }
-                        //     ]
-                        // },
+                        {
+                            type: "Group",
+                            label: "Options",
+                            elements: [
+                                {
+                                    type: "HorizontalLayout",
+                                    elements: [
+                                        // {
+                                        //     scope: "#/properties/type",
+                                        //     type: "Control"
+                                        // },
+                                        {
+                                            scope: "#/properties/options/properties/format",
+                                            type: "Control",
+                                            // rule: {
+                                            //     effect: "ENABLE",
+                                            //     condition: {
+                                            //         scope: "#/properties/type",
+                                            //         schema: {
+                                            //             "const": "string"
+                                            //         }
+                                            //     }
+                                            // }
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
                         {
                             type: "Group",
                             label: "Label & Description",

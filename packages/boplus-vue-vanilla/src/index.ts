@@ -7,13 +7,27 @@ import EnumArrayRenderer from "./components/EnumArrayRenderer.vue";
 import ArrayControlRenderer from "./components/ArrayControlRenderer.vue";
 import ArrayLayoutRenderer from "./components/ArrayLayoutRenderer.vue";
 import BooleanToggleControlRenderer from "./components/BooleanToggleControlRenderer.vue";
+import RadioGroupControlRenderer from "./components/RadioGroupControlRenderer.vue";
 
 import {
-    and,or,
-    categorizationHasCategory, hasType,
-    isAllOfControl, isOneOfControl, isAnyOfControl,
-    isObjectControl, isObjectArrayControl, isPrimitiveArrayControl,
-    rankWith, schemaMatches, schemaSubPathMatches, isObjectArrayWithNesting, isBooleanControl, optionIs
+    and,
+    or,
+    categorizationHasCategory,
+    hasType,
+    isAllOfControl,
+    isOneOfControl,
+    isAnyOfControl,
+    isObjectControl,
+    isObjectArrayControl,
+    isPrimitiveArrayControl,
+    rankWith,
+    schemaMatches,
+    schemaSubPathMatches,
+    isObjectArrayWithNesting,
+    isBooleanControl,
+    optionIs,
+    isEnumControl,
+    isOneOfEnumControl
 } from "@jsonforms/core";
 import type {JsonSchema} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
@@ -71,6 +85,11 @@ export const booleanToggleControlRendererEntry = {
     tester: rankWith(3, and(isBooleanControl, optionIs('toggle', true))),
 };
 
+export const radioGroupControlRendererEntry = {
+    renderer: RadioGroupControlRenderer,
+    tester: rankWith(20, and(or(isEnumControl, isOneOfEnumControl), optionIs('format', 'radio'))),
+};
+
 export const boplusVueVanillaRenderers = [
     categorizationRendererEntry,
     OneOfRendererEntry,
@@ -81,4 +100,5 @@ export const boplusVueVanillaRenderers = [
     enumArrayRendererEntry,
     arrayLayoutRendererEntry,
     booleanToggleControlRendererEntry,
+    radioGroupControlRendererEntry,
 ];

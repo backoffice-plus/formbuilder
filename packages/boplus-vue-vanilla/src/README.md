@@ -6,7 +6,9 @@
 |-----------------------|------------------|:-----------:|:------------:|:---------------:|
 | boolean               | Toggle           |      ❌      |      ✔️      |       ✔️        |
 | Enum                  | Autocomplete     |      ❌      |      ✔️      |        ❓        |
+| Enum                  | RadioGroup       |      ❌      |      ✔️      |        ❓        |
 | oneOf (const / title) | Autocomplete     |      ❌      |      ✔️      |        ❓        |
+| oneOf (const / title) | RadioGroup       |      ❌      |      ✔️      |       ✔️        |
 | Object                | Vertical grid    |      ❌      |      ✔️      |       ✔️        |
 | Array of objects      | Table            |      ❌      |      ✔️      |       ✔️        |
 | Array of objects      | List with Detail |      ❌      |      ✔️      |       ✔️        |
