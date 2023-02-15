@@ -15,11 +15,13 @@
         <input
             type="checkbox"
             :id="control.id + `-input-${index}`"
-            :checked="dataHasEnum(o.value)"
+            :value="o.value"
+            :checked="!!control.data?.includes(o.value)"
             :disabled="!control.enabled"
-            @change="(value) => toggle(o.value, value.target.checked)"
+            @change="onChange"
         />
         <!--
+         :checked="dataHasEnum(o.value)"
             :label="o.label"
             :input-value="dataHasEnum(o.value)"
             :indeterminate="control.data === undefined"
@@ -36,8 +38,7 @@
 
 <script setup lang="ts">
 import type {ControlElement} from '@jsonforms/core';
-import {mapDispatchToMultiEnumProps, mapStateToMultiEnumControlProps} from '@jsonforms/core';
-import {rendererProps, useControl} from '@jsonforms/vue';
+import {rendererProps, useJsonFormsMultiEnumControl} from '@jsonforms/vue';
 import {ControlWrapper, useVanillaControl} from "@jsonforms/vue-vanilla";
 
 /**
@@ -47,16 +48,12 @@ import {ControlWrapper, useVanillaControl} from "@jsonforms/vue-vanilla";
 
 const props = defineProps(rendererProps<ControlElement>());
 
-const input = useVanillaControl(useControl(props, mapStateToMultiEnumControlProps, mapDispatchToMultiEnumProps)) as any
+const input = useVanillaControl(useJsonFormsMultiEnumControl(props) as any) as any;
 const control = input.control;
 
-const dataHasEnum = (value: any) => !!input.control.value.data?.includes(value);
-const toggle = (value: any, add: boolean) => {
-  if (add) {
-    input.addItem(input.control.value.path, value);
-  } else {
-    input.removeItem?.(input.control.value.path, value);
-  }
-};
+const onChange = (event: Event | any) => {
+  const method = event?.target?.checked ? input?.addItem : input?.removeItem;
+  method && method(input.control.value.path, event?.target?.value);
+}
 
 </script>
