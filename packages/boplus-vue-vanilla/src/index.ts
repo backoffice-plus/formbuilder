@@ -9,7 +9,7 @@ import ArrayControlRenderer from "./components/ArrayControlRenderer.vue";
 import {
     and,or,
     categorizationHasCategory, hasType,
-    isAllOfControl, isOneOfControl,
+    isAllOfControl, isOneOfControl, isAnyOfControl,
     isObjectControl, isObjectArrayControl, isPrimitiveArrayControl,
     rankWith, schemaMatches, schemaSubPathMatches
 } from "@jsonforms/core";
@@ -32,7 +32,7 @@ export const allOfRendererEntry = {
 };
 export const anyOfRendererEntry = {
     renderer: AnyOfRenderer,
-    tester: rankWith(3, isAllOfControl)
+    tester: rankWith(3, isAnyOfControl)
 };
 export const OneOfRendererEntry = {
     renderer: OneOfRenderer,
