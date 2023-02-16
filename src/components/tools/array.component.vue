@@ -1,20 +1,21 @@
 <template>
-  <div class="arrayTool" :class={isInlineType:isInlineType} :title="toolOptions.title">
+  <div class="arrayTool" :class={isInlineType:isInlineType,isRoot:isRoot} :title="toolOptions.title">
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
-        <b>{{ tool.propertyName }}:</b> Array&nbsp;
+        <b>{{ tool.propertyName }}:</b> Array
         <span v-if="!isInlineType && props.tool.schema?.items?.type"> of {{ props.tool.schema.items.type }}</span>
         <span v-if="isInlineType && getInlineType"> of {{ getInlineType?.schema?.type }}</span>
+        <span v-if="isArrayOfRef"> of Refs</span>
       </template>
 
     </ToolIcon>
 
-    <div v-if="!isToolbar">
+    <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
-      <Actions :tool="tool" @delete="onDelete"/>
+      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot"/>
 
-      <div class="tabs" v-if="!isInlineType">
+      <div class="tabs" v-if="!isInlineType && !isArrayOfRef">
         <div class="flex items-center">
           <button type="button" class="add" @click="addItem" v-text="'[Add]'"/>
         </div>
@@ -37,7 +38,7 @@
                        :isToolbar="false"
                        :isDragging=isDragging
                        :index="index"
-                       :isInlineType="isInlineType"
+                       :isInlineType="isInlineType || isArrayOfRef"
 
                        @deleteByIndex="onDeleteByIndex"
 
@@ -54,7 +55,7 @@
 </template>
 
 <style>
-.arrayTool {
+.arrayTool:not(.isRoot) {
   @apply
   bg-green-100 !important
 }
@@ -64,7 +65,6 @@
 .arrayTool {
   @apply
   relative
-  bg-green-100
 }
 
 .dropArea .arrayTool {
@@ -87,6 +87,7 @@ import ToolIcon from "./utils/ToolIcon.vue";
 const props = defineProps({
   tool: Object,//ToolInterface,
   isToolbar: Boolean,
+  isRoot: Boolean,
   index: Number, //for deleting correct element in list
 
   isDragging: Boolean, //needed in flexarea
@@ -100,7 +101,8 @@ const childTools = ref([]);
 const childComponents = ref({});
 
 const isArrayOfObject = computed(() => 'object' === props.tool.schema?.items?.type);
-const isInlineType = computed(() => !isArrayOfObject.value && childTools.value.length >= 1);
+const isInlineType = computed(() => !isArrayOfObject.value && childTools.value.length >= 1 && undefined !== props.tool.schema?.items?.type);
+const isArrayOfRef = computed(() => '$ref' in props.tool.schema?.items);
 const getInlineType = computed(() => childTools.value[0]);
 const toolOptions = computed(() => props.tool?.toolbarOptions() ?? {});
 
