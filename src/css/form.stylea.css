@@ -97,6 +97,35 @@
     @apply
     leading-normal
 }
+/* range */
+.styleA .wrapper:has(input:where([type="range"])) {
+    @apply flex gap-1
+}
+.styleA input:where([type="range"]) + span {
+    min-width: 24px;
+    @apply text-right
+}
+
+/* password */
+.styleA .wrapper:has(input:where([data-type="password"])) {
+    @apply relative
+}
+.styleA input:where([data-type="password"]) + button {
+    @apply  absolute right-2 top-0 bottom-0
+    text-base
+}
+.styleA input:where([data-type="password"]) + button:after {
+    content:"";
+    @apply block w-3 h-3 border border-gray-600 rounded-full
+}
+.styleA input:where([data-type="password"]):where([type="password"]) + button:after {
+    content:"";
+    @apply border-dashed
+}
+.styleA input:where([data-type="password"]):where([type="text"]) + button:after {
+    content:"";
+    @apply border-gray-400
+}
 
 .styleA .horizontal-layout,
 .styleA.horizontal-layout

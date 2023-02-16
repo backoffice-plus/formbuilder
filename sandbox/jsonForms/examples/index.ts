@@ -10,6 +10,7 @@ import * as arrayarray from './arrayarray';
 import * as optionsdetail from './optionsdetail';
 import * as optionModaRule from './optionModaRule';
 import * as nestedRefs from './nestedRefs';
+import * as login from './login';
 
 export {
   _default,
@@ -24,4 +25,5 @@ export {
   optionsdetail,
   optionModaRule,
   nestedRefs,
+  login,
 }

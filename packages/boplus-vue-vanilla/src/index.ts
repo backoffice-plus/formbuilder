@@ -8,6 +8,8 @@ import ArrayControlRenderer from "./components/ArrayControlRenderer.vue";
 import ArrayLayoutRenderer from "./components/ArrayLayoutRenderer.vue";
 import BooleanToggleControlRenderer from "./components/BooleanToggleControlRenderer.vue";
 import RadioGroupControlRenderer from "./components/RadioGroupControlRenderer.vue";
+import SliderControlRenderer from "./components/SliderControlRenderer.vue";
+import PasswordControlRenderer from "./components/PasswordControlRenderer.vue";
 
 import {
     and,
@@ -27,7 +29,7 @@ import {
     isBooleanControl,
     optionIs,
     isEnumControl,
-    isOneOfEnumControl
+    isOneOfEnumControl, isRangeControl, isStringControl, formatIs
 } from "@jsonforms/core";
 import type {JsonSchema} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
@@ -90,6 +92,15 @@ export const radioGroupControlRendererEntry = {
     tester: rankWith(20, and(or(isEnumControl, isOneOfEnumControl), optionIs('format', 'radio'))),
 };
 
+export const sliderControlRendererEntry = {
+    renderer: SliderControlRenderer,
+    tester: rankWith(4, isRangeControl),
+};
+export const passwordControlRendererEntry = {
+    renderer: PasswordControlRenderer,
+    tester: rankWith(2, and(isStringControl, formatIs('password'))),
+};
+
 export const boplusVueVanillaRenderers = [
     categorizationRendererEntry,
     OneOfRendererEntry,
@@ -101,4 +112,6 @@ export const boplusVueVanillaRenderers = [
     arrayLayoutRendererEntry,
     booleanToggleControlRendererEntry,
     radioGroupControlRendererEntry,
+    sliderControlRendererEntry,
+    passwordControlRendererEntry,
 ];

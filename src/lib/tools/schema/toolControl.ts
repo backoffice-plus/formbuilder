@@ -15,7 +15,7 @@ export const schema = {
             type: "string",
             enum: [
                 'date', 'time', 'date-time', 'duration',
-                'email',
+                'email','password',
                 'uuid',
                 'regex',
                 'hostname', 'ipv4', 'ipv6',
