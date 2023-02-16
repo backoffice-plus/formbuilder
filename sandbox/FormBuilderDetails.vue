@@ -20,9 +20,8 @@
     <details>
       <summary class="cursor-pointer">Preview</summary>
       <ResizeArea>
-        <div class="card p-4" style="min-height: 106px">
+        <div class="card p-4 styleA" style="min-height: 106px">
             <JsonForms
-                :class="'styleA'"
                 :schema="jsonFormsSchema"
                 :uischema="jsonFormsUiSchema"
                 :data="jsonFormsData"

@@ -2,14 +2,21 @@
 
   <div class="container max-w-screen-lg mx-auto p-4 flex flex-col gap-4">
 
-    <div class="flex items-baseline gap-2"><h2>{{ example }}</h2> <a :href="'#/'+ url.search" class=" text-sm">[back]</a></div>
+    <div class="flex items-baseline gap-2"><h2>{{ example }}</h2></div>
 
+    <div>
+      Select Example:
+      <select v-model="example" class="inline" >
+        <option></option>
+        <option v-for="e in examples" :value="e.name">{{e.label}}</option>
+      </select>
+      <a :href="'#/?example='+ example" class=" text-sm">[back]</a>
+    </div>
 
     <details open="true">
       <summary class="cursor-pointer">JsonForms</summary>
-      <div class="card p-4">
+      <div class="card p-4 styleA">
         <JsonForms
-            :class="'styleA'"
             :schema="jsonForms.schema"
             :uischema="jsonForms.uischema"
             :data="jsonFormsData"
@@ -43,7 +50,7 @@
 
 
 <script setup>
-import {computed, ref} from 'vue'
+import {computed, ref, watch} from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv, generateDefaultUISchema} from "@jsonforms/core";
 import SchemaCode from './SchemaCode.vue'
@@ -88,6 +95,8 @@ const jsonFormRenderesMore = Object.freeze([
 ]);
 
 const ajv = createAjv();//is needed because reactive :schema & :uischema will throw error
-
+watch(() => example.value, async () => {
+  window.location.hash = example.value ? "/jsonforms?example="+example.value : '';
+})
 </script>
 
