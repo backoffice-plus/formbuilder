@@ -13,7 +13,7 @@ https://jsonforms.io/docs/renderer-sets
 | Enum                  | RadioGroup       |        Enum        |      ❌      |     ✔️      |       ✔️        |
 | oneOf (const / title) | Autocomplete     |                    |      ❌      |     ✔️      |          ❓      |
 | oneOf (const / title) | RadioGroup       |     EnumOneOf      |      ❌      |     ✔️      |       ✔️        |
-| Object                | Vertical grid    |         ?          |      ❌      |     ✔️      |       ✔️        |
+| Object                | Vertical grid    |         -          |      ❌      |     ✔️      |       ✔️        |
 | Array of objects      | Table            |     ArrayList      |      ❌      |     ✔️      |       ✔️        |
 | Array of objects      | List with Detail |     ArrayList      |      ❌      |     ✔️      |       ✔️        |
 | Array of enums        | Multiple Choice  |     ArrayList      |      ❌      |     ✔️      |       ✔️        |

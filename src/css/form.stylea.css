@@ -174,20 +174,67 @@ fieldset.styleA.group .group-item {
     /*@apply*/
 }
 
+.styleA.array-list {
+    @apply relative
 
+}
+.styleA .array-list .array-list-item-toolbar {
+    @apply flex gap-1
+    mb-2
+}
+.styleA .array-list .array-list-item-toolbar label {
+     @apply pb-0
+ }
 
+.styleA .array-list .array-list-item-toolbar button {
+    font-size:20px;
+    @apply
+    flex justify-center items-center
+    rounded-full w-7 h-7
+    font-bold
+    hover:bg-gray-300
+}
+.styleA .array-list-item-content {
+    @apply mt-4
+}
 
+.styleA .array-list footer {
+    @apply flex justify-end
+    mt-2
+}
 
+.styleA .array-list table {
+    @apply w-full
+}
+.styleA .array-list table td:last-child {
+    vertical-align: top;
+    @apply w-8
+}
+
+.styleA .array-list button.array-list-item-delete {
+    @apply
+    flex justify-center items-center
+    w-7 h-7 rounded-full
+    hover:bg-red-300
+}
+.styleA .array-list button.array-list-item-delete:after {
+    content:"x";
+    @apply text-red-600 font-bold font-mono
+}
 
 
 .styleA .control .description,
-.styleA .control .error {
-    @apply block h-2 text-sm
+.styleA .control .error,
+.styleA .array-list .error
+{
+    /** h-2 **/
+    @apply block text-sm
 }
 .styleA .control .description {
     @apply text-gray-500
 }
-.styleA .control .error {
+.styleA .control .error,
+.styleA .array-list .error {
     @apply text-red-500
 }
 

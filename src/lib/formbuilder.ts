@@ -190,24 +190,24 @@ export const initElements = (tool: ToolInterface): Array<ToolInterface> => {
 
     tool.uischema?.elements?.forEach((itemUischema: any) => {
         let clone;
-        switch (itemUischema.type) {
-            case 'Control':
-                const propertyPath = normalizeScope(itemUischema.scope);
-                const itemSchema = _.get(tool.schema, propertyPath);
 
-                clone = cloneToolWithSchema(findMatchingTool(tool.schema, itemSchema, itemUischema), itemSchema, itemUischema)
-                clone.propertyName = normalizePath(propertyPath);
+        const isLayout = undefined !== itemUischema.elements
 
-                //required
-                const required = getRequiredFromSchema(clone.propertyName, tool.schema);
-                if (required?.includes(getPlainProperty(clone.propertyName))) {
-                    clone.isRequired = true;
-                }
-                break;
+        if(!isLayout) {
+            const propertyPath = normalizeScope(itemUischema.scope);
+            const itemSchema = _.get(tool.schema, propertyPath);
 
-            default:
-                clone = cloneToolWithSchema(findLayoutToolByUiType(itemUischema.type) ?? unknownTool, tool.schema, itemUischema);
-                break;
+            clone = cloneToolWithSchema(findMatchingTool(tool.schema, itemSchema, itemUischema), itemSchema, itemUischema)
+            clone.propertyName = normalizePath(propertyPath);
+
+            //required
+            const required = getRequiredFromSchema(clone.propertyName, tool.schema);
+            if (required?.includes(getPlainProperty(clone.propertyName))) {
+                clone.isRequired = true;
+            }
+        }
+        else {
+            clone = cloneToolWithSchema(findLayoutToolByUiType(itemUischema.type) ?? unknownTool, tool.schema, itemUischema);
         }
 
         tools.push(clone);
@@ -437,24 +437,8 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
     switch (uischema.type) {
         case 'Control':
             if('array' === tool?.schema?.type) {
-
-                const firstChild = childTools[0];
-                const isFirstChildLayout = firstChild && 'Control' !== firstChild.uischema.type; //:TODO add better check!
-
-                if(isFirstChildLayout) {
-                    const subSchema = { type: 'object' };
-                    const detailSchema = createJsonUiSchema(childComponents[firstChild.uuid], subSchema);
-
-                    tool.schema['items'] = subSchema;
-                    setItemSchemaToSchema(tool, rootSchema);
-
-                    created.options['detail'] = detailSchema
-                }
-                else {
-                    const schemasToPush = createTypeArraySchema(refElm);
-                    _.merge(rootSchema,{properties:schemasToPush})
-                }
-
+                const schemasToPush = createTypeArraySchema(refElm);
+                _.merge(rootSchema,{properties:schemasToPush})
             }
             else if(tool instanceof ObjectTool) {
                 const schemasToPush = createTypeObjectSchema(refElm);

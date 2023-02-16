@@ -14,19 +14,14 @@
         :isFocused="!!input.isFocused"
         :appliedOptions="input.appliedOptions"
     >
-
-      <div :class="input.styles.arrayList.toolbar">
-        <span
-            v-text="control.childErrors.length +' Errors'"
-            v-if="control.childErrors.length > 0"
-        />
+      <div :class="input.styles.arrayList.itemToolbar">
 
         <select v-model="currentlyExpanded">
           <option
               v-for="(_element, index) in control.data"
               :key="`${control.path}-${index}`"
               :class="input.styles.arrayList.item"
-              v-text="'' + (index+1) +'. '+ input.childLabelForIndex(index)"
+              v-text="'' + (index+1) +'. '+ input.childLabelForIndex(index) + (errorsPerChild[index] ? ' ('+ errorsPerChild[index].length +' Errors)' : '')"
               :value="index"
           />
         </select>
@@ -38,37 +33,50 @@
                   (input.appliedOptions.restrict && arraySchema?.maxItems !== undefined && dataLength >= arraySchema.maxItems)
                 "
             @click="addButtonClick"
-            :aria-label="`Add to ${control.label}`"
         >
-          Add
+          +
         </button>
-      </div>
 
-
-      <div :class="input.styles.arrayList.itemToolbar">
-        <button
-            :class="input.styles.arrayList.itemDelete"
-            :disabled="!control.enabled || (input.appliedOptions.restrict && arraySchema?.minItems !== undefined && dataLength <= arraySchema.minItems)"
-            @click="onDelete(currentlyExpanded)"
-            v-if="dataLength > 0"
-        >
-          Delete
-        </button>
       </div>
 
       <div v-if="dataLength > 0" :class="input.styles.arrayList.itemContent">
-        <dispatch-renderer
-            :schema="control.schema"
-            :uischema="foundUISchema"
-            :path="composePaths(control.path, `${currentlyExpanded}`)"
-            :enabled="control.enabled"
-            :renderers="control.renderers"
-            :cells="control.cells"
-        />
+
+        <fieldset class="group">
+          <legend class="group-label">{{  input.childLabelForIndex(currentlyExpanded)  }}</legend>
+
+          <dispatch-renderer
+              :schema="control.schema"
+              :uischema="foundUISchema"
+              :path="composePaths(control.path, `${currentlyExpanded}`)"
+              :enabled="control.enabled"
+              :renderers="control.renderers"
+              :cells="control.cells"
+          />
+
+          <footer>
+              <button
+                  :class="input.styles.arrayList.itemDelete"
+                  :disabled="!control.enabled || (input.appliedOptions.restrict && arraySchema?.minItems !== undefined && dataLength <= arraySchema.minItems)"
+                  @click="onDelete(currentlyExpanded)"
+                  v-if="dataLength > 0"
+              />
+          </footer>
+
+        </fieldset>
       </div>
 
       <div v-if="dataLength === 0" :class="input.styles.arrayList.noData">
         No data
+      </div>
+
+
+
+
+      <div :class="input.styles.control.error"
+           v-if="control.childErrors.length > 0">
+        <span
+            v-text="control.childErrors.length +' Errors'"
+        />
       </div>
 
     </control-wrapper>
@@ -116,6 +124,21 @@ const foundUISchema = computed((): UISchemaElement => {
       input.control.value.rootSchema
   );
 });
+
+const errorsPerChild = computed(() => {
+  const r = {} as Record<string, Array<any>>;
+  input.control.value.childErrors.forEach(error => {
+     const found = error.instancePath.match('\/'+input.control.value.path+'\/(\\d+)')
+     if(found && found[1]) {
+       if(!r[found[1]]) {
+         r[found[1]] = [];
+       }
+       r[found[1]].push(error);
+     }
+   });
+
+  return r;
+})
 
 const addButtonClick = () => {
   input.addItem(input.control.value.path, createDefaultValue(input.control.value.schema))();

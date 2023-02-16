@@ -29,7 +29,7 @@ import {
     isBooleanControl,
     optionIs,
     isEnumControl,
-    isOneOfEnumControl, isRangeControl, isStringControl, formatIs
+    isOneOfEnumControl, isRangeControl, isStringControl, formatIs, schemaTypeIs, isObjectArray
 } from "@jsonforms/core";
 import type {JsonSchema} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
@@ -72,15 +72,6 @@ export const enumArrayRendererEntry = {
         ))
 };
 
-export const arrayControlRendererEntry = {
-    renderer: ArrayControlRenderer,
-    tester: rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl))
-};
-
-export const arrayLayoutRendererEntry = {
-    renderer: ArrayLayoutRenderer,
-    tester: rankWith(4, isObjectArrayWithNesting)
-};
 
 export const booleanToggleControlRendererEntry = {
     renderer: BooleanToggleControlRenderer,
@@ -107,11 +98,24 @@ export const boplusVueVanillaRenderers = [
     allOfRendererEntry,
     anyOfRendererEntry,
     objectRendererEntry,
-    arrayControlRendererEntry,
     enumArrayRendererEntry,
-    arrayLayoutRendererEntry,
     booleanToggleControlRendererEntry,
     radioGroupControlRendererEntry,
     sliderControlRendererEntry,
     passwordControlRendererEntry,
 ];
+
+boplusVueVanillaRenderers.push({
+    renderer: ArrayControlRenderer,
+    tester: rankWith(4, or(isObjectArrayControl, isPrimitiveArrayControl))
+});
+
+boplusVueVanillaRenderers.push({
+    renderer: ArrayLayoutRenderer,
+    tester: rankWith(3, schemaTypeIs('array'))
+});
+
+boplusVueVanillaRenderers.push({
+    renderer: ArrayLayoutRenderer,
+    tester: rankWith(5, or(isObjectArrayWithNesting, and(uiTypeIs('ListWithDetail'), isObjectArray)))
+});
