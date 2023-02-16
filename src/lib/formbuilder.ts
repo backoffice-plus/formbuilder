@@ -69,10 +69,8 @@ export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uis
     _.merge(clone.schema, {...schema})
     _.merge(clone.uischema, {...uischema})
 
-    if ('Control' === clone.uischema.type) {
-        if (clone.uischema?.scope) {
-            clone.propertyName = fromScopeToProperty(clone.uischema.scope)
-        }
+    if ('scope' in clone.uischema) {
+        clone.propertyName = fromScopeToProperty(clone.uischema.scope)
     }
 
     //set default data (sets init data if schema hasnt)
@@ -181,6 +179,40 @@ export const initObjectElements = (tool: ToolInterface): Array<ToolInterface> =>
     });
 
     return tools;
+};
+
+export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout) => {
+    const uiSchemaType = (uischema?.type && uischema.type) ?? 'VerticalLayout';
+
+    const isLayout = "elements" in uischema;
+
+    const {findLayoutToolByUiType, findMatchingTool} = useTools();
+
+    let itemSchema = schema;
+    let tool;
+
+    if(isLayout) {
+        tool = findLayoutToolByUiType(uiSchemaType) ?? unknownTool;
+    }
+
+    //specialcase - some examples use none-Layout-elements as root
+    else {
+
+        //not working well!!!
+        if ('#' === uischema.scope) {
+            const props = schema.properties as any;
+            const propKeys = Object.keys(props);
+            itemSchema = propKeys[0] && props[propKeys[0]] as any
+        } else {
+            itemSchema = _.get(schema, normalizeScope(uischema.scope));
+        }
+
+        tool = findMatchingTool(schema, itemSchema, uischema) ?? unknownTool;
+    }
+
+    const clone = cloneToolWithSchema(tool, itemSchema, uischema);
+
+    return clone;
 };
 
 export const initElements = (tool: ToolInterface): Array<ToolInterface> => {

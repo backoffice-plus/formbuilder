@@ -76,22 +76,18 @@
 
 
 <script setup>
-import {computed, ref, unref, onMounted, onBeforeUnmount, watch} from 'vue'
+import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount} from 'vue'
 import {
   FormBuilderBar,
   createJsonForms,
-  emitter, cloneToolWithSchema, createTypeObjectSchema, findAllProperties, findAllScopes, cloneEmptyTool,
+  emitter, cloneToolWithSchema, createTypeObjectSchema, findAllProperties, findAllScopes, findBaseTool,
 } from "../index";
 import Modal from "./Modal.vue";
-import {Generate} from "@jsonforms/core/src/generators/Generate";
 import {useTools} from "../composable/tools";
-import {unknownTool} from "../lib/tools/unknownTool";
 import {useJsonforms} from "../composable/jsonforms";
 import {normalizePath, normalizeScope} from "../lib/normalizer";
 import _ from "lodash";
 import {objectTool} from "../lib/tools/ObjectTool";
-import {vanillaRenderers} from "@jsonforms/vue-vanilla";
-import {boplusVueVanillaRenderers} from "../../packages/boplus-vue-vanilla/src";
 
 const props = defineProps({
   jsonForms: Object,
@@ -121,24 +117,8 @@ const {update} = useJsonforms();
 const baseTool = computed(() => {
   const schema = unref(jsonFormsSchema);
   const uischema = unref(jsonFormsUiSchema);
-  const uiSchemaType = (uischema?.type && uischema.type) ?? 'VerticalLayout';
 
-  //specialcase - some examples use none-Layout-elements as root
-  if ('Control' === uischema?.type) {
-    let itemSchema;
-    //not working well!!!
-    if ('#' === uischema.scope) {
-      const propKeys = Object.keys(schema.properties);
-      itemSchema = propKeys[0] && schema.properties[propKeys[0]]
-    } else {
-      itemSchema = _.get(schema, normalizeScope(uischema.scope));
-    }
-    const tool = findMatchingTool(schema, itemSchema, uischema) ?? unknownTool;
-    return cloneToolWithSchema(tool, itemSchema, uischema);
-  }
-
-  const tool = findLayoutToolByUiType(uiSchemaType) ?? unknownTool;
-  return cloneToolWithSchema(tool, schema, uischema);
+  return findBaseTool(schema, uischema);
 })
 
 const baseDefinitionTool = computed(() => {
@@ -244,9 +224,11 @@ const updateJsonForm = () => {
 const setRootForm = (e) => rootForm.value = e
 const setRootDefinitionForm = (e) => rootDefinitionForm.value = e
 
-onMounted(() => {
+onBeforeMount(() => {
   unregisterAllTools();   //is that a good behavior?
   registerTools(props.tools);
+});
+onMounted(() => {
 
   window.setTimeout(() => emitter.emit('formBuilderUpdated'), 50);
 

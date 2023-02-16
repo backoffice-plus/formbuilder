@@ -11,6 +11,7 @@ import * as optionsdetail from './optionsdetail';
 import * as optionModaRule from './optionModaRule';
 import * as nestedRefs from './nestedRefs';
 import * as login from './login';
+import * as listwithdetail from './listwithdetail';
 
 export {
   _default,
@@ -26,4 +27,5 @@ export {
   optionModaRule,
   nestedRefs,
   login,
+  listwithdetail,
 }

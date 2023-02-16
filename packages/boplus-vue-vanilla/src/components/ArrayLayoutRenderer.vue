@@ -127,7 +127,7 @@ const foundUISchema = computed((): UISchemaElement => {
 
 const errorsPerChild = computed(() => {
   const r = {} as Record<string, Array<any>>;
-  input.control.value.childErrors.forEach(error => {
+  input.control.value.childErrors.forEach((error:any) => {
      const found = error.instancePath.match('\/'+input.control.value.path+'\/(\\d+)')
      if(found && found[1]) {
        if(!r[found[1]]) {

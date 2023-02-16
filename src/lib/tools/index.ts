@@ -12,6 +12,7 @@ import {objectTool} from "./ObjectTool";
 import type {JsonSchema} from "@jsonforms/core";
 import type {RankedTester} from "@jsonforms/core/src/testers/testers";
 import type {JsonFormsInterface, JsonFormsUISchema} from "../models";
+import {listWithDetailTool} from "./ListWithDetailTool";
 export type {JsonFormsInterface, JsonFormsUISchema}
 
 export const layoutTools = [
@@ -21,6 +22,7 @@ export const layoutTools = [
     categorizationTool,
     categoryTool,
     labelTool,
+    listWithDetailTool,
 ]
 
 export const controlTools = [

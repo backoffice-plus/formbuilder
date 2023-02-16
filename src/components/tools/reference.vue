@@ -4,7 +4,9 @@
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
         <!-- TODO: there is no propName in: anyOf[{$ref:'...}] -->
-        <b>{{ tool.propertyName }}</b>
+        <template v-if="!isInlineType">
+          <b>{{ tool.propertyName }}</b>
+        </template>
 
         <pre class="bg-gray-200 inline p-0.5 px-2 rounded text-sm">{{ props.tool.schema?.$ref ?? ' ' }}</pre>
       </template>
@@ -38,6 +40,7 @@ const props = defineProps({
   index: Number, //for deleting correct element in list
 
   isDragging: Boolean, //needed in flexarea
+  isInlineType: Boolean, //from arrayTool
 })
 
 const emit = defineEmits(['deleteByIndex']);
