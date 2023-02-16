@@ -184,7 +184,7 @@ export const initObjectElements = (tool: ToolInterface): Array<ToolInterface> =>
 export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout) => {
     const uiSchemaType = (uischema?.type && uischema.type) ?? 'VerticalLayout';
 
-    const isLayout = "elements" in uischema;
+    const isLayout = (uischema && "elements" in uischema) ?? true;
 
     const {findLayoutToolByUiType, findMatchingTool} = useTools();
 
@@ -196,7 +196,7 @@ export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout) 
     }
 
     //specialcase - some examples use none-Layout-elements as root
-    else {
+    else if(uischema) {
 
         //not working well!!!
         if ('#' === uischema.scope) {
@@ -466,37 +466,45 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
 
     const created = _.cloneDeep(uischema) as JsonFormsUISchema;
 
-    switch (uischema.type) {
-        case 'Control':
-            if('array' === tool?.schema?.type) {
+    const isLayout = undefined !== created.elements
+
+    if(!isLayout) {
+        if ('array' === tool?.schema?.type) {
+
+            const firstChild = childTools[0];
+            const isFirstChildLayout = firstChild && 'Control' !== firstChild.uischema.type; //:TODO add better check!
+
+            if(isFirstChildLayout) {
+                const subSchema = { type: 'object' };
+                const detailSchema = createJsonUiSchema(childComponents[firstChild.uuid], subSchema);
+
+                tool.schema['items'] = subSchema;
+                setItemSchemaToSchema(tool, rootSchema);
+
+                created.options['detail'] = detailSchema
+            }
+            else {
                 const schemasToPush = createTypeArraySchema(refElm);
                 _.merge(rootSchema,{properties:schemasToPush})
             }
-            else if(tool instanceof ObjectTool) {
-                const schemasToPush = createTypeObjectSchema(refElm);
-                _.merge(rootSchema,{properties:schemasToPush,type:'object'})
-            }
-            else if(tool instanceof CombinatorTool) {
-                tool.schema = createCombinatorSchema(refElm);
-                setItemSchemaToSchema(tool, rootSchema);
-            }
-            else {
-                setItemSchemaToSchema(tool, rootSchema);
-            }
-            break;
 
-        case 'VerticalLayout':
-        case 'HorizontalLayout':
-        case 'Categorization':
-        case 'Category':
-        case 'Group':
-            created.elements = childTools.map((tool: ToolInterface) => {
-                if (!childComponents[tool.uuid]) {
-                    throw "no child with uuid " + tool.uuid + " found";
-                }
-                return createJsonUiSchema(childComponents[tool.uuid], rootSchema)
-            }) ?? [];
-            break;
+        } else if (tool instanceof ObjectTool) {
+            const schemasToPush = createTypeObjectSchema(refElm);
+            _.merge(rootSchema, {properties: schemasToPush, type: 'object'})
+        } else if (tool instanceof CombinatorTool) {
+            tool.schema = createCombinatorSchema(refElm);
+            setItemSchemaToSchema(tool, rootSchema);
+        } else {
+            setItemSchemaToSchema(tool, rootSchema);
+        }
+    }
+    else {
+        created.elements = childTools.map((tool: ToolInterface) => {
+            if (!childComponents[tool.uuid]) {
+                throw "no child with uuid " + tool.uuid + " found";
+            }
+            return createJsonUiSchema(childComponents[tool.uuid], rootSchema)
+        }) ?? [];
     }
 
     return created;
