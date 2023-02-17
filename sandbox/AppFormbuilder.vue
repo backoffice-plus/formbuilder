@@ -36,7 +36,7 @@ import FormBuilderDetails from "./FormBuilderDetails.vue";
 import {computed, onMounted, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
 import {getExamples} from '@jsonforms/examples/src'
-import {generateDefaultUISchema} from "@jsonforms/core";
+import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import {resolveSchema} from "../src";
 import {htmlTool} from "./tool/htmlTool";
 import {getExampleFromUrl, getUrl} from "./lib";
@@ -65,16 +65,25 @@ const disableFormbuilder = ref(false);
 const jsonFormsResolved = ref({});
 
 const jsonForms = computed(() => {
-  const exampleData = getExamples().find(item => item.name===example.value);
+  let exampleData = {schema:undefined, uischema:undefined} as any;
 
-  if(exampleData) {
-    if(exampleData?.uischema && schemaReadOnly.value) {
-      exampleData.uischema = {};
+  if(example.value) {
+    exampleData = getExamples().find(item => item.name===example.value) as any;
+
+    if(exampleData) {
+      if(exampleData?.uischema && schemaReadOnly.value) {
+        exampleData.uischema = {};
+      }
+      if(!exampleData?.uischema && !schemaReadOnly.value) {
+        console.log("sandbox app","UiSschema generated because example is empty");
+        exampleData.uischema = generateDefaultUISchema(exampleData.schema)
+      }
     }
-    if(!exampleData?.uischema && !schemaReadOnly.value) {
-      console.log("sandbox app","UiSschema generated because example is empty");
-      exampleData.uischema = generateDefaultUISchema(exampleData.schema)
-    }
+  }
+  else {
+    const schema = generateJsonSchema({});
+    const uischema = generateDefaultUISchema(schema);
+    exampleData = {schema: schema, uischema: uischema};
   }
 
   return exampleData

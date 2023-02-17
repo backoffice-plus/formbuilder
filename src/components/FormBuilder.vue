@@ -88,6 +88,8 @@ import {useJsonforms} from "../composable/jsonforms";
 import {normalizePath, normalizeScope} from "../lib/normalizer";
 import _ from "lodash";
 import {objectTool} from "../lib/tools/ObjectTool";
+import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
+import {generateJsonSchema} from "@jsonforms/core";
 
 const props = defineProps({
   jsonForms: Object,
@@ -114,9 +116,23 @@ const {getControlTools, getLayoutTools} = useTools();
 const {update} = useJsonforms();
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
 
+
+//:TODO there is a lot of renderings - how to optimize?
+// onRenderTriggered((e) => {
+//   console.log("FB.onRenderTriggered",e);
+// });
+
+
 const baseTool = computed(() => {
-  const schema = unref(jsonFormsSchema);
-  const uischema = unref(jsonFormsUiSchema);
+  let schema = unref(jsonFormsSchema);
+  let uischema = unref(jsonFormsUiSchema);
+
+  if(undefined === schema) {
+    schema = generateJsonSchema({});
+  }
+  if(undefined === uischema) {
+    uischema = generateDefaultUISchema(schema);
+  }
 
   return findBaseTool(schema, uischema);
 })
@@ -229,15 +245,16 @@ onBeforeMount(() => {
   registerTools(props.tools);
 });
 onMounted(() => {
-
-  window.setTimeout(() => emitter.emit('formBuilderUpdated'), 50);
+  const updateJsonFormDebounced = _.debounce(() => {
+    window.setTimeout(updateJsonForm, 100);
+  },100,{leading:false, trailing:true})
 
   emitter.on('formBuilderModal', (data) => {
     isModalOpen.value = true;
     toolEdit.value = data.tool;
   })
   emitter.on('formBuilderUpdated', (data) => {
-    window.setTimeout(updateJsonForm, 100);
+    updateJsonFormDebounced();
   });
 });
 onBeforeUnmount(() => {

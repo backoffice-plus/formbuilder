@@ -181,10 +181,17 @@ export const initObjectElements = (tool: ToolInterface): Array<ToolInterface> =>
     return tools;
 };
 
-export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout) => {
-    const uiSchemaType = (uischema?.type && uischema.type) ?? 'VerticalLayout';
+export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout) : ToolInterface => {
 
-    const isLayout = (uischema && "elements" in uischema) ?? true;
+    if(undefined === schema) {
+        throw "schema is undefined"
+    }
+    if(undefined === uischema) {
+        throw "uischema is undefined"
+    }
+
+    const isLayout = "elements" in uischema
+    const isScoped = "uischema" in uischema;
 
     const {findLayoutToolByUiType, findMatchingTool} = useTools();
 
@@ -192,19 +199,21 @@ export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout) 
     let tool;
 
     if(isLayout) {
-        tool = findLayoutToolByUiType(uiSchemaType) ?? unknownTool;
+        tool = findLayoutToolByUiType(uischema.type) ?? unknownTool;
     }
 
     //specialcase - some examples use none-Layout-elements as root
-    else if(uischema) {
+    else {
+        if(isScoped) {
 
-        //not working well!!!
-        if ('#' === uischema.scope) {
-            const props = schema.properties as any;
-            const propKeys = Object.keys(props);
-            itemSchema = propKeys[0] && props[propKeys[0]] as any
-        } else {
-            itemSchema = _.get(schema, normalizeScope(uischema.scope));
+            //not working well!!!
+            if ('#' === uischema?.scope) {
+                const props = schema.properties as any;
+                const propKeys = Object.keys(props);
+                itemSchema = propKeys[0] && props[propKeys[0]] as any
+            } else {
+                itemSchema = _.get(schema, normalizeScope(uischema.scope));
+            }
         }
 
         tool = findMatchingTool(schema, itemSchema, uischema) ?? unknownTool;
