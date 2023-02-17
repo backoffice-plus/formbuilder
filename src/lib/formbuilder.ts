@@ -473,11 +473,14 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
 
     const uischema = tool.uischema;
 
-    const created = _.cloneDeep(uischema) as JsonFormsUISchema;
+    const created = _.cloneDeep(uischema) as JsonFormsUISchema|any;
 
-    const isLayout = undefined !== created.elements
+    const isScoped = "scope" in created;
+    const isLayout = "elements" in created;
+    const hasChilds = childTools?.length > 0;
 
-    if(!isLayout) {
+
+    if(isScoped) {
         if ('array' === tool?.schema?.type) {
 
             const firstChild = childTools[0];
@@ -507,7 +510,7 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
             setItemSchemaToSchema(tool, rootSchema);
         }
     }
-    else {
+    else if(hasChilds) {
         created.elements = childTools.map((tool: ToolInterface) => {
             if (!childComponents[tool.uuid]) {
                 throw "no child with uuid " + tool.uuid + " found";
