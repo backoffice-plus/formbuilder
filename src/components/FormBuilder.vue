@@ -249,6 +249,12 @@ onMounted(() => {
     window.setTimeout(updateJsonForm, 100);
   },100,{leading:false, trailing:true})
 
+  //trigger update if there are no elements (that would emit 'formBuilderUpdated')
+  const hasElements = (props.jsonForms?.uischema?.elements?.length ?? 0) > 0;
+  if(!hasElements) {
+    updateJsonForm();
+  }
+
   emitter.on('formBuilderModal', (data) => {
     isModalOpen.value = true;
     toolEdit.value = data.tool;
