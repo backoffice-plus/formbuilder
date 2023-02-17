@@ -1,6 +1,6 @@
 <template>
 
-  <div class="">
+  <div class="formbuilder">
 
 
     <Modal
@@ -14,18 +14,23 @@
         v-if="isModalOpen && toolEdit"
     />
 
-    <div class="tabs">
-      <button @click="showBuilder='uischema';showBar='uischema';" :class="{active:'uischema'===showBuilder&&'uischema'===showBar}">UI Schema</button>
-      <button @click="showBuilder='definitions';showBar='uischema';" :class="{active:'definitions'===showBuilder&&'uischema'===showBar}" v-if="!schemaReadOnly">Definitions</button>
-      <button @click="showBuilder='uischema';showBar='properties';" :class="{active:'uischema'===showBuilder&&'properties'===showBar}" v-if="schemaReadOnly">Properties</button>
-    </div>
 
-    <FormBuilderBar
-        :jsonForms="schemaReadOnly ? props.jsonForms : {}"
-        :tools="'properties'===showBar ? readonlyTools : tools"
-        :schemaReadOnly="!!schemaReadOnly"
-        @drag="e=>drag = !!e"
-    />
+      <nav>
+
+        <div class="tabs">
+          <button @click="showBuilder='uischema';showBar='uischema';" :class="{active:'uischema'===showBuilder&&'uischema'===showBar}">UI Schema</button>
+          <button @click="showBuilder='definitions';showBar='uischema';" :class="{active:'definitions'===showBuilder&&'uischema'===showBar}" v-if="!schemaReadOnly">Definitions</button>
+          <button @click="showBuilder='uischema';showBar='properties';" :class="{active:'uischema'===showBuilder&&'properties'===showBar}" v-if="schemaReadOnly">Properties</button>
+        </div>
+
+        <FormBuilderBar
+            :jsonForms="schemaReadOnly ? props.jsonForms : {}"
+            :tools="'properties'===showBar ? readonlyTools : tools"
+            :schemaReadOnly="!!schemaReadOnly"
+            @drag="e=>drag = !!e"
+        />
+
+      </nav>
 
     <!-- UISchema -->
     <template v-if="'uischema' === showBuilder">

@@ -29,6 +29,14 @@
 
 </template>
 
+<style>
+.formbuilder nav {
+ @apply
+ sticky top-0 z-50 bg-gray-100 pb-4 pt-2
+}
+
+</style>
+
 <script setup lang="ts">
 
 import {defaultTools, FormBuilder} from "../src/index.ts";
