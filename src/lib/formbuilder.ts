@@ -232,9 +232,10 @@ export const initElements = (tool: ToolInterface): Array<ToolInterface> => {
     tool.uischema?.elements?.forEach((itemUischema: any) => {
         let clone;
 
-        const isLayout = undefined !== itemUischema.elements
+        //const isLayout = undefined !== itemUischema.elements
+        const isScoped = itemUischema.scope;
 
-        if(!isLayout) {
+        if(isScoped) {
             const propertyPath = normalizeScope(itemUischema.scope);
             const itemSchema = _.get(tool.schema, propertyPath);
 
@@ -476,7 +477,7 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
     const created = _.cloneDeep(uischema) as JsonFormsUISchema|any;
 
     const isScoped = "scope" in created;
-    const isLayout = "elements" in created;
+    //const isLayout = "elements" in created;
     const hasChilds = childTools?.length > 0;
 
 
