@@ -29,14 +29,18 @@ export class SelectTool extends AbstractTool implements ToolInterface {
     importer = () => formInputByType;
     tester = rankWith(2, and(isStringControl, or(isOneOfControl, isEnumControl))); //TODO: isOneOfEnumControl needed?
 
+    constructor(uischemaType: string = 'Control') {
+        super(uischemaType);
+
+        if(!this.schema.enum && !this.schema.oneOf) {
+            this.schema.enum = [''];
+        }
+    }
+
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
         const schema = this.schema as JsonSchema;
         const uischema = this.uischema as ControlElement;
 
-        //init data
-        if(!schema.enum && !schema.oneOf) {
-            schema.enum = [''];
-        }
 
         const data = {
             propertyName: this.propertyName,
@@ -106,7 +110,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
     }
 
     clone(): ToolInterface {
-        return new SelectTool(this.uischema.type, this.toolType);
+        return new SelectTool(this.uischema.type);
     }
 
     toolbarOptions():Record<string, any> {
@@ -121,4 +125,4 @@ export class SelectTool extends AbstractTool implements ToolInterface {
 }
 
 
-export const selectTool = new SelectTool('Control', 'select')
+export const selectTool = new SelectTool()

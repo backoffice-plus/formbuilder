@@ -15,6 +15,9 @@ export interface JsonFormsUISchema extends UISchemaElement, LabelElement, Contro
     type: string
 }
 
+//export type JsonFormsUISchema = UISchemaElement | LabelElement | ControlElement | Category| Categorization;
+
+
 //root JsonForms
 export interface JsonFormsInterface {
     schema: JsonSchema;

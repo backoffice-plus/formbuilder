@@ -36,7 +36,7 @@ export class LabelTool extends AbstractTool implements ToolInterface {
     }
 
     clone(): ToolInterface {
-        return new LabelTool(this.uischema.type, this.toolType);
+        return new LabelTool(this.uischema.type);
     }
 
     toolbarOptions(): Record<string, any> {

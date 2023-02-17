@@ -5,28 +5,28 @@ import type {ToolInterface} from "./index";
 
 export abstract class AbstractTool implements ToolInterface {
 
-    //constructor
-    uuid: string;
-    toolType: string; //to distinguish between different Control types
-
+    private _uuid: string|undefined;
     propertyName: string = 'Unknown';
     isRequired: boolean = false;//neccesary because required is stored in parentNode
     schemaReadOnly: boolean = false; //only neccesary to show at toolbar :TODO: remove it and find other solution
 
     //from props
     schema: JsonSchema = {};
-    uischema: JsonFormsUISchema;
+    uischema: JsonFormsUISchema|any;
 
-    constructor(uischemaType: string = 'Unknown', toolType: string | undefined = undefined) {
+    constructor(uischemaType: string = 'Unknown') {
         this.uischema = {
             type: uischemaType
         } as JsonFormsUISchema;
+    }
 
-        this.toolType = toolType ?? uischemaType.toLowerCase();
-
-        //:TODO find better random id
-        //this.uuid = crypto.randomUUID();
-        this.uuid = String(Date.now().toString(32) + Math.random().toString(16)).replace(/\./g, '');
+    get uuid(): string {
+        if(!this._uuid) {
+            //:TODO find better random id
+            //this.uuid = crypto.randomUUID();
+            this._uuid = String(Date.now().toString(32) + Math.random().toString(16)).replace(/\./g, '');
+        }
+        return this._uuid;
     }
 
     abstract clone(): ToolInterface;

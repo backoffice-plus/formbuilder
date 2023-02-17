@@ -4,9 +4,9 @@
 
       <template v-if="isToolbar">
 
-        <span :title="name ?? tool.toolType">
+        <span :title="name ">
 
-            <span class="tool" :class="[uiSchemaType, tool.toolType, {readOnly:tool.itemsReadOnly}]">
+            <span class="tool" :class="[uiSchemaType,  {readOnly:tool.itemsReadOnly}]">
               <label>{{ name }}</label>
               <span class="icon"/>
             </span>
@@ -20,7 +20,7 @@
       <template v-else>
 
         <div class="flex gap-2 items-center">
-          <span :class="['toolIcon', uiSchemaType, tool.toolType]" v-if="showIcon"><span class="icon"/></span>
+          <span :class="['toolIcon', uiSchemaType, ]" v-if="showIcon"><span class="icon"/></span>
 
           <label :class="{'font-medium':isControl}">{{ name }}</label>
 
@@ -158,7 +158,7 @@ const uiSchemaType = computed(() => tool.uischema?.type);
 const extraLabel = ref('');
 
 const isControl = computed(() => 'Control' === tool.uischema.type);
-const showIcon = computed(() => !isControl.value || ['reference','combinator','array','object'].includes(tool.toolType));
+const showIcon = computed(() => !isControl.value || ['reference','combinator','array','object'].includes('__tool.toolType'));
 
 const name = computed(() => {
 
@@ -173,7 +173,7 @@ const name = computed(() => {
     return tool.propertyName;
   }
 
-  if(['reference','combinator','array','object'].includes(tool.toolType)) {
+  if(['reference','combinator','array','object'].includes('__tool.toolType')) {
     label = null;
   }
 
@@ -182,7 +182,7 @@ const name = computed(() => {
   }
 
   //if label exists, then show only label
-  if(label && ['category','group'].includes(tool.toolType)) {
+  if(label && ['category','group'].includes('__tool.toolType')) {
     return label;
   }
   if(['Label'].includes(tool?.uischema.type)) {

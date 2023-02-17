@@ -18,19 +18,25 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     //tester = rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl));//not working for $ref (we want unresolved schema)
     tester = rankWith(3, (uischema, schema, rootSchema) => 'array' === schema?.type && 'object' === typeof schema?.items);
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
-        //default schema
+    constructor(uischemaType: string = 'Control') {
+        super(uischemaType);
+
         this.schema.type ??= 'array';
 
         if (undefined === this.schema.items) {
             this.schema.items = {type: 'object'}
         }
+    }
+
+    optionDataPrepare(tool: ToolInterface): Record<string, any> {
 
         // let items = {...this.schema?.items};
         //
         // const hasRef = undefined !== items?.$ref
         const hasItemType = undefined !== getItemsType(this.schema)
         const itemsType = getItemsType(this.schema);
+
+        /** @ts-ignore **/
         const isRef = '$ref' in this.schema?.items;
 
 
@@ -127,7 +133,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     }
 
     clone(): ToolInterface {
-        return new ArrayTool(this.uischema.type, this.toolType);
+        return new ArrayTool(this.uischema.type);
     }
 
     toolbarOptions(): Record<string, any> {
@@ -139,4 +145,4 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     }
 }
 
-export const arrayTool = new ArrayTool('Control', 'array')
+export const arrayTool = new ArrayTool()

@@ -37,13 +37,12 @@ export const controlTools = [
 
 export interface ToolInterface {
     uuid: string;
-    toolType: string;
 
     propertyName: string;
     isRequired: boolean;
 
     schema: JsonSchema;
-    uischema: JsonFormsUISchema;
+    uischema: JsonFormsUISchema|any;
     schemaReadOnly: boolean;
 
     tester: RankedTester | undefined,

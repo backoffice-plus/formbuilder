@@ -17,7 +17,7 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         const noType = undefined === schema?.type
         return hasKeyword && noType
     }));
-    clone = (): ToolInterface => new CombinatorTool(this.uischema.type, 'combinator');
+    clone = (): ToolInterface => new CombinatorTool(this.uischema.type);
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
         return {
@@ -70,4 +70,4 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
 }
 
 // @ts-ignore
-export const combinatorTool = new CombinatorTool('Control', 'combinator');
+export const combinatorTool = new CombinatorTool('Control');

@@ -1,4 +1,5 @@
 import {rankWith} from "@jsonforms/core";
+import type {Layout} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import {AbstractTool} from "./AbstractTool";
 import flexArea from "../../components/tools/flexArea.vue";
@@ -10,6 +11,15 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
 
     importer = () => flexArea;
     tester = rankWith(1, uiTypeIs(this.uischema.type));
+
+    constructor(uischemaType: string = 'VerticalLayout') {
+        super(uischemaType);
+
+        this.uischema = {
+            type: uischemaType,
+            elements: []
+        } as Layout;
+    }
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
         return {
@@ -37,7 +47,7 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
     }
 
     clone(): ToolInterface {
-        return new VerticalLayout(this.uischema.type, this.toolType);
+        return new VerticalLayout(this.uischema.type);
     }
 
     toolbarOptions(): Record<string, any> {
@@ -54,11 +64,11 @@ export class HorizontalLayout extends VerticalLayout {
     tester = rankWith(1, uiTypeIs(this.uischema.type));
 
     clone(): ToolInterface {
-        return new HorizontalLayout(this.uischema.type, this.toolType);
+        return new HorizontalLayout(this.uischema.type);
     }
 }
 
-export const verticalLayout = new VerticalLayout('VerticalLayout',);
+export const verticalLayout = new VerticalLayout();
 export const horizontalLayout = new HorizontalLayout('HorizontalLayout');
 
 

@@ -22,10 +22,14 @@ export class ControlTool extends AbstractTool implements ToolInterface {
     importer = () => formInputByType;
     tester = rankWith(1, or(isStringControl, isBooleanControl, isNumberControl, isIntegerControl));
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
-        //default schema
-        this.schema.type ??= 'string';
+    constructor(uischemaType: string = 'Control') {
+        super(uischemaType);
 
+        this.schema.type ??= 'string';
+    }
+
+
+    optionDataPrepare(tool: ToolInterface): Record<string, any> {
         const data = {
             propertyName: tool.propertyName,
             type: this.schema.type,
@@ -83,7 +87,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
 
 }
 
-export const controlTool = new ControlTool('Control');
+export const controlTool = new ControlTool();
 
 
 /**

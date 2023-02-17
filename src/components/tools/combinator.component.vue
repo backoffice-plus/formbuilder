@@ -142,7 +142,7 @@ const addItem = () => {
 
 const groupPut = (from, to, node, dragEvent) => {
   const tool = node._underlying_vm_;
-  const isControlTool = ['control'].includes(tool.toolType);//;
+  const isControlTool = 'Control' === tool.uischema?.type;
   return isControlTool;
 };
 

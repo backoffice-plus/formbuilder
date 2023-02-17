@@ -59,7 +59,7 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
     }
 
     clone(): ToolInterface {
-        return new ReferenceTool(this.uischema.type, this.toolType);
+        return new ReferenceTool(this.uischema.type);
     }
 
     toolbarOptions(): Record<string, any> {
@@ -70,4 +70,4 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
     }
 }
 
-export const referenceTool = new ReferenceTool('Control', 'reference');
+export const referenceTool = new ReferenceTool('Control');

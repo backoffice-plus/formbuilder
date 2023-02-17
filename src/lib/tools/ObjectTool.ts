@@ -11,12 +11,15 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
     tester = rankWith(1, (uischema, schema, context) => {
         return uischema?.type === 'Control' && schema?.type === 'object' && undefined !== schema?.properties
     })
-    clone = (): ToolInterface => new ObjectTool(this.uischema.type, 'object');
+    clone = (): ToolInterface => new ObjectTool(this.uischema.type);
+
+    constructor(uischemaType: string = 'Control') {
+        super(uischemaType);
+
+        this.schema.type ??= 'object'
+    }
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
-        if (!this.schema.type) {
-            this.schema.type = 'object'
-        }
         return {
             propertyName: this.propertyName,
         } as any;
@@ -43,4 +46,4 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
 }
 
 // @ts-ignore
-export const objectTool = new ObjectTool('Control', 'object');
+export const objectTool = new ObjectTool();

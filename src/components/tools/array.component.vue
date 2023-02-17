@@ -149,7 +149,7 @@ const addItem = () => {
 
 const groupPut = (from, to, node, dragEvent) => {
   const tool = node._underlying_vm_;
-  const isControlTool = ['control', 'select', 'array'].includes(tool.toolType);//;
+  const isControlTool = 'Control' === tool.uischema?.type;
   const isInlineType = 'object' !== props.tool?.schema?.items?.type
   const hasOneItem = from.el.children.length > 0;
 
