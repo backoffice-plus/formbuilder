@@ -1,7 +1,6 @@
 <template>
 
-  <!--  :class="styles.oneOf.root" -->
-  <div class="oneOf" v-if="control.visible">
+  <div :class="input.styles.oneOf.root" v-if="control.visible">
 
     <CompinatorProperties
         :schema="control.schema"
@@ -17,7 +16,7 @@
     >
       <select
           :id="control.id + '-input'"
-          :class="input.styles.control.input"
+          :class="input.styles.oneOf.select"
           :disabled="!control.enabled"
           :autofocus="input.appliedOptions.focus"
           :required="control.required"
@@ -53,6 +52,7 @@ import {createAjv, createCombinatorRenderInfos, createDefaultValue} from '@jsonf
 import {DispatchRenderer, rendererProps, useJsonFormsOneOfControl} from '@jsonforms/vue';
 import {ControlWrapper, useVanillaControl} from "@jsonforms/vue-vanilla";
 import CompinatorProperties from "./CompinatorProperties.vue";
+import {useBoPlusVanillaControl} from "../utils/composition";
 
 
 /**
@@ -61,7 +61,7 @@ import CompinatorProperties from "./CompinatorProperties.vue";
 
 const props = defineProps(rendererProps<ControlElement>());
 
-const input = useVanillaControl(useJsonFormsOneOfControl(props)) as any
+const input = useBoPlusVanillaControl(useJsonFormsOneOfControl(props)) as any
 const control = input.control.value as any;
 
 const confirmedIndex = ref(input.control.value.indexOfFittingSchema);

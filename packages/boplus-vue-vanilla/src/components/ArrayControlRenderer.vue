@@ -4,7 +4,7 @@
 
       <div :class="input.styles.arrayList.itemToolbar">
 
-        <label class="flex-grow">{{ computedLabel }}</label>
+        <label class="flex-grow label">{{ computedLabel }}</label>
 
         <button
             :class="input.styles.arrayList.addButton"

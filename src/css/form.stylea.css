@@ -180,7 +180,6 @@ fieldset.styleA.group .group-item {
 }
 .styleA .array-list .array-list-item-toolbar {
     @apply flex gap-1
-    mb-2
 }
 .styleA .array-list .array-list-item-toolbar label {
      @apply pb-0
@@ -190,7 +189,7 @@ fieldset.styleA.group .group-item {
     font-size:20px;
     @apply
     flex justify-center items-center
-    rounded-full w-7 h-7
+    rounded-full w-5 h-5
     font-bold
     hover:bg-gray-300
 }
@@ -210,6 +209,9 @@ fieldset.styleA.group .group-item {
     vertical-align: top;
     @apply w-8
 }
+.styleA .array-list table tr.array-list-item td .control{
+    @apply mb-2
+}
 
 .styleA .array-list button.array-list-item-delete {
     @apply
@@ -221,7 +223,10 @@ fieldset.styleA.group .group-item {
     content:"x";
     @apply text-red-600 font-bold font-mono
 }
-
+.styleA .array-list-no-data {
+    @apply
+    text-gray-600 text-sm px-2 py-1.5
+}
 
 .styleA .control .description,
 .styleA .control .error,
@@ -360,4 +365,12 @@ fieldset.styleA.group .group-item {
     @apply
     opacity-50
     hover:bg-opacity-0
+}
+
+.styleA .oneof .oneof-select + div {
+    @apply
+    px-4
+}
+.styleA .oneof .wrapper:has(.oneof-select) {
+    @apply flex flex-col gap-2
 }

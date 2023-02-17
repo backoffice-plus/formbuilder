@@ -8,17 +8,18 @@
       :TODO how to change class from jsonForms?
       -->
 <!--      options: {{ options }}-->
-      <JsonForms
-          :class="'styleA'"
-          :schema="jsonFormSchema?.schema"
-          :uischema="jsonFormSchema?.uischema"
-          :data="options"
-          :renderers="mergedJsonFormsRenderers"
-          :ajv="ajv"
-          :i18n="{translate: createI18nTranslate(formBuilderCatalogue)}"
-          @change="onChange"
-          v-if="jsonFormSchema?.schema"
-      />
+      <div class="styleA">
+        <JsonForms
+            :schema="jsonFormSchema?.schema"
+            :uischema="jsonFormSchema?.uischema"
+            :data="options"
+            :renderers="mergedJsonFormsRenderers"
+            :ajv="ajv"
+            :i18n="{translate: createI18nTranslate(formBuilderCatalogue)}"
+            @change="onChange"
+            v-if="jsonFormSchema?.schema"
+        />
+      </div>
 
       <div v-if="error" class="text-red-500">{{error}}</div>
       <div v-if="errorAfterUpdated" class="flex flex-col gap-1">
