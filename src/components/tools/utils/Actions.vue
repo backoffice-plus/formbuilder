@@ -3,14 +3,14 @@
   <div class="toolActions">
     <button type="button" class="options" @click="openModal" />
     <button type="button" class="remove" @click="emit('delete')" v-if="props.deletable"/>
+    <slot></slot>
   </div>
 
 </template>
 
-
-<style scoped>
+<style>
 .toolActions {
-  @apply absolute right-0 top-0
+  @apply absolute right-0.5 top-0.5
 
   transition-opacity duration-300
 }
@@ -24,6 +24,10 @@
   hover:bg-opacity-40
   hover:bg-gray-500
 }
+</style>
+
+
+<style scoped>
 .toolActions button::before {
   content: '';
   width: 16px;

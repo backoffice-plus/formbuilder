@@ -13,13 +13,14 @@
 
     <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
-      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot"/>
+      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
+        <button type="button" @click="addItem" v-if="!isInlineType && !isArrayOfRef"><Icon icon="mdi:plus" /></button>
+      </Actions>
 
-      <div class="tabs" v-if="!isInlineType && !isArrayOfRef">
-        <div class="flex items-center">
-          <button type="button" class="add" @click="addItem" v-text="'[Add]'"/>
-        </div>
-      </div>
+<!--      <div class="tabs">-->
+<!--        <div class="flex items-center">-->
+<!--        </div>-->
+<!--      </div>-->
 
       <Vuedraggable
           :class="['dropArea bg-dotted nestedFlexArea flex-col', {drag:dragSchema}]"
@@ -68,7 +69,7 @@
 }
 
 .dropArea .arrayTool {
-  min-height: 160px !important;
+  min-height: 140px !important;
 }
 </style>
 
@@ -83,6 +84,7 @@ import {useTools} from "../../composable/tools";
 import {cloneEmptyTool, initArrayElements} from "../../lib/formbuilder";
 import {useJsonforms} from "../../composable/jsonforms";
 import ToolIcon from "./utils/ToolIcon.vue";
+import {Icon} from "@iconify/vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -136,10 +138,8 @@ const addItem = () => {
   const {schema} = useJsonforms();
   const {findMatchingTool} = useTools();
 
-  const tool = cloneEmptyTool(findMatchingTool(schema, {type: 'string'}, {
-    type: 'Control',
-    scope: '#'
-  }), {type: 'string'});
+  const initSchema = {type:'string'}
+  const tool = cloneEmptyTool(findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
 
   childTools.value.push(tool);
   //window.setTimeout(buildTabLabels,50);

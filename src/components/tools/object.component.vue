@@ -9,7 +9,9 @@
 
     <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
-      <Actions :tool="tool" @delete="onDelete" v-if="!isRoot"/>
+      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
+        <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>
+      </Actions>
 
 
 <!--        <div class="tabs">-->
@@ -87,6 +89,7 @@ import {cloneEmptyTool, initObjectElements} from "../../lib/formbuilder";
 import {useJsonforms} from "../../composable/jsonforms";
 import _ from "lodash";
 import ToolIcon from "./utils/ToolIcon.vue";
+import {Icon} from "@iconify/vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -131,7 +134,8 @@ const addItem = (type) => {
   const {schema} = useJsonforms();
   const {findMatchingTool} = useTools();
 
-  const tool = cloneEmptyTool(props.tool, {type: type});
+  const initSchema = {type:'string'}
+  const tool = cloneEmptyTool(findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
 
   childTools.value.push(tool);
   //window.setTimeout(buildTabLabels,50);

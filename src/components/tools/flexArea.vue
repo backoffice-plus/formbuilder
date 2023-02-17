@@ -59,7 +59,7 @@
 }
 
 .dropArea {
-  min-height: 80px;
+  min-height: 140px;
   @apply
   w-full
   flex-grow

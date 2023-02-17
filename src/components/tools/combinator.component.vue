@@ -7,15 +7,11 @@
       </template>
     </ToolIcon>
 
-    <div v-if="!isToolbar">
+    <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
-      <Actions :tool="tool" @delete="onDelete"/>
-
-      <div class="tabs">
-        <div class="flex items-center">
-          <button type="button" class="add" @click="addItem" v-text="'[Add]'"/>
-        </div>
-      </div>
+      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
+        <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>
+      </Actions>
 
       <Vuedraggable
           :class="['dropArea bg-dotted nestedFlexArea flex-col', {drag:dragSchema}]"
@@ -63,7 +59,7 @@
   bg-green-100
 }
 .dropArea .combinatorTool {
-   min-height:200px !important;
+   min-height:180px !important;
  }
 </style>
 
@@ -80,10 +76,12 @@ import {cloneEmptyTool, initCombinatorElements} from "../../lib/formbuilder";
 import {useJsonforms} from "../../composable/jsonforms";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import ToolIcon from "./utils/ToolIcon.vue";
+import {Icon} from "@iconify/vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
   isToolbar: Boolean,
+  isRoot: Boolean,
   index: Number, //for deleting correct element in list
 
   isDragging: Boolean, //needed in flexarea
@@ -138,7 +136,6 @@ const addItem = () => {
   //window.setTimeout(buildTabLabels,50);
   emitter.emit('formBuilderUpdated')
 };
-
 
 const groupPut = (from, to, node, dragEvent) => {
   const tool = node._underlying_vm_;
