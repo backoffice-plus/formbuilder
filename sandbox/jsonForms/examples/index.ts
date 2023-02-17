@@ -12,6 +12,7 @@ import * as optionModaRule from './optionModaRule';
 import * as nestedRefs from './nestedRefs';
 import * as login from './login';
 import * as listwithdetail from './listwithdetail';
+import * as autocompleteEnum from './autocompleteEnum';
 
 export {
   _default,
@@ -28,4 +29,5 @@ export {
   nestedRefs,
   login,
   listwithdetail,
+  autocompleteEnum,
 }

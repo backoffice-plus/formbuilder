@@ -10,6 +10,7 @@ import BooleanToggleControlRenderer from "./components/BooleanToggleControlRende
 import RadioGroupControlRenderer from "./components/RadioGroupControlRenderer.vue";
 import SliderControlRenderer from "./components/SliderControlRenderer.vue";
 import PasswordControlRenderer from "./components/PasswordControlRenderer.vue";
+import AutocompleteRenderer from "./components/AutocompleteRenderer.vue";
 
 import {
     and,
@@ -119,3 +120,10 @@ boplusVueVanillaRenderers.push({
     renderer: ArrayLayoutRenderer,
     tester: rankWith(5, or(isObjectArrayWithNesting, and(uiTypeIs('ListWithDetail'), isObjectArray)))
 });
+
+boplusVueVanillaRenderers.push({
+    renderer: AutocompleteRenderer,
+    tester: rankWith(10, and(or(isEnumControl, isOneOfEnumControl), optionIs('autocomplete', true)))
+});
+
+
