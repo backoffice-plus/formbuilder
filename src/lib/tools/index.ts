@@ -9,6 +9,7 @@ import {combinatorTool} from "./combinatorTool";
 import {controlTool} from "./controlTool";
 import {arrayTool} from "./ArrayTool";
 import {objectTool} from "./ObjectTool";
+import {constTool} from "./constTool";
 import type {JsonSchema} from "@jsonforms/core";
 import type {RankedTester} from "@jsonforms/core/src/testers/testers";
 import type {JsonFormsInterface, JsonFormsUISchema} from "../models";
@@ -29,6 +30,8 @@ export const controlTools = [
     controlTool,
     selectTool,
     referenceTool,
+    constTool,
+
     arrayTool,
     objectTool,
     combinatorTool,
