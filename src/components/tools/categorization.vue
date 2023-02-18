@@ -1,5 +1,5 @@
 <template>
-  <div class="categorizationTool" :class="['group/itemC']">
+  <div class="categorizationTool" :class="['group/itemC',{isRoot:isRoot}]">
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
 
@@ -65,7 +65,12 @@
 <style scoped>
 
 .categorizationTool {
-  @apply relative;
+  @apply
+  relative
+}
+.categorizationTool:not(.isRoot) {
+  @apply
+  bg-blue-100
 }
 
 .tabs {

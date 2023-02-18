@@ -64,7 +64,7 @@ aside .toolItem {
 
   overflow-hidden
 
-  bg-blue-100
+  /*bg-blue-100*/
 
   bg-opacity-100
   hover:bg-opacity-80
@@ -78,10 +78,10 @@ aside .toolItem {
 
   text-xs leading-none text-center
 }
-aside .toolItem.formInputByTypeTool {
-   @apply
-  bg-blue-200
-}
+/*aside .toolItem.formInputByTypeTool {*/
+/*   @apply*/
+/*  bg-blue-200*/
+/*}*/
 
 </style>
 

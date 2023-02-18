@@ -1,5 +1,5 @@
 <template>
-  <div class="flexAreaTool" :class="['group/itemF']" ref="flexAreaTool">
+  <div class="flexAreaTool" :class="['group/itemF',{isRoot:isRoot}]" ref="flexAreaTool">
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
     </ToolIcon>
@@ -50,6 +50,10 @@
 .flexAreaTool {
   @apply relative
   h-full
+}
+.flexAreaTool:not(.isRoot) {
+  @apply
+  bg-blue-100
 }
 
 .bg-dotted {
