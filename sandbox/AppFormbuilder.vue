@@ -32,8 +32,9 @@
 <style>
 .formbuilder nav {
  box-shadow: 0px 8px 8px -8px rgb(30, 30, 30, 30%);
+  z-index:9;
  @apply
- sticky top-0 z-50 bg-gray-100 pt-2
+ sticky top-0 bg-gray-100 pt-2
 }
 
 </style>
