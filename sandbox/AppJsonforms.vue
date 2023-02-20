@@ -55,7 +55,6 @@ import {JsonForms} from "@jsonforms/vue";
 import {createAjv, generateDefaultUISchema} from "@jsonforms/core";
 import SchemaCode from './SchemaCode.vue'
 import {useJsonforms} from "../src";
-import {entry as htmlRenderer} from "./tool/htmlRenderer.vue";
 import {getExamples} from "@jsonforms/examples/src";
 import {getExampleFromUrl, getUrl} from "./lib";
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
@@ -75,7 +74,6 @@ const jsonFormsUpdated = ref({});
 const jsonFormRenderes = Object.freeze([
   ...vanillaRenderers,
   ...boplusVueVanillaRenderers,
-  htmlRenderer,
 ]);
 
 
