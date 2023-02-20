@@ -89,7 +89,6 @@ const jsonForms = computed(() => {
 
 const jsonFormRenderesMore = Object.freeze([
   ...jsonFormRenderes,
-  htmlRenderer,
 ]);
 
 const ajv = createAjv();//is needed because reactive :schema & :uischema will throw error
