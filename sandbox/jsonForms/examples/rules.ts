@@ -13,6 +13,7 @@ const schema = {
       type: "integer",
     },
     enum: {
+      type: "string",
       enum: ["off","on","true","false"]
     },
     array: {
