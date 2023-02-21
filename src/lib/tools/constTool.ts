@@ -16,13 +16,26 @@ export class ConstTool extends ControlTool {
     constructor(uischemaType: string = 'Control') {
         super(uischemaType);
 
-        this.schema.const ??= '';
+        if(!('const' in this.schema)) {
+            this.schema.const = undefined;
+        }
     }
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
         const data = super.optionDataPrepare(tool);
 
-        data.const = this.schema.const ?? '';
+
+        data.const = this.schema.const;
+        data._parse = undefined;
+        if(null === data.const) {
+            data.const = 'null';
+            data._parse = 'null';
+        }
+        else if(['array','object'].includes(typeof data.const)) {
+            data.const = JSON.stringify(data.const);
+            data._parse = 'json';
+        }
+
 
         return data;
     }
@@ -31,6 +44,19 @@ export class ConstTool extends ControlTool {
         super.optionDataUpdate(tool, data);
 
         this.schema.const = data.const;
+
+        if('string' === typeof data.const) {
+            if('json' === data._parse && data.const.match(/^[\[{].*[\]}]$/)) {
+                try {
+                    const json = JSON.parse(data.const)
+                    this.schema.const = json;
+                }
+                catch (e) {}
+            }
+            else if('null' === data._parse && 'null' === data.const) {
+                this.schema.const = null;
+            }
+        }
 
         delete this.schema.type; //no type for const, right?!
     }

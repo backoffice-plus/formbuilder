@@ -21,16 +21,34 @@ export const schema = {
         //     type: "string",
         //     enum: ['string', 'number', 'integer', 'boolean'],
         // },
+        // const: {
+        //     //type:'string',
+        //     type:['string', 'number', 'integer', 'boolean'],
+        // },
+        // constNumber: {
+        //     type:'number',
+        // },
+        // constBoolean: {
+        //     type:'boolean',
+        // },
         const: {
-            type:'string',
-            // oneOf: [
-            //     {type:'string',title:'string'},
-            //     {type:'number',title:'number'},
-            //     {type:'integer',title:'integer'},
-            //     {type:'boolean',title:'boolean'},
-            // ]
+            oneOf: [
+                {type:'string',title:'string'},
+                {type:'number',title:'number'},
+                //{type:'integer',title:'integer'},
+                {type:'boolean',title:'boolean'},
+                //{type:'null',title:'null'},
+                //{not:{type:['string','number','integer','boolean']},title:'not'},
+                //{type:'string',not:{type:['string','number','integer','boolean']},title:'not'},
+                //{type:'array',title:'array'},
+            ]
+        },
+        _parse: {
+            type: "string",
+            enum: ['json', 'null'],
         },
     },
+
     required: ['propertyName', 'const']
 } as JsonSchema;
 
@@ -54,9 +72,59 @@ export const uischema = {
                         //     type: "Control"
                         // },
                         {
-                            type:'Control',
+                            type:'Group',
+                            label: 'Const',
                             scope: '#/properties/const',
+                            elements: [
+                                // {
+                                //     type:'Control',
+                                //     label: 'Const Type',
+                                //     scope: '#/properties/type',
+                                // },
+                                // {
+                                //     type:'Control',
+                                //     label: 'Const Type',
+                                //     scope: '#/properties/const',
+                                // },
+                                {
+                                    type:'Control',
+                                    scope: '#/properties/const',
+                                 },
+                                {
+                                    type:'Control',
+                                    scope: '#/properties/_parse',
+                                    rule: {
+                                        effect: 'SHOW',
+                                        condition: {
+                                            scope: '#/properties/const',
+                                            schema: {
+                                                allOf: [
+                                                    {type:'string'},
+                                                    {
+                                                        oneOf: [
+                                                            {const: 'null'},
+                                                            {pattern: '^\\{|\\[.*\\}|\\]$'},
+                                                        ]
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                },
+                                // {
+                                //     type:'Control',
+                                //     scope: '#/properties/constNumber',
+                                // },
+                                // {
+                                //     type:'Control',
+                                //     scope: '#/properties/constBoolean',
+                                // },
+                            ]
                         },
+                        // {
+                        //     type:'Control',
+                        //     scope: '#/properties/_const',
+                        // },
                         {
                             $ref:'labelAndI18n.uischema'
                         },

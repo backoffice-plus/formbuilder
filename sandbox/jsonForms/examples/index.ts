@@ -13,6 +13,7 @@ import * as nestedRefs from './nestedRefs';
 import * as login from './login';
 import * as listwithdetail from './listwithdetail';
 import * as autocompleteEnum from './autocompleteEnum';
+import * as fbConst from './const';
 
 export {
   _default,
@@ -30,4 +31,5 @@ export {
   login,
   listwithdetail,
   autocompleteEnum,
+  fbConst,
 }

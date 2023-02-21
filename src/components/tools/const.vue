@@ -4,7 +4,7 @@
 
       <template v-slot:droparea>
         <label class="font-bold">{{ tool.propertyName }}</label>
-        = {{ tool.schema.const }}
+        {{ constValue }}
       </template>
 
     </ToolIcon>
@@ -39,6 +39,11 @@ const props = defineProps({
 
   isDragging: Boolean, //needed in flexarea
 })
+
+let constValue = props.tool.schema.const;
+if(null === constValue) {
+  constValue = 'null';
+}
 
 const emit = defineEmits(['deleteByIndex']);
 
