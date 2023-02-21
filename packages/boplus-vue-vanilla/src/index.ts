@@ -11,6 +11,7 @@ import RadioGroupControlRenderer from "./components/RadioGroupControlRenderer.vu
 import SliderControlRenderer from "./components/SliderControlRenderer.vue";
 import PasswordControlRenderer from "./components/PasswordControlRenderer.vue";
 import AutocompleteRenderer from "./components/AutocompleteRenderer.vue";
+import {constEntry} from "./components/ConstRenderer.vue";
 
 import {
     and,
@@ -104,6 +105,7 @@ export const boplusVueVanillaRenderers = [
     radioGroupControlRendererEntry,
     sliderControlRendererEntry,
     passwordControlRendererEntry,
+    constEntry
 ];
 
 boplusVueVanillaRenderers.push({
