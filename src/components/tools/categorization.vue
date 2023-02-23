@@ -162,7 +162,7 @@ const addChildComponent = (e) => {
   }
 }
 
-defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComponents })
+//defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComponents })
 
 onMounted(() => {
   if (!props.isToolbar) {
@@ -203,7 +203,7 @@ const addTab = () => {
   tabTool.uischema.label = 'Tab';
 
   childTools.value.push(tabTool);
-  window.setTimeout(buildTabLabels,50);
+  onDropAreaChange(null);
 };
 
 
@@ -217,13 +217,17 @@ const buildTabLabels = (e) => {
 
 
 const onDropAreaChange = (e) => {
+  props.tool.childs = childTools.value;
   window.setTimeout(buildTabLabels,50);
   emitter.emit('formBuilderUpdated')
 };
 
 const onDeleteByIndex = (e) => {
   const index = e.index;
+  const toolDeleted = childTools.value[index];
+
   childTools.value.splice(index, 1);
+  delete childComponents.value[toolDeleted.uuid];
 
   emitter.emit('formBuilderUpdated')
 };

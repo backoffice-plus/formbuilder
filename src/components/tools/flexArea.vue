@@ -144,7 +144,7 @@ import {  initElements} from "../../lib/formbuilder";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
 import {Vuedraggable} from '../../index'
-import {ref, computed, onMounted} from 'vue';
+import {ref, computed, onMounted, unref, toRaw} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 
 const props = defineProps({
@@ -168,7 +168,6 @@ const addChildComponent = (e) => {
   }
 }
 
-defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComponents })
 
 onMounted(() => {
   if (!props.isToolbar) {
@@ -188,12 +187,16 @@ const init = () => {
 
 const onDeleteByIndex = (e) => {
   const index = e.index;
+  const toolDeleted = childTools.value[index];
+
   childTools.value.splice(index, 1);
+  delete childComponents.value[toolDeleted.uuid];
 
   onDropAreaChange(e);
 };
 
 const onDropAreaChange = (e) => {
+  props.tool.childs = childTools.value;
   emitter.emit('formBuilderUpdated', e)
 };
 
@@ -205,4 +208,7 @@ const onDelete = () => {
         }
       });
 };
+
+//defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComponents })
+
 </script>

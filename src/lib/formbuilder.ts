@@ -258,7 +258,7 @@ export const initElements = (tool: ToolInterface): Array<ToolInterface> => {
     return tools;
 };
 
-export const createJsonForms = (rootForm: any, rootSchema: JsonSchema, schemaReadOnly: boolean): JsonFormsInterface => {
+export const createJsonForms = (tool:ToolInterface, rootSchema: JsonSchema, schemaReadOnly: boolean): JsonFormsInterface => {
 
     if(!rootSchema) {
         rootSchema = Generate.jsonSchema({})
@@ -272,7 +272,7 @@ export const createJsonForms = (rootForm: any, rootSchema: JsonSchema, schemaRea
 
     return {
         schema: schemaReadOnly ? rootSchema : schema,
-        uischema: createJsonUiSchema(rootForm, schema)
+        uischema: createJsonUiSchema(tool, schema)
     } as JsonFormsInterface;
 }
 
@@ -341,14 +341,7 @@ export const getItemsType = (schema:JsonSchema):string|undefined => {
     return items?.type;
 }
 
-export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> => {
-    refElm = unref(refElm)
-
-    //from defineExpose() in tool components
-    const tool = refElm?.tool as ToolInterface;
-    const childTools = refElm?.childTools;
-    const childComponents = refElm?.childComponents;
-
+export const createTypeArraySchema = (tool:ToolInterface): Record<string, JsonSchema> => {
     const schemas = {} as Record<string, JsonSchema>;
 
     /** @ts-ignore */
@@ -356,12 +349,9 @@ export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> =
         const properties = {} as Record<string, JsonSchema>;
         const required = [] as Array<string>;
 
-        childTools.forEach((t: ToolInterface) => {
-            const childComponent = getChildComponent(t, childComponents);
-            const childTool = childComponent.tool;
-
+        tool.childs.forEach((childTool: ToolInterface) => {
             if('array' === childTool?.schema?.type) {
-                const childSchema = createTypeArraySchema(childComponent);
+                const childSchema = createTypeArraySchema(childTool);
                 properties[childTool.propertyName] = childSchema[childTool.propertyName];
 
             }
@@ -389,33 +379,23 @@ export const createTypeArraySchema = (refElm: any): Record<string, JsonSchema> =
         schemas[tool.propertyName] = {
             ...tool.schema,
             type: 'array',
-            items: childTools?.length ? childTools[0].schema : {type:'null'}
+            items: tool.childs?.length ? tool.childs[0].schema : {type:'null'}
         } as JsonSchema;
     }
 
     return schemas;
 };
 
-export const createTypeObjectSchema = (refElm: any): Record<string, JsonSchema> => {
-    refElm = unref(refElm)
-
-    //from defineExpose() in tool components
-    const tool = refElm?.tool as ToolInterface;
-    const childTools = refElm?.childTools;
-    const childComponents = refElm?.childComponents;
-
+export const createTypeObjectSchema = (tool:ToolInterface): Record<string, JsonSchema> => {
     const schemas = {} as Record<string, JsonSchema>;
 
     if('object' === tool?.schema?.type) {
         const properties = {} as Record<string, JsonSchema>;
         const required = [] as Array<string>;
 
-        childTools?.forEach((t: ToolInterface) => {
-            const childComponent = getChildComponent(t, childComponents);
-            const childTool = childComponent.tool;
-
+        tool.childs?.forEach((childTool: ToolInterface) => {
             if('object' === childTool?.schema?.type) {
-                const childSchema = createTypeObjectSchema(childComponent);
+                const childSchema = createTypeObjectSchema(childTool);
                 properties[childTool.propertyName] = childSchema[childTool.propertyName];
 
             }
@@ -439,22 +419,11 @@ export const createTypeObjectSchema = (refElm: any): Record<string, JsonSchema> 
     return schemas;
 };
 
-export const createCombinatorSchema = (refElm: any): Record<string, JsonSchema> => {
-    refElm = unref(refElm)
-
-    //from defineExpose() in tool components
-    const tool = refElm?.tool as ToolInterface;
-    const childTools = refElm?.childTools;
-    const childComponents = refElm?.childComponents;
-
+export const createCombinatorSchema = (tool:ToolInterface): Record<string, JsonSchema> => {
     const keyword = (tool instanceof CombinatorTool && tool.keyword) ?? 'anyOf';
 
-    const schemas = childTools.map((t: ToolInterface) => {
-        const childComponent = getChildComponent(t, childComponents);
-        const childTool = childComponent.tool;
-
-        return childTool.schema;
-    });
+    //:TODO call createJsonSchema instead of returning schena
+    const schemas = tool.childs.map((t: ToolInterface) => t.schema);
 
     const schema = {};
     /** @ts-ignore */
@@ -463,33 +432,23 @@ export const createCombinatorSchema = (refElm: any): Record<string, JsonSchema> 
     return schema;
 };
 
-export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFormsUISchema => {
-    refElm = unref(refElm)
-
-
-    //from defineExpose() in tool components
-    const tool = refElm?.tool as ToolInterface;
-    const childTools = refElm?.childTools;
-    const childComponents = refElm?.childComponents;
-
+export const createJsonUiSchema = (tool:ToolInterface, rootSchema: JsonSchema): JsonFormsUISchema => {
     const uischema = tool.uischema;
 
     const created = _.cloneDeep(uischema) as JsonFormsUISchema|any;
 
     const isScoped = "scope" in created;
     //const isLayout = "elements" in created;
-    const hasChilds = childTools?.length > 0;
-
 
     if(isScoped) {
         if ('array' === tool?.schema?.type) {
 
-            const firstChild = childTools[0];
+            const firstChild = tool.childs[0];
             const isFirstChildLayout = firstChild && 'Control' !== firstChild.uischema.type; //:TODO add better check!
 
             if(isFirstChildLayout) {
                 const subSchema = { type: 'object' };
-                const detailSchema = createJsonUiSchema(childComponents[firstChild.uuid], subSchema);
+                const detailSchema = createJsonUiSchema(firstChild, subSchema);
 
                 tool.schema['items'] = subSchema;
                 setItemSchemaToSchema(tool, rootSchema);
@@ -497,26 +456,23 @@ export const createJsonUiSchema = (refElm: any, rootSchema: JsonSchema): JsonFor
                 created.options['detail'] = detailSchema
             }
             else {
-                const schemasToPush = createTypeArraySchema(refElm);
+                const schemasToPush = createTypeArraySchema(tool);
                 _.merge(rootSchema,{properties:schemasToPush})
             }
 
         } else if (tool instanceof ObjectTool) {
-            const schemasToPush = createTypeObjectSchema(refElm);
+            const schemasToPush = createTypeObjectSchema(tool);
             _.merge(rootSchema, {properties: schemasToPush, type: 'object'})
         } else if (tool instanceof CombinatorTool) {
-            tool.schema = createCombinatorSchema(refElm);
+            tool.schema = createCombinatorSchema(tool);
             setItemSchemaToSchema(tool, rootSchema);
         } else {
             setItemSchemaToSchema(tool, rootSchema);
         }
     }
-    else if(hasChilds) {
-        created.elements = childTools.map((tool: ToolInterface) => {
-            if (!childComponents[tool.uuid]) {
-                throw "no child with uuid " + tool.uuid + " found";
-            }
-            return createJsonUiSchema(childComponents[tool.uuid], rootSchema)
+    else {
+        created.elements = tool.childs?.map((t: ToolInterface) => {
+            return createJsonUiSchema(t, rootSchema)
         }) ?? [];
     }
 

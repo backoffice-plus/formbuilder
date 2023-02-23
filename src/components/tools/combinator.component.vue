@@ -120,7 +120,7 @@ const addChildComponent = (e) => {
   }
 }
 const onDropAreaChange = (e) => {
-  //window.setTimeout(buildTabLabels,50);
+  props.tool.childs = childTools.value;
   emitter.emit('formBuilderUpdated')
 };
 
@@ -133,8 +133,7 @@ const addItem = () => {
   const tool = cloneEmptyTool(findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
 
   childTools.value.push(tool);
-  //window.setTimeout(buildTabLabels,50);
-  emitter.emit('formBuilderUpdated')
+  onDropAreaChange(null);
 };
 
 const groupPut = (from, to, node, dragEvent) => {
@@ -143,11 +142,14 @@ const groupPut = (from, to, node, dragEvent) => {
   return isControlTool;
 };
 
-defineExpose({tool: props.tool, childTools: childTools, childComponents: childComponents})
+//defineExpose({tool: props.tool, childTools: childTools, childComponents: childComponents})
 
 const onDeleteByIndex = (e) => {
   const index = e.index;
+  const toolDeleted = childTools.value[index];
+
   childTools.value.splice(index, 1);
+  delete childComponents.value[toolDeleted.uuid];
 
   emitter.emit('formBuilderUpdated')
 };

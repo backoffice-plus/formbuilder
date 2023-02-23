@@ -87,7 +87,7 @@ const props = defineProps({
 
 const emit = defineEmits(['deleteByIndex']);
 
-defineExpose({tool: props.tool})
+//defineExpose({tool: props.tool})
 
 const schema = props.tool.schema;
 const uischema = props.tool.uischema;

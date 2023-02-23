@@ -56,4 +56,6 @@ export interface ToolInterface {
 
     clone: () => ToolInterface;
     toolbarOptions: () => Record<string, any>;
+
+    childs: ToolInterface[]
 }

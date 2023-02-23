@@ -45,7 +45,7 @@ const props = defineProps({
 
 const emit = defineEmits(['deleteByIndex']);
 
-defineExpose({tool: props.tool})
+//defineExpose({tool: props.tool})
 
 const onDelete = () => {
   Promise.resolve(window.confirm("Wirklich löschen?"))

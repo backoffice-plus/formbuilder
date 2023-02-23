@@ -40,6 +40,7 @@
                  :isDragging="!!drag"
                  class="my-4"
                  :ref="setRootForm"
+                 v-if="baseTool"
       />
     </template>
 
@@ -85,7 +86,7 @@ import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount} from 'v
 import {
   FormBuilderBar,
   createJsonForms,
-  emitter, cloneToolWithSchema, createTypeObjectSchema, findAllProperties, findAllScopes, findBaseTool,
+  emitter, cloneToolWithSchema, createTypeObjectSchema, findAllProperties, findAllScopes,
 } from "../index";
 import Modal from "./Modal.vue";
 import {useTools} from "../composable/tools";
@@ -95,6 +96,7 @@ import _ from "lodash";
 import {objectTool} from "../lib/tools/ObjectTool";
 import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
 import {generateJsonSchema} from "@jsonforms/core";
+import {useToolInstance} from "../composable/toolinstance";
 
 const props = defineProps({
   jsonForms: Object,
@@ -119,6 +121,8 @@ const {registerTools, unregisterAllTools, findLayoutToolByUiType, findMatchingTo
 const {getControlTools, getLayoutTools} = useTools();
 
 const {update} = useJsonforms();
+const {baseTool, createBaseTool} = useToolInstance();
+
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
 
 
@@ -128,30 +132,15 @@ const {update} = useJsonforms();
 // });
 
 
-const baseTool = computed(() => {
-  let schema = unref(jsonFormsSchema);
-  let uischema = unref(jsonFormsUiSchema);
-
-  if(undefined === schema) {
-    schema = generateJsonSchema({});
-  }
-  if(undefined === uischema) {
-    uischema = generateDefaultUISchema(schema);
-  }
-
-  return findBaseTool(schema, uischema);
-})
-
 const baseDefinitionTool = computed(() => {
   const schema = {
     type:'object',
     properties: jsonFormsSchema.value.definitions
   };
-  const basetool = cloneToolWithSchema(objectTool,schema , {});
-  basetool.propertyName = 'definitions';
-  return basetool;
+  const baseDtool = cloneToolWithSchema(objectTool,schema , {});
+  baseDtool.propertyName = 'definitions';
+  return baseDtool;
 })
-
 
 const tools = computed(() => {
 
@@ -215,7 +204,7 @@ const updateJsonForm = () => {
   let newJsonForms;
 
   if (rootDefinitionForm.value) {
-    const def = createTypeObjectSchema(rootDefinitionForm);
+    const def = createTypeObjectSchema(rootDefinitionForm.value.tool);
     newJsonForms = {
       schema: jsonFormsSchema.value,
       uischema: jsonFormsUiSchema.value,
@@ -229,7 +218,7 @@ const updateJsonForm = () => {
   }
 
   if (rootForm?.value) {
-    newJsonForms = createJsonForms(rootForm, jsonFormsSchema.value, props.schemaReadOnly);
+    newJsonForms = createJsonForms(baseTool.value, jsonFormsSchema.value, props.schemaReadOnly);
     jsonFormsSchema.value = newJsonForms.schema;
     jsonFormsUiSchema.value = newJsonForms.uischema;
   }
@@ -248,6 +237,8 @@ const setRootDefinitionForm = (e) => rootDefinitionForm.value = e
 onBeforeMount(() => {
   unregisterAllTools();   //is that a good behavior?
   registerTools(props.tools);
+
+  createBaseTool(props?.jsonForms?.schema, props?.jsonForms?.uischema);
 });
 onMounted(() => {
   const updateJsonFormDebounced = _.debounce(() => {
