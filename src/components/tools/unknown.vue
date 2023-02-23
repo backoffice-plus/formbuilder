@@ -40,9 +40,12 @@ const emit = defineEmits(['deleteByIndex']);
 defineExpose({ tool:props.tool })
 
 const onDelete = () => {
-  if (confirm("Wirklich löschen?")) {
-    emit('deleteByIndex', {index: props.index});
-  }
+  Promise.resolve(window.confirm("Wirklich löschen?"))
+      .then((confirmed) => {
+        if(confirmed) {
+          emit("deleteByIndex", { index: props.index });
+        }
+      });
 };
 
 </script>

@@ -148,9 +148,12 @@ const addButtonClick = () => {
 };
 
 const onDelete = (index: number) => {
-  if (confirm('Delete Element: ' + input.childLabelForIndex(index))) {
-    input?.removeItems(input.control.value.path, [index])();
-  }
+  Promise.resolve(window.confirm('Delete Element: ' + input.childLabelForIndex(index)))
+      .then((confirmed: boolean) => {
+        if (confirmed) {
+          input?.removeItems(input.control.value.path, [index])();
+        }
+      });
 }
 
 </script>

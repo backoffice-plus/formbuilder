@@ -94,9 +94,12 @@ const uischema = props.tool.uischema;
 const inputType = computed(() => guessInputType(props.tool.schema, props.tool.uischema));
 
 const onDelete = () => {
-  if (confirm("Wirklich löschen?")) {
-    emit('deleteByIndex', {index: props.index});
-  }
+  Promise.resolve(window.confirm("Wirklich löschen?"))
+      .then((confirmed) => {
+        if(confirmed) {
+          emit("deleteByIndex", { index: props.index });
+        }
+      });
 };
 
 
