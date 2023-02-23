@@ -254,3 +254,23 @@ export const denormalizeRule = (data:any) : Rule => {
         condition: condition,
     } as Rule;
 }
+export const getRequiredPath = (propertyName: string): string => {
+    return (fromPropertyToBasePath(propertyName) + '.required').replace(/^\./, '')
+}
+export const getRequiredFromSchema = (propertyName: string, schema: JsonSchema): Array<string> => {
+    return _.get(schema, getRequiredPath(propertyName)) ?? [];
+}
+/**
+ * - prop = data.personal.age
+ * - subpaths = ['data', 'data.personal','data.personal.age']
+ */
+export const getAllSubpaths = (prop: string, startIndex: number = 0) => {
+    const allParts: Array<string> = [];
+
+    return _.toPath(prop)
+        .map((part: string) => {
+            allParts.push(part);
+            return allParts.join('.')
+        })
+        .slice(startIndex);
+}

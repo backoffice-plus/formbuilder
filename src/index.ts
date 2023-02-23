@@ -3,6 +3,8 @@ import {controlTools, layoutTools} from "./lib/tools";
 
 //lib
 export * from './lib/formbuilder';
+export * from './lib/generator';
+export * from './lib/normalizer';
 export {AbstractTool} from "./lib/tools/AbstractTool";
 export type {ToolInterface, JsonFormsInterface} from "./lib/tools";
 export const defaultTools = [...controlTools, ...layoutTools]
