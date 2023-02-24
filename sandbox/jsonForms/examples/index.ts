@@ -14,6 +14,9 @@ import * as login from './login';
 import * as listwithdetail from './listwithdetail';
 import * as autocompleteEnum from './autocompleteEnum';
 import * as fbConst from './const';
+import * as nestedCombinator from './nestedCombinator';
+import * as anyOfsimple from './anyOfsimple';
+import * as arrayofref from './arrayofref';
 
 export {
   _default,
@@ -32,4 +35,7 @@ export {
   listwithdetail,
   autocompleteEnum,
   fbConst,
+  nestedCombinator,
+  anyOfsimple,
+  arrayofref,
 }

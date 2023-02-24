@@ -6,6 +6,7 @@ import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
 import type {JsonFormsInterface, ToolInterface} from "./index";
 import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./schema/toolLayout";
+import _ from "lodash";
 
 export class VerticalLayout extends AbstractTool implements ToolInterface {
 

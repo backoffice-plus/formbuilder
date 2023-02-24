@@ -14,6 +14,8 @@ import {
 
 export class ArrayTool extends AbstractTool implements ToolInterface {
 
+    isInlineType: boolean = false;
+
     importer = () => toolComponent;
     //tester = rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl));//not working for $ref (we want unresolved schema)
     tester = rankWith(3, (uischema, schema, rootSchema) => 'array' === schema?.type && 'object' === typeof schema?.items);
@@ -24,7 +26,8 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         this.schema.type ??= 'array';
 
         if (undefined === this.schema.items) {
-            this.schema.items = {type: 'object'}
+            //this.schema.items = {type: 'object'} //:INFO do not set type (it breaks $ref)
+            this.schema.items = {}
         }
     }
 
@@ -39,7 +42,9 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         /** @ts-ignore **/
         const isRef = '$ref' in this.schema?.items;
 
+        this.isInlineType = !!(itemsType && 'object' !== itemsType);
 
+        //console.log("arrayTOol optionDataPrepare",this.schema)
 
 
         // const canHaveChilds = true;//:TODO need new "canHaveObject"
@@ -63,6 +68,8 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             options.detail.elements = JSON.stringify(options.detail.elements);
         }
 
+        //:TODO: disable asInlineType if tool has no childs!
+
         const data = {
             propertyName: tool.propertyName,
             type: this.schema.type,
@@ -85,22 +92,32 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, tool)
 
-        const asInlineType = data?.asInlineType ?? false;
+        this.isInlineType = data?.asInlineType;
 
-        /** @ts-ignore */
-        const isRef = '$ref' in this.schema?.items;
+        // const hasChilds = tool.childs?.length > 0;
+        //
+        // if(hasChilds) {
+        //     const firstChild = tool.childs[0];
+        //     const asInlineType = data?.asInlineType ?? false;
+        //
+        //     /** @ts-ignore */
+        //     const isRef = '$ref' in this.schema?.items;
+        //     const childIsRef = firstChild.schema.items && '$ref' in firstChild.schema?.items;
+        //
+        //     let inlineType = getItemsType(this.schema);
+        //     if(!isRef) {
+        //         if (asInlineType) {
+        //             if('object' === inlineType || !inlineType) {
+        //                 inlineType = 'string'
+        //             }
+        //         } else {
+        //             inlineType = 'object';
+        //         }
+        //         _.set(this.schema, 'items.type', inlineType);
+        //     }
+        //     console.log("arrayTOol optionDataUpdate",{isRef,childIsRef},firstChild)
+        // }
 
-        let inlineType = getItemsType(this.schema);
-        if(!isRef) {
-            if (asInlineType) {
-                if('object' === inlineType || !inlineType) {
-                    inlineType = 'string'
-                }
-            } else {
-                inlineType = 'object';
-            }
-            _.set(this.schema, 'items.type', inlineType);
-        }
 
         const options = {...data.options ?? {}};
 

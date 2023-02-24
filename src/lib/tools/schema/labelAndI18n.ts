@@ -28,7 +28,12 @@ export const setOptionData = (schema:JsonSchema, uischema:UISchemaElement|any, d
     uischemaKeys.forEach(key => uischema[key] = data.labelAndI18n[key]);
 
     const dataOptions = data?.labelAndI18n?.options;
-    uischemaOptionKeys.forEach(key => uischema.options[key] = dataOptions && dataOptions[key]);
+    uischemaOptionKeys.forEach(key => {
+        uischema.options[key] = dataOptions && dataOptions[key]
+        if(undefined === uischema.options[key]) {
+            delete uischema.options[key];
+        }
+    });
 }
 
 export const schema = {

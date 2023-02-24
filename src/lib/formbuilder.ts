@@ -18,6 +18,7 @@ import {jsonForms as toolOptionsSchemaRule} from "./tools/schema/rule";
 import {jsonForms as toolOptionsSchemaLabelAndI18n} from "./tools/schema/labelAndI18n";
 import {Resolver} from "@stoplight/json-ref-resolver";
 import {CombinatorTool} from "./tools/combinatorTool";
+import {ArrayTool} from "./tools/ArrayTool";
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {
@@ -74,6 +75,10 @@ export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => 
     const isItemsTypeObject = 'object' === getItemsType(tool.schema);
     /** @ts-ignore */
     const properties = tool.schema?.items?.properties;
+
+    if(tool instanceof ArrayTool) {
+        tool.isInlineType = !isItemsTypeObject;
+    }
 
     /**
      * Array of Object

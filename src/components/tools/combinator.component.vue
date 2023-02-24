@@ -3,7 +3,7 @@
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
-        <b>{{ tool.propertyName }}:</b> {{ tool?.keyword }}
+        <b>{{ tool.propertyName }}:</b> {{ CombinatorTool.getKeyword(tool.schema) }}
       </template>
     </ToolIcon>
 
@@ -77,6 +77,7 @@ import {useJsonforms} from "../../composable/jsonforms";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
+import _ from "lodash";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -98,7 +99,7 @@ onMounted(() => {
   if (!props.isToolbar) {
     const combinatorSchemas = CombinatorTool.getKeywordSchemas(props.tool.schema);
 
-    if (combinatorSchemas) {
+    if (!_.isEmpty(combinatorSchemas)) {
       childTools.value.push(...initCombinatorElements(props.tool));
 
       //wait to render dom
@@ -106,7 +107,8 @@ onMounted(() => {
         setTimeout(onDropAreaChange, 20);
       }
     } else {
-      addItem()
+      //:INFO not necessary, added a isEmpty check at createCombinatorSchema()
+     // addItem();
     }
   }
 })

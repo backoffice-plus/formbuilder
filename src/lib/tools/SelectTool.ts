@@ -32,15 +32,14 @@ export class SelectTool extends AbstractTool implements ToolInterface {
     constructor(uischemaType: string = 'Control') {
         super(uischemaType);
 
-        if(!this.schema.enum && !this.schema.oneOf) {
-            this.schema.enum = [''];
-        }
+        // if(!this.schema.enum && !this.schema.oneOf) {
+        //     this.schema.enum = [''];
+        // }
     }
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
         const schema = this.schema as JsonSchema;
         const uischema = this.uischema as ControlElement;
-
 
         const data = {
             propertyName: this.propertyName,
@@ -98,6 +97,10 @@ export class SelectTool extends AbstractTool implements ToolInterface {
                 }
                 schema.enum && delete schema.enum;
             }
+        }
+
+        if(!this.schema.enum && !this.schema.oneOf) {
+            this.schema.enum = [''];
         }
     }
 

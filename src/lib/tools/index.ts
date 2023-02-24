@@ -54,6 +54,7 @@ export interface ToolInterface {
     optionDataUpdate: (tool: ToolInterface, data: Record<string, any>) => void;
     optionJsonforms: (tool: ToolInterface) => Promise<JsonFormsInterface | undefined>;
 
+    /** :TODO add cloneWithSchema(schema,uischema) **/
     clone: () => ToolInterface;
     toolbarOptions: () => Record<string, any>;
 

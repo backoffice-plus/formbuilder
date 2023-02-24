@@ -17,7 +17,7 @@ export class ConstTool extends ControlTool {
         super(uischemaType);
 
         if(!('const' in this.schema)) {
-            this.schema.const = undefined;
+            this.schema.const = '';//undefined;
         }
     }
 

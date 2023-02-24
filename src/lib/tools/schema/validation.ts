@@ -23,6 +23,9 @@ export const prepareOptionData = (schema: JsonSchema, uischema: UISchemaElement)
 export const setOptionData = (schema: JsonSchema|any, uischema: UISchemaElement, data: Record<string, any>): void => {
     schemaKeys.forEach((key) => {
         schema[key] = data?.validation[key]
+        if(undefined === schema[key]) {
+            delete schema[key];
+        }
     });
 }
 
