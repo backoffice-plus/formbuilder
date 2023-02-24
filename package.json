@@ -58,6 +58,7 @@
     "vue": "^3.2.45"
   },
   "dependencies": {
+    "diff": "^5.1.0",
     "sortablejs": "^1.15.0"
   }
 }

@@ -25,6 +25,16 @@
 
       <FormBuilderDetails :jsonForms="jsonFormsResolved" :key="(disableFormbuilder?1:0)" />
 
+    <details>
+      <summary class="cursor-pointer">Render Match</summary>
+      <ExampleVsSchemaCode
+          :example="latestExampleData.schema"
+          :schema="latestSchemaAfterExampleData"
+          :key="example + (schemaReadOnly?1:0)"
+          v-if="latestSchemaAfterExampleData"
+      />
+    </details>
+
   </div>
 
 </template>
@@ -41,7 +51,7 @@
 
 <script setup lang="ts">
 
-import {defaultTools, FormBuilder} from "../src/index.ts";
+import {defaultTools, FormBuilder, useJsonforms} from "../src/index.ts";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
 import {computed, onMounted, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
@@ -51,6 +61,9 @@ import {resolveSchema} from "../src";
 import {getExampleFromUrl, getUrl} from "./lib";
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
 import {boplusVueVanillaRenderers} from "../src/index";
+import SchemaCode from "./SchemaCode.vue";
+import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
+import _ from "lodash";
 
 const tools = [
     ...defaultTools,
@@ -69,6 +82,10 @@ const example = ref(getExampleFromUrl());
 const schemaReadOnly = ref(false);
 const disableFormbuilder = ref(false);
 const jsonFormsResolved = ref({});
+const latestExampleData = ref({});
+const latestSchemaAfterExampleData = ref(null);
+
+const {schema: rootSchema} = useJsonforms();
 
 const jsonForms = computed(() => {
   let exampleData = {schema:undefined, uischema:undefined} as any;
@@ -92,14 +109,24 @@ const jsonForms = computed(() => {
     exampleData = {schema: schema, uischema: uischema};
   }
 
+  latestExampleData.value = unref(exampleData);
+  latestSchemaAfterExampleData.value = null;
+
   return exampleData
 });
+
+const updateJsonFormDebounced = _.debounce((a) => {
+  latestSchemaAfterExampleData.value = a;
+},300,{leading:false, trailing:true})
 
 
 watch(() => jsonForms.value, async () => {
   jsonFormsResolved.value = unref(jsonForms.value);
   //jsonFormsResolved.value.schema = await resolveSchema(jsonFormsResolved.value.schema);
 })
+watch(() => rootSchema.value, async (a,b) => {
+  updateJsonFormDebounced(a);
+});
 watch(() => example.value, async () => {
   window.location.hash = example.value ? "/?example="+example.value : '';
 })
