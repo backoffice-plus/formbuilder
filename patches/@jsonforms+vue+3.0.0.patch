@@ -1,0 +1,50 @@
+diff --git a/node_modules/@jsonforms/vue/src/jsonFormsCompositions.ts b/node_modules/@jsonforms/vue/src/jsonFormsCompositions.ts
+index 83ba54a..820977f 100644
+--- a/node_modules/@jsonforms/vue/src/jsonFormsCompositions.ts
++++ b/node_modules/@jsonforms/vue/src/jsonFormsCompositions.ts
+@@ -72,24 +72,24 @@ export const rendererProps = <U = UISchemaElement>() => ({
+   enabled: {
+     required: false as false,
+     type: Boolean,
+-    default: undefined
++    default: undefined as any
+   },
+   renderers: {
+     required: false,
+     type: Array as PropType<JsonFormsRendererRegistryEntry[]>,
+-    default: undefined
++    default: undefined as any
+   },
+   cells: {
+     required: false,
+     type: Array as PropType<
+       JsonFormsCellRendererRegistryEntry[]
+     >,
+-    default: undefined
++    default: undefined as any
+   },
+   config: {
+     required: false,
+     type: Object,
+-    default: undefined
++    default: undefined as any
+   }
+ });
+ 
+@@ -119,14 +119,14 @@ export const masterListItemProps = () => ({
+   handleSelect: {
+     required: false as false,
+     type: Function as PropType<(index: number) => void>,
+-    default: undefined
++    default: undefined as any
+   },
+   removeItem: {
+     required: false as false,
+     type: Function as PropType<
+       (path: string, value: number) => void
+     >,
+-    default: undefined
++    default: undefined as any
+   }
+ });
+ 
