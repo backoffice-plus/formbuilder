@@ -1,6 +1,6 @@
 <template>
 
-  <div class="formBuilderDetails">
+  <div class="formBuilderDetails flex flex-col-reverse gap-4">
 
     <details>
       <summary class="cursor-pointer">JSON</summary>
@@ -18,7 +18,7 @@
     </details>
 
     <details>
-      <summary class="cursor-pointer">Preview</summary>
+      <summary class="cursor-pointer">JsonForms Preview</summary>
       <ResizeArea>
         <div class="card p-4 styleA" style="min-height: 106px">
             <JsonForms

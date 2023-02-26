@@ -23,15 +23,15 @@
       />
     <!--            -->
 
-      <FormBuilderDetails :jsonForms="jsonFormsResolved" :key="(disableFormbuilder?1:0)" />
+    <FormBuilderDetails :jsonForms="jsonFormsResolved" :key="(disableFormbuilder?1:0)" />
 
-    <details>
-      <summary class="cursor-pointer">Render Match</summary>
+    <details v-if="example">
+      <summary class="cursor-pointer">JSON Render Diff</summary>
       <ExampleVsSchemaCode
-          :example="latestExampleData.schema"
-          :schema="latestSchemaAfterExampleData"
+          :example="latestExampleData"
+          :jsonforms="latestSchemaAfterExampleData"
           :key="example + (schemaReadOnly?1:0)"
-          v-if="latestSchemaAfterExampleData"
+          v-if="latestSchemaAfterExampleData?.schema"
       />
     </details>
 
@@ -85,7 +85,7 @@ const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
 
-const {schema: rootSchema} = useJsonforms();
+const {schema: rootSchema, uischema:rootUiSchema} = useJsonforms();
 
 const jsonForms = computed(() => {
   let exampleData = {schema:undefined, uischema:undefined} as any;
@@ -116,7 +116,7 @@ const jsonForms = computed(() => {
 });
 
 const updateJsonFormDebounced = _.debounce((a) => {
-  latestSchemaAfterExampleData.value = a;
+  latestSchemaAfterExampleData.value = {schema:rootSchema,uischema:rootUiSchema};
 },300,{leading:false, trailing:true})
 
 
