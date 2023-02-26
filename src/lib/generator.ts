@@ -92,7 +92,6 @@ export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
 
     const hasChilds = tool.childs?.length > 0;
     const hasOneChild = tool.childs?.length === 1;
-    const firstChild = hasChilds && tool.childs[0];
 
     if(hasOneChild && isInlineType) {
         allowInlineType = true
@@ -104,7 +103,7 @@ export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
 
     if (hasChilds) {
         if(allowInlineType) {
-            items = firstChild.schema;
+            items = tool.childs[0].schema;
         }
         else {
             items = createTypeObjectSchemaOnly(tool);
@@ -115,7 +114,7 @@ export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
        // ...tool.schema,
         type: 'array',
         items: items,
-    };
+    } as JsonSchema;
 };
 
 
@@ -216,6 +215,7 @@ export const createCombinatorSchema = (tool: ToolInterface, keyword: string): Js
     }
     else {
         //no empty combinators (otherwise jsonforms throws error)
+        /** @ts-ignore */
         const schemas = tool.schema[keyword];
         if(_.isEmpty(schemas)) {
             schema = [{}];

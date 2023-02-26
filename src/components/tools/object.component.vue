@@ -85,7 +85,8 @@ import {Vuedraggable} from '../../index'
 import {onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
 import {useTools} from "../../composable/tools";
-import {cloneEmptyTool, initObjectElements} from "../../lib/formbuilder";
+import {cloneEmptyTool} from "../../lib/formbuilder";
+import {initObjectElements} from "../../lib/initializer";
 import {useJsonforms} from "../../composable/jsonforms";
 import _ from "lodash";
 import ToolIcon from "./utils/ToolIcon.vue";

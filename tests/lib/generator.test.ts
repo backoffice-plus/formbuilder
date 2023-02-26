@@ -337,6 +337,32 @@ test('generateSchemaByTool - multiple enum choice in object', () => {
     expect(schemaCleaned).toEqual(expected)
 })
 
+
+test('generateSchemaByTool - string required in object', () => {
+    const baseTool = clone(objectControlTool)
+    const string = clone(stringControlTool, 'name1')
+    baseTool.childs.push(string)
+
+    string.optionDataUpdate(string, {...string.optionDataPrepare(string), ...{required: true}})
+
+    const schema = generateSchemaByTool(baseTool)
+    const schemaCleaned = JSON.parse(JSON.stringify(schema));//remove nested undefineds
+
+    const expected = {
+        type: 'object',
+        properties: {
+            name1: {
+                type: 'string',
+            },
+        },
+        required: [
+            'name1'
+        ]
+    };
+
+    expect(schemaCleaned).toEqual(expected)
+})
+
 test('generateSchemaByTool - multiple oneOf choice in object', () => {
 
     const oneOf = [
@@ -426,7 +452,11 @@ test('generateSchemaByTool - object nested', () => {
 test('generateSchemaByTool - array of objects in object', () => {
     const baseTool = clone(objectControlTool)
     const arrayTool = clone(arrayControlTool, 'users')
-    arrayTool.childs.push(clone(stringControlTool, 'name'))
+    const stringTool = clone(stringControlTool, 'name')
+
+    stringTool.optionDataUpdate(stringTool, {...stringTool.optionDataPrepare(stringTool), ...{required: true}})
+
+    arrayTool.childs.push(stringTool)
     baseTool.childs.push(arrayTool)
 
     const schema = generateSchemaByTool(baseTool)
@@ -444,6 +474,7 @@ test('generateSchemaByTool - array of objects in object', () => {
                             type: 'string',
                         },
                     },
+                    required: ['name']
                 }
             },
         }
@@ -604,6 +635,48 @@ test('generateSchemaByTool - combinators nested', () => {
                         anyOf: [
                             {type: 'boolean'},
                         ]
+                    },
+                ]
+            }
+        }
+    };
+
+    expect(schemaCleaned).toEqual(expected)
+})
+test('generateSchemaByTool - combinators object with required', () => {
+    const selectEnumControlTool = findMatchingTool({}, {type:'string', enum: []}, {type: 'Control', scope: '#'});
+
+    const baseTool = clone(objectControlTool)
+    const combinator = clone(combinatorControlTool, 'myComb')
+    const object = clone(objectControlTool)
+    //const string = clone(stringControlTool, 'myString');
+    const myEnum = clone(selectEnumControlTool, 'myEnum', {type:'string',enum: ['foo']});
+
+    //object.childs.push(string);
+    object.childs.push(myEnum);
+    combinator.childs.push(object);
+    baseTool.childs.push(combinator);
+
+    //string.optionDataUpdate(string, {...string.optionDataPrepare(string), ...{required: true}})
+    myEnum.optionDataUpdate(myEnum, {...myEnum.optionDataPrepare(myEnum), ...{required: true}})
+
+    const schema = generateSchemaByTool(baseTool)
+    const schemaCleaned = JSON.parse(JSON.stringify(schema));//remove nested undefineds
+
+    const expected = {
+        type: 'object',
+        properties: {
+            myComb: {
+                anyOf: [
+                    {
+                        type: 'object',
+                        properties: {
+                            myEnum: {
+                                type: 'string',
+                                enum: ['foo']
+                            }
+                        },
+                        required: ['myEnum']
                     },
                 ]
             }
