@@ -2,7 +2,7 @@
 import _ from "lodash";
 import type {ToolInterface,} from "./tools/index";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
-import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
+import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
 import {
     fromPropertyToScope,
     fromScopeToProperty,
@@ -67,7 +67,7 @@ export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uis
 };
 
 
-export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout) : ToolInterface => {
+export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout|UISchemaElement|Scoped) : ToolInterface => {
 
     if(undefined === schema) {
         throw "schema is undefined"
@@ -77,7 +77,7 @@ export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout) 
     }
 
     const isLayout = "elements" in uischema
-    const isScoped = "uischema" in uischema;
+    const isScoped = "scope" in uischema;
 
     const {findLayoutToolByUiType, findMatchingTool} = useTools();
 
@@ -91,7 +91,6 @@ export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout) 
     //specialcase - some examples use none-Layout-elements as root
     else {
         if(isScoped) {
-
             //not working well!!!
             if ('#' === uischema?.scope) {
                 const props = schema.properties as any;
@@ -105,7 +104,7 @@ export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout) 
         tool = findMatchingTool(schema, itemSchema, uischema) ?? unknownTool;
     }
 
-    const clone = cloneToolWithSchema(tool, itemSchema, uischema);
+    const clone = cloneToolWithSchema(tool, itemSchema, uischema as UISchemaElement);
 
     return clone;
 };

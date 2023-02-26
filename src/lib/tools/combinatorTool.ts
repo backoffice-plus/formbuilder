@@ -46,7 +46,9 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         const keywordOld = CombinatorTool.getKeyword(this.schema);
 
         if(keyword && keywordOld && keyword !== keywordOld) {
+            /** @ts-ignore **/
             this.schema[keyword] = this.schema[keywordOld] ?? [];
+            /** @ts-ignore **/
             delete this.schema[keywordOld];
         }
 
