@@ -7,8 +7,21 @@ const schema = {
     name: {
       type: "string"
     },
-    // types: {
-    //   type: "object",
+
+    //nested addProps
+    types: {
+      type: "object",
+      properties: {
+        typeA: {
+          type: "string"
+        },
+      },
+      additionalProperties: {
+        type: "string",
+        title: "Additional Properties"
+      },
+      patternProperties: {},
+    }
 
       // properties: {
       //   firstOne: {
@@ -97,7 +110,7 @@ const schema = {
     title: "Additional Properties"
   },
   patternProperties: {},
-  maxProperties:3,
+  maxProperties:6,
 }
 
 
@@ -116,7 +129,8 @@ const uischema = {
 
 
 export const data = {
-
+  foo: "foobar",
+  lorem: "lorem ipsum"
 };
 
 registerExamples([

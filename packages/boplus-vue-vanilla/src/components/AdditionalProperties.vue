@@ -61,7 +61,7 @@
 
 <script setup lang="ts">
 import type {Ref} from 'vue';
-import {computed, PropType, ref, watch} from 'vue';
+import {computed, onBeforeMount, PropType, ref, watch} from 'vue';
 import type {GroupLayout, JsonSchema, JsonSchema7, UISchemaElement} from '@jsonforms/core';
 import {
   composePaths,
@@ -115,49 +115,55 @@ const additionalKeys = Object.keys(control.value?.data ?? {}).filter((k) => !res
 const newPropertyName = ref<string | null>('');
 const additionalPropertyItems = ref<AdditionalPropertyType[]>([]);
 
-additionalKeys.forEach((propName) => {
-  const additionalProperty = toAdditionalPropertyType(propName,  control.value.data[propName]);
-  additionalPropertyItems.value.push(additionalProperty);
-});
 const styles = merge(useStyles(control.value.uischema), defaultStyles);
 
 let propertyNameSchema: JsonSchema7 | undefined = undefined;
 let propertyNameValidator: ValidateFunction<unknown> | undefined = undefined;
 
-// TODO: create issue against jsonforms to add propertyNames into the JsonSchema interface
-// propertyNames exist in draft-6 but not defined in the JsonSchema
-if (typeof (control.value.schema as any).propertyNames === 'object') {
-  propertyNameSchema = (control.value.schema as any).propertyNames;
-}
 
-if (
-    typeof control.value.schema.additionalProperties !== 'object' &&
-    typeof control.value.schema.patternProperties === 'object'
-) {
-  const matchPatternPropertiesKeys: JsonSchema7 = {
-    type: 'string',
-    pattern: Object.keys(control.value.schema.patternProperties).join('|'),
-  };
-  propertyNameSchema = propertyNameSchema
-      ? { allOf: [propertyNameSchema, matchPatternPropertiesKeys] }
-      : matchPatternPropertiesKeys;
-}
+onBeforeMount(() => {
 
-if (propertyNameSchema) {
-  const ajv = createAjv();
-  const reuseAjvForSchema = (ajv: Ajv, schema: JsonSchema): Ajv => {
-    if (
-        Object.prototype.hasOwnProperty.call(schema, 'id') ||
-        Object.prototype.hasOwnProperty.call(schema, '$id')
-    ) {
-      ajv.removeSchema(schema);
-    }
-    return ajv;
-  };
 
-  propertyNameValidator = reuseAjvForSchema(ajv, propertyNameSchema).compile(propertyNameSchema);
-}
+  additionalKeys.forEach((propName) => {
+    const additionalProperty = toAdditionalPropertyType(propName,  control.value.data[propName]);
+    additionalPropertyItems.value.push(additionalProperty);
+  });
 
+
+  // TODO: create issue against jsonforms to add propertyNames into the JsonSchema interface
+  // propertyNames exist in draft-6 but not defined in the JsonSchema
+  if (typeof (control.value.schema as any).propertyNames === 'object') {
+    propertyNameSchema = (control.value.schema as any).propertyNames;
+  }
+
+  if (
+      typeof control.value.schema.additionalProperties !== 'object' &&
+      typeof control.value.schema.patternProperties === 'object'
+  ) {
+    const matchPatternPropertiesKeys: JsonSchema7 = {
+      type: 'string',
+      pattern: Object.keys(control.value.schema.patternProperties).join('|'),
+    };
+    propertyNameSchema = propertyNameSchema
+        ? { allOf: [propertyNameSchema, matchPatternPropertiesKeys] }
+        : matchPatternPropertiesKeys;
+  }
+
+  if (propertyNameSchema) {
+    const ajv = createAjv();
+    const reuseAjvForSchema = (ajv: Ajv, schema: JsonSchema): Ajv => {
+      if (
+          Object.prototype.hasOwnProperty.call(schema, 'id') ||
+          Object.prototype.hasOwnProperty.call(schema, '$id')
+      ) {
+        ajv.removeSchema(schema);
+      }
+      return ajv;
+    };
+
+    propertyNameValidator = reuseAjvForSchema(ajv, propertyNameSchema).compile(propertyNameSchema);
+  }
+})
 
 
 

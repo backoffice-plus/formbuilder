@@ -19,7 +19,7 @@
         <JsonForms
             :schema="jsonForms.schema"
             :uischema="jsonForms.uischema"
-            :data="jsonFormsData"
+            :data="jsonForms.data"
             :renderers="jsonFormRenderesMore"
             :config="{restrict:true}"
             :ajv="ajv"
