@@ -21,6 +21,7 @@
             :uischema="jsonForms.uischema"
             :data="jsonFormsData"
             :renderers="jsonFormRenderesMore"
+            :config="{restrict:true}"
             :ajv="ajv"
             @change="r => jsonFormsUpdated=r"
         />

@@ -7,13 +7,23 @@ export const defaultStyles: BopStyles = {
         root: 'oneof',
         select: 'oneof-select',
     },
+    objectAddProps: {
+        root: 'object-addprops-root',
+        toolbar: 'object-addprops-toolbar',
+        items: 'object-addprops-items',
+    },
 };
 
 export interface BopStyles {
     oneOf: {
         root?: string;
         select?: string;
-    };
+    }
+    objectAddProps: {
+        root?: string;
+        toolbar?: string;
+        items?: string;
+    }
 }
 
 export interface NestedInfo {

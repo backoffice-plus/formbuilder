@@ -374,3 +374,43 @@ fieldset.styleA.group .group-item {
 .styleA .oneof .wrapper:has(.oneof-select) {
     @apply flex flex-col gap-2
 }
+
+
+
+
+/**
+ * Additional Properties
+ */
+.styleA .object-addprops-root {
+
+}
+
+.styleA .object-addprops-toolbar {
+    @apply flex items-center gap-2
+}
+.styleA .object-addprops-toolbar label {
+    @apply w-full
+}
+.styleA .object-addprops-toolbar input {
+     @apply flex-grow-0
+}
+.styleA .object-addprops-toolbar button {
+    @apply
+    w-6 aspect-square
+
+    bg-transparent hover:bg-gray-300
+    rounded-full
+    cursor-pointer
+
+    flex items-center justify-center
+}
+
+.styleA .object-addprops-items > div {
+    @apply flex
+}
+.styleA .object-addprops-items > div *:first-child {
+    @apply w-full
+}
+.styleA .object-addprops-items > div > button {
+    @apply mt-6 px-2 text-red-500
+}

@@ -17,6 +17,7 @@ import * as fbConst from './const';
 import * as nestedCombinator from './nestedCombinator';
 import * as anyOfsimple from './anyOfsimple';
 import * as arrayofref from './arrayofref';
+import * as objectAddProps from './object-additional-properties';
 
 export {
   _default,
@@ -38,4 +39,5 @@ export {
   nestedCombinator,
   anyOfsimple,
   arrayofref,
+  objectAddProps,
 }
