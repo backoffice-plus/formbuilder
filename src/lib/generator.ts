@@ -187,7 +187,7 @@ export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
     });
 
     return {
-        //...tool.schema,
+        ...tool.schema,
         type: 'object',
         properties: properties,
         required: required.length ? required : undefined,

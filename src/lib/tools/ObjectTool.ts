@@ -20,13 +20,25 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataPrepare(tool: ToolInterface): Record<string, any> {
+
+        const schema = {
+            additionalProperties: tool.schema?.additionalProperties,
+            patternProperties: tool.schema?.patternProperties,
+        }
+
         return {
             propertyName: this.propertyName,
+            schema: schema,
         } as any;
     }
 
     optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, tool)
+
+        tool.schema = {
+            ...tool.schema,
+            ...data.schema
+        };
     }
 
     async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {

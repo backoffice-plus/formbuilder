@@ -3,6 +3,29 @@ import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 
 export const schema = {
     type: "object",
+
+    definitions: {
+        additionalPropertiesFalse: {
+            //const: false,
+            type:'boolean',
+            title:'by boolean',
+        },
+        additionalProperties: {
+            type: "object",
+            title:'by type',
+            properties: {
+                type: {
+                    type: "string",
+                    enum: ['string','number','integer','boolean','array']
+                },
+                title: {
+                    type: "string"
+                },
+            },
+            required: ['type']
+        }
+    },
+
     properties: {
         propertyName: {
             type: "string"
@@ -10,6 +33,29 @@ export const schema = {
         required: {
             type: "boolean"
         },
+        schema: {
+            type:'object',
+            properties: {
+                additionalProperties: {
+                    oneOf: [
+                        {$ref:'#/definitions/additionalPropertiesFalse'},
+                        {$ref:'#/definitions/additionalProperties'},
+                    ]
+                },
+                patternProperties: {
+                    type: "object",
+                    additionalProperties: {
+                        type: 'object',
+                        properties: {
+                            type: {
+                                type: "string",
+                                enum: ['string','number','integer','boolean','array']
+                            }
+                        },
+                    }
+                }
+            }
+        }
     },
     required: [
         "propertyName"
@@ -32,6 +78,16 @@ export const uischema = {
                             "type": "Control"
                         },
                     ],
+                },
+
+
+                {
+                    "scope": "#/properties/schema/properties/additionalProperties",
+                    "type": "Control"
+                },
+                {
+                    "scope": "#/properties/schema/properties/patternProperties",
+                    "type": "Control"
                 },
             ]
         },
