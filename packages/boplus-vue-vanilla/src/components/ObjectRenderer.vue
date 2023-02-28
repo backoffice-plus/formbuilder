@@ -2,15 +2,21 @@
 
   <div v-if="control.visible">
 
+    <dispatch-renderer
+        :visible="control.visible"
+        :enabled="control.enabled"
+        :schema="control.schema"
+        :uischema="detailUiSchema"
+        :path="control.path"
+        :renderers="control.renderers"
+        :cells="control.cells"
+    />
+
     <AdditionalProperties
         v-if="hasAdditionalProperties && showAdditionalProperties"
         :input="input"
     />
 
-    <dispatch-renderer
-        v-bind="control"
-        :uischema="detailUiSchema"
-    />
   </div>
 
 </template>

@@ -4,113 +4,26 @@ const schema = {
   type: "object",
 
   properties: {
-    name: {
-      type: "string"
-    },
+    //nameA: { type: "string" },
 
     //nested addProps
     types: {
       type: "object",
       properties: {
-        typeA: {
-          type: "string"
-        },
+        //nameB: {type: "string"},
       },
       additionalProperties: {
-        type: "string",
-        title: "Additional Properties"
+        type: "string"
       },
-      patternProperties: {},
+      //patternProperties: {},
     }
-
-      // properties: {
-      //   firstOne: {
-      //     type: "string"
-      //   },
-      // },
-      // propertyNames: {
-      //   minLength: 4
-      // },
-      //maxProperties: 2,
-      //minProperties: 2,
-
-      // additionalProperties: {
-      //   type: "string",
-      //   title: "Additional Properties"
-      // },
-      //
-      // patternProperties: {
-      //   //   "^S_": { "type": "string" },
-      //   //   "^I_": { "type": "integer" }
-      //   //   // "^string$": {
-      //   //   //   type: "string"
-      //   //   // },
-      //   //   // "^number$": {
-      //   //   //   type: "number"
-      //   //   // },
-      //   //   // "^integer$": {
-      //   //   //   type: "integer"
-      //   //   // },
-      //   //   "^O_": {
-      //   //     type: "object",
-      //   //     properties: {
-      //   //       prop1: {
-      //   //         type: "string"
-      //   //       }
-      //   //     },
-      //   //     additionalProperties: {
-      //   //       type: "string",
-      //   //       title: "Additional Properties"
-      //   //     },
-      //   //   },
-      //   //   // "^boolean$": {
-      //   //   //   type: "boolean"
-      //   //   // },
-      //   //   // "^stringArray$": {
-      //   //   //   type: "array",
-      //   //   //   items: {
-      //   //   //     type: "string"
-      //   //   //   }
-      //   //   // },
-      //   //   // "^numberArray$": {
-      //   //   //   type: "array",
-      //   //   //   items: {
-      //   //   //     type: "number"
-      //   //   //   }
-      //   //   // },
-      //   //   // "^integerArray$": {
-      //   //   //   type: "array",
-      //   //   //   items: {
-      //   //   //     type: "integer"
-      //   //   //   }
-      //   //   // },
-      //   //   // "^objectArray$": {
-      //   //   //   type: "array",
-      //   //   //   items: {
-      //   //   //     type: "object",
-      //   //   //     properties: {
-      //   //   //       prop1: {
-      //   //   //         type: "string"
-      //   //   //       }
-      //   //   //     }
-      //   //   //   }
-      //   //   // },
-      //   //   // "^booleanArray$": {
-      //   //   //   type: "array",
-      //   //   //   items: {
-      //   //   //     type: "boolean"
-      //   //   //   }
-      //   //   // }
-      // }
-   // }
   },
 
   additionalProperties: {
-    type: "string",
-    title: "Additional Properties"
+    type: "string"
   },
-  patternProperties: {},
-  maxProperties:6,
+  // patternProperties: {},
+  // maxProperties:6,
 }
 
 
@@ -129,8 +42,12 @@ const uischema = {
 
 
 export const data = {
-  foo: "foobar",
-  lorem: "lorem ipsum"
+  fooA: "foobarA",
+  //nameA: "nameA",
+  types: {
+    fooB:'foobarB',
+    //nameB:'nameB',
+  }
 };
 
 registerExamples([

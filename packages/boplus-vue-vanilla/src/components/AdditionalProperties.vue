@@ -98,7 +98,7 @@ const props = defineProps({
   },
 });
 const control = props.input.control as any as Ref<typeof props.input.control>;
-
+//console.log("AddProps","control",control.value);
 
 
 //
@@ -123,6 +123,7 @@ let propertyNameValidator: ValidateFunction<unknown> | undefined = undefined;
 
 onBeforeMount(() => {
 
+  //console.log("AddProp","onBeforeMount", control.value.id, {additionalKeys});
 
   additionalKeys.forEach((propName) => {
     const additionalProperty = toAdditionalPropertyType(propName,  control.value.data[propName]);
@@ -302,6 +303,10 @@ const toAdditionalPropertyType = (propName: string, propValue: any): AdditionalP
         }
     ).properties?.prop;
   }
+
+
+  //console.log("AddProp","toAdditionalPropertyType",{propName,propValue,propSchema});
+
   if (propSchema) {
     if (propSchema.type === 'object' || propSchema.type === 'array') {
       propUiSchema = Generate.uiSchema(propSchema, 'Group');
@@ -324,6 +329,14 @@ const addProperty = () => {
     const additionalProperty = toAdditionalPropertyType(newPropertyName.value,undefined);
     if (additionalProperty) {
       additionalPropertyItems.value.push(additionalProperty);
+    }
+
+    // console.log("addProperty additionalProperty",additionalProperty);
+    // console.log("addProperty control",control.value);
+
+    //at nested objects, data can be undefined
+    if(undefined === control.value.data) {
+      control.value.data = {}
     }
 
     if (typeof control.value.data === 'object' && additionalProperty.schema) {
@@ -350,31 +363,53 @@ const removeProperty = (propName: string): void => {
 //
 watch(
     () => control.value.data,
-    (newData) => {
+    (newData,oldData) => {
+
+      if(undefined === newData && undefined === oldData) {
+        return;
+      }
+      if (typeof control.value.data !== 'object') {
+        return;
+      }
+
+
       // revert back any undefined values back to the default value when the key is part of the addtional properties since we want to preserved the key
       // for example when we have a string additonal property then when we clear the text component the componet by default sets the value to undefined to remove the property from the object - for additional properties we do not want that behaviour
-      if (typeof control.value.data === 'object') {
-        const keys = Object.keys(newData);
-        let hasChanges = false;
-        additionalPropertyItems.value.forEach((ap) => {
-          if (
-              ap.schema &&
-              (!keys.includes(ap.propertyName) ||
-                  newData[ap.propertyName] === undefined ||
-                  (newData[ap.propertyName] === null &&
-                      ap.schema.type !== 'null')) // createDefaultValue will return null only when the ap.schema.type is 'null'
-          ) {
-            const newValue = createDefaultValue(ap.schema);
-            hasChanges = newData[ap.propertyName] !== newValue;
-            newData[ap.propertyName] = newValue;
+      const keys = Object.keys(newData);
+      let hasChanges = false;
+
+
+      //console.log("AddProp","watch control.data",control.value.id,additionalPropertyItems.value, {keys});
+
+
+      additionalPropertyItems.value
+          .filter(ap => {
+            const k = ap.propertyName;
+            const v = newData[k];
+
+            return ap.schema && (
+                    !keys.includes(k)
+                    || v === undefined
+                    || (v === null && ap.schema.type !== 'null') // createDefaultValue will return null only when the ap.schema.type is 'null'
+                )
+          })
+          .forEach(ap => {
+            const defaultValue = createDefaultValue(ap.schema);
+            const oldValue = newData[ap.propertyName];
+            if(oldValue !== defaultValue) {
+              newData[ap.propertyName] = defaultValue;
+
+              if(!hasChanges) {
+                hasChanges = true;
+              }
+            }
           }
-        });
+      );
 
-        console.log("watch","hasChanges",hasChanges,control.value.path, newData)
 
-        if (hasChanges) {
-          props.input.handleChange(control.value.path, newData);
-        }
+      if (hasChanges) {
+        //console.log("AddProp","watch control.data","hasChanges",control.value.path,newData);
+        props.input.handleChange(control.value.path, newData);
       }
     },
     { deep: true }
