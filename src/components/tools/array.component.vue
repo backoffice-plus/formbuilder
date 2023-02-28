@@ -56,10 +56,10 @@
 </template>
 
 <style>
-.arrayTool:not(.isRoot) {
-  @apply
-  bg-green-100 !important
-}
+/*.arrayTool:not(.isRoot) {*/
+/*  @apply*/
+/*  bg-green-100 !important*/
+/*}*/
 </style>
 
 <style scoped>

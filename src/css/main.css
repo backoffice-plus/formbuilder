@@ -1,0 +1,20 @@
+/*.formInputByTypeTool,*/
+/*.referenceTool,*/
+/*.constTool {*/
+/*    background-color: var(--tool-control);*/
+/*}*/
+/*.flexAreaTool:not(.isRoot),*/
+/*.categorizationTool:not(.isRoot) {*/
+/*    background-color: var(--tool-layout);*/
+/*}*/
+/*.objectTool:not(.isRoot),*/
+/*.combinatorTool:not(.isRoot),*/
+/*.arrayTool:not(.isRoot) {*/
+/*    background-color: var(--tool-control-secondary);*/
+/*}*/
+/*.labelTool {*/
+/*    background-color: var(--tool-accent);*/
+/*}*/
+/*.unknownTool {*/
+/*    background-color: var(--tool-error);*/
+/*}*/

@@ -29,10 +29,12 @@
 <style scoped>
 
 aside {
+  background-color: var(--base-100);
+
   @apply
   flex space-x-2
   w-full
-  bg-gray-200
+
   rounded
   p-2
 
@@ -43,20 +45,26 @@ aside::-webkit-scrollbar {
   width: 4px;
 }
 aside::-webkit-scrollbar-track {
-  @apply bg-gray-200
+  background-color: var(--base-100);
 }
 aside::-webkit-scrollbar-thumb {
+  background-color: var(--base-200);
+  border-color: var(--base-100);
+
   border-width: 6px;
   @apply
   rounded-full
-  border-solid border-gray-200
-  bg-gray-500
-  hover:bg-opacity-80
-  active:bg-opacity-50
+  border-solid
+  /* :TODO hover color */
+  /*hover:bg-opacity-80*/
+  /*active:bg-opacity-50*/
 }
 
 aside .toolItem {
   min-width: 80px;
+
+  border-color: var(--base-200);
+
   @apply
   cursor-move
 
@@ -66,10 +74,10 @@ aside .toolItem {
 
   /*bg-blue-100*/
 
-  bg-opacity-100
-  hover:bg-opacity-80
+  /*bg-opacity-100*/
+  /*hover:bg-opacity-80*/
 
-  border border-gray-500
+  border
 
   rounded
   shadow

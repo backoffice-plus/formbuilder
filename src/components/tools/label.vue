@@ -21,7 +21,6 @@
   min-height: auto !important;
   @apply
   relative
-  bg-amber-100
 }
 </style>
 

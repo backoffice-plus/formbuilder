@@ -68,10 +68,10 @@
   @apply
   relative
 }
-.categorizationTool:not(.isRoot) {
-  @apply
-  bg-blue-100
-}
+/*.categorizationTool:not(.isRoot) {*/
+/*  @apply*/
+/*  bg-blue-100*/
+/*}*/
 
 .tabs {
   @apply my-0
@@ -84,7 +84,7 @@
 
   my-2
 
-  border-b border-gray-200
+  border-b border-base-100
 }
 
 .tabs button:not(.add) {
@@ -100,16 +100,16 @@
 
   rounded-t-lg
 
-  hover:bg-sky-400
-  hover:bg-opacity-10
-  hover:text-sky-800
+  /*hover:bg-primary*/
+  /*hover:bg-opacity-10*/
+  /*hover:text-primary*/
 }
 
-.tabs button.selected {
-  @apply
-  text-sky-800
-  border-sky-800
-}
+/*.tabs button.selected {*/
+/*  @apply*/
+/*  text-primary*/
+/*  border-primary*/
+/*}*/
 
 
 button.add::before {

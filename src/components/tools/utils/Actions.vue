@@ -22,7 +22,7 @@
 
   transition-colors
   hover:bg-opacity-40
-  hover:bg-gray-500
+  hover:bg-base-200
 }
 </style>
 

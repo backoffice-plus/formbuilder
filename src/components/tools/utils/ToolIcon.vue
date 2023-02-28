@@ -60,10 +60,12 @@
 .toolItem svg.iconify {
   height:24px;
   width:24px;
+  color:var(--tool-icon);
 }
 .flexAreaTool svg.iconify {
   height:22px;
   width:22px;
+  color:var(--tool-icon);
 }
 </style>
 

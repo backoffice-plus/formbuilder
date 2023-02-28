@@ -3,6 +3,50 @@
 @tailwind utilities;
 
 @layer base {
+    :root {
+        --default: #f6f6f8;
+        --base-100: #e5e7eb;
+        --base-200: #9ca3af;
+        --base-300: #454545FF;
+
+        --primary: #0DA2E3FF;
+        --secondary: #142846FF;
+        --accent: #503246FF;
+        --error: #911212;
+        --success: #3f9a24;
+
+        --tool-control: #bfdbfe;
+        --tool-control-secondary: #dcfce7;
+        --tool-layout: #dbeafe;
+        --tool-accent: #fef3c7;
+        --tool-error: #fee2e2;
+        --tool-icon:#000;
+
+        --dropArea: var(--default);
+        --dropArea-dots: var(--base-200);
+        --dropArea-dragBorder: var(--primary);
+
+
+    }
+
+    .dark {
+        --base-100: #2a2c2c;
+        --base-200: #6a6b6e;
+        --base-300: #b4adad;
+
+        --tool-control: rgba(191, 219, 254, 0.3);
+        --tool-control-secondary: rgba(220, 252, 231, 0.3);
+        --tool-layout: rgba(219, 234, 254, 0.3);
+        --tool-accent: rgba(254, 243, 199, 0.3);
+        --tool-error: rgba(254, 226, 226, 0.3);
+        --tool-icon:#fff;
+
+        --dropArea: var(--base-100);
+        --dropArea-dots: var(--base-200);
+        --dropArea-dragBorder: var(--base-300);
+    }
+
+
     h1 {
         @apply
         text-xl sm:text-2xl
@@ -12,8 +56,32 @@
         @apply
         text-lg sm:text-xl
     }
+
+
+    /**
+     * Tools
+     */
+    .formInputByTypeTool,
+    .referenceTool,
+    .constTool {
+        background-color: var(--tool-control);
+    }
+    .flexAreaTool:not(.isRoot),
+    .categorizationTool:not(.isRoot) {
+        background-color: var(--tool-layout);
+    }
+    .objectTool:not(.isRoot),
+    .combinatorTool:not(.isRoot),
+    .arrayTool:not(.isRoot) {
+        background-color: var(--tool-control-secondary);
+    }
+    .labelTool {
+        background-color: var(--tool-accent);
+    }
+    .unknownTool {
+        background-color: var(--tool-error);
+    }
 }
 
 @layer components {
-
 }

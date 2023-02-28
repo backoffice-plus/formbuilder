@@ -51,13 +51,13 @@
   @apply relative
   h-full
 }
-.flexAreaTool:not(.isRoot) {
-  @apply
-  bg-blue-100
-}
+/*.flexAreaTool:not(.isRoot) {*/
+/*  @apply*/
+/*  bg-blue-100*/
+/*}*/
 
 .bg-dotted {
-  background-image: radial-gradient(#b4b4b4 10%, #fff 0%);
+  background-image: radial-gradient(var(--dropArea-dots) 10%, var(--dropArea) 0%);
   background-position: 0 0;
   background-size: 5px 5px;
 }
@@ -82,8 +82,9 @@
 }
 
 .dropArea.drag {
+  border-color:var(--dropArea-dragBorder);
   @apply
-  border-dashed border-black
+  border-dashed
 }
 
 .nestedFlexArea {
@@ -116,16 +117,18 @@
 .dropArea .toolItem {
   min-height: 100px;
   @apply
-  bg-blue-50
-  border border-blue-100
+  /*bg-blue-50*/
+  border
+  /*border-blue-100*/
   p-4
   rounded
 }
 
 .dropItem.formInputByTypeTool {
   @apply
-  bg-blue-100
-  border border-blue-200
+  border
+  /*bg-blue-100*/
+  /*border-blue-200*/
 }
 
 .sortable-chosen {

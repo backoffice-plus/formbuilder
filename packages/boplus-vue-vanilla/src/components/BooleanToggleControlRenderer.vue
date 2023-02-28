@@ -44,6 +44,9 @@
 :root {
   --slider-margin: 2px;
   --slider-height: 14px;
+  --bop-toogle-slider: #9ca3af;
+  --bop-toogle-slider-active: #0284c7;
+  --bop-toogle-slider-before: #fff;
 }
 </style>
 
@@ -91,15 +94,15 @@
  * Colors
  */
 .toggle .slider {
-  @apply bg-gray-400
+  background-color: var(--bop-toogle-slider);
 }
 
 .toggle .slider:before {
-  @apply bg-white
+  background-color: var(--bop-toogle-slider-before);
 }
 
 .toggle input:checked + .slider {
-  @apply bg-sky-600
+  background-color: var(--bop-toogle-slider-active);
 }
 
 

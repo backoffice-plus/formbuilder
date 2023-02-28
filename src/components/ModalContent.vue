@@ -21,9 +21,9 @@
         />
       </div>
 
-      <div v-if="error" class="text-red-500">{{error}}</div>
+      <div v-if="error" class="errorMsg">{{error}}</div>
       <div v-if="errorAfterUpdated" class="flex flex-col gap-1">
-        <div v-for="e in errorAfterUpdated" class="bg-red-100 text-red-500 px-1">{{ e.instancePath }}: {{e.message}}</div>
+        <div v-for="e in errorAfterUpdated" class="errorMsg px-1">{{ e.instancePath }}: {{e.message}}</div>
       </div>
 
 <!--      Data: {{ dataAfterUpdated }}-->
@@ -39,7 +39,9 @@
 
 
 <style scoped>
-
+.errorMsg {
+  color: var(--error);
+}
 </style>
 
 

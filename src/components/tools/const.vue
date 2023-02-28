@@ -24,7 +24,6 @@
   min-height: auto !important;
   @apply
   relative
-  bg-blue-200
 }
 </style>
 

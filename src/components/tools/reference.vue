@@ -8,7 +8,7 @@
           <b>{{ tool.propertyName }}</b>
         </template>
 
-        <pre class="bg-gray-200 inline p-0.5 px-2 rounded text-sm">{{ props.tool.schema?.$ref ?? ' ' }}</pre>
+        <pre class="bg-base-100 inline p-0.5 px-2 rounded text-sm">{{ props.tool.schema?.$ref ?? ' ' }}</pre>
       </template>
     </ToolIcon>
 
@@ -26,7 +26,7 @@
   min-height: auto !important;
   @apply
   relative
-  bg-blue-200 !important
+  /*bg-blue-200 !important*/
 }
 </style>
 

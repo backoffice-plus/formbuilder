@@ -46,17 +46,17 @@
 </template>
 
 <style>
-.combinatorTool {
-  @apply
-  bg-green-100 !important
-}
+/*.combinatorTool {*/
+/*  @apply*/
+/*  bg-green-100 !important*/
+/*}*/
 </style>
 
 <style scoped>
 .combinatorTool {
   @apply
   relative
-  bg-green-100
+  /*bg-green-100*/
 }
 .dropArea .combinatorTool {
    min-height:180px !important;

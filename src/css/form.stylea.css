@@ -51,8 +51,8 @@
     w-full
     py-0.5 px-2
 
-    bg-gray-100
-    disabled:bg-gray-200
+    bg-base-100
+    disabled:bg-base-100
     bg-opacity-50 focus:bg-opacity-100
 
     rounded-sm

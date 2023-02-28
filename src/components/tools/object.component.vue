@@ -54,22 +54,22 @@
 </template>
 
 <style>
-.objectTool {
-  @apply
-  bg-green-100 !important
-}
+/*.objectTool {*/
+/*  @apply*/
+/*  bg-green-100 !important*/
+/*}*/
 
-.objectTool.root {
-  @apply
-  bg-transparent !important
-}
+/*.objectTool.root {*/
+/*  @apply*/
+/*  bg-transparent !important*/
+/*}*/
 </style>
 
 <style scoped>
 .objectTool {
   @apply
   relative
-  bg-green-100
+  /*bg-green-100*/
 }
 .dropArea .objectTool {
    min-height:140px !important;

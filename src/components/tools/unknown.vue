@@ -19,7 +19,7 @@
 .unknownTool {
   min-height:auto;
   @apply
-  relative bg-red-100
+  relative
 }
 </style>
 

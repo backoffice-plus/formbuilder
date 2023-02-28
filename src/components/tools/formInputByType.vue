@@ -65,7 +65,7 @@ select {
   @apply
   relative
   h-full
-  bg-blue-200
+  /*bg-blue-200*/
 }
 </style>
 

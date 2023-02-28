@@ -60,8 +60,20 @@
 
 </template>
 
+<style>
+.tabs button.selected,
+.tabs button:not(.add):hover {
+  background-color: var(--base-100);
+}
+.tabs > button.active,
+.tabs > button:hover {
+  background-color: var(--base-100);
+}
+</style>
+
 <style scoped>
 .tabs {
+  border-color:var(--base-100);
   @apply
   flex gap-2
 }
@@ -69,14 +81,14 @@
   @apply
   p-1 px-4
   rounded-t
-  hover:bg-gray-200
-  hover:bg-opacity-50
+  /*hover:bg-base-100*/
+  /*hover:bg-opacity-50*/
 }
 
-.tabs > button.active {
-  @apply
-  bg-gray-200
-}
+/*.tabs > button.active {*/
+/*  @apply*/
+/*  bg-base-100*/
+/*}*/
 
 </style>
 
