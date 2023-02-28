@@ -54,6 +54,9 @@
 </template>
 
 <style>
+.objectTool:not(.isRoot) {
+  background-color: var(--tool-control-secondary);
+}
 /*.objectTool {*/
 /*  @apply*/
 /*  bg-green-100 !important*/

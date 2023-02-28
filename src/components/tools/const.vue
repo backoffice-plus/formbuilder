@@ -22,6 +22,7 @@
 <style scoped>
 .constTool {
   min-height: auto !important;
+  background-color: var(--tool-control);
   @apply
   relative
 }

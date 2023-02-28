@@ -4,7 +4,6 @@
 
 @layer base {
     :root {
-        --default: #f6f6f8;
         --base-100: #e5e7eb;
         --base-200: #9ca3af;
         --base-300: #454545FF;
@@ -20,30 +19,35 @@
         --tool-layout: #dbeafe;
         --tool-accent: #fef3c7;
         --tool-error: #fee2e2;
-        --tool-icon:#000;
+        --toolItem-icon:#000;
+        --toolItem-border: rgba(60, 60, 60, 0.2);
 
-        --dropArea: var(--default);
+        --dropArea: var(--base-100);
         --dropArea-dots: var(--base-200);
         --dropArea-dragBorder: var(--primary);
 
+        --buttonRounded-hover:rgba(200,200,200,.5);
 
     }
 
     .dark {
-        --base-100: #2a2c2c;
+        --base-100: #b4adad;
         --base-200: #6a6b6e;
-        --base-300: #b4adad;
+        --base-300: #2a2c2c;
 
-        --tool-control: rgba(191, 219, 254, 0.3);
-        --tool-control-secondary: rgba(220, 252, 231, 0.3);
-        --tool-layout: rgba(219, 234, 254, 0.3);
-        --tool-accent: rgba(254, 243, 199, 0.3);
-        --tool-error: rgba(254, 226, 226, 0.3);
-        --tool-icon:#fff;
+        --tool-control: #606e80;
+        --tool-control-secondary: #6f8075;
+        --tool-layout: #6e7580;
+        --tool-accent: #4d493c;
+        --tool-error: #4d4444;
+        --toolItem-icon:#fff;
+        --toolItem-border:rgb(100,100,100,0.6);
 
         --dropArea: var(--base-100);
         --dropArea-dots: var(--base-200);
         --dropArea-dragBorder: var(--base-300);
+
+        --buttonRounded-hover:rgba(200,200,200,.2);
     }
 
 
@@ -55,31 +59,6 @@
     h2 {
         @apply
         text-lg sm:text-xl
-    }
-
-
-    /**
-     * Tools
-     */
-    .formInputByTypeTool,
-    .referenceTool,
-    .constTool {
-        background-color: var(--tool-control);
-    }
-    .flexAreaTool:not(.isRoot),
-    .categorizationTool:not(.isRoot) {
-        background-color: var(--tool-layout);
-    }
-    .objectTool:not(.isRoot),
-    .combinatorTool:not(.isRoot),
-    .arrayTool:not(.isRoot) {
-        background-color: var(--tool-control-secondary);
-    }
-    .labelTool {
-        background-color: var(--tool-accent);
-    }
-    .unknownTool {
-        background-color: var(--tool-error);
     }
 }
 

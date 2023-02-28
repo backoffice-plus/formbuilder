@@ -46,10 +46,9 @@
 </template>
 
 <style>
-/*.combinatorTool {*/
-/*  @apply*/
-/*  bg-green-100 !important*/
-/*}*/
+.combinatorTool:not(.isRoot) {
+  background-color: var(--tool-control-secondary);
+}
 </style>
 
 <style scoped>

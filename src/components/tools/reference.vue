@@ -24,9 +24,9 @@
 <style>
 .referenceTool {
   min-height: auto !important;
+  background-color: var(--tool-control);
   @apply
   relative
-  /*bg-blue-200 !important*/
 }
 </style>
 

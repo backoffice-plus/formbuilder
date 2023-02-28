@@ -63,7 +63,7 @@ aside::-webkit-scrollbar-thumb {
 aside .toolItem {
   min-width: 80px;
 
-  border-color: var(--base-200);
+  border-color: var(--toolItem-border);
 
   @apply
   cursor-move

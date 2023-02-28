@@ -56,10 +56,9 @@
 </template>
 
 <style>
-/*.arrayTool:not(.isRoot) {*/
-/*  @apply*/
-/*  bg-green-100 !important*/
-/*}*/
+.arrayTool:not(.isRoot) {
+  background-color: var(--tool-control-secondary);
+}
 </style>
 
 <style scoped>

@@ -47,6 +47,9 @@
 
 <style>
 
+.flexAreaTool:not(.isRoot){
+  background-color: var(--tool-layout);
+}
 .flexAreaTool {
   @apply relative
   h-full
@@ -116,20 +119,19 @@
 .dropItem,
 .dropArea .toolItem {
   min-height: 100px;
+  border-color: var(--toolItem-border);
   @apply
-  /*bg-blue-50*/
   border
-  /*border-blue-100*/
   p-4
   rounded
 }
 
-.dropItem.formInputByTypeTool {
-  @apply
-  border
-  /*bg-blue-100*/
-  /*border-blue-200*/
-}
+/*.dropItem.formInputByTypeTool {*/
+/*  @apply*/
+/*  border*/
+/*  !*bg-blue-100*!*/
+/*  !*border-blue-200*!*/
+/*}*/
 
 .sortable-chosen {
   @apply

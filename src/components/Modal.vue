@@ -31,12 +31,13 @@
 }
 
 .modal > .modalBg > .centerItem .panel {
+  background-color: var(--base-100);
   @apply
   w-full max-w-md
 
   overflow-hidden
 
-  bg-white rounded shadow
+  rounded shadow
 }
 </style>
 

@@ -18,6 +18,7 @@
 
 <style scoped>
 .labelTool {
+  background-color: var(--tool-accent);
   min-height: auto !important;
   @apply
   relative

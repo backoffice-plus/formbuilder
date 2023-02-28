@@ -18,6 +18,7 @@
 <style scoped>
 .unknownTool {
   min-height:auto;
+  background-color: var(--tool-error);
   @apply
   relative
 }

@@ -64,6 +64,9 @@
 
 <style scoped>
 
+.categorizationTool:not(.isRoot) {
+  background-color: var(--tool-layout);
+}
 .categorizationTool {
   @apply
   relative

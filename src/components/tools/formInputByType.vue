@@ -62,10 +62,10 @@ select {
 }
 
 .formInputByTypeTool {
+  background-color: var(--tool-control);
   @apply
   relative
   h-full
-  /*bg-blue-200*/
 }
 </style>
 
