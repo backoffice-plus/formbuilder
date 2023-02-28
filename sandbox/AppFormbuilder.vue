@@ -106,6 +106,8 @@ const jsonForms = computed(() => {
   else {
     const schema = generateJsonSchema({});
     const uischema = generateDefaultUISchema(schema);
+    delete schema.additionalProperties;
+
     exampleData = {schema: schema, uischema: uischema};
   }
 
