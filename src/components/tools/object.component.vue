@@ -103,14 +103,12 @@ const childComponents = ref({});
 
 onMounted(() => {
   if (!props.isToolbar) {
-    if (!_.isEmpty(props?.tool?.schema?.properties)) {
       childTools.value.push(...initObjectElements(props?.tool));
 
       //wait to render dom
       if (childTools.value.length) {
         setTimeout(onDropAreaChange, 20);
       }
-    }
   }
 })
 

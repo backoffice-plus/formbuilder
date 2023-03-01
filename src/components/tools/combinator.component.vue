@@ -96,19 +96,12 @@ const childComponents = ref({});
 
 onMounted(() => {
   if (!props.isToolbar) {
-    const combinatorSchemas = CombinatorTool.getKeywordSchemas(props.tool.schema);
-
-    if (!_.isEmpty(combinatorSchemas)) {
       childTools.value.push(...initCombinatorElements(props.tool));
 
       //wait to render dom
       if (childTools.value.length) {
         setTimeout(onDropAreaChange, 20);
       }
-    } else {
-      //:INFO not necessary, added a isEmpty check at createCombinatorSchema()
-     // addItem();
-    }
   }
 })
 const keyword = computed(() => {

@@ -13,6 +13,11 @@ export const initElements = (tool: ToolInterface): Array<ToolInterface> => {
 
     const {findMatchingTool, findLayoutToolByUiType} = useTools();
 
+    //for moving existing tools to another list
+    if(tool.childs?.length) {
+        return tool.childs;
+    }
+
     tool.uischema?.elements?.forEach((itemUischema: any) => {
         let clone;
 
@@ -45,6 +50,11 @@ export const initElements = (tool: ToolInterface): Array<ToolInterface> => {
 
 export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => {
     const tools = [] as any;
+
+    //for moving existing tools to another list
+    if(tool.childs?.length) {
+        return tool.childs;
+    }
 
     const {findMatchingTool, findLayoutToolByUiType} = useTools();
 
@@ -102,6 +112,11 @@ export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => 
 export const initCombinatorElements = (tool: ToolInterface): Array<ToolInterface> => {
     const ctools = [] as any;
 
+    //for moving existing tools to another list
+    if(tool.childs?.length) {
+        return tool.childs;
+    }
+
     /** @ts-ignore */
     const schemaOfKeyword = CombinatorTool.getKeywordSchemas(tool.schema)
 
@@ -128,10 +143,15 @@ export const initCombinatorElements = (tool: ToolInterface): Array<ToolInterface
 export const initObjectElements = (tool: ToolInterface): Array<ToolInterface> => {
     const tools = [] as Array<ToolInterface>;
 
+    //for moving existing tools to another list
+    if(tool.childs?.length) {
+        return tool.childs;
+    }
+
     const {findMatchingTool, findLayoutToolByUiType} = useTools();
 
-    const properties = tool.schema?.properties;
-    properties && Object.keys(properties).forEach((propertyName:string) => {
+    const properties = tool.schema?.properties ?? {};
+    !_.isEmpty(properties) && Object.keys(properties).forEach((propertyName:string) => {
         const itemSchema = properties[propertyName];
         const uischema = {type:'Control',scope:'#'} as UISchemaElement;
         //const clone = cloneToolWithSchema(schemaTool, itemSchema, {});
