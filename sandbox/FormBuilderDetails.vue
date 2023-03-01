@@ -35,13 +35,13 @@
         </div>
       </ResizeArea>
 
-      <template  v-if="jsonFormsUpdated?.errors?.length">
+      <template v-if="jsonFormsUpdated?.errors?.length">
         Errors
-        <textarea class="w-full h-60 p-4 bg-white text-red-500 rounded" readonly disabled>{{ jsonFormsUpdated?.errors }}</textarea>
+        <textarea class="outputField text-red-500" readonly disabled>{{ jsonFormsUpdated?.errors }}</textarea>
       </template>
 
       Data
-      <textarea class="w-full h-60 p-4 bg-white rounded" readonly disabled>{{ jsonFormsUpdated?.data }}</textarea>
+      <textarea class="outputField" readonly disabled>{{ jsonFormsUpdated?.data }}</textarea>
 
     </details>
 
@@ -50,6 +50,15 @@
 </template>
 
 <style>
+
+.outputField {
+  @apply
+  w-full h-60
+  p-4
+  bg-transparent
+  border border-gray-300/50
+  rounded
+}
 
 </style>
 

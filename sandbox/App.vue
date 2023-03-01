@@ -35,6 +35,14 @@ body {
   background-color: #242526;
   --toolBar-bg:#242526;
 }
+.card {
+ @apply bg-white rounded shadow
+}
+
+.dark .card {
+  background-color: rgb(200,200,200,0.15);
+}
+
 </style>
 
 <template>

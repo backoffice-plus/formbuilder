@@ -17,8 +17,6 @@
     --error:#dc2626;
 
     color:var(--text-color);
-
-    @apply bg-transparent;
 }
 
 .styleA label,
