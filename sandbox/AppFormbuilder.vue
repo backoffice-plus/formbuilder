@@ -2,7 +2,7 @@
 
   <div class="container max-w-screen-lg mx-auto p-4 flex flex-col gap-4">
 
-    <div>
+    <div class="styleA">
       Disable Formbuilder: <input type="checkbox" v-model="disableFormbuilder" /><br>
       Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" /><br>
       Select Example:

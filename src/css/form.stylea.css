@@ -1,13 +1,31 @@
 .styleA {
-  @apply bg-transparent;
+    --text-color:#374151; /** gray-700 */
+    --text-color-light:#9ca3af; /** gray-400 */
+    --text-color-description:#6b7280; /** gray-500 */
+    --text-color-focused: #4b5563; /** gray-600 */
+    --text-color-error: #dc2626;
 
+    --bg: #e5e7eb; /** gray-200 */
+    --bg-button:#d1d5db; /** gray-300 */
+    --bg-disabled:#d1d5db; /** gray-300 */
+
+    --border:#d1d5db; /** gray-300 */
+    --border-focus:#6b7280; /** gray-500 */
+    --tabs-border-activ:#1f2937; /** gray-800 */
+
+    --success:#10b981;
+    --error:#dc2626;
+
+    color:var(--text-color);
+
+    @apply bg-transparent;
 }
 
 .styleA label,
 .styleA label.label,
 .styleA label.label-element {
     @apply
-    tracking-wide text-gray-700 text-sm
+    tracking-wide text-sm
 
     transition-colors
 }
@@ -26,7 +44,7 @@
 
 .styleA .control:focus-within label,
 .styleA .control:focus-within label.label {
-    @apply text-gray-600
+    color:var(--text-color-focused);
 }
 
 /*
@@ -46,35 +64,54 @@
 .styleA textarea,
 .styleA .tagInput
 {
+    background-color: var(--bg);
+    border-color:var(--border);
+
     @apply
     block
     w-full
     py-0.5 px-2
 
-    bg-base-100
-    disabled:bg-base-100
-    bg-opacity-50 focus:bg-opacity-100
+    /*bg-opacity-50 focus:bg-opacity-100*/
 
     rounded-sm
 
     text-base
-    text-gray-700
     leading-6
 
-    border border-gray-300
-    focus:border-gray-500
+    border
+    /*focus:border-gray-500*/
     transition-colors
 
     outline-none  appearance-none
 
     disabled:cursor-not-allowed
 }
+.styleA input:disabled,
+.styleA select:disabled,
+.styleA textarea:disabled,
+.styleA .tagInput:disabled {
+    background-color: var(--bg-disabled);
+}
+
+.styleA input:focus,
+.styleA select:focus,
+.styleA textarea:focus,
+.styleA .tagInput:focus {
+    border-color: var(--border-focus)
+}
 .styleA select
 {
     appearance:auto;
+    color:var(--text-color);
+    background-color: var(--bg);
+
     @apply p-0.5
 }
+.styleA input:where([type="checkbox"], [type="radio"]) {
 
+    background-color: red;
+}
 
 
 .styleA input:where([type="file"]) {
@@ -116,7 +153,8 @@
 }
 .styleA input:where([data-type="password"]) + button:after {
     content:"";
-    @apply block w-3 h-3 border border-gray-600 rounded-full
+    border-color: var(--tabs-border-activ);
+    @apply block w-3 h-3 border rounded-full
 }
 .styleA input:where([data-type="password"]):where([type="password"]) + button:after {
     content:"";
@@ -124,7 +162,7 @@
 }
 .styleA input:where([data-type="password"]):where([type="text"]) + button:after {
     content:"";
-    @apply border-gray-400
+    border-color: var(--border);
 }
 
 .styleA .horizontal-layout,
@@ -159,8 +197,9 @@
 */
 .styleA fieldset.group,
 fieldset.styleA.group {
+    border-color: var(--border);
     @apply
-    border border-gray-300
+    border
     p-2
 }
 .styleA fieldset.group > legend,
@@ -185,13 +224,15 @@ fieldset.styleA.group .group-item {
      @apply pb-0
  }
 
+.styleA .array-list .array-list-item-toolbar button:hover {
+    background-color:var(--bg-button);
+}
 .styleA .array-list .array-list-item-toolbar button {
     font-size:20px;
     @apply
     flex justify-center items-center
     rounded-full w-5 h-5
     font-bold
-    hover:bg-gray-300
 }
 .styleA .array-list-item-content {
     @apply mt-4
@@ -213,19 +254,23 @@ fieldset.styleA.group .group-item {
     @apply mb-2
 }
 
+.styleA .array-list button.array-list-item-delete:hover {
+    background-color: var(--error);
+}
 .styleA .array-list button.array-list-item-delete {
     @apply
     flex justify-center items-center
     w-7 h-7 rounded-full
-    hover:bg-red-300
 }
 .styleA .array-list button.array-list-item-delete:after {
     content:"x";
-    @apply text-red-600 font-bold font-mono
+    color:var(--text-color-error);
+    @apply font-bold font-mono
 }
 .styleA .array-list-no-data {
+    color:var(--text-color-description);
     @apply
-    text-gray-600 text-sm px-2 py-1.5
+    text-sm px-2 py-1.5
 }
 
 .styleA .control .description,
@@ -236,11 +281,11 @@ fieldset.styleA.group .group-item {
     @apply block text-sm
 }
 .styleA .control .description {
-    @apply text-gray-500
+    color:var(--text-color-description);
 }
 .styleA .control .error,
 .styleA .array-list .error {
-    @apply text-red-500
+    color:var(--text-color-error);
 }
 
 /**
@@ -249,8 +294,9 @@ fieldset.styleA.group .group-item {
 *
 */
 .styleA fieldset.array-list {
+    border-color: var(--border);
     @apply
-    border border-gray-300
+    border
     p-2
 
     flex flex-col gap-2
@@ -263,16 +309,18 @@ fieldset.styleA.group .group-item {
 }
 
 .styleA fieldset.array-list legend label {
+    color:var(--text-color-description);
     @apply
-    uppercase tracking-wide text-gray-400 text-xs font-bold
+    uppercase tracking-wide text-xs font-bold
+}
+.styleA fieldset.array-list legend button:hover {
+    background-color: var(--success);
 }
 .styleA fieldset.array-list legend button {
+    background-color:var(--bg-button);
     @apply
     px-2 m-0
     rounded-full
-
-    bg-gray-300
-    hover:bg-green-500
 }
 
 .styleA fieldset.array-list .array-list-no-data {
@@ -280,9 +328,10 @@ fieldset.styleA.group .group-item {
 }
 
 .styleA fieldset.array-list .array-list-item-wrapper {
+    border-color: var(--border);
     @apply
     p-0
-    border border-gray-300
+    border
 }
 .styleA fieldset.array-list .array-list-item {
     @apply p-0
@@ -296,7 +345,6 @@ fieldset.styleA.group .group-item {
     min-height: 22px;
     @apply
     flex-grow
-    text-black
     pl-2
 }
 
@@ -313,13 +361,16 @@ fieldset.styleA.group .group-item {
     rounded-full
 
     bg-transparent
-    hover:bg-gray-400
 }
+
+.styleA fieldset.array-list .array-list-item-toolbar button:hover {
+    background-color:var(--bg-button);
+}
+
 .styleA fieldset.array-list .array-list-item-toolbar button.array-list-item-move-up {}
 .styleA fieldset.array-list .array-list-item-toolbar button.array-list-item-move-down {}
-.styleA fieldset.array-list .array-list-item-toolbar button.array-list-item-delete {
-    @apply
-    hover:bg-red-500
+.styleA fieldset.array-list .array-list-item-toolbar button.array-list-item-delete:hover {
+    background-color: var(--error);
 }
 
 .styleA fieldset.array-list .array-list-item-content {
@@ -330,16 +381,21 @@ fieldset.styleA.group .group-item {
 
 
 .styleA .tabs {
+    border-color: var(--border);
     @apply
     flex
 
     my-2
 
-    border-b border-gray-200
+    border-b
 }
 
+.styleA .tabs button:hover {
+    background-color:var(--bg-button);
+}
 .styleA .tabs button {
     min-width: 100px;
+    color:var(--text-color-description);
     @apply
     py-1 px-2
 
@@ -350,21 +406,19 @@ fieldset.styleA.group .group-item {
     transition-colors
 
     rounded-t-lg
-
-    hover:bg-gray-400
-    hover:bg-opacity-10
-    hover:text-gray-800
+}
+.styleA .tabs button:hover {
+    color:var(--text-color-focused);
 }
 
 .styleA .tabs button.selected {
-    @apply
-    text-gray-800
-    border-gray-800
+    color:var(--text-color-focused);
+    border-color:var(--tabs-border-activ);
 }
 .styleA .tabs button:disabled {
     @apply
     opacity-50
-    hover:bg-opacity-0
+    /*hover:bg-opacity-0*/
 }
 
 .styleA .oneof .oneof-select + div {
@@ -394,11 +448,14 @@ fieldset.styleA.group .group-item {
 .styleA .object-addprops-toolbar input {
      @apply flex-grow-0
 }
+.styleA .object-addprops-toolbar button:hover {
+    background-color:var(--bg-button);
+}
 .styleA .object-addprops-toolbar button {
     @apply
     w-6 aspect-square
 
-    bg-transparent hover:bg-gray-300
+    bg-transparent
     rounded-full
     cursor-pointer
 
@@ -412,5 +469,6 @@ fieldset.styleA.group .group-item {
     @apply w-full
 }
 .styleA .object-addprops-items > div > button {
-    @apply mt-6 px-2 text-red-500
+    color:var(--text-color-error);
+    @apply mt-6 px-2
 }

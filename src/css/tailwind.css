@@ -61,6 +61,20 @@
         --tool-control-input-border: rgb(0,0,0,0.5);
     }
 
+    .dark .styleA {
+        --text-color:rgba(200,200,200, 0.8);
+        --text-color-light:rgba(200,200,200, 0.9);
+        --text-color-description: rgba(200,200,200, 0.7);
+        --text-color-focused: rgba(220,220,220, 0.9);
+
+        --bg: #414040;
+        --bg-button:rgba(150,150,150, 0.5);
+        --bg-disabled:rgba(150,150,150, 0.7);
+
+        --border:rgba(150,150,150, 0.5);
+        --border-focus:rgba(150,150,150, 0.9);
+        --tabs-border-activ:var(--text-color-focused)
+    }
 
     h1 {
         @apply

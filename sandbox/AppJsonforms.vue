@@ -4,7 +4,7 @@
 
     <div class="flex items-baseline gap-2"><h2>{{ example }}</h2></div>
 
-    <div>
+    <div class="styleA">
       Select Example:
       <select v-model="example" class="inline" >
         <option></option>
@@ -28,8 +28,12 @@
       </div>
     </details>
 
-    Data
-    <textarea class="w-full h-60 p-4 bg-white rounded" readonly disabled>{{ jsonFormsUpdated?.data }}</textarea>
+    <details open="true">
+      <summary class="cursor-pointer">Data</summary>
+      <div class="styleA">
+        <textarea class="w-full h-60 p-4 bg-white rounded" readonly disabled>{{ jsonFormsUpdated?.data }}</textarea>
+      </div>
+    </details>
 
     <details open="true">
       <summary class="cursor-pointer">JSON</summary>
