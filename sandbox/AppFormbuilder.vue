@@ -40,15 +40,6 @@
 </template>
 
 <style>
-body {
-  color: #1b2931;
-  background-color: #f3f4f5;
-}
-.dark body {
-  color: #eeeef5;
-  background-color: #49494d;
-}
-
 .formbuilder nav {
  box-shadow: 0px 8px 8px -8px rgb(30, 30, 30, 30%);
   z-index:9;

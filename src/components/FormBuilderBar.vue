@@ -29,7 +29,7 @@
 <style scoped>
 
 aside {
-  background-color: var(--base-100);
+  background-color: var(--toolBar);
 
   @apply
   flex space-x-2
@@ -45,19 +45,17 @@ aside::-webkit-scrollbar {
   width: 4px;
 }
 aside::-webkit-scrollbar-track {
-  background-color: var(--base-100);
+  background-color: var(--toolBar);
 }
 aside::-webkit-scrollbar-thumb {
-  background-color: var(--base-200);
-  border-color: var(--base-100);
+  background-color: var(--toolBar-scrollbar);
+  border-color: var(--toolBar);
 
   border-width: 6px;
   @apply
   rounded-full
   border-solid
   /* :TODO hover color */
-  /*hover:bg-opacity-80*/
-  /*active:bg-opacity-50*/
 }
 
 aside .toolItem {
@@ -72,11 +70,6 @@ aside .toolItem {
 
   overflow-hidden
 
-  /*bg-blue-100*/
-
-  /*bg-opacity-100*/
-  /*hover:bg-opacity-80*/
-
   border
 
   rounded
@@ -86,10 +79,6 @@ aside .toolItem {
 
   text-xs leading-none text-center
 }
-/*aside .toolItem.formInputByTypeTool {*/
-/*   @apply*/
-/*  bg-blue-200*/
-/*}*/
 
 </style>
 

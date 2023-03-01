@@ -23,7 +23,7 @@
 <!--      </div>-->
 
       <Vuedraggable
-          :class="['dropArea bg-dotted nestedFlexArea flex-col', {drag:dragSchema}]"
+          :class="['dropArea nestedFlexArea flex-col', {drag:dragSchema}]"
           :list="childTools"
           :group="{name:'formBuilderArray', pull: true, put: groupPut}"
           item-key="uuid"

@@ -12,7 +12,7 @@
         @see http://sortablejs.github.io/Sortable/#thresholds
       -->
       <Vuedraggable
-          :class="['dropArea bg-dotted nestedFlexArea', tool.uischema.type, {drag:isDragging||drag}]"
+          :class="['dropArea nestedFlexArea', tool.uischema.type, {drag:isDragging||drag}]"
           :list="childTools"
           group="formBuilder"
           item-key="uuid"
@@ -54,19 +54,14 @@
   @apply relative
   h-full
 }
-/*.flexAreaTool:not(.isRoot) {*/
-/*  @apply*/
-/*  bg-blue-100*/
-/*}*/
-
-.bg-dotted {
-  background-image: radial-gradient(var(--dropArea-dots) 10%, var(--dropArea) 0%);
-  background-position: 0 0;
-  background-size: 5px 5px;
-}
 
 .dropArea {
   min-height: 140px;
+
+  background-image: radial-gradient(var(--dropArea-dots) 10%, var(--dropArea) 0%);
+  background-position: 0 0;
+  background-size: 5px 5px;
+
   @apply
   w-full
   flex-grow
@@ -126,12 +121,6 @@
   rounded
 }
 
-/*.dropItem.formInputByTypeTool {*/
-/*  @apply*/
-/*  border*/
-/*  !*bg-blue-100*!*/
-/*  !*border-blue-200*!*/
-/*}*/
 
 .sortable-chosen {
   @apply

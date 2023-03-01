@@ -22,8 +22,6 @@
   rounded-full
 
   transition-colors
-  /*hover:bg-opacity-40*/
-  /*hover:bg-base-200*/
 }
 
 .toolActions button:hover {

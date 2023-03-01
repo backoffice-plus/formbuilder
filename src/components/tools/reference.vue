@@ -8,7 +8,7 @@
           <b>{{ tool.propertyName }}</b>
         </template>
 
-        <pre class="bg-base-100 inline p-0.5 px-2 rounded text-sm">{{ props.tool.schema?.$ref ?? ' ' }}</pre>
+        <pre>{{ props.tool.schema?.$ref ?? ' ' }}</pre>
       </template>
     </ToolIcon>
 
@@ -27,6 +27,12 @@
   background-color: var(--tool-control);
   @apply
   relative
+}
+
+.referenceTool pre {
+  background-color: var(--tool-reference-ref);
+  @apply
+  inline p-0.5 px-2 rounded text-sm
 }
 </style>
 

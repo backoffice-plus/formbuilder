@@ -31,7 +31,7 @@
 }
 
 .modal > .modalBg > .centerItem .panel {
-  background-color: var(--base-100);
+  background-color: var(--modal);
   @apply
   w-full max-w-md
 

@@ -14,7 +14,7 @@
       </Actions>
 
       <Vuedraggable
-          :class="['dropArea bg-dotted nestedFlexArea flex-col', {drag:dragSchema}]"
+          :class="['dropArea nestedFlexArea flex-col', {drag:dragSchema}]"
           :list="childTools"
           :group="{name:'formBuilderCombinator', pull: true, put: groupPut}"
           item-key="uuid"
@@ -55,7 +55,6 @@
 .combinatorTool {
   @apply
   relative
-  /*bg-green-100*/
 }
 .dropArea .combinatorTool {
    min-height:180px !important;

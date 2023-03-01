@@ -24,6 +24,17 @@ const toggleDark = useToggle(isDark)
 
 </script>
 
+<style>
+body {
+  color: #1b2931;
+  background-color: #f3f4f5;
+}
+.dark body {
+  color: #e3e8e8;
+  background-color: #242526;
+}
+</style>
+
 <template>
   <button @click="toggleDark()">
     Is Dark: {{ isDark }}

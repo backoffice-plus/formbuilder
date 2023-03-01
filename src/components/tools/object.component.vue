@@ -1,5 +1,5 @@
 <template>
-  <div class="objectTool" :class="[{root:isRoot}]">
+  <div class="objectTool" :class="[{isRoot:isRoot}]">
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
@@ -7,7 +7,7 @@
       </template>
     </ToolIcon>
 
-    <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
+    <div v-if="!isToolbar" :class="[isRoot?'mr-9':'mr-5']">
 
       <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
         <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>
@@ -22,7 +22,7 @@
 <!--        </div>-->
 
         <Vuedraggable
-            :class="['dropArea bg-dotted nestedFlexArea flex-col', {drag:dragSchema}]"
+            :class="['dropArea nestedFlexArea flex-col', {drag:dragSchema}]"
             :list="childTools"
             :group="{name:'formBuilderSchema', pull: true, put: groupPut}"
             item-key="uuid"
@@ -57,22 +57,12 @@
 .objectTool:not(.isRoot) {
   background-color: var(--tool-control-secondary);
 }
-/*.objectTool {*/
-/*  @apply*/
-/*  bg-green-100 !important*/
-/*}*/
-
-/*.objectTool.root {*/
-/*  @apply*/
-/*  bg-transparent !important*/
-/*}*/
 </style>
 
 <style scoped>
 .objectTool {
   @apply
   relative
-  /*bg-green-100*/
 }
 .dropArea .objectTool {
    min-height:140px !important;

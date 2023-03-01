@@ -57,6 +57,8 @@
 input:not([type="checkbox"]),
 textarea,
 select {
+  background-color: var(--tool-control-input);
+  border-color: var(--tool-control-input-border);
   @apply
   w-full
 }

@@ -23,12 +23,12 @@
             v-text="'All'"
             v-if="currentTab>=0 && childTools.length>1"
           />
-          <button type="button" class="add" @click="addTab" />
+          <button type="button" class="add" @click="addTab"><Icon icon="mdi:plus" /></button>
         </div>
       </div>
 
       <Vuedraggable
-          :class="['dropArea bg-dotted nestedFlexArea flex-col', {drag:dragTab}]"
+          :class="['dropArea nestedFlexArea flex-col', {drag:dragTab}]"
           :list="childTools"
           group="formBuilderCategorization"
           item-key="uuid"
@@ -71,25 +71,12 @@
   @apply
   relative
 }
-/*.categorizationTool:not(.isRoot) {*/
-/*  @apply*/
-/*  bg-blue-100*/
-/*}*/
-
-.tabs {
-  @apply my-0
-}
-
 
 .tabs {
   @apply
-  flex
-
-  my-2
-
-  border-b border-base-100
+  flex gap-2
+  my-0 mt-2
 }
-
 .tabs button:not(.add) {
   min-width: 100px;
   @apply
@@ -97,32 +84,24 @@
 
   focus:outline-none
 
-  border-b border-transparent
-
   transition-colors
 
   rounded-t-lg
-
-  /*hover:bg-primary*/
-  /*hover:bg-opacity-10*/
-  /*hover:text-primary*/
 }
 
-/*.tabs button.selected {*/
-/*  @apply*/
-/*  text-primary*/
-/*  border-primary*/
-/*}*/
+.tabs button:not(.add):hover {
+  background-color: var(--tool-categorization-tab-hover);
+}
 
+.tabs button.add {
+  @apply
+  w-8 aspect-square
+  rounded-full
 
-button.add::before {
-  content: '';
-  width: 20px;
-  height: 20px;
-  background-size: cover;
-  display: block;
-  /* mdi:tab-plus */
-  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>');
+  flex items-center justify-center
+}
+.tabs button.add:hover {
+  background-color: var(--tool-categorization-tab-hover);
 }
 </style>
 
@@ -140,6 +119,7 @@ import {ref, computed, onMounted} from 'vue';
 import {useTools} from "../../composable/tools";
 import {unknownTool} from "../../lib/tools/unknownTool";
 import ToolIcon from "./utils/ToolIcon.vue";
+import {Icon} from "@iconify/vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
