@@ -18,6 +18,7 @@
         --toolItem-icon:#000;
         --toolItem-border: rgba(60, 60, 60, 0.2);
         --toolBar:var(--base-100);
+        --toolBar-bg:var(--base-100);
         --toolBar-scrollbar:var(--base-300);
         --toolBar-tab:var(--base-100);
         --toolBar-tab-hover:var(--base-200);

@@ -61,6 +61,9 @@
 </template>
 
 <style scoped>
+nav {
+  background-color: var(--toolBar-bg);
+}
 .tabs {
   @apply
   flex gap-2

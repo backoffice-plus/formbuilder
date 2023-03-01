@@ -28,10 +28,12 @@ const toggleDark = useToggle(isDark)
 body {
   color: #1b2931;
   background-color: #f3f4f5;
+  --toolBar-bg:#f3f4f5;
 }
 .dark body {
   color: #e3e8e8;
   background-color: #242526;
+  --toolBar-bg:#242526;
 }
 </style>
 
