@@ -12,6 +12,7 @@ import SliderControlRenderer from "./components/SliderControlRenderer.vue";
 import PasswordControlRenderer from "./components/PasswordControlRenderer.vue";
 import AutocompleteRenderer from "./components/AutocompleteRenderer.vue";
 import {constEntry} from "./components/ConstRenderer.vue";
+import {fileEntry} from "./components/FileRenderer.vue";
 
 import {
     and,
@@ -105,7 +106,8 @@ export const boplusVueVanillaRenderers = [
     radioGroupControlRendererEntry,
     sliderControlRendererEntry,
     passwordControlRendererEntry,
-    constEntry
+    constEntry,
+    fileEntry,
 ];
 
 boplusVueVanillaRenderers.push({

@@ -18,6 +18,7 @@ import * as nestedCombinator from './nestedCombinator';
 import * as anyOfsimple from './anyOfsimple';
 import * as arrayofref from './arrayofref';
 import * as objectAddProps from './object-additional-properties';
+import * as file from './file';
 
 export {
   _default,
@@ -40,4 +41,5 @@ export {
   anyOfsimple,
   arrayofref,
   objectAddProps,
+  file,
 }

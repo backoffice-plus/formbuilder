@@ -20,6 +20,7 @@ export const schema = {
                 'regex',
                 'hostname', 'ipv4', 'ipv6',
                 'uri','uri-reference','iri','iri-reference',
+                'binary',
             ],
         }
     },
@@ -49,6 +50,18 @@ export const schema = {
                     enum: ['string', 'number', 'integer', 'boolean'],
                 },
                 format:{$ref:'#/definitions/formats'},
+
+
+                contentMediaType: {
+                    type: "string",
+                    description: 'like: "image/*", "image/jpeg" or "application/pdf"'
+                },
+                contentEncoding: {
+                    type: "string",
+                    //enum: ['7bit', '8bit', 'binary', 'quoted-printable', 'base16', 'base32', 'base64']
+                    enum: ['base64'] //there are really only two options useful for modern usage
+                },
+
         //     },
         // },
 
@@ -133,6 +146,29 @@ export const uischema = {
                                             }
                                         }
                                     ]
+                                },
+
+                                {
+                                    "type": "HorizontalLayout",
+                                    "elements": [
+                                        {
+                                            "scope": "#/properties/contentMediaType",
+                                            "type": "Control"
+                                        },
+                                        {
+                                            "scope": "#/properties/contentEncoding",
+                                            "type": "Control",
+                                        }
+                                    ],
+                                    "rule": {
+                                        "effect": "ENABLE",
+                                        "condition": {
+                                            "scope": "#/properties/type",
+                                            "schema": {
+                                                "const": "string"
+                                            }
+                                        }
+                                    }
                                 },
                                 {
                                     scope: "#/properties/options/properties/multi",

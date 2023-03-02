@@ -34,6 +34,10 @@ export class ControlTool extends AbstractTool implements ToolInterface {
             propertyName: tool.propertyName,
             type: this.schema.type,
             format: this.schema.format,
+            /** @ts-ignore */
+            contentMediaType: this.schema?.contentMediaType as any,
+            /** @ts-ignore */
+            contentEncoding: this.schema?.contentEncoding as any,
             options: this.uischema.options,
 
             required: tool.isRequired,
@@ -55,6 +59,11 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         this.schema.type = data.type;
         this.schema.format = data.format;
         this.uischema.options = data.options ?? {};
+
+        /** @ts-ignore */
+        this.schema.contentMediaType = data.contentMediaType;
+        /** @ts-ignore */
+        this.schema.contentEncoding = data.contentEncoding;
 
         setOptionDataValidation(this.schema, this.uischema, data);
         setOptionDataLabel(this.schema, this.uischema, data);
