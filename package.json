@@ -23,7 +23,8 @@
     "build": "patch-package && vite build && npm run build:types",
     "build:types": "vue-tsc --project tsconfig.types.json --declaration --emitDeclarationOnly --skipLibCheck --outDir dist/types ",
     "typecheck": "vue-tsc --project tsconfig.types.json --noEmit --skipLibCheck",
-    "test": "vitest"
+    "test": "vitest",
+    "publish": "npm run build && npm publish --public"
   },
   "keywords": [],
   "author": "David Wolter <david@dampfer.net>",
