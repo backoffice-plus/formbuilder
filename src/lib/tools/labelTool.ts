@@ -15,7 +15,7 @@ export class LabelTool extends AbstractTool implements ToolInterface {
         return {
             text: this.uischema.text,
             i18n: this.uischema.i18n,
-            options: this.uischema.i18n ?? {},
+            options: this.uischema.options ?? {},
             ...prepareOptionDataRule(this.schema, this.uischema),
         } as any;
     }
