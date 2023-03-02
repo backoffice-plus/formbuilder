@@ -1,0 +1,32 @@
+:root {
+    --base-100: #e5e7eb;
+    --base-200: #9ca3af;
+    --base-300: #454545FF;
+
+    --error: #911212;
+
+    --tool-control: #bfdbfe;
+    --tool-control-secondary: #dcfce7;
+    --tool-layout: #dbeafe;
+    --tool-accent: #fef3c7;
+    --tool-error: #fee2e2;
+    --toolItem-icon:#000;
+    --toolItem-border: rgba(60, 60, 60, 0.2);
+    --toolBar:var(--base-100);
+    --toolBar-bg:var(--base-100);
+    --toolBar-scrollbar:var(--base-300);
+    --toolBar-tab:var(--base-100);
+    --toolBar-tab-hover:var(--base-200);
+    --modal:#fff;
+
+    --dropArea: rgb(250, 250, 250);
+    --dropArea-dots: var(--base-200);
+    --dropArea-dragBorder: var(--base-300);
+
+    --buttonRounded-hover:rgba(200,200,200,.5);
+
+    --tool-categorization-tab-hover:rgb(255,255,255,0.3);
+    --tool-reference-ref:var(--base-100);
+    --tool-control-input:#fff;
+    --tool-control-input-border:#eee;
+}

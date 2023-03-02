@@ -1,6 +1,5 @@
 import {controlTools, layoutTools} from "./lib/tools";
 
-
 //lib
 export * from './lib/formbuilder';
 export * from './lib/generator';
@@ -29,3 +28,5 @@ export type {EventAfterOptionJsonforms} from './lib/mitt'
 export { useJsonforms } from './composable/jsonforms'
 
 export {default as Vuedraggable} from "../packages/_vuedraggable/src/vuedraggable.js";
+
+import './css/theme.css'

@@ -88,6 +88,11 @@ onMounted(async () => {
         })
         .catch(e => error.value=e)
 
+
+
+  /**
+   * :TODO this can probably removed (all renderer should be registered at the init of jsonforms)
+   */
     if(props.tool.optionJsonformsRenderer) {
       const renderer = props.tool.optionJsonformsRenderer();
       if(renderer?.length) {
