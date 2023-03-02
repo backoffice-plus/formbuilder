@@ -22,6 +22,7 @@ https://jsonforms.io/docs/renderer-sets
 | anyOf                 | Tabs             |         -          |      ❌      |      ✔️      |       ✔️        |
 | Categorization        | Tabs             |         -          |      ❌      |      ✔️      |       ✔️        |
 | const _type safety_   | Const            |        Enum        |      ❌      |      ❌       |       ✔️        |
-| :TODO                 |                  |                   |            |             |                 |
+| binary, byte, base64  | File             |      String        |      ❌      |      ❌       |       ✔️        |
+| :TODO                 |                  |                    |            |             |                 |
 | CategorizationStepper | Tabs             |   Categorization   |      ❌      |      ✔️      |        ❌        |
 

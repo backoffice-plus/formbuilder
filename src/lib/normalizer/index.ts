@@ -48,6 +48,9 @@ export const guessInputType = (schema:JsonSchema, uischema:UISchemaElement) => {
         'date': 'date',
         'time': 'time',
         'date-time': 'datetime-local',
+        'format': 'file',
+        'byte': 'file',
+        'binary': 'file',
     } as Record<string, string>;
 
     let inputType = 'text';
@@ -63,6 +66,10 @@ export const guessInputType = (schema:JsonSchema, uischema:UISchemaElement) => {
                 if(options.multi) {
                     inputType = 'textarea'
                 }
+            }
+            /** @ts-ignore */
+            else if(schema?.contentEncoding === 'base64') {
+                inputType = 'file'
             }
             break;
 
