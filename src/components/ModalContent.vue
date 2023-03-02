@@ -75,7 +75,18 @@ const error = ref('');
 onMounted(async () => {
 
     options.value = props.tool.optionDataPrepare(props.tool)
-    jsonFormSchema.value = await props.tool.optionJsonforms(props.tool).catch(e => error.value=e)
+    jsonFormSchema.value = await props.tool.optionJsonforms(props.tool)
+        .then(e => {
+          const event = {
+            tool:props.tool,
+            schema: JSON.parse(JSON.stringify(e.schema)),
+            uischema: JSON.parse(JSON.stringify(e.uischema)),
+          };
+          emitter.emit('afterOptionJsonforms', event)
+
+          return {schema:event.schema, uischema:event.uischema};
+        })
+        .catch(e => error.value=e)
 
     if(props.tool.optionJsonformsRenderer) {
       const renderer = props.tool.optionJsonformsRenderer();

@@ -51,10 +51,11 @@
 
 <script setup lang="ts">
 
-import {defaultTools, FormBuilder, useJsonforms} from "../src/index.ts";
+import {defaultTools, emitter, FormBuilder, useJsonforms} from "../src/index.ts";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
 import {computed, onMounted, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
+import {schema as vuetifySchema, uischema as vuetifyUischema} from "./jsonForms/vuetifyOptions";
 import {getExamples} from '@jsonforms/examples/src'
 import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import {resolveSchema} from "../src";
@@ -64,6 +65,7 @@ import {boplusVueVanillaRenderers} from "../src/index";
 import SchemaCode from "./SchemaCode.vue";
 import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
 import _ from "lodash";
+import type {EventAfterOptionJsonforms} from "../src/lib/mitt";
 
 const tools = [
     ...defaultTools,
@@ -132,4 +134,15 @@ watch(() => rootSchema.value, async (a,b) => {
 watch(() => example.value, async () => {
   window.location.hash = example.value ? "/?example="+example.value : '';
 })
+
+
+emitter.on('afterOptionJsonforms', (event: EventAfterOptionJsonforms) => {
+  const tool = event.tool;
+
+  if('Control' === tool.uischema?.type) {
+    _.merge(event.schema, vuetifySchema);  //merge into schema
+    event.uischema.elements.push(vuetifyUischema); //attach tab
+  }
+})
+
 </script>

@@ -24,6 +24,7 @@ export { default as Actions } from './components/tools/utils/Actions.vue'
 export {boplusVueVanillaRenderers} from "../packages/boplus-vue-vanilla/src/index";
 
 export {emitter} from './lib/mitt'
+export type {EventAfterOptionJsonforms} from './lib/mitt'
 
 export { useJsonforms } from './composable/jsonforms'
 
