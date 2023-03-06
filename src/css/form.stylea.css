@@ -108,7 +108,6 @@
 }
 .styleA input:where([type="checkbox"], [type="radio"]) {
 
-    background-color: red;
 }
 
 
