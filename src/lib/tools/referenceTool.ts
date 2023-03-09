@@ -5,7 +5,7 @@ import referenceComp from "../../components/tools/reference.vue";
 import type {JsonFormsInterface, ToolInterface} from "./index";
 
 import {AbstractTool} from "./AbstractTool";
-import {schema, uischema} from "../../schema/toolOptionsReference";
+import {schema, uischema} from "./schema/reference.schema";
 import type {ControlElement} from "@jsonforms/core/src/models/uischema";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {useJsonforms} from "../../composable/jsonforms";

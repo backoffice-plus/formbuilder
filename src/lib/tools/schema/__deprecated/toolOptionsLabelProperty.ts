@@ -1,11 +1,11 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-import type {JsonFormsInterface} from "../lib/models";
+import type {JsonFormsInterface} from "../../../models";
 
 export const schema = {
     "type": "object",
     "properties": {
-        "text": {
+        "label": {
             "type": "string"
         },
         i18n: {
@@ -26,7 +26,7 @@ export const uischema = {
                     "type": "HorizontalLayout",
                     "elements": [
                         {
-                            "scope": "#/properties/text",
+                            "scope": "#/properties/label",
                             "type": "Control"
                         },
                     ],
