@@ -24,7 +24,7 @@
     <nav>
 
       <div class="tabs">
-        <button @click="showBar='schema';" :class="{active:'schema'===showBar}">Controls</button>
+        <button @click="showBar='schema';" :class="{active:'schema'===showBar}" v-if="!schemaReadOnly">Controls</button>
         <button @click="showBar='uischema';" :class="{active:'uischema'===showBar}" v-if="showBuilder==='uischema'">Layout</button>
         <button @click="showBar='properties';" :class="{active:'properties'===showBar}" v-if="schemaReadOnly">Properties</button>
       </div>
@@ -146,7 +146,13 @@ const onChangeBuilder = (e) => {
 
       //:TODO add property & scope changed check!
 
-      baseUiTool.value = createBaseTool(rootSchema.value, rootUischema.value).value;
+        if(props.schemaReadOnly) {
+          baseUiTool.value = createBaseTool().value;
+        }
+        else {
+          baseUiTool.value = createBaseTool(rootSchema.value, rootUischema.value).value;
+        }
+
       currentBaseTool.value = baseUiTool.value;
       break;
 
@@ -317,14 +323,13 @@ onBeforeMount(() => {
   unregisterAllTools();   //is that a good behavior?
   registerTools(props.tools);
 
-  const baseToolFromStore = createBaseTool(props?.jsonForms?.schema, props?.jsonForms?.uischema);
-  baseUiTool.value = baseToolFromStore.value;
-  currentBaseTool.value = baseUiTool.value;
+  //init baseTool
+  update(props?.jsonForms?.schema, props?.jsonForms?.uischema)
+  onChangeBuilder({target:{value:'uischema'}})
+  if(props.schemaReadOnly) {
+    showBar.value='properties';
+  }
 
-  baseDefinitionTool.value = createDefTool(props?.jsonForms?.schema);
-
-});
-onMounted(() => {
   const updateJsonFormDebounced = _.debounce(() => {
     window.setTimeout(updateJsonForm, 100);
   },100,{leading:false, trailing:true})

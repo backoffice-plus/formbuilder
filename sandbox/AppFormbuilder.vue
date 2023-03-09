@@ -6,7 +6,7 @@
       Disable Formbuilder: <input type="checkbox" v-model="disableFormbuilder" /><br>
       Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" /><br>
       Select Example:
-      <select v-model="example" class="inline" >
+      <select v-model="example" style="width:auto;display:inline" >
         <option></option>
         <option v-for="e in examples" :value="e.name">{{e.label}}</option>
       </select>
@@ -111,6 +111,10 @@ const jsonForms = computed(() => {
     delete schema.additionalProperties;
 
     exampleData = {schema: schema, uischema: uischema};
+  }
+
+  if(schemaReadOnly.value) {
+    delete exampleData.uischema;
   }
 
   latestExampleData.value = unref(exampleData);
