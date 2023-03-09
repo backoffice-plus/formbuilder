@@ -47,6 +47,7 @@
                  :isRoot="true"
                  :isDragging="!!drag"
                  class="my-4"
+                 :key="currentBaseTool.propertyName"
       />
     </template>
 
@@ -150,7 +151,7 @@ const {registerTools, unregisterAllTools, findLayoutToolByUiType, findMatchingTo
 const {getControlTools, getLayoutTools} = useTools();
 
 const {update, schema: rootSchema, uischema: rootUischema} = useJsonforms();
-const {baseTool: baseUiTool2, createBaseTool} = useToolInstance();
+const {baseTool: baseUiTool2, createBaseTool, createSchemaTool, createDefTool} = useToolInstance();
 
 
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
@@ -165,43 +166,32 @@ const onChangeMode = (e) => {
   const mode = e.target.value;
   switch (mode) {
     case 'schema':
-      showBar.value=mode;
-      baseSchemaTool.value.schema = rootSchema.value;
+      showBar.value='schema';
+
+      baseSchemaTool.value = createSchemaTool(rootSchema.value);
       currentBaseTool.value = baseSchemaTool.value;
       break;
 
     case 'uischema':
       showBar.value='schema';
-      baseUiTool.value = createBaseTool(rootSchema.value,rootUischema.value).value;
 
       //:TODO add property & scope changed check!
 
+      baseUiTool.value = createBaseTool(rootSchema.value, rootUischema.value).value;
       currentBaseTool.value = baseUiTool.value;
       break;
 
     case 'definitions':
       showBar.value='schema';
-      /**
-       * TODO hier weiter!!!
-       *
-       * switching between schema and def not working!!!
-       */
+
       baseDefinitionTool.value = createDefTool(rootSchema.value);
-      currentBaseTool.value = baseDefinitionTool.value;
+      currentBaseTool.value = baseDefinitionTool.value
       break;
   }
 }
 
 const baseUiTool = ref(null);
-const baseSchemaTool = computed(() => {
-  const schema = {
-    type:'object',
-    properties: jsonFormsSchema.value.schema
-  };
-  const tool = cloneToolWithSchema(objectTool,schema , {});
-  tool.propertyName = 'schema';
-  return tool;
-})
+const baseSchemaTool = ref(null);
 const baseDefinitionTool = ref(null);
 const currentBaseTool = ref(null);
 
@@ -273,16 +263,6 @@ const onChangeModal = (data) => {
     // }
     updateJsonForm();
   }
-}
-
-const createDefTool = (schema) => {
-  const defSchema = {
-    type:'object',
-    properties: schema.definitions
-  };
-  const baseDtool = cloneToolWithSchema(objectTool, defSchema , {});
-  baseDtool.propertyName = 'definitions';
-  return baseDtool;
 }
 
 const updateJsonForm = () => {

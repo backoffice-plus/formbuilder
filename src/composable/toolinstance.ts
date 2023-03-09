@@ -4,7 +4,8 @@ import type {ToolInterface} from "../lib/tools";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {generateJsonSchema} from "@jsonforms/core";
 import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
-import {findBaseTool} from "../lib/formbuilder";
+import {cloneToolWithSchema, findBaseTool} from "../lib/formbuilder";
+import {objectTool} from "../lib/tools/ObjectTool";
 
 const baseTool: Ref<ToolInterface | null> = ref(null);
 
@@ -23,8 +24,28 @@ export function useToolInstance() {
         return baseTool;
     };
 
+    const createSchemaTool = (schema: JsonSchema) => {
+        const tool = cloneToolWithSchema(objectTool, schema);
+        tool.propertyName = 'schema';
+
+        return tool;
+    }
+    const createDefTool = (schema: JsonSchema) => {
+        const defSchema = {
+            type:'object',
+            properties: schema.definitions
+        } as JsonSchema;
+
+        const tool = cloneToolWithSchema(objectTool, defSchema);
+        tool.propertyName = 'definitions';
+
+        return tool;
+    }
+
     return {
         baseTool,
         createBaseTool,
+        createSchemaTool,
+        createDefTool,
     };
 }

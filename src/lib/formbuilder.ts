@@ -48,12 +48,14 @@ export const cloneEmptyTool = (tool: ToolInterface, schema:JsonSchema|undefined 
 };
 
 
-export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: UISchemaElement) => {
+export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: UISchemaElement|undefined = undefined) => {
 
     //clone
     const clone = tool.clone();
     _.merge(clone.schema, {...schema})
-    _.merge(clone.uischema, {...uischema})
+    if(uischema) {
+        _.merge(clone.uischema, {...uischema})
+    }
 
     if ('scope' in clone.uischema) {
         clone.propertyName = fromScopeToProperty(clone.uischema.scope)
