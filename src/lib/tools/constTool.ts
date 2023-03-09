@@ -21,8 +21,8 @@ export class ConstTool extends ControlTool {
         }
     }
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
-        const data = super.optionDataPrepare(tool);
+    optionDataPrepare(): Record<string, any> {
+        const data = super.optionDataPrepare();
 
 
         data.const = this.schema.const;
@@ -40,8 +40,8 @@ export class ConstTool extends ControlTool {
         return data;
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
-        super.optionDataUpdate(tool, data);
+    optionDataUpdate(data: Record<string, any>): void {
+        super.optionDataUpdate(data);
 
         this.schema.const = data.const;
 
@@ -61,7 +61,7 @@ export class ConstTool extends ControlTool {
         delete this.schema.type; //no type for const, right?!
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

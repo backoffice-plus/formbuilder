@@ -35,11 +35,11 @@ export abstract class AbstractTool implements ToolInterface {
 
     abstract importer(): any;
 
-    abstract optionDataPrepare(tool: ToolInterface): Record<string, any> ;
+    abstract optionDataPrepare(): Record<string, any> ;
 
-    abstract optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void;
+    abstract optionDataUpdate(data: Record<string, any>): void;
 
-    abstract optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface | undefined>;
+    abstract optionJsonforms(): Promise<JsonFormsInterface | undefined>;
 
     abstract tester: RankedTester | undefined;
 

@@ -8,14 +8,14 @@ export class UnknownTool extends AbstractTool implements ToolInterface {
     importer = () => unknownComp;
     tester = rankWith(-1, () => false);
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(): Record<string, any> {
         return {};
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+    optionDataUpdate(data: Record<string, any>): void {
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
         return {
             schema: {},
             uischema: {},

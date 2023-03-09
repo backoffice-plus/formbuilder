@@ -22,7 +22,7 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
         } as Layout;
     }
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(): Record<string, any> {
         return {
             options: this.uischema?.options,
             uischemaType: this.uischema.type,
@@ -30,7 +30,7 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
         } as any;
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+    optionDataUpdate(data: Record<string, any>): void {
         if (data.uischemaType) {
             this.uischema.type = data.uischemaType;
         }
@@ -40,7 +40,7 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
         setOptionDataRule(this.schema, this.uischema, data);
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

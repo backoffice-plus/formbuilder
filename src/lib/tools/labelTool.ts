@@ -11,7 +11,7 @@ export class LabelTool extends AbstractTool implements ToolInterface {
     importer = () => labelComp;
     tester = rankWith(1, uiTypeIs('Label'));
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(): Record<string, any> {
         return {
             text: this.uischema.text,
             i18n: this.uischema.i18n,
@@ -20,7 +20,7 @@ export class LabelTool extends AbstractTool implements ToolInterface {
         } as any;
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+    optionDataUpdate(data: Record<string, any>): void {
         this.uischema.text = data.text;
         this.uischema.i18n = data.i18n;
         this.uischema.options = data.options ?? {};
@@ -28,7 +28,7 @@ export class LabelTool extends AbstractTool implements ToolInterface {
         setOptionDataRule(this.schema, this.uischema, data);
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

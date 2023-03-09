@@ -37,7 +37,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         // }
     }
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(): Record<string, any> {
         const schema = this.schema as JsonSchema;
         const uischema = this.uischema as ControlElement;
 
@@ -68,7 +68,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
     }
 
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+    optionDataUpdate(data: Record<string, any>): void {
         const schema = this.schema as JsonSchema | Record<string, any>;
         const uischema = this.uischema as ControlElement;
 
@@ -82,7 +82,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         setOptionDataLabel(schema, uischema, data);
         setOptionDataRule(schema, uischema, data);
 
-        tool.isRequired = data.required;
+        this.isRequired = data.required;
 
         if (data?.enumOrOneOf) {
             if (data?.enumOrOneOf?.enum) {
@@ -105,7 +105,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
     }
 
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

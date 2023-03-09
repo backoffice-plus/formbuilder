@@ -30,7 +30,7 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         //this.keyword = keyword;
     }
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(): Record<string, any> {
 
         return {
             propertyName: this.propertyName,
@@ -39,8 +39,8 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         } as any;
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, tool)
+    optionDataUpdate(data: Record<string, any>): void {
+        updatePropertyNameAndScope(data?.propertyName, this)
 
         const keyword = data?.keyword;
         const keywordOld = CombinatorTool.getKeyword(this.schema);
@@ -57,7 +57,7 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         }
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

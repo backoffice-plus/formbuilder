@@ -112,7 +112,7 @@ const onDrag = (drag) => {
 
 const onClone = (tool) => {
   if(props.schemaReadOnly) {
-    tool.optionDataUpdate(tool, tool.optionDataPrepare(tool));
+    tool.optionDataUpdate(tool.optionDataPrepare());
 
     return tool;
   }

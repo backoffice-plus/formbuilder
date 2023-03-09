@@ -14,7 +14,7 @@ import {VerticalLayout} from "./layoutTool";
 
 export class GroupTool extends VerticalLayout {
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(): Record<string, any> {
         const data = {};
 
         _.merge(
@@ -25,14 +25,14 @@ export class GroupTool extends VerticalLayout {
         return data;
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+    optionDataUpdate(data: Record<string, any>): void {
         this.uischema.options = data.options ?? {};
 
         setOptionDataLabel(this.schema, this.uischema, data);
         setOptionDataRule(this.schema, this.uischema, data);
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

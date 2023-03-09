@@ -19,7 +19,7 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
         )
     )
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(): Record<string, any> {
         const data = {} as any;
 
         data.propertyName = this.propertyName;
@@ -31,15 +31,15 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
         return data;
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+    optionDataUpdate(data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
 
         if (undefined !== data._reference) {
-            tool.schema.$ref = data._reference;
+            this.schema.$ref = data._reference;
         }
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
         const definitionResolver = (ref: URI) => {
             if ('referenceTool.definitions' === String(ref)) {
                 const {schema: s} = useJsonforms();

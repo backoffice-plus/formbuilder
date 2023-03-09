@@ -41,8 +41,8 @@ export const cloneEmptyTool = (tool: ToolInterface, schema:JsonSchema|undefined 
     }
 
     //set default data
-    const defaultData = clone.optionDataPrepare(clone)
-    clone.optionDataUpdate(clone, defaultData);
+    const defaultData = clone.optionDataPrepare()
+    clone.optionDataUpdate(defaultData);
 
     return clone;
 };
@@ -62,8 +62,8 @@ export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uis
     }
 
     //set default data (sets init data if schema hasnt)
-    const defaultData = clone.optionDataPrepare(clone)
-    clone.optionDataUpdate(clone, defaultData);
+    const defaultData = clone.optionDataPrepare()
+    clone.optionDataUpdate(defaultData);
 
     return clone;
 };

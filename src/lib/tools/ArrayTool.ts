@@ -31,7 +31,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         }
     }
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(): Record<string, any> {
 
         // let items = {...this.schema?.items};
         //
@@ -71,7 +71,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         //:TODO: disable asInlineType if tool has no childs!
 
         const data = {
-            propertyName: tool.propertyName,
+            propertyName: this.propertyName,
             type: this.schema.type,
             asInlineType: itemsType && 'object' !== itemsType ,
             isRef: isRef,
@@ -89,8 +89,8 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         return data;
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, tool)
+    optionDataUpdate(data: Record<string, any>): void {
+        updatePropertyNameAndScope(data?.propertyName, this)
 
         this.isInlineType = data?.asInlineType;
 
@@ -142,7 +142,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         //this.isRequired = data.required;
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

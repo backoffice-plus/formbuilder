@@ -74,19 +74,19 @@ const error = ref('');
 
 onMounted(async () => {
 
-    options.value = props.tool.optionDataPrepare(props.tool)
-    jsonFormSchema.value = await props.tool.optionJsonforms(props.tool)
-        .then(e => {
-          const event = {
-            tool:props.tool,
-            schema: JSON.parse(JSON.stringify(e.schema)),
-            uischema: JSON.parse(JSON.stringify(e.uischema)),
-          };
-          emitter.emit('afterOptionJsonforms', event)
+  options.value = props.tool.optionDataPrepare();
+  jsonFormSchema.value = await props.tool.optionJsonforms()
+    .then(e => {
+        const event = {
+          tool:props.tool,
+          schema: JSON.parse(JSON.stringify(e.schema)),
+          uischema: JSON.parse(JSON.stringify(e.uischema)),
+        };
+        emitter.emit('afterOptionJsonforms', event)
 
-          return {schema:event.schema, uischema:event.uischema};
-        })
-        .catch(e => error.value=e)
+        return {schema:event.schema, uischema:event.uischema};
+    })
+    .catch(e => error.value=e)
 
 
 
@@ -118,7 +118,7 @@ const onChange = (e) => {
     const data = JSON.parse(JSON.stringify(e.data)); //:TODO other way to remove ref/proxy?
     dataAfterUpdated.value = data;
 
-    props.tool.optionDataUpdate(props.tool, data)
+    props.tool.optionDataUpdate(data)
 
     emit('change', data);
     emitter.emit('formBuilderUpdated');
