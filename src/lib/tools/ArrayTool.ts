@@ -1,5 +1,5 @@
 import {rankWith} from '@jsonforms/core';
-import type {JsonFormsInterface, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import toolComponent from "../../components/tools/array.component.vue";
 import {schema, uischema} from "./schema/array.schema";
 import {getItemsType, resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
@@ -10,7 +10,7 @@ import {
     prepareOptionDataRule,
     prepareOptionDataValidation, setOptionDataLabel, setOptionDataRule,
     setOptionDataValidation
-} from "./schema/toolControl";
+} from "./schema/control.schema";
 
 export class ArrayTool extends AbstractTool implements ToolInterface {
 
@@ -31,7 +31,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         }
     }
 
-    optionDataPrepare(): Record<string, any> {
+    optionDataPrepare(context: ToolContext): Record<string, any> {
 
         // let items = {...this.schema?.items};
         //
@@ -89,7 +89,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         return data;
     }
 
-    optionDataUpdate(data: Record<string, any>): void {
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
 
         this.isInlineType = data?.asInlineType;
@@ -142,7 +142,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         //this.isRequired = data.required;
     }
 
-    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

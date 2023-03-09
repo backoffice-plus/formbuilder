@@ -99,7 +99,7 @@ test('optionDataUpdate - with string items -> existing properties will be remove
         }
     };
 
-    tool.optionDataUpdate(data)
+    tool.optionDataUpdate(undefined, data)
     expect(tool.schema).toEqual(expected)
 })
 

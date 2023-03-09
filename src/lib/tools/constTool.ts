@@ -1,4 +1,4 @@
-import type {JsonFormsInterface, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/toolConst";
 import constComponent from "../../components/tools/const.vue";
@@ -21,9 +21,8 @@ export class ConstTool extends ControlTool {
         }
     }
 
-    optionDataPrepare(): Record<string, any> {
-        const data = super.optionDataPrepare();
-
+    optionDataPrepare(context: ToolContext): Record<string, any> {
+        const data = super.optionDataPrepare(context);
 
         data.const = this.schema.const;
         data._parse = undefined;
@@ -40,8 +39,8 @@ export class ConstTool extends ControlTool {
         return data;
     }
 
-    optionDataUpdate(data: Record<string, any>): void {
-        super.optionDataUpdate(data);
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
+        super.optionDataUpdate(context, data);
 
         this.schema.const = data.const;
 
@@ -61,7 +60,7 @@ export class ConstTool extends ControlTool {
         delete this.schema.type; //no type for const, right?!
     }
 
-    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

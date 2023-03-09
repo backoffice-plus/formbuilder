@@ -2,7 +2,7 @@ import type {JsonSchema} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import referenceComp from "../../components/tools/reference.vue";
-import type {JsonFormsInterface, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 
 import {AbstractTool} from "./AbstractTool";
 import {schema, uischema} from "./schema/reference.schema";
@@ -19,7 +19,7 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
         )
     )
 
-    optionDataPrepare(): Record<string, any> {
+    optionDataPrepare(context: ToolContext): Record<string, any> {
         const data = {} as any;
 
         data.propertyName = this.propertyName;
@@ -31,7 +31,7 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
         return data;
     }
 
-    optionDataUpdate(data: Record<string, any>): void {
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
 
         if (undefined !== data._reference) {
@@ -39,7 +39,7 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
         }
     }
 
-    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         const definitionResolver = (ref: URI) => {
             if ('referenceTool.definitions' === String(ref)) {
                 const {schema: s} = useJsonforms();

@@ -50,13 +50,17 @@ export interface ToolInterface {
 
     tester: RankedTester | undefined,
     importer: () => any,
-    optionDataPrepare: () => Record<string, any>;
-    optionDataUpdate: (data: Record<string, any>) => void;
-    optionJsonforms: () => Promise<JsonFormsInterface | undefined>;
+    optionDataPrepare: (context: ToolContext) => Record<string, any>;
+    optionDataUpdate: (context: ToolContext, data: Record<string, any>) => void;
+    optionJsonforms: (context: ToolContext) => Promise<JsonFormsInterface | undefined>;
 
     /** :TODO add cloneWithSchema(schema,uischema) **/
     clone: () => ToolInterface;
     toolbarOptions: () => Record<string, any>;
 
     childs: ToolInterface[]
+}
+
+export interface ToolContext {
+    builder?: string;
 }

@@ -1,7 +1,7 @@
 import type {JsonSchema} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
-import type {JsonFormsInterface, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/combinator.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
@@ -30,7 +30,7 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         //this.keyword = keyword;
     }
 
-    optionDataPrepare(): Record<string, any> {
+    optionDataPrepare(context: ToolContext): Record<string, any> {
 
         return {
             propertyName: this.propertyName,
@@ -39,7 +39,7 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         } as any;
     }
 
-    optionDataUpdate(data: Record<string, any>): void {
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
 
         const keyword = data?.keyword;
@@ -57,7 +57,7 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         }
     }
 
-    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

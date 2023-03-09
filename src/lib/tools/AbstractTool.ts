@@ -1,7 +1,7 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {RankedTester} from "@jsonforms/core/src/testers/testers";
 import type {JsonFormsInterface, JsonFormsUISchema} from "../models";
-import type {ToolInterface} from "./index";
+import type {ToolContext, ToolInterface} from "./index";
 
 export abstract class AbstractTool implements ToolInterface {
 
@@ -35,11 +35,11 @@ export abstract class AbstractTool implements ToolInterface {
 
     abstract importer(): any;
 
-    abstract optionDataPrepare(): Record<string, any> ;
+    abstract optionDataPrepare(context: ToolContext): Record<string, any> ;
 
-    abstract optionDataUpdate(data: Record<string, any>): void;
+    abstract optionDataUpdate(context: ToolContext, data: Record<string, any>): void;
 
-    abstract optionJsonforms(): Promise<JsonFormsInterface | undefined>;
+    abstract optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined>;
 
     abstract tester: RankedTester | undefined;
 

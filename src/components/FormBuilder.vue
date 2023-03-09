@@ -94,6 +94,7 @@ import {objectTool} from "../lib/tools/ObjectTool";
 import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
 import {generateJsonSchema} from "@jsonforms/core";
 import {useToolInstance} from "../composable/toolinstance";
+import {useFormbuilder} from "../composable/formbuilder";
 
 const props = defineProps({
   jsonForms: Object,
@@ -119,6 +120,7 @@ const {getControlTools, getLayoutTools} = useTools();
 const {update, schema: rootSchema, uischema: rootUischema} = useJsonforms();
 const {baseTool: baseUiTool2, createBaseTool, createSchemaTool, createDefTool} = useToolInstance();
 
+const {builder} = useFormbuilder();
 
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
 
@@ -129,6 +131,8 @@ const {baseTool: baseUiTool2, createBaseTool, createSchemaTool, createDefTool} =
 // });
 
 const onChangeBuilder = (e) => {
+  builder.value = e.target.value;
+
   switch (e.target.value) {
     case 'schema':
       showBar.value='schema';

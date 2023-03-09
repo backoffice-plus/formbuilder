@@ -77,7 +77,14 @@ export const uischema = {
             elements: [
                 {
                     scope: "#/properties/labelAndI18n/properties/label",
-                    type: "Control"
+                    type: "Control",
+                    rule: {
+                        effect: "SHOW",
+                        condition: {
+                            scope: "#/properties/_isUischema",
+                            schema: {const: true}
+                        },
+                    }
                 },
                 {
                     scope: "#/properties/labelAndI18n/properties/description",
@@ -109,6 +116,16 @@ export const uischema = {
                 effect: 'HIDE',
                 condition: {}
             }
+        },
+    ]
+};
+
+export const uischemaDescriptionOnly = {
+    type: "VerticalLayout",
+    elements: [
+        {
+            scope: "#/properties/labelAndI18n/properties/description",
+            type: "Control"
         },
     ]
 };

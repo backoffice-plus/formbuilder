@@ -1,6 +1,7 @@
 import {isBooleanControl, isNumberControl, isStringControl, or, rankWith} from "@jsonforms/core";
+import type {Categorization} from "@jsonforms/core";
 import {isIntegerControl} from "@jsonforms/core/src/testers/testers";
-import type {JsonFormsInterface, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {
@@ -12,7 +13,7 @@ import {
     setOptionDataRule,
     setOptionDataValidation,
     uischema
-} from "./schema/toolControl";
+} from "./schema/control.schema";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
 
@@ -29,7 +30,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
     }
 
 
-    optionDataPrepare(): Record<string, any> {
+    optionDataPrepare(context: ToolContext): Record<string, any> {
         const data = {
             propertyName: this.propertyName,
             type: this.schema.type,
@@ -38,9 +39,12 @@ export class ControlTool extends AbstractTool implements ToolInterface {
             contentMediaType: this.schema?.contentMediaType as any,
             /** @ts-ignore */
             contentEncoding: this.schema?.contentEncoding as any,
+
             options: this.uischema.options,
 
             required: this.isRequired,
+
+            _isUischema: 'uischema' === context.builder,
         } as any;
 
         _.merge(
@@ -50,10 +54,20 @@ export class ControlTool extends AbstractTool implements ToolInterface {
             prepareOptionDataRule(this.schema, this.uischema),
         )
 
+        // if('uischema' === context.builder) {
+        //     _.merge(
+        //         data,
+        //         {
+        //             options: this.uischema.options,
+        //         },
+        //         prepareOptionDataRule(this.schema, this.uischema),
+        //     )
+        // }
+
         return data;
     }
 
-    optionDataUpdate(data: Record<string, any>): void {
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
 
         this.schema.type = data.type;
@@ -72,10 +86,19 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         this.isRequired = data.required;
     }
 
-    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
+
+        const setUischema = {...uischema} as Categorization;
+
+        //hide rule in schema/definitions
+        if('uischema' !== context.builder) {
+            setUischema.elements = setUischema.elements.filter(category => 'Rule' !== category.label);
+        }
+
+
         return {
             schema: await resolveSchema(schema),
-            uischema: await resolveSchema(uischema),
+            uischema: await resolveSchema(setUischema),
         } as JsonFormsInterface
     }
 

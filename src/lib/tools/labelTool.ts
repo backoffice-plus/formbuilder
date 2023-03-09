@@ -5,13 +5,14 @@ import type {JsonFormsInterface, ToolInterface} from "../../index";
 import {resolveSchema} from "../../index";
 import labelComp from "../../components/tools/label.vue";
 import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./schema/toolLabel";
+import type {ToolContext} from "./index";
 
 export class LabelTool extends AbstractTool implements ToolInterface {
 
     importer = () => labelComp;
     tester = rankWith(1, uiTypeIs('Label'));
 
-    optionDataPrepare(): Record<string, any> {
+    optionDataPrepare(context: ToolContext): Record<string, any> {
         return {
             text: this.uischema.text,
             i18n: this.uischema.i18n,
@@ -20,7 +21,7 @@ export class LabelTool extends AbstractTool implements ToolInterface {
         } as any;
     }
 
-    optionDataUpdate(data: Record<string, any>): void {
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         this.uischema.text = data.text;
         this.uischema.i18n = data.i18n;
         this.uischema.options = data.options ?? {};
@@ -28,7 +29,7 @@ export class LabelTool extends AbstractTool implements ToolInterface {
         setOptionDataRule(this.schema, this.uischema, data);
     }
 
-    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

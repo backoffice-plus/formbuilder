@@ -54,6 +54,7 @@ import {emitter} from "../lib/mitt";
 import {onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
+import {useFormbuilder} from "../composable/formbuilder";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -72,11 +73,17 @@ const errorAfterUpdated = ref([]);
 const mergedJsonFormsRenderers = ref(Object.freeze(props.jsonFormsRenderers));
 const error = ref('');
 
+const {builder} = useFormbuilder();
+
 onMounted(async () => {
 
-  options.value = props.tool.optionDataPrepare();
-  jsonFormSchema.value = await props.tool.optionJsonforms()
-    .then(e => {
+  const context = {
+    builder: builder.value,
+  }
+
+  options.value = props.tool.optionDataPrepare(context);
+  jsonFormSchema.value = await props.tool.optionJsonforms(context)
+      .then(e => {
         const event = {
           tool:props.tool,
           schema: JSON.parse(JSON.stringify(e.schema)),
@@ -118,7 +125,10 @@ const onChange = (e) => {
     const data = JSON.parse(JSON.stringify(e.data)); //:TODO other way to remove ref/proxy?
     dataAfterUpdated.value = data;
 
-    props.tool.optionDataUpdate(data)
+    const context = {
+      builder: builder.value,
+    }
+    props.tool.optionDataUpdate(context, data)
 
     emit('change', data);
     emitter.emit('formBuilderUpdated');

@@ -1,4 +1,4 @@
-import type {JsonFormsInterface, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {resolveSchema} from "../formbuilder";
 import {
     prepareOptionDataLabel,
@@ -14,7 +14,7 @@ import {VerticalLayout} from "./layoutTool";
 
 export class GroupTool extends VerticalLayout {
 
-    optionDataPrepare(): Record<string, any> {
+    optionDataPrepare(context: ToolContext): Record<string, any> {
         const data = {};
 
         _.merge(
@@ -25,14 +25,14 @@ export class GroupTool extends VerticalLayout {
         return data;
     }
 
-    optionDataUpdate(data: Record<string, any>): void {
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         this.uischema.options = data.options ?? {};
 
         setOptionDataLabel(this.schema, this.uischema, data);
         setOptionDataRule(this.schema, this.uischema, data);
     }
 
-    async optionJsonforms(): Promise<JsonFormsInterface | undefined> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),
