@@ -8,12 +8,12 @@ import type {JsonSchema} from "@jsonforms/core";
 export type builderTypes = 'schema' | 'uischema' | 'definitions';
 
 const builder: Ref<builderTypes> = ref('uischema');
-
-
+const schemaReadOnly: Ref<Boolean> = ref(false);
 
 export function useFormbuilder() {
 
     return {
         builder,
+        schemaReadOnly,
     };
 }

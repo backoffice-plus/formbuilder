@@ -60,7 +60,6 @@ const props = defineProps({
   tool: Object,//ToolInterface,
   data: Object,
   jsonFormsRenderers: Array,
-  schemaReadOnly: Boolean,
 })
 const emit = defineEmits(['change']);
 
@@ -73,12 +72,13 @@ const errorAfterUpdated = ref([]);
 const mergedJsonFormsRenderers = ref(Object.freeze(props.jsonFormsRenderers));
 const error = ref('');
 
-const {builder} = useFormbuilder();
+const {builder, schemaReadOnly} = useFormbuilder();
 
 onMounted(async () => {
 
   const context = {
     builder: builder.value,
+    schemaReadOnly: schemaReadOnly.value,
   }
 
   options.value = props.tool.optionDataPrepare(context);

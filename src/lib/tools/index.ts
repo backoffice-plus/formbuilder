@@ -46,8 +46,6 @@ export interface ToolInterface {
 
     schema: JsonSchema;
     uischema: JsonFormsUISchema|any;
-    schemaReadOnly: boolean;
-
     tester: RankedTester | undefined,
     importer: () => any,
     optionDataPrepare: (context: ToolContext) => Record<string, any>;
@@ -63,4 +61,5 @@ export interface ToolInterface {
 
 export interface ToolContext {
     builder?: string;
+    schemaReadOnly?: string;
 }

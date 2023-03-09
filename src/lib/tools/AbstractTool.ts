@@ -8,7 +8,6 @@ export abstract class AbstractTool implements ToolInterface {
     private _uuid: string|undefined;
     propertyName: string = 'Unknown';
     isRequired: boolean = false;//neccesary because required is stored in parentNode
-    schemaReadOnly: boolean = false; //only neccesary to show at toolbar :TODO: remove it and find other solution
 
     childs: ToolInterface[] = [];
 

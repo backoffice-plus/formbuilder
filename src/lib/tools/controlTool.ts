@@ -1,5 +1,5 @@
 import {isBooleanControl, isNumberControl, isStringControl, or, rankWith} from "@jsonforms/core";
-import type {Categorization} from "@jsonforms/core";
+import type {Categorization, JsonSchema} from "@jsonforms/core";
 import {isIntegerControl} from "@jsonforms/core/src/testers/testers";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {AbstractTool} from "./AbstractTool";
@@ -89,15 +89,28 @@ export class ControlTool extends AbstractTool implements ToolInterface {
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
 
         const setUischema = {...uischema} as Categorization;
+        //const setSchema = {...schema} as JsonSchema;
+        const setSchema = _.clone(schema) as JsonSchema;
 
         //hide rule in schema/definitions
         if('uischema' !== context.builder) {
             setUischema.elements = setUischema.elements.filter(category => 'Rule' !== category.label);
         }
 
+        //:TODO TypeError: Cannot assign to read only property 'readOnly' of object '#<Object>'
+        if(context.schemaReadOnly) {
+            //setSchema.properties.propertyName.readOnly=true;
+            //setUischema.elements[0].elements[0].elements[0].options={readonly:true};
+            // setSchema.properties.type.readOnly=true;
+            // //setSchema.properties.format.readOnly=true;
+            // setSchema.properties.contentMediaType.readOnly=true;
+            // setSchema.properties.contentEncoding.readOnly=true;
+
+            //setSchema.definitions.formats.readOnly=true;
+        }
 
         return {
-            schema: await resolveSchema(schema),
+            schema: await resolveSchema(setSchema),
             uischema: await resolveSchema(setUischema),
         } as JsonFormsInterface
     }

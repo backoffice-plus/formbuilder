@@ -6,7 +6,6 @@
     <Modal
         :tool="toolEdit"
         :jsonFormsRenderers="jsonFormsRenderers"
-        :schemaReadOnly="schemaReadOnly"
 
         @change="onChangeModal"
         @close="isModalOpen=false;toolEdit=null"
@@ -30,9 +29,7 @@
       </div>
 
       <FormBuilderBar
-          :jsonForms="schemaReadOnly ? props.jsonForms : {}"
           :tools="tools"
-          :schemaReadOnly="!!schemaReadOnly"
           @drag="e=>drag = !!e"
       />
 
@@ -120,7 +117,7 @@ const {getControlTools, getLayoutTools} = useTools();
 const {update, schema: rootSchema, uischema: rootUischema} = useJsonforms();
 const {baseTool: baseUiTool2, createBaseTool, createSchemaTool, createDefTool} = useToolInstance();
 
-const {builder} = useFormbuilder();
+const {builder, schemaReadOnly} = useFormbuilder();
 
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
 
@@ -146,7 +143,7 @@ const onChangeBuilder = (e) => {
 
       //:TODO add property & scope changed check!
 
-        if(props.schemaReadOnly) {
+        if(schemaReadOnly.value) {
           baseUiTool.value = createBaseTool().value;
         }
         else {
@@ -187,7 +184,7 @@ const tools = computed(() => {
       break;
   }
 
-  // if(!props.schemaReadOnly) {
+  // if(!props.schema-Read-Only) {
   //   all.push(...getControlTools())
   // }
   //
@@ -206,7 +203,7 @@ const readonlyTools = computed(() => {
 
 
   //:TODO find better solution!! use toolStore
-  if(props.schemaReadOnly) {
+  if(schemaReadOnly.value) {
 
     const {schema, uischema} = useJsonforms();
 
@@ -220,7 +217,6 @@ const readonlyTools = computed(() => {
 
       const clone = cloneToolWithSchema(findMatchingTool(rootSchema, itemSchema, itemUischema),  itemSchema, itemUischema)
       clone.propertyName = name;
-      clone.schemaReadOnly = true;
 
       return clone;
     }).filter(tool => !usedProps.includes(tool.propertyName))
@@ -298,7 +294,7 @@ const updateUischemaBuilder = () => {
   }
 
   if ('uischema' === showBuilder.value) {
-    newJsonForms = createJsonForms(baseUiTool.value, jsonFormsSchema.value, props.schemaReadOnly);
+    newJsonForms = createJsonForms(baseUiTool.value, jsonFormsSchema.value, schemaReadOnly.value);
     jsonFormsSchema.value = newJsonForms.schema;
     jsonFormsUiSchema.value = newJsonForms.uischema;
   }
@@ -323,10 +319,12 @@ onBeforeMount(() => {
   unregisterAllTools();   //is that a good behavior?
   registerTools(props.tools);
 
+  schemaReadOnly.value = props.schemaReadOnly;
+
   //init baseTool
   update(props?.jsonForms?.schema, props?.jsonForms?.uischema)
   onChangeBuilder({target:{value:'uischema'}})
-  if(props.schemaReadOnly) {
+  if(schemaReadOnly.value) {
     showBar.value='properties';
   }
 
