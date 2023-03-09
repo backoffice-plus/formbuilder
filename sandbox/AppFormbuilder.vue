@@ -136,13 +136,13 @@ watch(() => example.value, async () => {
 })
 
 
-emitter.on('afterOptionJsonforms', (event: EventAfterOptionJsonforms) => {
-  const tool = event.tool;
-
-  if('Control' === tool.uischema?.type) {
-    _.merge(event.schema, vuetifySchema);  //merge into schema
-    event.uischema.elements.push(vuetifyUischema); //attach tab
-  }
-})
+// emitter.on('afterOptionJsonforms', (event: EventAfterOptionJsonforms) => {
+//   const tool = event.tool;
+//
+//   if('Control' === tool.uischema?.type) {
+//     _.merge(event.schema, vuetifySchema);  //merge into schema
+//     event.uischema.elements.push(vuetifyUischema); //attach tab
+//   }
+// })
 
 </script>
