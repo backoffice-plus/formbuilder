@@ -14,8 +14,8 @@
         v-if="isModalOpen && toolEdit"
     />
 
-    Mode:
-    <select v-model="showBuilder" @change="onChangeMode">
+    Builder:
+    <select v-model="showBuilder" @change="onChangeBuilder">
       <option>schema</option>
       <option>uischema</option>
       <option>definitions</option>
@@ -28,8 +28,6 @@
         <button @click="showBar='uischema';" :class="{active:'uischema'===showBar}" v-if="showBuilder==='uischema'">Layout</button>
         <button @click="showBar='properties';" :class="{active:'properties'===showBar}" v-if="schemaReadOnly">Properties</button>
       </div>
-
-<!--      <span v-if="modeSchemaChanged" class="text-red-500">Schema has Changes!</span>-->
 
       <FormBuilderBar
           :jsonForms="schemaReadOnly ? props.jsonForms : {}"
@@ -50,37 +48,6 @@
                  :key="currentBaseTool.propertyName"
       />
     </template>
-
-<!--    &lt;!&ndash; Schema &ndash;&gt;-->
-<!--    <component :is="baseSchemaTool.importer()"-->
-<!--               :tool="baseSchemaTool"-->
-<!--               :isRoot="true"-->
-<!--               :isDragging="!!drag"-->
-<!--               class="my-4"-->
-<!--               :ref="setRootSchemaForm"-->
-<!--               v-if="'schema' === showBuilder"-->
-<!--    />-->
-
-<!--    &lt;!&ndash; UISchema &ndash;&gt;-->
-<!--    <component :is="baseUiTool.importer()"-->
-<!--               :tool="baseUiTool"-->
-<!--               :isRoot="true"-->
-<!--               :isDragging="!!drag"-->
-<!--               class="my-4"-->
-<!--               :ref="setRootForm"-->
-<!--               v-if="'uischema' === showBuilder && baseUiTool"-->
-<!--    />-->
-
-
-<!--    &lt;!&ndash; Definitions &ndash;&gt;-->
-<!--    <component :is="baseDefinitionTool.importer()"-->
-<!--               :tool="baseDefinitionTool"-->
-<!--               :isRoot="true"-->
-<!--               :isDragging="!!drag"-->
-<!--               class="my-4"-->
-<!--               :ref="setRootDefinitionForm"-->
-<!--               v-if="'definitions' === showBuilder"-->
-<!--    />-->
 
   </div>
 
@@ -145,7 +112,6 @@ const isModalOpen = ref(false);
 const toolEdit = ref(null);
 const showBuilder = ref('uischema');
 const showBar = ref('schema');
-const modeSchemaChanged = ref(false);
 
 const {registerTools, unregisterAllTools, findLayoutToolByUiType, findMatchingTool} = useTools();
 const {getControlTools, getLayoutTools} = useTools();
@@ -162,9 +128,8 @@ const {baseTool: baseUiTool2, createBaseTool, createSchemaTool, createDefTool} =
 //   console.log("FB.onRenderTriggered",e);
 // });
 
-const onChangeMode = (e) => {
-  const mode = e.target.value;
-  switch (mode) {
+const onChangeBuilder = (e) => {
+  switch (e.target.value) {
     case 'schema':
       showBar.value='schema';
 
@@ -268,19 +233,20 @@ const onChangeModal = (data) => {
 const updateJsonForm = () => {
   switch (showBuilder.value) {
     case 'schema':
-      updateSchemaMode();
+      updateSchemaBuilder();
       break;
+
     case 'definitions':
-      updateDefinitionMode();
+      updateDefinitionBuilder();
       break;
 
     default:
-      updateUischemaMode();
+      updateUischemaBuilder();
       break;
   }
 }
 
-const updateSchemaMode = () => {
+const updateSchemaBuilder = () => {
   if (baseSchemaTool?.value) {
     const r = createTypeObjectSchema(baseSchemaTool.value);
     update(r.schema, rootUischema.value)
@@ -289,7 +255,7 @@ const updateSchemaMode = () => {
 }
 
 
-const updateDefinitionMode = () => {
+const updateDefinitionBuilder = () => {
   if (baseDefinitionTool?.value) {
     const def = createTypeObjectSchema(baseDefinitionTool.value);
     console.log("def",def);
@@ -304,7 +270,7 @@ const updateDefinitionMode = () => {
   }
 }
 
-const updateUischemaMode = () => {
+const updateUischemaBuilder = () => {
   let newJsonForms;
 
   if ('definition' === showBuilder.value) {
@@ -328,7 +294,6 @@ const updateUischemaMode = () => {
   }
 
   if (newJsonForms) {
-    console.log("updateUischemaMode",jsonFormsSchema.value, jsonFormsUiSchema.value)
     update(jsonFormsSchema.value, jsonFormsUiSchema.value)
     emit('schemaUpdated', newJsonForms)
   }
