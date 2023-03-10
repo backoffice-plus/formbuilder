@@ -56,7 +56,7 @@ import type {
 import {DispatchRenderer, rendererProps, useJsonFormsAllOfControl, useJsonFormsControlWithDetail} from '@jsonforms/vue';
 import type {RendererProps} from '@jsonforms/vue';
 import {ControlWrapper, useVanillaControl} from "@jsonforms/vue-vanilla";
-import CompinatorProperties from "./CompinatorProperties.vue";
+import CompinatorProperties from "../CompinatorProperties.vue";
 
 
 

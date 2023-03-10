@@ -28,9 +28,9 @@ import type {ControlElement, GroupLayout, UISchemaElement} from '@jsonforms/core
 import {findUISchema, Generate,} from '@jsonforms/core';
 import {DispatchRenderer, rendererProps, useJsonFormsControlWithDetail} from '@jsonforms/vue';
 import {useVanillaControl} from "@jsonforms/vue-vanilla";
-import {useNested} from "../utils/composition"
+import {useNested} from "../../utils/composition"
 import {cloneDeep, isEmpty, isObject} from "lodash";
-import AdditionalProperties from "./AdditionalProperties.vue";
+import AdditionalProperties from "../AdditionalProperties.vue";
 
 /**
  * @see https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/ObjectRenderer.vue
