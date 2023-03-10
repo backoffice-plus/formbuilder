@@ -58,9 +58,9 @@
 import {defineComponent, ref} from 'vue';
 import {createCombinatorRenderInfos, isAnyOfControl, rankWith} from '@jsonforms/core';
 import type {CombinatorSubSchemaRenderInfo, ControlElement, JsonFormsRendererRegistryEntry} from '@jsonforms/core';
-import {DispatchRenderer, rendererProps, useJsonFormsAnyOfControl,} from '@jsonforms/vue';
-import type {RendererProps} from '@jsonforms/vue';
-import {useVanillaControl} from "@jsonforms/vue-vanilla";
+import {DispatchRenderer, rendererProps, useJsonFormsAnyOfControl,} from '@jsonforms/vue2';
+import type {RendererProps} from '@jsonforms/vue2';
+import {useVanillaControl} from "@jsonforms/vue2-vanilla";
 import CombinatorProperties from "./components/CombinatorProperties.vue";
 
 const controlRenderer = defineComponent({
