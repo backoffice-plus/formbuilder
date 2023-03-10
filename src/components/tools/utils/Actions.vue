@@ -27,6 +27,13 @@
 .toolActions button:hover {
   background-color: var(--buttonRounded-hover);
 }
+
+:where(.rootItem, .dropItem) > div > .toolActions {
+  @apply opacity-0
+}
+:where(.rootItem, .dropItem):hover > div > .toolActions {
+  @apply opacity-100
+}
 </style>
 
 

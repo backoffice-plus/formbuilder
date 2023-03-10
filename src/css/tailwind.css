@@ -3,23 +3,7 @@
 @tailwind utilities;
 
 @layer base {
-
-    h1 {
-        @apply
-        text-xl sm:text-2xl
-    }
-
-    h2 {
-        @apply
-        text-lg sm:text-xl
-    }
 }
 
 @layer components {
-    :where(.rootItem, .dropItem) > div > .toolActions {
-        @apply opacity-0
-    }
-    :where(.rootItem, .dropItem):hover > div > .toolActions {
-        @apply opacity-100
-    }
 }
