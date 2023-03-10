@@ -6,7 +6,9 @@
 
     <div v-if="!isToolbar" :class="['flex',{'mr-5':!isRoot}]">
 
-      <Actions :class="['opacity-0', 'group-hover/itemF:opacity-100']" :tool="tool" @delete="onDelete" :deletable="!isRoot"/>
+      <Actions :class="['opacity-0', 'group-hover/itemF:opacity-100']" :tool="tool" @delete="onDelete" :deletable="!isRoot">
+        <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
+      </Actions>
 
       <!--
         @see http://sortablejs.github.io/Sortable/#thresholds
@@ -23,6 +25,8 @@
           :swapThreshold=".7"
           :invertSwap="true"
           :fallbackOnBody="true"
+
+          v-show="!collapsed"
       >
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
@@ -140,6 +144,7 @@ import Actions from "./utils/Actions.vue";
 import {Vuedraggable} from '../../index'
 import {ref, computed, onMounted, unref, toRaw} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
+import {Icon} from "@iconify/vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -155,6 +160,7 @@ const emit = defineEmits(['deleteByIndex']);
 const drag = ref(false);
 const childTools = ref([]);
 const childComponents = ref({});
+const collapsed = ref(false);
 
 const addChildComponent = (e) => {
   if(e?.tool?.uuid) {

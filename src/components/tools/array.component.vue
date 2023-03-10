@@ -15,6 +15,7 @@
 
       <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
         <button type="button" @click="addItem" v-if="!isInlineType && !isArrayOfRef"><Icon icon="mdi:plus" /></button>
+        <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
       </Actions>
 
 <!--      <div class="tabs">-->
@@ -30,6 +31,7 @@
           @start="dragSchema = true"
           @end="dragSchema = false"
           @change="onDropAreaChange"
+          v-show="!collapsed"
       >
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
@@ -101,6 +103,7 @@ const drag = ref(false);
 const dragSchema = ref(false);
 const childTools = ref([]);
 const childComponents = ref({});
+const collapsed = ref(false);
 
 const isArrayOfObject = computed(() => 'object' === props.tool.schema?.items?.type);
 const isInlineType = computed(() => !isArrayOfObject.value && childTools.value.length >= 1 && undefined !== props.tool.schema?.items?.type);

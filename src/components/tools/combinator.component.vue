@@ -11,6 +11,7 @@
 
       <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
         <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>
+        <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
       </Actions>
 
       <Vuedraggable
@@ -21,6 +22,7 @@
           @start="dragSchema = true"
           @end="dragSchema = false"
           @change="onDropAreaChange"
+          v-show="!collapsed"
       >
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
@@ -93,6 +95,7 @@ const drag = ref(false);
 const dragSchema = ref(false);
 const childTools = ref([]);
 const childComponents = ref({});
+const collapsed = ref(false);
 
 onMounted(() => {
   if (!props.isToolbar) {

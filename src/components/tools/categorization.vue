@@ -7,9 +7,11 @@
 
     <div v-if="!isToolbar" class="mr-5">
 
-      <Actions :class="['opacity-0', 'group-hover/itemC:opacity-100']" :tool="tool" @delete="onDelete" :deletable="!isRoot" />
+      <Actions :class="['opacity-0', 'group-hover/itemC:opacity-100']" :tool="tool" @delete="onDelete" :deletable="!isRoot">
+        <button type="button" @click="collapsed=!collapsed;"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" v-if="!isRoot" /></button>
+      </Actions>
 
-      <div class="flex items-center">
+      <div class="flex items-center" v-show="!collapsed">
         <div class="tabs">
           <button
               v-for="(element,index) in childTools"
@@ -35,6 +37,7 @@
           @start="dragTab = true"
           @end="dragTab = false"
           @change="onDropAreaChange"
+          v-show="!collapsed"
       >
         <template #item="{ element: tool, index }">
           <div> <!-- div needed for edit mode?!?! -->
@@ -139,6 +142,7 @@ const childComponents = ref({});
 const tabs = ref([]);
 const currentTab = ref(-1);
 const tabLabels = ref({});
+const collapsed = ref(false);
 
 const addChildComponent = (e) => {
   if(e?.tool?.uuid) {
