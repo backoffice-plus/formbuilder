@@ -12,7 +12,7 @@ import {
     setOptionDataLabel,
     setOptionDataRule,
     setOptionDataValidation,
-    uischema
+    uischema,uischemaReadOnly
 } from "./schema/control.schema";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
@@ -45,6 +45,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
             required: this.isRequired,
 
             _isUischema: 'uischema' === context.builder,
+            _isSchemaReadOnly: context.schemaReadOnly,
         } as any;
 
         _.merge(
@@ -88,26 +89,23 @@ export class ControlTool extends AbstractTool implements ToolInterface {
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
 
-        const setUischema = {...uischema} as Categorization;
-        //const setSchema = {...schema} as JsonSchema;
-        const setSchema = _.clone(schema) as JsonSchema;
+
+        let setSchema = JSON.parse(JSON.stringify(schema)) as JsonSchema|any; //deepClone
+        let setUischema = JSON.parse(JSON.stringify(uischema)) as Categorization; //deepClone
+
+        if(context.schemaReadOnly) {
+            setUischema = JSON.parse(JSON.stringify(uischemaReadOnly)) as JsonSchema|any; //deepClone
+        }
 
         //hide rule in schema/definitions
         if('uischema' !== context.builder) {
             setUischema.elements = setUischema.elements.filter(category => 'Rule' !== category.label);
         }
 
-        //:TODO TypeError: Cannot assign to read only property 'readOnly' of object '#<Object>'
-        if(context.schemaReadOnly) {
-            //setSchema.properties.propertyName.readOnly=true;
-            //setUischema.elements[0].elements[0].elements[0].options={readonly:true};
-            // setSchema.properties.type.readOnly=true;
-            // //setSchema.properties.format.readOnly=true;
-            // setSchema.properties.contentMediaType.readOnly=true;
-            // setSchema.properties.contentEncoding.readOnly=true;
-
-            //setSchema.definitions.formats.readOnly=true;
-        }
+        // if(context.schemaReadOnly) {
+        //     //setSchema.properties.propertyName.readOnly=true;
+        //     // setSchema.properties.type.readOnly=true;
+        // }
 
         return {
             schema: await resolveSchema(setSchema),

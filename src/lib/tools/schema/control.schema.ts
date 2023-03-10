@@ -350,125 +350,73 @@ export const uischema = {
                 },
             ]
         },
-
-        /**
-         * Tab - Items oneOf
-         */
-        // {
-        //     type: "Category",
-        //     label: "Select Items",
-        //     elements: [
-        //         {
-        //             type: "VerticalLayout",
-        //             elements: [
-        //                 // {
-        //                 //     scope: "#/properties/select/properties/_type",
-        //                 //     type: "Control",
-        //                 // },
-        //                 {
-        //                     type: "Control",
-        //                     scope: "#/properties/select/properties/enum",
-        //                     rule: {
-        //                         effect: "SHOW",
-        //                         condition: {
-        //                             scope: "#/properties/select/properties/_type",
-        //                             schema: { const: "enum" }
-        //                         }
-        //                     }
-        //                 },
-        //                 {
-        //                     type: "Control",
-        //                     scope: "#/properties/select/properties/oneOf",
-        //                     rule: {
-        //                         effect: "SHOW",
-        //                         condition: {
-        //                             scope: "#/properties/select/properties/_type",
-        //                             schema: { const: "oneOf" }
-        //                         }
-        //                     }
-        //                 },
-        //             ],
-        //         }
-        //     ],
-        //     rule: {
-        //         effect: "SHOW",
-        //         condition: {
-        //             scope: "#/properties/select/properties/_type",
-        //             schema: { enum: ["oneOf", "enum"] }
-        //         }
-        //     }
-        // },
-
-
-
-        // /**
-        //  * Tab - Enum
-        //  */
-        // {
-        //     type: "Category",
-        //     //label: "Enum",
-        //     label: "Items",
-        //     elements: [
-        //         {
-        //             type: "VerticalLayout",
-        //             elements: [
-        //                 {
-        //                     scope: "#/properties/enum",
-        //                     type: "Control",
-        //                 },
-        //             ],
-        //         }
-        //     ],
-        //     rule: {
-        //         effect: "SHOW",
-        //         condition: {
-        //             scope: "#/properties/_combinator",
-        //             schema: { const: "enum" }
-        //         }
-        //     }
-        // },
-        //
-        // /**
-        //  * Tab - oneOf
-        //  */
-        // {
-        //     type: "Category",
-        //     //label: "oneOf",
-        //     label: "Items",
-        //     elements: [
-        //         {
-        //             type: "VerticalLayout",
-        //             elements: [
-        //                 {
-        //                     scope: "#/properties/oneOf",
-        //                     type: "Control",
-        //                     // "options": {
-        //                     //     detail : {
-        //                     //         type: "HorizontalLayout",
-        //                     //         elements: [
-        //                     //             {
-        //                     //                 type: "Control",
-        //                     //                 scope: "#/properties/const"
-        //                     //             },
-        //                     //             {
-        //                     //                 type: "Control",
-        //                     //                 scope: "#/properties/title"
-        //                     //             }
-        //                     //         ]
-        //                     //     },
-        //                     // },
-        //                 },
-        //             ],
-        //         }
-        //     ],
-        //     rule: {
-        //         effect: "SHOW",
-        //         condition: {
-        //             scope: "#/properties/_combinator",
-        //             schema: { const: "oneOf" }
-        //         }
-        //     }
-        // },
     ]
 } as Categorization|UISchemaElement;
 
+export const uischemaReadOnly = {
+
+    type: "Categorization",
+    elements: [
+
+        /**
+         * Tab - Base
+         */
+        {
+            type: "Category",
+            label: "Base",
+            elements: [
+                {
+                    type: "VerticalLayout",
+                    elements: [
+                        {
+                            scope: "#/properties/propertyName",
+                            type: "Control"
+                        },
+
+                        {
+                            type: "Group",
+                            label: "Label & Description",
+                            elements: [
+                                {
+                                    $ref:'labelAndI18n.uischema'
+                                },
+                            ],
+                        },
+                        {
+                            type: "HorizontalLayout",
+                            elements: [
+                                {
+                                    scope: "#/properties/options/properties/placeholder",
+                                    type: "Control"
+                                },
+                            ]
+                        },
+                        {
+                            type: "HorizontalLayout",
+                            elements: [
+                                {
+                                    scope: "#/properties/options/properties/readonly",
+                                    type: "Control"
+                                },
+                            ]
+                        },
+                    ],
+                }
+            ]
+        },
+
+
+        /**
+         * Tab - Rule
+         */
+        {
+            type: "Category",
+            label: "Rule",
+            elements: [
+                {
+                    $ref:'rule.uischema'
+                },
+            ]
+        },
+    ]
+} as Categorization|UISchemaElement;

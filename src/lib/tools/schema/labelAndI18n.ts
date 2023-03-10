@@ -88,7 +88,14 @@ export const uischema = {
                 },
                 {
                     scope: "#/properties/labelAndI18n/properties/description",
-                    type: "Control"
+                    type: "Control",
+                    rule: {
+                        effect: "HIDE",
+                        condition:   {
+                            scope: "#/properties/_isSchemaReadOnly",
+                            schema: {const: true}
+                        },
+                    },
                 },
             ]
         },
