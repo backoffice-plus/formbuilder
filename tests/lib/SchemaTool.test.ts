@@ -14,7 +14,7 @@ test('optionDataPrepare - with empty', () => {
         }
     };
 
-    expect(tool.optionDataPrepare(tool)).toEqual(expected)
+    expect(tool.optionDataPrepare()).toEqual(expected)
 })
 
 test('optionDataPrepare - with object', () => {
@@ -39,7 +39,7 @@ test('optionDataPrepare - with object', () => {
         items: tool.schema.items
     };
 
-    expect(tool.optionDataPrepare(tool)).toEqual(expected)
+    expect(tool.optionDataPrepare()).toEqual(expected)
 })
 test('optionDataPrepare - with $ref', () => {
 
@@ -60,7 +60,7 @@ test('optionDataPrepare - with $ref', () => {
         }
     };
 
-    expect(tool.optionDataPrepare(tool)).toEqual(expected)
+    expect(tool.optionDataPrepare()).toEqual(expected)
 })
 
 
@@ -99,7 +99,7 @@ test('optionDataUpdate - with string items -> existing properties will be remove
         }
     };
 
-    tool.optionDataUpdate(tool, data)
+    tool.optionDataUpdate(undefined, data)
     expect(tool.schema).toEqual(expected)
 })
 

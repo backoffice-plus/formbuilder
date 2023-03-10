@@ -6,7 +6,6 @@
     <Modal
         :tool="toolEdit"
         :jsonFormsRenderers="jsonFormsRenderers"
-        :schemaReadOnly="schemaReadOnly"
 
         @change="onChangeModal"
         @close="isModalOpen=false;toolEdit=null"
@@ -14,8 +13,8 @@
         v-if="isModalOpen && toolEdit"
     />
 
-    Mode:
-    <select v-model="showBuilder" @change="onChangeMode">
+    Builder:
+    <select v-model="showBuilder" @change="onChangeBuilder">
       <option>schema</option>
       <option>uischema</option>
       <option>definitions</option>
@@ -24,17 +23,13 @@
     <nav>
 
       <div class="tabs">
-        <button @click="showBar='schema';" :class="{active:'schema'===showBar}">Controls</button>
+        <button @click="showBar='schema';" :class="{active:'schema'===showBar}" v-if="!schemaReadOnly">Controls</button>
         <button @click="showBar='uischema';" :class="{active:'uischema'===showBar}" v-if="showBuilder==='uischema'">Layout</button>
         <button @click="showBar='properties';" :class="{active:'properties'===showBar}" v-if="schemaReadOnly">Properties</button>
       </div>
 
-<!--      <span v-if="modeSchemaChanged" class="text-red-500">Schema has Changes!</span>-->
-
       <FormBuilderBar
-          :jsonForms="schemaReadOnly ? props.jsonForms : {}"
           :tools="tools"
-          :schemaReadOnly="!!schemaReadOnly"
           @drag="e=>drag = !!e"
       />
 
@@ -47,39 +42,9 @@
                  :isRoot="true"
                  :isDragging="!!drag"
                  class="my-4"
+                 :key="currentBaseTool.propertyName"
       />
     </template>
-
-<!--    &lt;!&ndash; Schema &ndash;&gt;-->
-<!--    <component :is="baseSchemaTool.importer()"-->
-<!--               :tool="baseSchemaTool"-->
-<!--               :isRoot="true"-->
-<!--               :isDragging="!!drag"-->
-<!--               class="my-4"-->
-<!--               :ref="setRootSchemaForm"-->
-<!--               v-if="'schema' === showBuilder"-->
-<!--    />-->
-
-<!--    &lt;!&ndash; UISchema &ndash;&gt;-->
-<!--    <component :is="baseUiTool.importer()"-->
-<!--               :tool="baseUiTool"-->
-<!--               :isRoot="true"-->
-<!--               :isDragging="!!drag"-->
-<!--               class="my-4"-->
-<!--               :ref="setRootForm"-->
-<!--               v-if="'uischema' === showBuilder && baseUiTool"-->
-<!--    />-->
-
-
-<!--    &lt;!&ndash; Definitions &ndash;&gt;-->
-<!--    <component :is="baseDefinitionTool.importer()"-->
-<!--               :tool="baseDefinitionTool"-->
-<!--               :isRoot="true"-->
-<!--               :isDragging="!!drag"-->
-<!--               class="my-4"-->
-<!--               :ref="setRootDefinitionForm"-->
-<!--               v-if="'definitions' === showBuilder"-->
-<!--    />-->
 
   </div>
 
@@ -126,6 +91,7 @@ import {objectTool} from "../lib/tools/ObjectTool";
 import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
 import {generateJsonSchema} from "@jsonforms/core";
 import {useToolInstance} from "../composable/toolinstance";
+import {useFormbuilder} from "../composable/formbuilder";
 
 const props = defineProps({
   jsonForms: Object,
@@ -144,14 +110,14 @@ const isModalOpen = ref(false);
 const toolEdit = ref(null);
 const showBuilder = ref('uischema');
 const showBar = ref('schema');
-const modeSchemaChanged = ref(false);
 
 const {registerTools, unregisterAllTools, findLayoutToolByUiType, findMatchingTool} = useTools();
 const {getControlTools, getLayoutTools} = useTools();
 
 const {update, schema: rootSchema, uischema: rootUischema} = useJsonforms();
-const {baseTool: baseUiTool2, createBaseTool} = useToolInstance();
+const {baseTool: baseUiTool2, createBaseTool, createSchemaTool, createDefTool} = useToolInstance();
 
+const {builder, schemaReadOnly} = useFormbuilder();
 
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
 
@@ -161,47 +127,43 @@ const {baseTool: baseUiTool2, createBaseTool} = useToolInstance();
 //   console.log("FB.onRenderTriggered",e);
 // });
 
-const onChangeMode = (e) => {
-  const mode = e.target.value;
-  switch (mode) {
+const onChangeBuilder = (e) => {
+  builder.value = e.target.value;
+
+  switch (e.target.value) {
     case 'schema':
-      showBar.value=mode;
-      baseSchemaTool.value.schema = rootSchema.value;
+      showBar.value='schema';
+
+      baseSchemaTool.value = createSchemaTool(rootSchema.value);
       currentBaseTool.value = baseSchemaTool.value;
       break;
 
     case 'uischema':
       showBar.value='schema';
-      baseUiTool.value = createBaseTool(rootSchema.value,rootUischema.value).value;
 
       //:TODO add property & scope changed check!
+
+        if(schemaReadOnly.value) {
+          baseUiTool.value = createBaseTool().value;
+        }
+        else {
+          baseUiTool.value = createBaseTool(rootSchema.value, rootUischema.value).value;
+        }
 
       currentBaseTool.value = baseUiTool.value;
       break;
 
     case 'definitions':
       showBar.value='schema';
-      /**
-       * TODO hier weiter!!!
-       *
-       * switching between schema and def not working!!!
-       */
+
       baseDefinitionTool.value = createDefTool(rootSchema.value);
-      currentBaseTool.value = baseDefinitionTool.value;
+      currentBaseTool.value = baseDefinitionTool.value
       break;
   }
 }
 
 const baseUiTool = ref(null);
-const baseSchemaTool = computed(() => {
-  const schema = {
-    type:'object',
-    properties: jsonFormsSchema.value.schema
-  };
-  const tool = cloneToolWithSchema(objectTool,schema , {});
-  tool.propertyName = 'schema';
-  return tool;
-})
+const baseSchemaTool = ref(null);
 const baseDefinitionTool = ref(null);
 const currentBaseTool = ref(null);
 
@@ -222,7 +184,7 @@ const tools = computed(() => {
       break;
   }
 
-  // if(!props.schemaReadOnly) {
+  // if(!props.schema-Read-Only) {
   //   all.push(...getControlTools())
   // }
   //
@@ -241,7 +203,7 @@ const readonlyTools = computed(() => {
 
 
   //:TODO find better solution!! use toolStore
-  if(props.schemaReadOnly) {
+  if(schemaReadOnly.value) {
 
     const {schema, uischema} = useJsonforms();
 
@@ -255,7 +217,6 @@ const readonlyTools = computed(() => {
 
       const clone = cloneToolWithSchema(findMatchingTool(rootSchema, itemSchema, itemUischema),  itemSchema, itemUischema)
       clone.propertyName = name;
-      clone.schemaReadOnly = true;
 
       return clone;
     }).filter(tool => !usedProps.includes(tool.propertyName))
@@ -275,32 +236,23 @@ const onChangeModal = (data) => {
   }
 }
 
-const createDefTool = (schema) => {
-  const defSchema = {
-    type:'object',
-    properties: schema.definitions
-  };
-  const baseDtool = cloneToolWithSchema(objectTool, defSchema , {});
-  baseDtool.propertyName = 'definitions';
-  return baseDtool;
-}
-
 const updateJsonForm = () => {
   switch (showBuilder.value) {
     case 'schema':
-      updateSchemaMode();
+      updateSchemaBuilder();
       break;
+
     case 'definitions':
-      updateDefinitionMode();
+      updateDefinitionBuilder();
       break;
 
     default:
-      updateUischemaMode();
+      updateUischemaBuilder();
       break;
   }
 }
 
-const updateSchemaMode = () => {
+const updateSchemaBuilder = () => {
   if (baseSchemaTool?.value) {
     const r = createTypeObjectSchema(baseSchemaTool.value);
     update(r.schema, rootUischema.value)
@@ -309,7 +261,7 @@ const updateSchemaMode = () => {
 }
 
 
-const updateDefinitionMode = () => {
+const updateDefinitionBuilder = () => {
   if (baseDefinitionTool?.value) {
     const def = createTypeObjectSchema(baseDefinitionTool.value);
     console.log("def",def);
@@ -324,7 +276,7 @@ const updateDefinitionMode = () => {
   }
 }
 
-const updateUischemaMode = () => {
+const updateUischemaBuilder = () => {
   let newJsonForms;
 
   if ('definition' === showBuilder.value) {
@@ -342,13 +294,12 @@ const updateUischemaMode = () => {
   }
 
   if ('uischema' === showBuilder.value) {
-    newJsonForms = createJsonForms(baseUiTool.value, jsonFormsSchema.value, props.schemaReadOnly);
+    newJsonForms = createJsonForms(baseUiTool.value, jsonFormsSchema.value, schemaReadOnly.value);
     jsonFormsSchema.value = newJsonForms.schema;
     jsonFormsUiSchema.value = newJsonForms.uischema;
   }
 
   if (newJsonForms) {
-    console.log("updateUischemaMode",jsonFormsSchema.value, jsonFormsUiSchema.value)
     update(jsonFormsSchema.value, jsonFormsUiSchema.value)
     emit('schemaUpdated', newJsonForms)
   }
@@ -368,14 +319,15 @@ onBeforeMount(() => {
   unregisterAllTools();   //is that a good behavior?
   registerTools(props.tools);
 
-  const baseToolFromStore = createBaseTool(props?.jsonForms?.schema, props?.jsonForms?.uischema);
-  baseUiTool.value = baseToolFromStore.value;
-  currentBaseTool.value = baseUiTool.value;
+  schemaReadOnly.value = props.schemaReadOnly;
 
-  baseDefinitionTool.value = createDefTool(props?.jsonForms?.schema);
+  //init baseTool
+  update(props?.jsonForms?.schema, props?.jsonForms?.uischema)
+  onChangeBuilder({target:{value:'uischema'}})
+  if(schemaReadOnly.value) {
+    showBar.value='properties';
+  }
 
-});
-onMounted(() => {
   const updateJsonFormDebounced = _.debounce(() => {
     window.setTimeout(updateJsonForm, 100);
   },100,{leading:false, trailing:true})

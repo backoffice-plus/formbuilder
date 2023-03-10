@@ -1,7 +1,7 @@
 import type {JsonSchema} from "@jsonforms/core";
 import {and, isEnumControl, isOneOfControl, isStringControl, or, rankWith} from "@jsonforms/core";
 import type {ControlElement} from "@jsonforms/core/src/models/uischema";
-import type {JsonFormsInterface, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
@@ -37,7 +37,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         // }
     }
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(context: ToolContext): Record<string, any> {
         const schema = this.schema as JsonSchema;
         const uischema = this.uischema as ControlElement;
 
@@ -68,7 +68,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
     }
 
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         const schema = this.schema as JsonSchema | Record<string, any>;
         const uischema = this.uischema as ControlElement;
 
@@ -82,7 +82,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         setOptionDataLabel(schema, uischema, data);
         setOptionDataRule(schema, uischema, data);
 
-        tool.isRequired = data.required;
+        this.isRequired = data.required;
 
         if (data?.enumOrOneOf) {
             if (data?.enumOrOneOf?.enum) {
@@ -105,7 +105,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
     }
 
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

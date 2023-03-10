@@ -1,5 +1,5 @@
 import {AbstractTool} from "./AbstractTool";
-import type {JsonFormsInterface, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import unknownComp from "../../components/tools/unknown.vue";
 import {rankWith} from "@jsonforms/core";
 
@@ -8,14 +8,14 @@ export class UnknownTool extends AbstractTool implements ToolInterface {
     importer = () => unknownComp;
     tester = rankWith(-1, () => false);
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(context: ToolContext): Record<string, any> {
         return {};
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
             schema: {},
             uischema: {},

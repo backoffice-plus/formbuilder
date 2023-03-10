@@ -1,4 +1,4 @@
-import type {JsonFormsInterface, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/object.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
@@ -19,11 +19,11 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
         this.schema.type ??= 'object'
     }
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(context: ToolContext): Record<string, any> {
 
         const schema = {
-            additionalProperties: tool.schema?.additionalProperties,
-            patternProperties: tool.schema?.patternProperties,
+            additionalProperties: this.schema?.additionalProperties,
+            patternProperties: this.schema?.patternProperties,
         }
 
         return {
@@ -32,16 +32,16 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
         } as any;
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, tool)
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
+        updatePropertyNameAndScope(data?.propertyName, this)
 
-        tool.schema = {
-            ...tool.schema,
+        this.schema = {
+            ...this.schema,
             ...data.schema
         };
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
             schema: await resolveSchema(schema),
             uischema: await resolveSchema(uischema),

@@ -1,6 +1,7 @@
 import {isBooleanControl, isNumberControl, isStringControl, or, rankWith} from "@jsonforms/core";
+import type {Categorization, JsonSchema} from "@jsonforms/core";
 import {isIntegerControl} from "@jsonforms/core/src/testers/testers";
-import type {JsonFormsInterface, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {
@@ -12,7 +13,7 @@ import {
     setOptionDataRule,
     setOptionDataValidation,
     uischema
-} from "./schema/toolControl";
+} from "./schema/control.schema";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
 
@@ -29,18 +30,21 @@ export class ControlTool extends AbstractTool implements ToolInterface {
     }
 
 
-    optionDataPrepare(tool: ToolInterface): Record<string, any> {
+    optionDataPrepare(context: ToolContext): Record<string, any> {
         const data = {
-            propertyName: tool.propertyName,
+            propertyName: this.propertyName,
             type: this.schema.type,
             format: this.schema.format,
             /** @ts-ignore */
             contentMediaType: this.schema?.contentMediaType as any,
             /** @ts-ignore */
             contentEncoding: this.schema?.contentEncoding as any,
+
             options: this.uischema.options,
 
-            required: tool.isRequired,
+            required: this.isRequired,
+
+            _isUischema: 'uischema' === context.builder,
         } as any;
 
         _.merge(
@@ -50,10 +54,20 @@ export class ControlTool extends AbstractTool implements ToolInterface {
             prepareOptionDataRule(this.schema, this.uischema),
         )
 
+        // if('uischema' === context.builder) {
+        //     _.merge(
+        //         data,
+        //         {
+        //             options: this.uischema.options,
+        //         },
+        //         prepareOptionDataRule(this.schema, this.uischema),
+        //     )
+        // }
+
         return data;
     }
 
-    optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void {
+    optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
 
         this.schema.type = data.type;
@@ -72,10 +86,32 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         this.isRequired = data.required;
     }
 
-    async optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface> {
+    async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
+
+        const setUischema = {...uischema} as Categorization;
+        //const setSchema = {...schema} as JsonSchema;
+        const setSchema = _.clone(schema) as JsonSchema;
+
+        //hide rule in schema/definitions
+        if('uischema' !== context.builder) {
+            setUischema.elements = setUischema.elements.filter(category => 'Rule' !== category.label);
+        }
+
+        //:TODO TypeError: Cannot assign to read only property 'readOnly' of object '#<Object>'
+        if(context.schemaReadOnly) {
+            //setSchema.properties.propertyName.readOnly=true;
+            //setUischema.elements[0].elements[0].elements[0].options={readonly:true};
+            // setSchema.properties.type.readOnly=true;
+            // //setSchema.properties.format.readOnly=true;
+            // setSchema.properties.contentMediaType.readOnly=true;
+            // setSchema.properties.contentEncoding.readOnly=true;
+
+            //setSchema.definitions.formats.readOnly=true;
+        }
+
         return {
-            schema: await resolveSchema(schema),
-            uischema: await resolveSchema(uischema),
+            schema: await resolveSchema(setSchema),
+            uischema: await resolveSchema(setUischema),
         } as JsonFormsInterface
     }
 

@@ -54,12 +54,12 @@ import {emitter} from "../lib/mitt";
 import {onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
+import {useFormbuilder} from "../composable/formbuilder";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
   data: Object,
   jsonFormsRenderers: Array,
-  schemaReadOnly: Boolean,
 })
 const emit = defineEmits(['change']);
 
@@ -72,21 +72,28 @@ const errorAfterUpdated = ref([]);
 const mergedJsonFormsRenderers = ref(Object.freeze(props.jsonFormsRenderers));
 const error = ref('');
 
+const {builder, schemaReadOnly} = useFormbuilder();
+
 onMounted(async () => {
 
-    options.value = props.tool.optionDataPrepare(props.tool)
-    jsonFormSchema.value = await props.tool.optionJsonforms(props.tool)
-        .then(e => {
-          const event = {
-            tool:props.tool,
-            schema: JSON.parse(JSON.stringify(e.schema)),
-            uischema: JSON.parse(JSON.stringify(e.uischema)),
-          };
-          emitter.emit('afterOptionJsonforms', event)
+  const context = {
+    builder: builder.value,
+    schemaReadOnly: schemaReadOnly.value,
+  }
 
-          return {schema:event.schema, uischema:event.uischema};
-        })
-        .catch(e => error.value=e)
+  options.value = props.tool.optionDataPrepare(context);
+  jsonFormSchema.value = await props.tool.optionJsonforms(context)
+      .then(e => {
+        const event = {
+          tool:props.tool,
+          schema: JSON.parse(JSON.stringify(e.schema)),
+          uischema: JSON.parse(JSON.stringify(e.uischema)),
+        };
+        emitter.emit('afterOptionJsonforms', event)
+
+        return {schema:event.schema, uischema:event.uischema};
+    })
+    .catch(e => error.value=e)
 
 
 
@@ -118,7 +125,10 @@ const onChange = (e) => {
     const data = JSON.parse(JSON.stringify(e.data)); //:TODO other way to remove ref/proxy?
     dataAfterUpdated.value = data;
 
-    props.tool.optionDataUpdate(props.tool, data)
+    const context = {
+      builder: builder.value,
+    }
+    props.tool.optionDataUpdate(context, data)
 
     emit('change', data);
     emitter.emit('formBuilderUpdated');

@@ -20,9 +20,9 @@ const clone = (tool:ToolInterface, propName:string|undefined = undefined, schema
 
     //set default data
     if(propName) {
-        const defaultData = clone.optionDataPrepare(clone)
+        const defaultData = clone.optionDataPrepare()
         defaultData.propertyName = propName;
-        clone.optionDataUpdate(clone, defaultData);
+        clone.optionDataUpdate(undefined, defaultData);
     }
 
     return clone;
@@ -158,7 +158,7 @@ test('createJsonForms - array of string in layout', () => {
     const array = clone(arrayControlTool, 'myArray')
     array.childs.push(clone(stringControlTool))
 
-    array.optionDataUpdate(array, {...array.optionDataPrepare(array), ...{asInlineType: true}})
+    array.optionDataUpdate(undefined, {...array.optionDataPrepare(), ...{asInlineType: true}})
 
     const baseTool = findBaseTool({}, {type: 'Group', elements: []});
     baseTool.childs.push(array)
@@ -343,7 +343,7 @@ test('generateSchemaByTool - string required in object', () => {
     const string = clone(stringControlTool, 'name1')
     baseTool.childs.push(string)
 
-    string.optionDataUpdate(string, {...string.optionDataPrepare(string), ...{required: true}})
+    string.optionDataUpdate(undefined, {...string.optionDataPrepare(), ...{required: true}})
 
     const schema = generateSchemaByTool(baseTool)
     const schemaCleaned = JSON.parse(JSON.stringify(schema));//remove nested undefineds
@@ -454,7 +454,7 @@ test('generateSchemaByTool - array of objects in object', () => {
     const arrayTool = clone(arrayControlTool, 'users')
     const stringTool = clone(stringControlTool, 'name')
 
-    stringTool.optionDataUpdate(stringTool, {...stringTool.optionDataPrepare(stringTool), ...{required: true}})
+    stringTool.optionDataUpdate(undefined, {...stringTool.optionDataPrepare(), ...{required: true}})
 
     arrayTool.childs.push(stringTool)
     baseTool.childs.push(arrayTool)
@@ -523,7 +523,7 @@ test('generateSchemaByTool - array of strings in object', () => {
     const baseTool = clone(objectControlTool)
     const arrayTool = clone(arrayControlTool, 'colors')
 
-    arrayTool.optionDataUpdate(arrayTool, {...arrayTool.optionDataPrepare(arrayTool), ...{asInlineType: true}})
+    arrayTool.optionDataUpdate(undefined, {...arrayTool.optionDataPrepare(), ...{asInlineType: true}})
 
     arrayTool.childs.push(clone(stringControlTool))
     baseTool.childs.push(arrayTool)
@@ -551,7 +551,7 @@ test('generateSchemaByTool - array nested in object', () => {
     const arrayUsersTool = clone(arrayControlTool, 'users')
     const arrayColorsTool = clone(arrayControlTool, 'colors')
 
-    arrayColorsTool.optionDataUpdate(arrayColorsTool, {...arrayColorsTool.optionDataPrepare(arrayColorsTool), ...{asInlineType: true}})
+    arrayColorsTool.optionDataUpdate(undefined, {...arrayColorsTool.optionDataPrepare(), ...{asInlineType: true}})
     arrayColorsTool.childs.push(clone(stringControlTool))
 
     arrayUsersTool.childs.push(clone(stringControlTool, 'name'))
@@ -658,7 +658,7 @@ test('generateSchemaByTool - combinators object with required', () => {
     baseTool.childs.push(combinator);
 
     //string.optionDataUpdate(string, {...string.optionDataPrepare(string), ...{required: true}})
-    myEnum.optionDataUpdate(myEnum, {...myEnum.optionDataPrepare(myEnum), ...{required: true}})
+    myEnum.optionDataUpdate(undefined, {...myEnum.optionDataPrepare(), ...{required: true}})
 
     const schema = generateSchemaByTool(baseTool)
     const schemaCleaned = JSON.parse(JSON.stringify(schema));//remove nested undefineds
@@ -694,8 +694,8 @@ test('generateSchemaByTool - ref in array in object', () => {
     arrayTool.childs.push(refTool);
     baseTool.childs.push(arrayTool);
 
-    refTool.optionDataUpdate(refTool, {...refTool.optionDataPrepare(refTool), ...{_reference: '#/definitions/...'}})
-    arrayTool.optionDataUpdate(arrayTool, {...arrayTool.optionDataPrepare(arrayTool), ...{asInlineType: true}})
+    refTool.optionDataUpdate(undefined, {...refTool.optionDataPrepare(), ...{_reference: '#/definitions/...'}})
+    arrayTool.optionDataUpdate(undefined, {...arrayTool.optionDataPrepare(), ...{asInlineType: true}})
 
     const schema = generateSchemaByTool(baseTool)
     const schemaCleaned = JSON.parse(JSON.stringify(schema));//remove nested undefineds

@@ -122,6 +122,22 @@ export const uischema = {
                         },
 
                         {
+                            type: "VerticalLayout",
+                            elements: [
+                                {
+                                    $ref:'labelAndI18n.descriptionOnly.uischema'
+                                },
+                            ],
+                            rule: {
+                                effect: "SHOW",
+                                condition:   {
+                                    scope: "#/properties/_isUischema",
+                                    schema: {const: false}
+                                },
+                            },
+                        },
+
+                        {
                             type: "Group",
                             label: "Form Type",
                             elements: [
@@ -170,52 +186,77 @@ export const uischema = {
                                         }
                                     }
                                 },
+
+
                                 {
-                                    scope: "#/properties/options/properties/multi",
-                                    label: "as Textarea",
-                                    type: "Control",
+                                    type: 'VerticalLayout',
+                                    elements: [
+                                        {
+                                            scope: "#/properties/options/properties/multi",
+                                            label: "as Textarea",
+                                            type: "Control",
+                                            rule: {
+                                                effect: "SHOW",
+                                                condition: {
+                                                    type: "AND",
+                                                    conditions: [
+                                                        {
+                                                            scope: "#/properties/type",
+                                                            schema: {
+                                                                const: "string"
+                                                            }
+                                                        },
+                                                        {
+                                                            scope: "#/properties/format",
+                                                            schema: {
+                                                                not: {
+                                                                    type: "string"
+                                                                }
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                        {
+                                            scope: "#/properties/options/properties/toggle",
+                                            label: "as Toggle",
+                                            type: "Control",
+                                            options: {
+                                                toggle: true,
+                                            },
+                                            rule: {
+                                                effect: "SHOW",
+                                                condition: {
+                                                    scope: "#/properties/type",
+                                                    schema: {
+                                                        const: "boolean"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ],
                                     rule: {
                                         effect: "SHOW",
                                         condition: {
                                             type: "AND",
                                             conditions: [
                                                 {
-                                                    scope: "#/properties/type",
+                                                    scope: "#/properties/_isUischema",
                                                     schema: {
-                                                        const: "string"
+                                                        const: true
                                                     }
                                                 },
-                                                {
-                                                    scope: "#/properties/format",
-                                                    schema: {
-                                                        not: {
-                                                            type: "string"
-                                                        }
-                                                    }
-                                                }
                                             ]
                                         }
                                     }
                                 },
-                                {
-                                    scope: "#/properties/options/properties/toggle",
-                                    label: "as Toggle",
-                                    type: "Control",
-                                    options: {
-                                        toggle: true,
-                                    },
-                                    rule: {
-                                        effect: "SHOW",
-                                        condition: {
-                                            scope: "#/properties/type",
-                                            schema: {
-                                                const: "boolean"
-                                            }
-                                        }
-                                    }
-                                }
+
+
                             ]
                         },
+
+
                         {
                             type: "Group",
                             label: "Label & Description",
@@ -223,16 +264,28 @@ export const uischema = {
                                 {
                                     $ref:'labelAndI18n.uischema'
                                 },
-                            ]
+                            ],
+                            rule: {
+                                effect: "SHOW",
+                                condition:   {
+                                    scope: "#/properties/_isUischema",
+                                    schema: {const: true}
+                                },
+                            },
                         },
-
-
                         {
                             type: "HorizontalLayout",
                             elements: [
                                 {
                                     scope: "#/properties/options/properties/placeholder",
-                                    type: "Control"
+                                    type: "Control",
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition:   {
+                                            scope: "#/properties/_isUischema",
+                                            schema: {const: true}
+                                        },
+                                    }
                                 },
                             ]
                         },
@@ -245,7 +298,15 @@ export const uischema = {
                                 },
                                 {
                                     scope: "#/properties/options/properties/readonly",
-                                    type: "Control"
+                                    type: "Control",
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition:   {
+                                            scope: "#/properties/_isUischema",
+                                            schema: {const: true}
+                                        },
+                                    }
+
                                 },
                             ]
                         },

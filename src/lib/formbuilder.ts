@@ -15,7 +15,7 @@ import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
 import {jsonForms as toolOptionsSchemaValidation} from "./tools/schema/validation";
 import {jsonForms as toolOptionsSchemaRule} from "./tools/schema/rule";
-import {jsonForms as toolOptionsSchemaLabelAndI18n} from "./tools/schema/labelAndI18n";
+import {jsonForms as toolOptionsSchemaLabelAndI18n, uischemaDescriptionOnly} from "./tools/schema/labelAndI18n";
 import {Resolver} from "@stoplight/json-ref-resolver";
 import {CombinatorTool} from "./tools/combinatorTool";
 import {ArrayTool} from "./tools/ArrayTool";
@@ -41,27 +41,29 @@ export const cloneEmptyTool = (tool: ToolInterface, schema:JsonSchema|undefined 
     }
 
     //set default data
-    const defaultData = clone.optionDataPrepare(clone)
-    clone.optionDataUpdate(clone, defaultData);
+    const defaultData = clone.optionDataPrepare({})
+    clone.optionDataUpdate({}, defaultData);
 
     return clone;
 };
 
 
-export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: UISchemaElement) => {
+export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: UISchemaElement|undefined = undefined) => {
 
     //clone
     const clone = tool.clone();
     _.merge(clone.schema, {...schema})
-    _.merge(clone.uischema, {...uischema})
+    if(uischema) {
+        _.merge(clone.uischema, {...uischema})
+    }
 
     if ('scope' in clone.uischema) {
         clone.propertyName = fromScopeToProperty(clone.uischema.scope)
     }
 
     //set default data (sets init data if schema hasnt)
-    const defaultData = clone.optionDataPrepare(clone)
-    clone.optionDataUpdate(clone, defaultData);
+    const defaultData = clone.optionDataPrepare({})
+    clone.optionDataUpdate({}, defaultData);
 
     return clone;
 };
@@ -216,6 +218,7 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
         'rule.uischema': toolOptionsSchemaRule.uischema,
         'labelAndI18n.schema': toolOptionsSchemaLabelAndI18n.schema,
         'labelAndI18n.uischema': toolOptionsSchemaLabelAndI18n.uischema,
+        'labelAndI18n.descriptionOnly.uischema': uischemaDescriptionOnly,
     } as Record<string, any>
 
     const resolver = new Resolver({

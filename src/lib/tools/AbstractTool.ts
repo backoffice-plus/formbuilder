@@ -1,14 +1,13 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {RankedTester} from "@jsonforms/core/src/testers/testers";
 import type {JsonFormsInterface, JsonFormsUISchema} from "../models";
-import type {ToolInterface} from "./index";
+import type {ToolContext, ToolInterface} from "./index";
 
 export abstract class AbstractTool implements ToolInterface {
 
     private _uuid: string|undefined;
     propertyName: string = 'Unknown';
     isRequired: boolean = false;//neccesary because required is stored in parentNode
-    schemaReadOnly: boolean = false; //only neccesary to show at toolbar :TODO: remove it and find other solution
 
     childs: ToolInterface[] = [];
 
@@ -35,11 +34,11 @@ export abstract class AbstractTool implements ToolInterface {
 
     abstract importer(): any;
 
-    abstract optionDataPrepare(tool: ToolInterface): Record<string, any> ;
+    abstract optionDataPrepare(context: ToolContext): Record<string, any> ;
 
-    abstract optionDataUpdate(tool: ToolInterface, data: Record<string, any>): void;
+    abstract optionDataUpdate(context: ToolContext, data: Record<string, any>): void;
 
-    abstract optionJsonforms(tool: ToolInterface): Promise<JsonFormsInterface | undefined>;
+    abstract optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined>;
 
     abstract tester: RankedTester | undefined;
 

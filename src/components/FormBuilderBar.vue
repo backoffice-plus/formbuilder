@@ -92,15 +92,16 @@ aside .toolItem {
 import {ref} from 'vue';
 import {Vuedraggable} from '../index'
 import {cloneEmptyTool, cloneToolWithSchema} from "../index";
+import {useFormbuilder} from "../composable/formbuilder";
 
 
 const props = defineProps(
     {
-      schemaReadOnly: {type:Boolean, default: false},
-      jsonForms: {type:Object, default: {}},
       tools: {type:Array, default: []},
     }
 );
+
+const {builder, schemaReadOnly} = useFormbuilder();
 
 const emits = defineEmits(['drag']);
 
@@ -111,8 +112,11 @@ const onDrag = (drag) => {
 };
 
 const onClone = (tool) => {
-  if(props.schemaReadOnly) {
-    tool.optionDataUpdate(tool, tool.optionDataPrepare(tool));
+  if(schemaReadOnly.value) {
+    const context = {
+      schemaReadOnly: schemaReadOnly.value,
+    };
+    tool.optionDataUpdate(context, tool.optionDataPrepare({}));
 
     return tool;
   }

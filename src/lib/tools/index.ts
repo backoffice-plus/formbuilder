@@ -46,17 +46,20 @@ export interface ToolInterface {
 
     schema: JsonSchema;
     uischema: JsonFormsUISchema|any;
-    schemaReadOnly: boolean;
-
     tester: RankedTester | undefined,
     importer: () => any,
-    optionDataPrepare: (tool: ToolInterface) => Record<string, any>;
-    optionDataUpdate: (tool: ToolInterface, data: Record<string, any>) => void;
-    optionJsonforms: (tool: ToolInterface) => Promise<JsonFormsInterface | undefined>;
+    optionDataPrepare: (context: ToolContext) => Record<string, any>;
+    optionDataUpdate: (context: ToolContext, data: Record<string, any>) => void;
+    optionJsonforms: (context: ToolContext) => Promise<JsonFormsInterface | undefined>;
 
     /** :TODO add cloneWithSchema(schema,uischema) **/
     clone: () => ToolInterface;
     toolbarOptions: () => Record<string, any>;
 
     childs: ToolInterface[]
+}
+
+export interface ToolContext {
+    builder?: string;
+    schemaReadOnly?: string;
 }
