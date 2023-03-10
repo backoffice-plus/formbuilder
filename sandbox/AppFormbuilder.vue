@@ -3,14 +3,14 @@
   <div class="container max-w-screen-lg mx-auto p-4 flex flex-col gap-4">
 
     <div class="styleA">
-      Disable Formbuilder: <input type="checkbox" v-model="disableFormbuilder" /><br>
-      Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" /><br>
       Select Example:
       <select v-model="example" style="width:auto;display:inline" >
         <option></option>
         <option v-for="e in examples" :value="e.name">{{e.label}}</option>
       </select>
-      <a :href="'#/jsonforms?example=' + example" v-if="example" class="ml-1 text-sm">[open Jsonforms]</a>
+      <a :href="'#/jsonforms?example=' + example" v-if="example" class="ml-1 text-sm">[open Jsonforms]</a><br>
+
+      <div v-if="example">Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" /></div>
     </div>
 
       <FormBuilder
@@ -18,14 +18,13 @@
           :jsonFormsRenderers="jsonFormsRenderers"
           :schemaReadOnly="schemaReadOnly"
           :tools="tools"
-          v-if="!disableFormbuilder"
           :key="example + (schemaReadOnly?1:0)"
       />
     <!--            -->
 
-    <FormBuilderDetails :jsonForms="jsonFormsResolved" :key="(disableFormbuilder?1:0)" />
+    <FormBuilderDetails :jsonForms="jsonFormsResolved" />
 
-    <details v-if="example">
+    <details v-if="example && !schemaReadOnly">
       <summary class="cursor-pointer">JSON Render Diff</summary>
       <ExampleVsSchemaCode
           :example="latestExampleData"
@@ -82,7 +81,6 @@ const url = computed(() => getUrl());
 const examples = computed(() => getExamples().sort((a,b)=>a.label.toLowerCase()>b.label.toLowerCase()?1:-1));
 const example = ref(getExampleFromUrl());
 const schemaReadOnly = ref(false);
-const disableFormbuilder = ref(false);
 const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
