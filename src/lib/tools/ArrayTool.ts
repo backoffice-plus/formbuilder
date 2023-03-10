@@ -81,9 +81,9 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         _.merge(
             data,
-            prepareOptionDataValidation(this.schema, this.uischema),
-            prepareOptionDataLabel(this.schema, this.uischema),
-            prepareOptionDataRule(this.schema, this.uischema),
+            prepareOptionDataValidation(context, this.schema, this.uischema),
+            prepareOptionDataLabel(context, this.schema, this.uischema),
+            prepareOptionDataRule(context, this.schema, this.uischema),
         )
 
         return data;

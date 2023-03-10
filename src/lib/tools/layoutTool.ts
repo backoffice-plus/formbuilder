@@ -26,7 +26,7 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
         return {
             options: this.uischema?.options,
             uischemaType: this.uischema.type,
-            ...prepareOptionDataRule(this.schema, this.uischema),
+            ...prepareOptionDataRule(context, this.schema, this.uischema),
         } as any;
     }
 

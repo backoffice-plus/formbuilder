@@ -1,12 +1,13 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {JsonFormsInterface} from "../../models";
+import type {ToolContext} from "../index";
 
 export const schemaKeysString = ['minLength', 'maxLength', 'pattern'] as Array<string>;
 export const schemaKeysNumber = ['minimum', 'maximum', 'multipleOf', 'exclusiveMinimum', 'exclusiveMaximum'] as Array<string>;
 export const schemaKeys = [...schemaKeysString, ...schemaKeysNumber, 'minItems', 'maxItems', 'uniqueItems'] as Array<string>;
 
-export const prepareOptionData = (schema: JsonSchema, uischema: UISchemaElement): Record<string, any> => {
+export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uischema: UISchemaElement): Record<string, any> => {
     const data = {} as Record<string, any>;
 
     schemaKeys.forEach(key => {

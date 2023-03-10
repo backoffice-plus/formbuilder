@@ -5,7 +5,7 @@ export * from './lib/formbuilder';
 export * from './lib/generator';
 export * from './lib/normalizer';
 export {AbstractTool} from "./lib/tools/AbstractTool";
-export type {ToolInterface, JsonFormsInterface} from "./lib/tools";
+export type {ToolInterface, ToolContext, JsonFormsInterface} from "./lib/tools";
 export const defaultTools = [...controlTools, ...layoutTools]
 
 export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './lib/tools/schema/rule'

@@ -19,8 +19,8 @@ export class GroupTool extends VerticalLayout {
 
         _.merge(
             data,
-            prepareOptionDataLabel(this.schema, this.uischema),
-            prepareOptionDataRule(this.schema, this.uischema),
+            prepareOptionDataLabel(context, this.schema, this.uischema),
+            prepareOptionDataRule(context, this.schema, this.uischema),
         )
         return data;
     }

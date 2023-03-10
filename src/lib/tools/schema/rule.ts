@@ -1,9 +1,10 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {JsonFormsInterface} from "../../models";
+import type {ToolContext} from "../index";
 import _ from "lodash";
 
-export const prepareOptionData = (schema:JsonSchema, uischema:UISchemaElement) : Record<string, any> => {
+export const prepareOptionData = (context:ToolContext, schema:JsonSchema, uischema:UISchemaElement) : Record<string, any> => {
     const rule = uischema.rule;
     return {rule:{rule:rule}};
 }

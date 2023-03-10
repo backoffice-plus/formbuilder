@@ -1,6 +1,7 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {JsonFormsInterface} from "../../models";
+import type {ToolContext} from "../index";
 
 export type schemaKey = 'description';
 export const schemaKeys = ['description'] as Array<schemaKey>;
@@ -9,9 +10,10 @@ export const uischemaKeys = ['label', 'i18n'] as Array<uischemaKey>;
 export type uischemaOptionKey = 'showUnfocusedDescription';
 export const uischemaOptionKeys = ['showUnfocusedDescription'] as Array<uischemaOptionKey>;
 
-export const prepareOptionData = (schema:JsonSchema, uischema:UISchemaElement|any) : Record<string, any> => {
+export const prepareOptionData = (context:ToolContext, schema:JsonSchema, uischema:UISchemaElement|any) : Record<string, any> => {
     const data = {
         _type:uischema.type,
+        //_isUischema: 'uischema' === context.builder || !context?.builder,
     } as Record<string, any>;
 
     schemaKeys.forEach(key => data[key] = schema[key]);
@@ -78,23 +80,32 @@ export const uischema = {
                 {
                     scope: "#/properties/labelAndI18n/properties/label",
                     type: "Control",
-                    rule: {
-                        effect: "SHOW",
-                        condition: {
-                            scope: "#/properties/_isUischema",
-                            schema: {const: true}
-                        },
-                    }
+                    // rule: {
+                    //     effect: "HIDE",
+                    //     condition: {
+                    //         scope: "#/properties/_isUischema",
+                    //         schema: {enum: [false, 'null']}
+                    //     },
+                    // }
                 },
                 {
                     scope: "#/properties/labelAndI18n/properties/description",
                     type: "Control",
                     rule: {
                         effect: "HIDE",
-                        condition:   {
-                            scope: "#/properties/_isSchemaReadOnly",
-                            schema: {const: true}
-                        },
+                        condition: {
+                            type: "OR",
+                            conditions: [
+                                {
+                                    scope: "#/properties/_isSchemaReadOnly",
+                                    schema: {const: true}
+                                },
+                                {
+                                    scope: "#/properties/labelAndI18n/properties/_type",
+                                    schema: {enum: ['Category','Group']}
+                                },
+                            ]
+                        }
                     },
                 },
             ]

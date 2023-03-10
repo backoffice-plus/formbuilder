@@ -52,9 +52,9 @@ export class SelectTool extends AbstractTool implements ToolInterface {
 
         _.merge(
             data,
-            prepareOptionDataValidation(schema, uischema),
-            prepareOptionDataLabel(schema, uischema),
-            prepareOptionDataRule(schema, uischema),
+            prepareOptionDataValidation(context, schema, uischema),
+            prepareOptionDataLabel(context, schema, uischema),
+            prepareOptionDataRule(context, schema, uischema),
         )
 
         if (schema.enum) {
