@@ -1,8 +1,4 @@
 import CategorizationRenderer from "./components/CategorizationRenderer.vue";
-import AllOfRenderer from "./components/AllOfRenderer.vue";
-import AnyOfRenderer from "./components/AnyOfRenderer.vue";
-//import OneOfRenderer from "./components/OneOfRenderer.vue";
-import ObjectRenderer from "./components/ObjectRenderer.vue";
 import EnumArrayRenderer from "./components/EnumArrayRenderer.vue";
 import ArrayControlRenderer from "./components/ArrayControlRenderer.vue";
 import ArrayLayoutRenderer from "./components/ArrayLayoutRenderer.vue";
@@ -13,18 +9,13 @@ import AutocompleteRenderer from "./components/AutocompleteRenderer.vue";
 import {constEntry} from "./components/ConstRenderer.vue";
 import {fileEntry} from "./components/FileRenderer.vue";
 
-import {entry as passwordControlRendererEntry} from "./components/vue3/PasswordControlRenderer.vue";
-import {entry as oneOfEntry} from "./components/vue3/OneOfRenderer.vue";
+import vueRenderer from "./components/vue3";
 
 import {
     and,
     or,
     categorizationHasCategory,
     hasType,
-    isAllOfControl,
-    isOneOfControl,
-    isAnyOfControl,
-    isObjectControl,
     isObjectArrayControl,
     isPrimitiveArrayControl,
     rankWith,
@@ -34,7 +25,7 @@ import {
     isBooleanControl,
     optionIs,
     isEnumControl,
-    isOneOfEnumControl, isRangeControl, isStringControl, formatIs, schemaTypeIs, isObjectArray
+    isOneOfEnumControl, isRangeControl, schemaTypeIs, isObjectArray
 } from "@jsonforms/core";
 import type {JsonSchema} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
@@ -43,24 +34,6 @@ export const categorizationRendererEntry = {
     renderer: CategorizationRenderer,
     tester: rankWith(2, and(uiTypeIs('Categorization'), categorizationHasCategory))
 };
-
-export const objectRendererEntry = {
-    renderer: ObjectRenderer,
-    tester: rankWith(3, isObjectControl)
-};
-
-export const allOfRendererEntry = {
-    renderer: AllOfRenderer,
-    tester: rankWith(3, isAllOfControl)
-};
-export const anyOfRendererEntry = {
-    renderer: AnyOfRenderer,
-    tester: rankWith(3, isAnyOfControl)
-};
-// export const OneOfRendererEntry = {
-//     renderer: OneOfRenderer,
-//     tester: rankWith(2, isOneOfControl)
-// };
 
 const hasOneOfItems = (schema: JsonSchema): boolean => (schema?.oneOf ?? [] as JsonSchema[]).every((entry: JsonSchema) => entry.const !== undefined);
 const hasEnumItems = (schema: JsonSchema): boolean => schema.type === 'string' && schema.enum !== undefined;
@@ -99,9 +72,6 @@ export const sliderControlRendererEntry = {
 
 export const boplusVueVanillaRenderers = [
     categorizationRendererEntry,
-    allOfRendererEntry,
-    anyOfRendererEntry,
-    objectRendererEntry,
     enumArrayRendererEntry,
     booleanToggleControlRendererEntry,
     radioGroupControlRendererEntry,
@@ -110,8 +80,7 @@ export const boplusVueVanillaRenderers = [
     fileEntry,
 
     //from package
-    passwordControlRendererEntry,
-    oneOfEntry,
+    ...vueRenderer
 ];
 
 boplusVueVanillaRenderers.push({
