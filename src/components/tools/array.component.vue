@@ -1,5 +1,5 @@
 <template>
-  <div class="arrayTool" :class={isInlineType:isInlineType,isRoot:isRoot} :title="toolOptions.title">
+  <div class="arrayTool rootItem" :class={isInlineType:isInlineType,isRoot:isRoot} :title="toolOptions.title">
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>

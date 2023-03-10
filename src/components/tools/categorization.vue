@@ -1,5 +1,5 @@
 <template>
-  <div class="categorizationTool" :class="['group/itemC',{isRoot:isRoot}]">
+  <div class="categorizationTool" :class="['rootItem', {isRoot:isRoot}]">
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
 
@@ -7,7 +7,7 @@
 
     <div v-if="!isToolbar" class="mr-5">
 
-      <Actions :class="['opacity-0', 'group-hover/itemC:opacity-100']" :tool="tool" @delete="onDelete" :deletable="!isRoot">
+      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
         <button type="button" @click="collapsed=!collapsed;"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" v-if="!isRoot" /></button>
       </Actions>
 

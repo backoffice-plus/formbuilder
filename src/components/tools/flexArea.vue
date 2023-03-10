@@ -1,12 +1,12 @@
 <template>
-  <div class="flexAreaTool" :class="['group/itemF',{isRoot:isRoot}]" ref="flexAreaTool">
+  <div class="flexAreaTool" :class="['rootItem', {isRoot:isRoot}]" ref="flexAreaTool">
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
     </ToolIcon>
 
     <div v-if="!isToolbar" :class="['flex',{'mr-5':!isRoot}]">
 
-      <Actions :class="['opacity-0', 'group-hover/itemF:opacity-100']" :tool="tool" @delete="onDelete" :deletable="!isRoot">
+      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
         <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
       </Actions>
 

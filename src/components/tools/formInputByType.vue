@@ -1,5 +1,5 @@
 <template>
-  <div class="formInputByTypeTool" :class="['group/item']">
+  <div class="formInputByTypeTool" >
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
@@ -14,6 +14,8 @@
     </ToolIcon>
 
     <div v-if="!isToolbar">
+
+      <Actions :tool="tool" @delete="onDelete"/>
 
       <div>
 
@@ -43,7 +45,6 @@
         </template>
 
         <div>{{ schema.description }}</div>
-        <Actions :class="['opacity-0', 'group-hover/item:opacity-100']" :tool="tool" @delete="onDelete"/>
 
       </div>
 
