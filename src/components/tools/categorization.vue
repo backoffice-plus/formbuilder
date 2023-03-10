@@ -18,7 +18,7 @@
               :class="{selected:currentTab===index}"
               @click="currentTab=index"
           >
-            {{ tabLabels[element.uuid] ?? 'Tab' }}
+            {{ element.uischema.label }}
           </button>
           <button
             @click="currentTab=-1"
@@ -141,7 +141,6 @@ const childTools = ref([]);
 const childComponents = ref({});
 const tabs = ref([]);
 const currentTab = ref(-1);
-const tabLabels = ref({});
 const collapsed = ref(false);
 
 const addChildComponent = (e) => {
@@ -165,10 +164,6 @@ onMounted(() => {
     else {
       addTab();
     }
-
-    emitter.on('formBuilderUpdated', (data) => {
-      window.setTimeout(buildTabLabels,20);
-    });
   }
 })
 
@@ -195,18 +190,8 @@ const addTab = () => {
 };
 
 
-const buildTabLabels = (e) => {
-  Object.keys(childComponents).map(uuid => {
-    if(childComponents[uuid]?.tool?.uischema.label) {
-      tabLabels.value[uuid] = childComponents[uuid].tool?.uischema.label;
-    }
-  });
-};
-
-
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
-  window.setTimeout(buildTabLabels,50);
   emitter.emit('formBuilderUpdated')
 };
 
