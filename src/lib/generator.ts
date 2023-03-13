@@ -111,8 +111,18 @@ export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
         items = schemas[0];
     }
 
+    const addToSchema = {} as any;
+    ['uniqueItems'].forEach((key:string) => {
+        /** @ts-ignore **/
+        if(undefined !== tool.schema[key]) {
+            /** @ts-ignore **/
+            addToSchema[key] = tool.schema[key];
+        }
+    })
+
     return {
        // ...tool.schema,
+       ...addToSchema,
         type: 'array',
         items: items,
     } as JsonSchema;
