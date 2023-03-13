@@ -36,6 +36,8 @@ export class ConstTool extends ControlTool {
         }
 
 
+        data.title = this.schema.title;
+
         return data;
     }
 
@@ -43,6 +45,7 @@ export class ConstTool extends ControlTool {
         super.optionDataUpdate(context, data);
 
         this.schema.const = data.const;
+        this.schema.title = data.title;
 
         if('string' === typeof data.const) {
             if('json' === data._parse && data.const.match(/^[\[{].*[\]}]$/)) {

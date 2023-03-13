@@ -47,6 +47,11 @@ export const schema = {
             type: "string",
             enum: ['json', 'null'],
         },
+
+        //:TODO add to overall schema
+        title: {
+            type: "string",
+        },
     },
 
     required: ['propertyName', 'const']
@@ -66,6 +71,10 @@ export const uischema = {
                         {
                             type:'Control',
                             scope: '#/properties/propertyName',
+                        },
+                        {
+                            type:'Control',
+                            scope: '#/properties/title',
                         },
                         // {
                         //     scope: "#/properties/type",
