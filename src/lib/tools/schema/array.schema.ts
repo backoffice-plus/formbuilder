@@ -40,10 +40,10 @@ export const schema = {
         propertyName: {
             type: "string"
         },
-        asInlineType: {
-            type: "boolean",
-            description: "for Array of Strings",
-        },
+        // asInlineType: {
+        //     type: "boolean",
+        //     description: "for Array of Strings",
+        // },
         options: {
             type: "object",
             properties: {
@@ -88,13 +88,13 @@ export const uischema = {
                             scope: "#/properties/propertyName",
                             type: "Control"
                         },
-                        {
-                            scope: "#/properties/asInlineType",
-                            type: "Control",
-                            options: {
-                                showUnfocusedDescription: true
-                            }
-                        },
+                        // {
+                        //     scope: "#/properties/asInlineType",
+                        //     type: "Control",
+                        //     options: {
+                        //         showUnfocusedDescription: true
+                        //     }
+                        // },
                         {
                             scope: "#/properties/options/properties/elementLabelProp",
                             type: "Control",

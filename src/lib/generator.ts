@@ -86,28 +86,29 @@ export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
 
     let isInlineType;
     let allowInlineType = false;
-    if(tool instanceof ArrayTool) {
-        isInlineType = tool.isInlineType;
-    }
+    // if(tool instanceof ArrayTool) {
+    //     isInlineType = tool.isInlineType;
+    // }
 
     const hasChilds = tool.childs?.length > 0;
     const hasOneChild = tool.childs?.length === 1;
 
-    if(hasOneChild && isInlineType) {
-        allowInlineType = true
-    }
+    // if(hasOneChild && isInlineType) {
+    //     allowInlineType = true
+    // }
 
     let items = {
         type: 'null',
     } as JsonSchema;
 
+
     if (hasChilds) {
-        if(allowInlineType) {
-            items = tool.childs[0].schema;
-        }
-        else {
-            items = createTypeObjectSchemaOnly(tool);
-        }
+        const schemas = tool.childs.map((childTool: ToolInterface) => {
+            return generateSchemaByTool(childTool);
+        });
+
+        //use only the first child (it that correct?!)
+        items = schemas[0];
     }
 
     return {

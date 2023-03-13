@@ -14,6 +14,7 @@ import {
 
 export class ArrayTool extends AbstractTool implements ToolInterface {
 
+    /** @deprecated **/
     isInlineType: boolean = false;
 
     importer = () => toolComponent;
@@ -36,16 +37,24 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         // let items = {...this.schema?.items};
         //
         // const hasRef = undefined !== items?.$ref
-        const hasItemType = undefined !== getItemsType(this.schema)
-        const itemsType = getItemsType(this.schema);
 
+        /** @ts-ignore **/
+        const itemsType = this.schema?.items?.type;
         /** @ts-ignore **/
         const isRef = '$ref' in this.schema?.items;
 
-        this.isInlineType = !!(itemsType && 'object' !== itemsType);
 
-        //console.log("arrayTOol optionDataPrepare",this.schema)
-
+        /**
+         * Array of Strings
+         */
+        /** @ts-ignore **/
+        //let couldBeInlineType = false;
+        // if(itemsType) {
+        //     couldBeInlineType = itemsType && ['string', 'number', 'integer', 'bool'].includes(itemsType)
+        //
+        //     //init from existing schema (:TODO find better solution)
+        //     this.isInlineType = couldBeInlineType;
+        // }
 
         // const canHaveChilds = true;//:TODO need new "canHaveObject"
         //
@@ -73,7 +82,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         const data = {
             propertyName: this.propertyName,
             type: this.schema.type,
-            asInlineType: itemsType && 'object' !== itemsType ,
+            //asInlineType: couldBeInlineType,
             isRef: isRef,
             options: options
         } as any;
@@ -92,7 +101,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
 
-        this.isInlineType = data?.asInlineType;
+        //this.isInlineType = data?.asInlineType;
 
         // const hasChilds = tool.childs?.length > 0;
         //

@@ -4,9 +4,9 @@
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
         <b>{{ tool.propertyName }}:</b> Array
-        <span v-if="!isInlineType && props.tool.schema?.items?.type"> of {{ props.tool.schema.items.type }}</span>
-        <span v-if="isInlineType && getInlineType"> of {{ getInlineType?.schema?.type }}</span>
-        <span v-if="isArrayOfRef"> of Refs</span>
+        <span v-if="getFirstChildItemsType"> of {{ getFirstChildItemsType }}</span>
+        <span v-else-if="isArrayOfRef"> of Refs</span>
+        <span v-else-if="isArrayOfCombinator"> of {{ isArrayOfCombinator }}</span>
       </template>
 
     </ToolIcon>
@@ -14,7 +14,7 @@
     <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
       <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
-        <button type="button" @click="addItem" v-if="!isInlineType && !isArrayOfRef"><Icon icon="mdi:plus" /></button>
+        <button type="button" @click="() => addItem()" v-if="showAddItem"><Icon icon="mdi:plus" /></button>
         <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
       </Actions>
 
@@ -41,7 +41,7 @@
                        :isToolbar="false"
                        :isDragging=isDragging
                        :index="index"
-                       :isInlineType="isInlineType || isArrayOfRef"
+                       :isInlineType="isInlineType || isArrayOfRef || isArrayOfObject || !!isArrayOfCombinator"
 
                        @deleteByIndex="onDeleteByIndex"
 
@@ -87,6 +87,9 @@ import {initArrayElements} from "../../lib/initializer";
 import {useJsonforms} from "../../composable/jsonforms";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
+import {scalarTypes} from "../../lib/models";
+import {ReferenceTool} from "../../lib/tools/referenceTool";
+import {CombinatorTool} from "../../lib/tools/combinatorTool";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -105,11 +108,29 @@ const childTools = ref([]);
 const childComponents = ref({});
 const collapsed = ref(false);
 
-const isArrayOfObject = computed(() => 'object' === props.tool.schema?.items?.type);
-const isInlineType = computed(() => !isArrayOfObject.value && childTools.value.length >= 1 && undefined !== props.tool.schema?.items?.type);
-const isArrayOfRef = computed(() => '$ref' in props.tool.schema?.items);
-const getInlineType = computed(() => childTools.value[0]);
+const isArrayOfObject = computed(() => 'object' === getFirstChildItemsType.value);
+const isInlineType = computed(() => childTools.value.length >= 1 && scalarTypes.includes(getFirstChildItemsType.value));
+const isArrayOfRef = computed(() => getFirstChild.value && '$ref' in getFirstChild.value?.schema);
+const getFirstChild = computed(() => childTools.value[0]);
+const isArrayOfCombinator = computed(() => getFirstChild.value && CombinatorTool.getKeyword(getFirstChild.value?.schema));
+const getFirstChildItemsType = computed(() => getFirstChild.value?.schema?.type);
 const toolOptions = computed(() => props.tool?.toolbarOptions() ?? {});
+
+const childLayoutTools = computed(() => childTools.value.filter(tool => 'Control' !== tool.uischema.type));
+const hasOneLayoutTool = computed(() => childLayoutTools.value.length>=1);
+
+const showAddItem = computed(() => {
+  //always if its in layout mode
+  if(hasOneLayoutTool.value) {
+    return true;
+  }
+  //array of refs
+  if(isArrayOfRef.value) {
+    return true;
+  }
+  //show only if it has no childs
+  return !getFirstChild.value
+});
 
 onMounted(() => {
   if (!props.isToolbar) {
@@ -121,9 +142,10 @@ onMounted(() => {
         setTimeout(onDropAreaChange, 20);
       }
     }
-    // else {
-    //   addSchema();
-    // }
+
+    if(!childTools.value?.length) {
+      addItem({type:'object',properties:{}})
+    }
   }
 })
 
@@ -137,11 +159,17 @@ const onDropAreaChange = (e) => {
   emitter.emit('formBuilderUpdated')
 };
 
-const addItem = () => {
+const addItem = (initSchema = undefined) => {
   const {schema} = useJsonforms();
   const {findMatchingTool} = useTools();
 
-  const initSchema = {type:'string'}
+  initSchema = initSchema ?? {type:'string'};
+  if(isArrayOfRef.value) {
+    initSchema = {$ref:'#'}
+  }
+
+  console.log("initSchema",initSchema);
+
   const tool = cloneEmptyTool(findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
 
   childTools.value.push(tool);
@@ -151,18 +179,26 @@ const addItem = () => {
 
 const groupPut = (from, to, node, dragEvent) => {
   const tool = node._underlying_vm_;
+
   const isControlTool = 'Control' === tool.uischema?.type;
-  const isInlineType = 'object' !== props.tool?.schema?.items?.type
+  //const isRefTool = '$ref' in tool.schema;//not working!!!
+  //const isRefTool = tool instanceof ReferenceTool;//not working!!!
+  const isRefTool = 'ReferenceTool' === tool.constructor.name;
+
+  //const isInlineType = scalarTypes.includes(props.tool?.schema?.items?.type)
   const hasOneItem = from.el.children.length > 0;
+
+  if(isArrayOfRef.value && isRefTool) {
+    return true;
+  }
 
   const childLayoutTools = childTools.value.filter(tool => 'Control' !== tool.uischema.type);
   const hasOneLayoutTool = childLayoutTools.length>=1;
 
-  if(hasOneLayoutTool || (hasOneItem && !isControlTool)) {
+  if(hasOneLayoutTool) {
     return false;
   }
-
-  return (!isInlineType || (isInlineType && !hasOneItem));
+  return !hasOneItem
 };
 
 //defineExpose({tool: props.tool, childTools: childTools, childComponents: childComponents})

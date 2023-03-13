@@ -58,51 +58,76 @@ export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => 
 
     const {findMatchingTool, findLayoutToolByUiType} = useTools();
 
-    const isItemsObject = 'object' === typeof tool.schema?.items;
-    // @ts-ignore
-    const isItemsTypeObject = 'object' === tool.schema?.items?.type;
-    /** @ts-ignore */
-    const properties = tool.schema?.items?.properties;
+    const itemSchema =  tool.schema?.items;
+    const isSchemObj = 'object' === typeof itemSchema; //:INFO array is not supported yet
 
-    if(tool instanceof ArrayTool) {
-        tool.isInlineType = !isItemsTypeObject;
+    if(!isSchemObj) {
+        console.warn("initArrayElements", "schema.items is not an object");
     }
 
-    /**
-     * Array of Object
-     *   items: {  type: 'object', properties: { ... } }*
-     */
-    if(isItemsTypeObject) {
-        properties && Object.keys(properties).forEach((propertyName:string) => {
-            const itemSchema = properties[propertyName];
+    const uischema = {type: 'Control', scope: '#/properties/unnamed'} as UISchemaElement;
+    const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema as JsonSchema, uischema), itemSchema as JsonSchema, uischema)
 
-            const uischema = {type:'Control',scope:'#/properties/unnamed'} as UISchemaElement;
-            const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
-            clone.propertyName = propertyName;
+    tools.push(clone);
 
-            //required
-            const required = getRequiredFromSchema(clone.propertyName, tool.schema);
-            if (required?.includes(getPlainProperty(clone.propertyName))) {
-                clone.isRequired = true;
-            }
 
-            //console.info("initArrayElements", 'push Array of Object', clone.propertyName)
-            tools.push(clone);
-        });
-    }
-    /**
-     * Array of Schema
-     *   items: {  type: 'string' }
-     *   items: {  $ref: '#/...' }
-     *   items: {  oneOf: [...] }
-     */
-    else {
+    return tools;
 
-        const uischema = {type:'Control',scope:'#/properties/unnamed'} as UISchemaElement;
-        /** @ts-ignore */
-        const clone = cloneToolWithSchema(findMatchingTool({}, tool.schema?.items, uischema), tool.schema?.items, uischema)
-        tools.push(clone);
-    }
+    ///////////////////////
+    //
+    // const {findMatchingTool, findLayoutToolByUiType} = useTools();
+    //
+    // const isItemsObject = 'object' === typeof tool.schema?.items;
+    // const isItemsNotEmpty = isItemsObject && !_.isEmpty(tool.schema?.items)
+    // /** @ts-ignore */
+    // const itemsType = tool.schema?.items?.type
+    // /** @ts-ignore */
+    // const isItemsTypeObject = isItemsNotEmpty && isItemsObject;
+    // /** @ts-ignore */
+    // const properties = tool.schema?.items?.properties;
+    //
+    // // if(tool instanceof ArrayTool) {
+    // //     tool.isInlineType = itemsType && ['string', 'number', 'integer', 'bool'].includes(itemsType)
+    // // }
+    //
+    // console.log("initArrayElements", tool,tool.schema?.items)
+    // /**
+    //  * Array of Object
+    //  *   items: {  type: 'object', properties: { ... } }*
+    //  */
+    // if(isItemsTypeObject) {
+    //     properties && Object.keys(properties).forEach((propertyName:string) => {
+    //         const itemSchema = properties[propertyName];
+    //
+    //         const uischema = {type:'Control',scope:'#/properties/unnamed'} as UISchemaElement;
+    //         const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
+    //         clone.propertyName = propertyName;
+    //
+    //         //required
+    //         const required = getRequiredFromSchema(clone.propertyName, tool.schema);
+    //         if (required?.includes(getPlainProperty(clone.propertyName))) {
+    //             clone.isRequired = true;
+    //         }
+    //
+    //         //console.info("initArrayElements", 'push Array of Object', clone.propertyName)
+    //         tools.push(clone);
+    //     });
+    // }
+    // /**
+    //  * Array of Schema
+    //  *   items: {  type: 'string' }
+    //  *   items: {  $ref: '#/...' }
+    //  *   items: {  oneOf: [...] }
+    //  */
+    // else if(isItemsNotEmpty) {
+    //     const uischema = {type:'Control',scope:'#/properties/unnamed'} as UISchemaElement;
+    //     /** @ts-ignore */
+    //     const clone = cloneToolWithSchema(findMatchingTool({}, tool.schema?.items, uischema), tool.schema?.items, uischema)
+    //     tools.push(clone);
+    // }
+    // else {
+    //     console.log("HIERER");
+    // }
 
 
 

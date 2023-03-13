@@ -3,7 +3,10 @@
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
-        <b>{{ tool.propertyName }}:</b> {{ CombinatorTool.getKeyword(tool.schema) }}
+        <template v-if="!isInlineType">
+          <b>{{ tool.propertyName }}:</b>
+        </template>
+        {{ CombinatorTool.getKeyword(tool.schema) }}
       </template>
     </ToolIcon>
 
@@ -87,6 +90,7 @@ const props = defineProps({
   index: Number, //for deleting correct element in list
 
   isDragging: Boolean, //needed in flexarea
+  isInlineType: Boolean, //from arrayTool
 })
 
 const emit = defineEmits(['deleteByIndex']);
