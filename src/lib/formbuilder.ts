@@ -74,7 +74,7 @@ export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout|U
     if(undefined === schema) {
         throw "schema is undefined"
     }
-    if(undefined === uischema) {
+    if(undefined === uischema || null === uischema) {
         throw "uischema is undefined"
     }
 

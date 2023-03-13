@@ -57,7 +57,7 @@
 <script setup>
 import {computed, ref, watch} from 'vue'
 import {JsonForms} from "@jsonforms/vue";
-import {createAjv, generateDefaultUISchema} from "@jsonforms/core";
+import {createAjv, generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import SchemaCode from './SchemaCode.vue'
 import {useJsonforms} from "../src";
 import {getExamples} from "@jsonforms/examples/src";
@@ -84,6 +84,10 @@ const jsonFormRenderes = Object.freeze([
 
 const jsonForms = computed(() => {
   const exampleData = getExamples().find(item => item.name === example.value);
+
+  if (!exampleData?.schema) {
+    exampleData.schema = generateJsonSchema({});
+  }
 
   if (!exampleData?.uischema) {
     exampleData.uischema = generateDefaultUISchema(exampleData.schema)

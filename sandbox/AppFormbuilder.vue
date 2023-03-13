@@ -94,6 +94,10 @@ const jsonForms = computed(() => {
     exampleData = getExamples().find(item => item.name===example.value) as any;
 
     if(exampleData) {
+      if (!exampleData?.schema) {
+        exampleData.schema = generateJsonSchema({});
+      }
+
       if(exampleData?.uischema && schemaReadOnly.value) {
         exampleData.uischema = {};
       }
