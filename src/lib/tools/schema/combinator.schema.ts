@@ -10,7 +10,12 @@ export const schema = {
         keyword: {
             type: "string",
             enum: ['oneOf', 'anyOf', 'allOf'],
-        }
+        },
+
+        //:TODO add enum
+        type: {
+            type: "string"
+        },
     },
 } as JsonSchema
 
@@ -33,6 +38,10 @@ export const uischema = {
                 },
                 {
                     "scope": "#/properties/keyword",
+                    "type": "Control"
+                },
+                {
+                    "scope": "#/properties/type",
                     "type": "Control"
                 },
             ]

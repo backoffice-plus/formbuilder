@@ -35,7 +35,8 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         return {
             propertyName: this.propertyName,
             keyword: CombinatorTool.getKeyword(this.schema),
-            options: this.uischema?.options ?? {}
+            options: this.uischema?.options ?? {},
+            type: this.schema?.type,
         } as any;
     }
 
@@ -55,6 +56,8 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         if(!keyword && !keywordOld) {
             this.schema['anyOf'] = []
         }
+
+        this.schema.type = data?.type;
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {

@@ -229,6 +229,7 @@ export const createCombinatorSchema = (tool: ToolInterface, keyword: string): Js
     }
 
     return {
+        ...tool.schema,
         [keyword]: schema,
     };
 };
