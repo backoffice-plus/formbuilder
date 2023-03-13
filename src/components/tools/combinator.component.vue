@@ -1,5 +1,5 @@
 <template>
-  <div class="combinatorTool">
+  <div class="combinatorTool" :class="['rootItem', {isRoot:isRoot}]">
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
