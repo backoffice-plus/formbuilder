@@ -65,10 +65,12 @@ export const initArrayElements = (tool: ToolInterface): Array<ToolInterface> => 
         console.warn("initArrayElements", "schema.items is not an object");
     }
 
-    const uischema = {type: 'Control', scope: '#/properties/unnamed'} as UISchemaElement;
-    const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema as JsonSchema, uischema), itemSchema as JsonSchema, uischema)
+    if(!_.isEmpty(itemSchema)) {
+        const uischema = {type: 'Control', scope: '#/properties/unnamed'} as UISchemaElement;
+        const clone = cloneToolWithSchema(findMatchingTool({}, itemSchema as JsonSchema, uischema), itemSchema as JsonSchema, uischema)
 
-    tools.push(clone);
+        tools.push(clone);
+    }
 
 
     return tools;
