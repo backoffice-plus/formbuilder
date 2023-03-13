@@ -84,7 +84,6 @@ const props = defineProps({
   isToolbar: Boolean,
   index: Number, //for deleting correct element in list
 
-  isDragging: Boolean, //needed in flexarea
   isInlineType: Boolean, //from arrayTool
 })
 

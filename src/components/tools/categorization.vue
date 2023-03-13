@@ -30,12 +30,12 @@
       </div>
 
       <Vuedraggable
-          :class="['dropArea nestedFlexArea flex-col', {drag:dragTab}]"
+          :class="['dropArea nestedFlexArea flex-col', {drag:showDragClass}]"
           :list="childTools"
           group="formBuilderCategorization"
           item-key="uuid"
-          @start="dragTab = true"
-          @end="dragTab = false"
+          @start="onDrag"
+          @end="onDrag"
           @change="onDropAreaChange"
           v-show="!collapsed"
       >
@@ -45,7 +45,6 @@
 
                        :tool="tool"
                        :isToolbar="false"
-                       :isDragging=isDragging
                        :index="index"
 
                        @deleteByIndex="onDeleteByIndex"
@@ -123,20 +122,19 @@ import {useTools} from "../../composable/tools";
 import {unknownTool} from "../../lib/tools/unknownTool";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
+import {useFormbuilder} from "../../composable/formbuilder";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
   isRoot: Boolean,
   isToolbar: Boolean,
   index: Number, //for deleting correct element in list
-
-  isDragging: Boolean, //needed in flexarea
 })
 
 const emit = defineEmits(['deleteByIndex']);
 
-const drag = ref(false);
-const dragTab = ref(false);
+const {onDrag, toolDragging} = useFormbuilder();
+
 const childTools = ref([]);
 const childComponents = ref({});
 const tabs = ref([]);
@@ -213,4 +211,10 @@ const onDelete = () => {
         }
       });
 };
+
+const showDragClass = computed(() => {
+  const isCategory = 'Category' === toolDragging.value?.uischema?.type;
+  return isCategory
+})
+
 </script>

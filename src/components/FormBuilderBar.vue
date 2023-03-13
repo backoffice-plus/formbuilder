@@ -101,13 +101,15 @@ const props = defineProps(
     }
 );
 
-const {builder, schemaReadOnly} = useFormbuilder();
+const {builder, schemaReadOnly, toolDragging} = useFormbuilder();
 
 const emits = defineEmits(['drag']);
 
 const drag = ref(false);
+const currentTool = ref();
 
 const onDrag = (drag) => {
+  toolDragging.value = drag ? currentTool.value : undefined;
   emits('drag', drag);
 };
 
@@ -120,6 +122,9 @@ const onClone = (tool) => {
 
     return tool;
   }
+
+  currentTool.value = tool;
+
   //return props.schemaReadOnly ? tool : cloneEmptyTool(tool);
   return cloneEmptyTool(tool)
 }

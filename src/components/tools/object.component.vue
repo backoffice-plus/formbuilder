@@ -25,12 +25,12 @@
 <!--        </div>-->
 
         <Vuedraggable
-            :class="['dropArea nestedFlexArea flex-col', {drag:dragSchema}]"
+            :class="['dropArea nestedFlexArea flex-col', {drag:showDragClass}]"
             :list="childTools"
-            :group="{name:'formBuilderSchema', pull: true, put: groupPut}"
+            :group="{name:'formBuilder', pull: true, put: groupPut}"
             item-key="uuid"
-            @start="dragSchema = true"
-            @end="dragSchema = false"
+            @start="onDrag"
+            @end="onDrag"
             @change="onDropAreaChange"
             v-show="!collapsed"
         >
@@ -40,7 +40,6 @@
 
                          :tool="tool"
                          :isToolbar="false"
-                         :isDragging=isDragging
                          :index="index"
 
                          @deleteByIndex="onDeleteByIndex"
@@ -79,7 +78,7 @@ import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 
 import {Vuedraggable} from '../../index'
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
 import {useTools} from "../../composable/tools";
 import {cloneEmptyTool} from "../../lib/formbuilder";
@@ -88,6 +87,7 @@ import {useJsonforms} from "../../composable/jsonforms";
 import _ from "lodash";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
+import {useFormbuilder} from "../../composable/formbuilder";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -95,14 +95,13 @@ const props = defineProps({
   isToolbar: Boolean,
   index: Number, //for deleting correct element in list
 
-  isDragging: Boolean, //needed in flexarea
   isInlineType: Boolean, //from arrayTool
 })
 
 const emit = defineEmits(['deleteByIndex']);
 
-const drag = ref(false);
-const dragSchema = ref(false);
+const {onDrag, toolDragging} = useFormbuilder();
+
 const childTools = ref([]);
 const childComponents = ref({});
 const collapsed = ref(false);
@@ -165,5 +164,10 @@ const onDelete = () => {
         }
       });
 };
+
+const showDragClass = computed(() => {
+  const isControl = 'Control' === toolDragging.value?.uischema?.type;
+  return isControl;
+})
 
 </script>

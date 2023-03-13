@@ -36,8 +36,6 @@ const props = defineProps({
   tool: Object,//ToolInterface,
   isToolbar: Boolean,
   index: Number, //for deleting correct element in list
-
-  isDragging: Boolean, //needed in flexarea
 })
 
 let constValue = props.tool.schema.const;

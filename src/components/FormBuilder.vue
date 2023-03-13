@@ -40,7 +40,6 @@
       <component :is="currentBaseTool.importer()"
                  :tool="currentBaseTool"
                  :isRoot="true"
-                 :isDragging="!!drag"
                  class="my-4"
                  :key="currentBaseTool.propertyName"
       />

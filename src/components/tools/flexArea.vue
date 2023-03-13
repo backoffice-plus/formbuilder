@@ -14,12 +14,12 @@
         @see http://sortablejs.github.io/Sortable/#thresholds
       -->
       <Vuedraggable
-          :class="['dropArea nestedFlexArea', tool.uischema.type, {drag:isDragging||drag}]"
+          :class="['dropArea nestedFlexArea', tool.uischema.type, {drag:showDragClass}]"
           :list="childTools"
           group="formBuilder"
           item-key="uuid"
-          @start="drag = true"
-          @end="drag = false"
+          @start="onDrag"
+          @end="onDrag"
           @change="onDropAreaChange"
 
           :swapThreshold=".7"
@@ -34,7 +34,6 @@
 
                        :tool="tool"
                        :isToolbar="false"
-                       :isDragging=!!(isDragging||drag)
                        :index="index"
 
                        @deleteByIndex="onDeleteByIndex"
@@ -145,19 +144,19 @@ import {Vuedraggable} from '../../index'
 import {ref, computed, onMounted, unref, toRaw} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
+import {useFormbuilder} from "../../composable/formbuilder";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
   isRoot: Boolean,
   isToolbar: Boolean,
   index: Number, //for deleting correct element in list
-
-  isDragging: Boolean, //needed in flexarea
 })
 
 const emit = defineEmits(['deleteByIndex']);
 
-const drag = ref(false);
+const {onDrag, toolDragging} = useFormbuilder();
+
 const childTools = ref([]);
 const childComponents = ref({});
 const collapsed = ref(false);
@@ -208,6 +207,12 @@ const onDelete = () => {
         }
       });
 };
+
+const showDragClass = computed(() => {
+  const isCategory = 'Category' === toolDragging.value?.uischema?.type;
+
+  return !isCategory && !!toolDragging.value;
+})
 
 //defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComponents })
 
