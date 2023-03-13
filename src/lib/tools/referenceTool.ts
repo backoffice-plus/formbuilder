@@ -18,6 +18,11 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
             (uischema, schema) => undefined !== schema?.$ref
         )
     )
+    constructor(uischemaType: string = 'Control') {
+        super(uischemaType);
+
+        this.schema.$ref ??= '';
+    }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
         const data = {} as any;
@@ -43,11 +48,12 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
         const definitionResolver = (ref: URI) => {
             if ('referenceTool.definitions' === String(ref)) {
                 const {schema: s} = useJsonforms();
-                const definitionPaths = Object.keys(s.value?.definitions ?? []).map(key => '#/definitions/' + key);
+                const definitionPaths = s.value?.definitions && Object.keys(s.value?.definitions).map(key => '#/definitions/' + key);
+
                 return {
                     type: 'string',
                     title: 'Select',
-                    enum: definitionPaths
+                    enum: definitionPaths ?? ['']
                 } as JsonSchema
             }
             return undefined;

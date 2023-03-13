@@ -5,7 +5,7 @@
       <template v-slot:droparea>
         <b>{{ tool.propertyName }}:</b> Array
         <span v-if="getFirstChildItemsType"> of {{ getFirstChildItemsType }}</span>
-        <span v-else-if="isArrayOfRef"> of Refs</span>
+        <span v-else-if="isArrayOfRef"> of Ref</span>
         <span v-else-if="isArrayOfCombinator"> of {{ isArrayOfCombinator }}</span>
       </template>
 
@@ -123,9 +123,9 @@ const showAddItem = computed(() => {
     return true;
   }
   //array of refs
-  if(isArrayOfRef.value) {
-    return true;
-  }
+  // if(isArrayOfRef.value) {
+  //   return true;
+  // }
   //show only if it has no childs
   return !getFirstChild.value
 });
@@ -162,13 +162,10 @@ const addItem = (initSchema = undefined) => {
   const {schema} = useJsonforms();
   const {findMatchingTool} = useTools();
 
-  console.log("initSchema",initSchema)
   initSchema = initSchema ?? {type:'string'};
-  if(isArrayOfRef.value) {
-    initSchema = {$ref:'#'}
-  }
-
-  console.log("initSchema",initSchema);
+  // if(isArrayOfRef.value) {
+  //   initSchema = {$ref:'#'}
+  // }
 
   const tool = cloneEmptyTool(findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
 
@@ -188,9 +185,9 @@ const groupPut = (from, to, node, dragEvent) => {
   //const isInlineType = scalarTypes.includes(props.tool?.schema?.items?.type)
   const hasOneItem = from.el.children.length > 0;
 
-  if(isArrayOfRef.value && isRefTool) {
-    return true;
-  }
+  // if(isArrayOfRef.value && isRefTool) {
+  //   return true;
+  // }
 
   const childLayoutTools = childTools.value.filter(tool => 'Control' !== tool.uischema.type);
   const hasOneLayoutTool = childLayoutTools.length>=1;
@@ -225,9 +222,9 @@ const showDragClass = computed(() => {
   const isControl = 'Control' === toolDragging.value?.uischema?.type;
   const isRefTool = toolDragging.value instanceof ReferenceTool;
 
-  if(isArrayOfRef.value && isRefTool) {
-    return true;
-  }
+  // if(isArrayOfRef.value && isRefTool) {
+  //   return true;
+  // }
 
   if(true === isInlineType.value) {
     return false;
