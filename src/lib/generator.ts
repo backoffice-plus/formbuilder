@@ -41,13 +41,13 @@ export const generateSchemaForUiSchema = (tool: ToolInterface, rootSchema: JsonS
             setItemSchemaToSchema(tool, rootSchema);
         }
     }
-    else if ('object' === schema?.type) {
-        //const schemasToPush = createTypeObjectSchema(tool);
-        const properties = {
-            [tool.propertyName]:  generateSchemaByTool(tool),
-        }
-        _.merge(rootSchema, {properties: properties, type: 'object'})
-    }
+    // else if ('object' === schema?.type) {
+    //     //const schemasToPush = createTypeObjectSchema(tool);
+    //     const properties = {
+    //         [tool.propertyName]:  generateSchemaByTool(tool),
+    //     }
+    //     _.merge(rootSchema, {properties: properties, type: 'object'})
+    // }
     // else if (undefined !== schema?.allOf || undefined !== schema?.anyOf || undefined !== schema?.oneOf) {
     //     tool.schema = createCombinatorSchema(tool);
     //     setItemSchemaToSchema(tool, rootSchema);
@@ -249,7 +249,7 @@ export const setRequiredToSchema = (propertyName: string, schema: JsonSchema, is
 }
 export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchema): void => {
 
-    const subpaths = getAllSubpaths(tool.propertyName, 1);
+    const subpaths = getAllSubpaths(tool.propertyName, 0);
 
     //create type=object in subpaths if not exists
     subpaths.forEach((subProp: string) => {
