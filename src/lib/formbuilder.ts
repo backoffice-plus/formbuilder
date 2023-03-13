@@ -95,6 +95,8 @@ export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout|U
         if(isScoped) {
             //not working well!!!
             if ('#' === uischema?.scope) {
+                console.error("scope=# is not supported")
+                return unknownTool;
                 const props = schema.properties as any;
                 const propKeys = Object.keys(props);
                 itemSchema = propKeys[0] && props[propKeys[0]] as any
