@@ -321,9 +321,12 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema):
 
         generateSchemaForUiSchema(tool, rootSchema);
     } else {
-        created.elements = tool.childs?.map((t: ToolInterface) => {
-            return createJsonUiSchema(t, rootSchema)
-        }) ?? [];
+        //:INFO some tools dont have elements (LabelTool)
+        if(tool.childs.length) {
+            created.elements = tool.childs?.map((t: ToolInterface) => {
+                return createJsonUiSchema(t, rootSchema)
+            }) ?? [];
+        }
     }
 
     return created;
