@@ -77,7 +77,7 @@ import Ajv, { ValidateFunction } from 'ajv';
 import {startCase} from "lodash";
 import {useStyles} from "@jsonforms/vue-vanilla";
 import merge from "lodash/merge";
-import {defaultStyles} from "../utils/composition";
+import {defaultStyles} from "../vue3/utils";
 
 /**
  * https://github.com/eclipsesource/jsonforms-vuetify-renderers/blob/main/vue2-vuetify/src/complex/components/AdditionalProperties.vue

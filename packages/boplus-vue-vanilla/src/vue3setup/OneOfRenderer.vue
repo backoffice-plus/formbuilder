@@ -51,8 +51,8 @@ import type {ControlElement} from '@jsonforms/core';
 import {createAjv, createCombinatorRenderInfos, createDefaultValue} from '@jsonforms/core';
 import {DispatchRenderer, rendererProps, useJsonFormsOneOfControl} from '@jsonforms/vue';
 import {ControlWrapper, useVanillaControl} from "@jsonforms/vue-vanilla";
-import CompinatorProperties from "../CompinatorProperties.vue";
-import {useBoPlusVanillaControl} from "../../utils/composition";
+import CompinatorProperties from "../vue3/components/CombinatorProperties.vue";
+import {useBoPlusVanillaControl} from "../vue3/utils";
 
 
 /**
