@@ -3,8 +3,8 @@
   <div class="modal">
     <div class="modalBg">
       <div class="centerItem">
-        <div class="panel">
-          <ModalContent :tool="tool" :jsonFormsRenderers="jsonFormsRenderers" @change="data=>emit('change', data)" ref="modal"/>
+        <div class="panel" ref="modal">
+          <ModalContent :tool="tool" :jsonFormsRenderers="jsonFormsRenderers" @change="data=>emit('change', data)"/>
         </div>
       </div>
     </div>
@@ -32,8 +32,11 @@
 
 .modal > .modalBg > .centerItem .panel {
   background-color: var(--modal);
+
+  min-height: 50vh;
+
   @apply
-  w-full max-w-md
+  container max-w-screen-sm
 
   overflow-hidden
 
