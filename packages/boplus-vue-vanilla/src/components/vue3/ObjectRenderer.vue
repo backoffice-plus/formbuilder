@@ -38,7 +38,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import isObject from 'lodash/isObject';
 import { defineComponent } from 'vue';
-import {useNested} from "../../utils/composition"
+import {useNested} from "../../utils"
 import {useVanillaControl} from "@jsonforms/vue-vanilla";
 //import { AdditionalProperties } from './components';
 

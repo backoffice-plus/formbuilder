@@ -1,7 +1,7 @@
 import CategorizationRenderer from "./components/CategorizationRenderer.vue";
 import EnumArrayRenderer from "./components/EnumArrayRenderer.vue";
-import ArrayControlRenderer from "./components/ArrayControlRenderer.vue";
-import ArrayLayoutRenderer from "./components/ArrayLayoutRenderer.vue";
+//import ArrayControlRenderer from "./components/ArrayControlRenderer.vue";
+//import ArrayLayoutRenderer from "./components/ArrayLayoutRenderer.vue";
 import BooleanToggleControlRenderer from "./components/BooleanToggleControlRenderer.vue";
 import RadioGroupControlRenderer from "./components/RadioGroupControlRenderer.vue";
 import SliderControlRenderer from "./components/SliderControlRenderer.vue";
@@ -83,20 +83,20 @@ export const boplusVueVanillaRenderers = [
     ...vueRenderer
 ];
 
-boplusVueVanillaRenderers.push({
-    renderer: ArrayControlRenderer,
-    tester: rankWith(4, or(isObjectArrayControl, isPrimitiveArrayControl))
-});
+// boplusVueVanillaRenderers.push({
+//     renderer: ArrayControlRenderer,
+//     tester: rankWith(4, or(isObjectArrayControl, isPrimitiveArrayControl))
+// });
 
-boplusVueVanillaRenderers.push({
-    renderer: ArrayLayoutRenderer,
-    tester: rankWith(3, schemaTypeIs('array'))
-});
-
-boplusVueVanillaRenderers.push({
-    renderer: ArrayLayoutRenderer,
-    tester: rankWith(5, or(isObjectArrayWithNesting, and(uiTypeIs('ListWithDetail'), isObjectArray)))
-});
+// boplusVueVanillaRenderers.push({
+//     renderer: ArrayLayoutRenderer,
+//     tester: rankWith(3, schemaTypeIs('array'))
+// });
+//
+// boplusVueVanillaRenderers.push({
+//     renderer: ArrayLayoutRenderer,
+//     tester: rankWith(5, or(isObjectArrayWithNesting, and(uiTypeIs('ListWithDetail'), isObjectArray)))
+// });
 
 boplusVueVanillaRenderers.push({
     renderer: AutocompleteRenderer,

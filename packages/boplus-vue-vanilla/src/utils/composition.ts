@@ -1,6 +1,9 @@
-import {inject, provide} from 'vue';
+import {computed, inject, provide} from 'vue';
+import type {ComputedRef} from 'vue';
 import {useVanillaControl} from "@jsonforms/vue-vanilla/src/util/composition";
-import merge from "lodash/merge";
+import {composePaths, computeLabel, getFirstPrimitiveProp, Resolve} from "@jsonforms/core";
+import _ from "lodash";
+import {useStyles} from "@jsonforms/vue-vanilla";
 
 export const defaultStyles: BopStyles = {
     oneOf: {
@@ -31,6 +34,31 @@ export interface NestedInfo {
     parentElement?: 'array' | 'object';
 }
 
+export const useControlAppliedOptions = <I extends { control: any }>(
+    input: I
+) => {
+    return computed(() =>
+        _.merge(
+            {},
+            JSON.parse(JSON.stringify(input.control.value.config)), //deepmerge
+            JSON.parse(JSON.stringify(input.control.value.uischema?.options ?? [])), //deepmerge
+        )
+    )
+};
+
+export const useComputedLabel = <I extends { control: any }>(
+    input: I,
+    appliedOptions: ComputedRef<any>
+) => {
+    return computed((): string => {
+        return computeLabel(
+            input.control.value.label,
+            input.control.value.required,
+            !!appliedOptions.value?.hideRequiredAsterisk
+        );
+    });
+};
+
 export const useNested = (element: false | 'array' | 'object'): NestedInfo => {
     const nestedInfo = inject<NestedInfo>('jsonforms.nestedInfo', {level: 0});
     if (element) {
@@ -50,6 +78,48 @@ export const useBoPlusVanillaControl  = <I extends { control: any; handleChange:
 
     return {
         ...control,
-        styles: merge(control.styles, defaultStyles),
+        styles: _.merge(control.styles, defaultStyles),
     }
 }
+
+/**
+ * Adds styles, appliedOptions and childUiSchema
+ */
+export const useBoPlusArrayControl = <I extends { control: any }>(
+    input: I
+) => {
+    const appliedOptions = useControlAppliedOptions(input);
+
+    const computedLabel = useComputedLabel(input, appliedOptions);
+
+    const childLabelForIndex = (index: number | null) => {
+        if (index === null) {
+            return '';
+        }
+        const childLabelProp =
+            input.control.value.uischema.options?.childLabelProp ??
+            getFirstPrimitiveProp(input.control.value.schema);
+        if (!childLabelProp) {
+            return `${index}`;
+        }
+        const labelValue = Resolve.data(
+            input.control.value.data,
+            composePaths(`${index}`, childLabelProp)
+        );
+        if (
+            labelValue === undefined ||
+            labelValue === null ||
+            Number.isNaN(labelValue)
+        ) {
+            return '';
+        }
+        return `${labelValue}`;
+    };
+    return {
+        ...input,
+        styles: useStyles(input.control.value.uischema),
+        appliedOptions,
+        childLabelForIndex,
+        computedLabel,
+    };
+};
