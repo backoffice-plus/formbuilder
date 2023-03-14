@@ -212,7 +212,9 @@ const renderer = defineComponent({
 export default renderer;
 export const entry = {
   renderer: renderer,
-  tester: rankWith(3, isOneOfControl),
+
+  //rank is 3, but must be lower than in EnumOneOfControlRenderer
+  tester: rankWith(1, isOneOfControl),
 };
 
 
