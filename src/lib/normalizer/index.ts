@@ -79,6 +79,13 @@ export const guessInputType = (schema:JsonSchema, uischema:UISchemaElement) => {
             if(type && byType[type]) {
                 inputType = byType[type];
             }
+            break;
+
+        case 'array':
+            if(schema.uniqueItems && (schema?.items?.enum || schema?.items?.oneOf)) {
+                inputType = 'select'
+            }
+            break;
     }
 
     return inputType;

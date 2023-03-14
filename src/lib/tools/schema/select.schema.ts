@@ -113,6 +113,10 @@ export const schema = {
                 {$ref:'#/definitions/selectAsOneOf'},
             ]
         },
+
+        asMultiSelect: {
+            type: 'boolean',
+        }
     },
     required: [
         "propertyName"
@@ -246,6 +250,10 @@ export const uischema = {
                 {
                     type: "VerticalLayout",
                     elements: [
+                        {
+                            scope: "#/properties/asMultiSelect",
+                            type: "Control",
+                        },
                         {
                             scope: "#/properties/enumOrOneOf",
                             type: "Control",

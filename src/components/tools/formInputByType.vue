@@ -20,9 +20,8 @@
       <div>
 
         <template v-if="'select' === inputType">
-          <select>
-            <option v-for="item in schema.enum" v-if="schema.enum">{{ item }}</option>
-            <option v-for="item in schema.oneOf" v-else-if="schema.oneOf">{{ item }}</option>
+          <select v-if="selectItems">
+            <option v-for="item in selectItems">{{ item }}</option>
           </select>
         </template>
 
@@ -94,6 +93,11 @@ const emit = defineEmits(['deleteByIndex']);
 const schema = props.tool.schema;
 const uischema = props.tool.uischema;
 const inputType = computed(() => guessInputType(props.tool.schema, props.tool.uischema));
+
+const selectItems = computed(() => {
+  const enumOrOneOf = props.tool.schema?.items ?? props.tool.schema;
+  return enumOrOneOf?.enum ?? enumOrOneOf?.oneOf.map(item => item?.title ?? item?.const ?? '??');
+});
 
 const onDelete = () => {
   Promise.resolve(window.confirm("Wirklich löschen?"))

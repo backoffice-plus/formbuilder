@@ -14,7 +14,7 @@ export const generateSchemaByTool = (tool: ToolInterface): JsonSchema => {
         return createTypeObjectSchemaOnly(tool);
     }
 
-    else if ('array' === tool.schema?.type) {
+    else if ('array' === tool.schema?.type && tool.childs?.length) {
         return createTypeArraySchemaOnly(tool);
     }
 
