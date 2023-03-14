@@ -9,7 +9,7 @@ import AutocompleteRenderer from "./components/AutocompleteRenderer.vue";
 import {constEntry} from "./components/ConstRenderer.vue";
 import {fileEntry} from "./components/FileRenderer.vue";
 
-import vueRenderer from "./components/vue3";
+import vueRenderer from "./vue3";
 
 import {
     and,

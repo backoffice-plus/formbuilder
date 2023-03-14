@@ -50,7 +50,7 @@ import {defineComponent, ref} from 'vue';
 import isEmpty from 'lodash/isEmpty';
 
 import CombinatorProperties from "./components/CombinatorProperties.vue";
-import {useBoPlusVanillaControl} from "../../utils/composition";
+import {useBoPlusVanillaControl} from "./utils";
 
 import type {ControlElement} from '@jsonforms/core';
 import {createCombinatorRenderInfos,  createDefaultValue,  isOneOfControl,  rankWith} from '@jsonforms/core';

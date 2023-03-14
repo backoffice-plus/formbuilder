@@ -103,7 +103,7 @@ import {
   useNested,
   // useTranslator,
   i18nDefaultMessages,
-} from '../../utils';
+} from './utils';
 //import { ValidationIcon, ValidationBadge } from '../controls/components/index';
 import type { ErrorObject } from 'ajv';
 import merge from 'lodash/merge';

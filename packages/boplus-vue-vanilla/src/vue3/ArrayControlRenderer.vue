@@ -132,7 +132,7 @@ import type {
   RendererProps,
 } from '@jsonforms/vue';
 
-import { useBoPlusArrayControl } from '../../utils';
+import { useBoPlusArrayControl } from './utils';
 
 
 /**
