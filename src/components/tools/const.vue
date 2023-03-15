@@ -4,6 +4,7 @@
 
       <template v-slot:droparea>
         <label class="font-bold">{{ tool.propertyName }}</label>
+        <span>{{ tool.uischema.label ?? tool.schema.title }}</span>
         {{ constValue }}
       </template>
 
@@ -31,6 +32,7 @@
 <script setup>
 import Actions from "./utils/Actions.vue";
 import ToolIcon from "./utils/ToolIcon.vue";
+import {computed} from "vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -38,9 +40,9 @@ const props = defineProps({
   index: Number, //for deleting correct element in list
 })
 
-let constValue = props.tool.schema.const;
-if(null === constValue) {
-  constValue = 'null';
+let constValue = computed(() => props.tool.schema.const);
+if(null === constValue.value) {
+  constValue.value = 'null';
 }
 
 const emit = defineEmits(['deleteByIndex']);

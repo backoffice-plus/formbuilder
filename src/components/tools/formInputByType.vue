@@ -8,7 +8,7 @@
         </template>
         <template v-else>
           <label class="font-bold">{{ tool.propertyName }}</label>
-          {{ tool.uischema?.label }}
+          {{ tool.uischema?.label ?? tool.schema?.title }}
         </template>
       </template>
     </ToolIcon>
@@ -40,7 +40,7 @@
 
         <template v-else>
           <input :type="'number'" v-if="'number' === inputType" :step="schema.type==='integer' ? 1 : 0.1"/>
-          <input :type="inputType" v-else/>
+          <input :type="inputType" v-else :placeholder="uischema.options?.placeholder"/>
         </template>
 
         <div>{{ schema.description }}</div>

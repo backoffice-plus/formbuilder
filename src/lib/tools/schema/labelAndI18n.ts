@@ -3,17 +3,14 @@ import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {JsonFormsInterface} from "../../models";
 import type {ToolContext} from "../index";
 
-export type schemaKey = 'description';
-export const schemaKeys = ['description'] as Array<schemaKey>;
-export type uischemaKey = 'label' | 'i18n';
-export const uischemaKeys = ['label', 'i18n'] as Array<uischemaKey>;
-export type uischemaOptionKey = 'showUnfocusedDescription';
-export const uischemaOptionKeys = ['showUnfocusedDescription'] as Array<uischemaOptionKey>;
+export const schemaKeys = ['title', 'description'] as Array<'title' | 'description'>;
+export const uischemaKeys = ['label', 'i18n'] as Array<'label' | 'i18n'>;
 
 export const prepareOptionData = (context:ToolContext, schema:JsonSchema, uischema:UISchemaElement|any) : Record<string, any> => {
     const data = {
         _type:uischema.type,
         //_isUischema: 'uischema' === context.builder || !context?.builder,
+        options: {}
     } as Record<string, any>;
 
     schemaKeys.forEach(key => data[key] = schema[key]);
@@ -30,12 +27,15 @@ export const setOptionData = (schema:JsonSchema, uischema:UISchemaElement|any, d
     uischemaKeys.forEach(key => uischema[key] = data.labelAndI18n[key]);
 
     const dataOptions = data?.labelAndI18n?.options;
-    uischemaOptionKeys.forEach(key => {
-        uischema.options[key] = dataOptions && dataOptions[key]
-        if(undefined === uischema.options[key]) {
-            delete uischema.options[key];
+
+    if('showUnfocusedDescription' in dataOptions) {
+        if(true === dataOptions.showUnfocusedDescription) {
+            uischema.options.showUnfocusedDescription = true;
         }
-    });
+        else {
+            uischema.options.showUnfocusedDescription && delete uischema.options.showUnfocusedDescription;
+        }
+    }
 }
 
 export const schema = {
@@ -49,6 +49,10 @@ export const schema = {
                 },
                 label: {
                     type: "string",
+                },
+                title: {
+                    type: "string",
+                    description: "like label, but stored at schema",
                 },
                 description: {
                     type: "string",
@@ -89,8 +93,21 @@ export const uischema = {
                     // }
                 },
                 {
+                    scope: "#/properties/labelAndI18n/properties/title",
+                    type: "Control",
+                },
+            ]
+        },
+
+        {
+            type: "HorizontalLayout",
+            elements: [
+                {
                     scope: "#/properties/labelAndI18n/properties/description",
                     type: "Control",
+                    options: {
+                        multi: true,
+                    },
                     rule: {
                         effect: "HIDE",
                         condition: {
@@ -108,24 +125,23 @@ export const uischema = {
                         }
                     },
                 },
+                {
+                    scope: "#/properties/labelAndI18n/properties/options/properties/showUnfocusedDescription",
+                    type: "Control",
+                    rule: {
+                        effect: 'SHOW',
+                        condition: {
+                            scope: "#/properties/labelAndI18n/properties/_type",
+                            schema: { const:'Control' }
+                        }
+                    }
+                },
+
             ]
         },
         {
             scope: "#/properties/labelAndI18n/properties/i18n",
             type: "Control"
-        },
-        {
-            scope: "#/properties/labelAndI18n/properties/options/properties/showUnfocusedDescription",
-            type: "Control",
-            rule: {
-                effect: 'SHOW',
-                condition: {
-                    scope: "#/properties/labelAndI18n/properties/_type",
-                    schema: {
-                        const:'Control'
-                    }
-                }
-            }
         },
         {
             scope: "#/properties/labelAndI18n/properties/_type",
@@ -142,8 +158,15 @@ export const uischemaDescriptionOnly = {
     type: "VerticalLayout",
     elements: [
         {
-            scope: "#/properties/labelAndI18n/properties/description",
+            scope: "#/properties/labelAndI18n/properties/title",
             type: "Control"
+        },
+        {
+            scope: "#/properties/labelAndI18n/properties/description",
+            type: "Control",
+            options: {
+                multi:true
+            }
         },
     ]
 };

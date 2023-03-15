@@ -122,22 +122,6 @@ export const uischema = {
                         },
 
                         {
-                            type: "VerticalLayout",
-                            elements: [
-                                {
-                                    $ref:'labelAndI18n.descriptionOnly.uischema'
-                                },
-                            ],
-                            rule: {
-                                effect: "SHOW",
-                                condition:   {
-                                    scope: "#/properties/_isUischema",
-                                    schema: {const: false}
-                                },
-                            },
-                        },
-
-                        {
                             type: "Group",
                             label: "Form Type",
                             elements: [
@@ -262,16 +246,31 @@ export const uischema = {
                             label: "Label & Description",
                             elements: [
                                 {
-                                    $ref:'labelAndI18n.uischema'
+                                    type:'VerticalLayout',
+                                    elements: [{ $ref:'labelAndI18n.uischema'}],
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition: {
+                                            scope: "#/properties/_isUischema",
+                                            schema: {const: true}
+                                        },
+                                    },
                                 },
-                            ],
-                            rule: {
-                                effect: "SHOW",
-                                condition:   {
-                                    scope: "#/properties/_isUischema",
-                                    schema: {const: true}
+
+                                {
+                                    type:'VerticalLayout',
+                                    elements: [{ $ref:'labelAndI18n.descriptionOnly.uischema' }],
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition: {
+                                            scope: "#/properties/_isUischema",
+                                            schema: {const: false}
+                                        },
+                                    },
                                 },
-                            },
+
+
+                            ]
                         },
                         {
                             type: "HorizontalLayout",

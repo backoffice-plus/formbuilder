@@ -6,7 +6,7 @@ import BooleanToggleControlRenderer from "./components/BooleanToggleControlRende
 import RadioGroupControlRenderer from "./components/RadioGroupControlRenderer.vue";
 import SliderControlRenderer from "./components/SliderControlRenderer.vue";
 import AutocompleteRenderer from "./components/AutocompleteRenderer.vue";
-import {constEntry} from "./components/ConstRenderer.vue";
+//import {constEntry} from "./components/ConstRenderer.vue";
 import {fileEntry} from "./components/FileRenderer.vue";
 
 import vueRenderer from "./vue3";
@@ -76,7 +76,6 @@ export const boplusVueVanillaRenderers = [
     booleanToggleControlRendererEntry,
     radioGroupControlRendererEntry,
     sliderControlRendererEntry,
-    constEntry,
     fileEntry,
 
     //from package
