@@ -4,7 +4,7 @@ import {AbstractTool} from "./AbstractTool";
 import type {JsonFormsInterface, ToolInterface} from "../../index";
 import {resolveSchema} from "../../index";
 import labelComp from "../../components/tools/label.vue";
-import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./schema/toolLabel";
+import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./schema/label.schema";
 import type {ToolContext} from "./index";
 import {prepareOptionDataStyles, setOptionDataStyles} from "./schema/control.schema";
 

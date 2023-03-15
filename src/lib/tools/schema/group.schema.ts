@@ -1,16 +1,16 @@
-import type {Categorization, JsonSchema} from "@jsonforms/core";
+import type {Categorization, Category, JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './rule'
+export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './subschemas/labelAndI18n'
+export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './subschemas/rule'
 
 export const schema = {
     type: 'object',
     properties: {
-        uischemaType: {
-            type:'string',
-            enum: ['VerticalLayout','HorizontalLayout']
-        },
         rule: {
             $ref:'rule.schema#/properties/rule'
+        },
+        labelAndI18n: {
+            $ref:'labelAndI18n.schema#/properties/labelAndI18n'
         },
         styles: {
             $ref:'styles.schema#/properties/styles'
@@ -22,28 +22,19 @@ export const uischema = {
 
     "type": "Categorization",
     "elements": [
-
-
-        /**
-         * Tab - Base
-         */
         {
-            type: "Category",
-            label: "Validation",
-            elements: [
+            "type": "Category",
+            "label": "Base",
+            "elements": [
                 {
-                     scope: "#/properties/uischemaType",
-                     type: "Control",
+                    "type": "VerticalLayout",
+                    "elements": [
+                        {
+                            $ref:'labelAndI18n.uischema'
+                        },
+                    ],
                 }
-            ],
-            rule: {
-                //effect: "DISABLE",:TODO fix it CategorizationRenderer
-                effect: "HIDE",
-                condition: {
-                    scope: "#/properties/type",
-                    schema: { enum: ["boolean"] }
-                }
-            }
+            ]
         },
 
 
@@ -60,9 +51,6 @@ export const uischema = {
             ]
         },
 
-        /**
-         * Tab - Rule
-         */
         {
             "type": "Category",
             "label": "Rule",

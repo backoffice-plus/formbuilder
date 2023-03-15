@@ -13,14 +13,14 @@ import {
 } from './normalizer';
 import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
-import {jsonForms as toolOptionsSchemaValidation} from "./tools/schema/validation";
-import {jsonForms as toolOptionsSchemaRule} from "./tools/schema/rule";
+import {jsonForms as toolOptionsSchemaValidation} from "./tools/schema/subschemas/validation";
+import {jsonForms as toolOptionsSchemaRule} from "./tools/schema/subschemas/rule";
 import {jsonForms as toolOptionsSchemaStyles} from "./tools/schema/subschemas/styles";
 import {
     jsonForms as toolOptionsSchemaLabelAndI18n,
     uischemaDescriptionOnly,
     uischemaNoDescription
-} from "./tools/schema/labelAndI18n";
+} from "./tools/schema/subschemas/labelAndI18n";
 import {Resolver} from "@stoplight/json-ref-resolver";
 import {CombinatorTool} from "./tools/combinatorTool";
 import {ArrayTool} from "./tools/ArrayTool";

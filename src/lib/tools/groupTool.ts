@@ -7,7 +7,7 @@ import {
     setOptionDataLabel,
     setOptionDataRule,
     uischema
-} from "./schema/toolGroup";
+} from "./schema/group.schema";
 import _ from "lodash";
 import {VerticalLayout} from "./layoutTool";
 import {prepareOptionDataStyles, setOptionDataStyles} from "./schema/control.schema";

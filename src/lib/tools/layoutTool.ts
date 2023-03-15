@@ -5,7 +5,7 @@ import {AbstractTool} from "./AbstractTool";
 import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
-import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./schema/toolLayout";
+import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./schema/layout.schema";
 import _ from "lodash";
 import {prepareOptionDataStyles, setOptionDataStyles} from "./schema/control.schema";
 

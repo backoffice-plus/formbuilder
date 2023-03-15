@@ -1,5 +1,5 @@
 import {registerExamples} from "@jsonforms/examples/src/register";
-import {schema, uischema} from "../../../src/lib/tools/schema/rule";
+import {schema, uischema} from "../../../src/lib/tools/schema/subschemas/rule";
 
 export const data = {};
 

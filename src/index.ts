@@ -8,9 +8,9 @@ export {AbstractTool} from "./lib/tools/AbstractTool";
 export type {ToolInterface, ToolContext, JsonFormsInterface} from "./lib/tools";
 export const defaultTools = [...controlTools, ...layoutTools]
 
-export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './lib/tools/schema/rule'
-export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './lib/tools/schema/labelAndI18n'
-export { prepareOptionData as prepareOptionDataValidation, setOptionData as setOptionDataValidation } from './lib/tools/schema/validation'
+export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './lib/tools/schema/subschemas/rule'
+export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './lib/tools/schema/subschemas/labelAndI18n'
+export { prepareOptionData as prepareOptionDataValidation, setOptionData as setOptionDataValidation } from './lib/tools/schema/subschemas/validation'
 
 //components
 export { default as FormBuilder } from './components/FormBuilder.vue';
