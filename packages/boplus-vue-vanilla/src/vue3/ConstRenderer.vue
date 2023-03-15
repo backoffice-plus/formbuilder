@@ -65,7 +65,6 @@ const constRenderer = defineComponent({
     onChecked(e:any) {
       const isChecked = e.target.checked;
       const value = isChecked ? this.constValue : undefined;
-      console.log("onchange", {isChecked,value})
       this.onChange({target: {value: value}});
     }
   }
