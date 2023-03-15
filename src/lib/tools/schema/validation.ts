@@ -48,10 +48,10 @@ export const schema = {
 
                 //string
                 minLength: {
-                    "type": "number"
+                    type: "integer"
                 },
                 maxLength: {
-                    "type": "number"
+                    type: "integer"
                 },
                 pattern: {
                     "type": "string",

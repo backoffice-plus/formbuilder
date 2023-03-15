@@ -327,8 +327,7 @@ export const uischema = {
                 }
             ],
             rule: {
-                //effect: "DISABLE",:TODO fix it CategorizationRenderer
-                effect: "HIDE",
+                effect: "DISABLE",
                 condition: {
                     scope: "#/properties/type",
                     schema: { enum: ["boolean"] }
