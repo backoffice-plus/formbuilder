@@ -1,10 +1,8 @@
 <template>
 
-  <!--  :class="styles.categorization.root" -->
-  <div class="categorization">
+  <div :class="layoutData.styles.categorization.root">
 
-    <!--  :class="styles.categorization.category" -->
-    <div class="tabs">
+    <div :class="layoutData.styles.categorization.category">
 
       <div
           v-for="(item, index) in categories"
@@ -18,9 +16,8 @@
 "i18n": "address",
         -->
 
-        <!--  :class="styles.categorization.selected" -->
         <button
-            :class="{selected:selected===index}"
+            :class="{[layoutData.styles.categorization.selected]:selected===index}"
             :disabled="!item.isEnabled"
         >
           {{ item.element.i18n ?? item.element.label }}
@@ -30,8 +27,7 @@
 
     </div>
 
-    <!--  :class="styles.categorization.panel" -->
-    <div class="panel">
+    <div :class="layoutData.styles.categorization.panel">
 
       <template
           v-for="(item, index) in categories"
@@ -71,10 +67,11 @@ import {rendererProps, useJsonFormsLayout, DispatchRenderer} from '@jsonforms/vu
 import type {RendererProps} from '@jsonforms/vue';
 import {useVanillaLayout} from '@jsonforms/vue-vanilla/src/util';
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
+import {useBoPlusLayout} from "../vue3/utils";
 
 const props = defineProps(rendererProps<Layout>());
 
-const layoutData = useVanillaLayout(useJsonFormsLayout(props)) as any;
+const layoutData = useBoPlusLayout(useJsonFormsLayout(props)) as any;
 const layout = layoutData.layout as Ref<any>;
 
 

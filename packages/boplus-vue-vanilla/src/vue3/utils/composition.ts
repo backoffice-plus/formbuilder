@@ -1,11 +1,17 @@
 import {computed, inject, provide} from 'vue';
 import type {ComputedRef} from 'vue';
-import {useVanillaControl} from "@jsonforms/vue-vanilla/src/util/composition";
+import {useVanillaControl, useVanillaLayout} from "@jsonforms/vue-vanilla/src/util/composition";
 import {composePaths, computeLabel, getFirstPrimitiveProp, Resolve} from "@jsonforms/core";
 import _ from "lodash";
 import {useStyles} from "@jsonforms/vue-vanilla";
 
 export const defaultStyles: BopStyles = {
+    categorization: {
+        root: 'categorization',
+        category: 'tabs',
+        selected: 'selected',
+        panel: 'panel',
+    },
     oneOf: {
         root: 'oneof',
         select: 'oneof-select',
@@ -18,6 +24,12 @@ export const defaultStyles: BopStyles = {
 };
 
 export interface BopStyles {
+    categorization: {
+        root?: string;
+        category?: string;
+        selected?: string;
+        panel?: string;
+    }
     oneOf: {
         root?: string;
         select?: string;
@@ -68,6 +80,16 @@ export const useNested = (element: false | 'array' | 'object'): NestedInfo => {
         });
     }
     return nestedInfo;
+};
+
+export const useBoPlusLayout = <I extends { layout: any }>(input: I) => {
+    const layout = useVanillaLayout(input);
+    const uischemaStyles = input.layout.value.uischema?.options?.styles;
+
+    return {
+        ...layout,
+        styles: _.merge(layout.styles, defaultStyles, uischemaStyles ?? {}),
+    };
 };
 
 export const useBoPlusVanillaControl  = <I extends { control: any; handleChange: any}>(
