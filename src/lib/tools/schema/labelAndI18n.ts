@@ -171,5 +171,30 @@ export const uischemaDescriptionOnly = {
     ]
 };
 
+export const uischemaNoDescription = {
+    type: "VerticalLayout",
+
+    elements: [
+        {
+            type: "HorizontalLayout",
+            elements: [
+                {
+                    scope: "#/properties/labelAndI18n/properties/label",
+                    type: "Control",
+                },
+                {
+                    scope: "#/properties/labelAndI18n/properties/title",
+                    type: "Control",
+                },
+            ]
+        },
+
+        {
+            scope: "#/properties/labelAndI18n/properties/i18n",
+            type: "Control"
+        },
+    ]
+};
+
 export const jsonForms = {schema: schema as JsonSchema, uischema: uischema as UISchemaElement} as JsonFormsInterface;
 

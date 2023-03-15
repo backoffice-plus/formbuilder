@@ -33,6 +33,9 @@ export const uischema = {
         {
             type: 'Control',
             scope: '#/properties/usercolors',
+            options: {
+               elementLabelProp: "username",
+            }
         }
     ]
 };

@@ -98,6 +98,7 @@ export const useBoPlusArrayControl = <I extends { control: any }>(
         }
         const childLabelProp =
             input.control.value.uischema.options?.childLabelProp ??
+            input.control.value.uischema.options?.elementLabelProp ??
             getFirstPrimitiveProp(input.control.value.schema);
         if (!childLabelProp) {
             return `${index}`;

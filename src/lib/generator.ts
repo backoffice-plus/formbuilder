@@ -121,8 +121,8 @@ export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
     })
 
     return {
-       // ...tool.schema,
-       ...addToSchema,
+        ...tool.schema, //must be enabled to get all schema data from tool.optionDataUpdate
+        ...addToSchema,
         type: 'array',
         items: items,
     } as JsonSchema;

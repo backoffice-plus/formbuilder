@@ -77,6 +77,15 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             options.detail.elements = JSON.stringify(options.detail.elements);
         }
 
+        /**
+         * :BUG https://github.com/eclipsesource/jsonforms/issues/1917
+         * @see https://jsonforms.io/docs/uischema/controls/#label-for-array-elements-elementlabelprop
+         * prefer elementLabelProp over childLabelProp
+         */
+        if('childLabelProp' in options) {
+            options.elementLabelProp = options.childLabelProp;
+        }
+
         //:TODO: disable asInlineType if tool has no childs!
 
         const data = {
