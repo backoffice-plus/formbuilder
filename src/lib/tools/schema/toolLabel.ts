@@ -14,6 +14,9 @@ export const schema = {
         rule: {
             $ref:'rule.schema#/properties/rule'
         },
+        styles: {
+            $ref:'styles.schema#/properties/styles'
+        },
     }
 } as JsonSchema;
 
@@ -41,6 +44,24 @@ export const uischema = {
             ]
         },
 
+
+        /**
+         * Tab - Styles
+         */
+        {
+            type: "Category",
+            label: "Styles",
+            elements: [
+                {
+                    $ref:'styles.uischema'
+                },
+            ]
+        },
+
+
+        /**
+         * Tab - Rule
+         */
         {
             "type": "Category",
             "label": "Rule",

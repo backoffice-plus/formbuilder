@@ -12,9 +12,6 @@ export const schema = {
         labelAndI18n: {
             $ref:'labelAndI18n.schema#/properties/labelAndI18n'
         },
-        styles: {
-            $ref:'styles.schema#/properties/styles'
-        },
     }
 } as JsonSchema;
 
@@ -37,19 +34,6 @@ export const uischema = {
             ]
         },
 
-
-        /**
-         * Tab - Styles
-         */
-        {
-            type: "Category",
-            label: "Styles",
-            elements: [
-                {
-                    $ref:'styles.uischema'
-                },
-            ]
-        },
 
         {
             "type": "Category",

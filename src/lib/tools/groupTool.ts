@@ -10,6 +10,7 @@ import {
 } from "./schema/toolGroup";
 import _ from "lodash";
 import {VerticalLayout} from "./layoutTool";
+import {prepareOptionDataStyles, setOptionDataStyles} from "./schema/control.schema";
 
 
 export class GroupTool extends VerticalLayout {
@@ -21,6 +22,7 @@ export class GroupTool extends VerticalLayout {
             data,
             prepareOptionDataLabel(context, this.schema, this.uischema),
             prepareOptionDataRule(context, this.schema, this.uischema),
+            prepareOptionDataStyles(context, this.schema, this.uischema),
         )
         return data;
     }
@@ -30,6 +32,7 @@ export class GroupTool extends VerticalLayout {
 
         setOptionDataLabel(this.schema, this.uischema, data);
         setOptionDataRule(this.schema, this.uischema, data);
+        setOptionDataStyles(this.schema, this.uischema, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {

@@ -7,6 +7,7 @@ import {resolveSchema} from "../formbuilder";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./schema/toolLayout";
 import _ from "lodash";
+import {prepareOptionDataStyles, setOptionDataStyles} from "./schema/control.schema";
 
 export class VerticalLayout extends AbstractTool implements ToolInterface {
 
@@ -27,6 +28,7 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
             options: this.uischema?.options,
             uischemaType: this.uischema.type,
             ...prepareOptionDataRule(context, this.schema, this.uischema),
+            ...prepareOptionDataStyles(context, this.schema, this.uischema),
         } as any;
     }
 
@@ -38,6 +40,7 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
         this.uischema.options = data.options ?? {};
 
         setOptionDataRule(this.schema, this.uischema, data);
+        setOptionDataStyles(this.schema, this.uischema, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {

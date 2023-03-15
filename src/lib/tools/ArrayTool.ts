@@ -7,8 +7,8 @@ import _ from "lodash";
 import {AbstractTool} from "./AbstractTool";
 import {
     prepareOptionDataLabel,
-    prepareOptionDataRule,
-    prepareOptionDataValidation, setOptionDataLabel, setOptionDataRule,
+    prepareOptionDataRule, prepareOptionDataStyles,
+    prepareOptionDataValidation, setOptionDataLabel, setOptionDataRule, setOptionDataStyles,
     setOptionDataValidation
 } from "./schema/control.schema";
 
@@ -102,6 +102,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             prepareOptionDataValidation(context, this.schema, this.uischema),
             prepareOptionDataLabel(context, this.schema, this.uischema),
             prepareOptionDataRule(context, this.schema, this.uischema),
+            prepareOptionDataStyles(context, this.schema, this.uischema),
         )
 
         return data;
@@ -156,6 +157,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         setOptionDataValidation(this.schema, this.uischema, data);
         setOptionDataLabel(this.schema, this.uischema, data);
         setOptionDataRule(this.schema, this.uischema, data);
+        setOptionDataStyles(this.schema, this.uischema, data);
 
         //this.isRequired = data.required;
     }

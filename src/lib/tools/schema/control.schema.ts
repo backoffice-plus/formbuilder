@@ -4,6 +4,7 @@ import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './labelAndI18n'
 export { prepareOptionData as prepareOptionDataValidation, setOptionData as setOptionDataValidation } from './validation'
 export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './rule'
+export { prepareOptionData as prepareOptionDataStyles, setOptionData as setOptionDataStyles } from './subschemas/styles'
 
 export const schema = {
     type: "object",
@@ -36,6 +37,10 @@ export const schema = {
         labelAndI18n: {
             $ref:'labelAndI18n.schema#/properties/labelAndI18n'
         },
+        styles: {
+            $ref:'styles.schema#/properties/styles'
+        },
+
 
         propertyName: {
             type: "string",
@@ -218,7 +223,7 @@ export const uischema = {
                                                     }
                                                 }
                                             }
-                                        }
+                                        },
                                     ],
                                     rule: {
                                         effect: "SHOW",
@@ -335,6 +340,19 @@ export const uischema = {
             }
         },
 
+
+        /**
+         * Tab - Styles
+         */
+        {
+            type: "Category",
+            label: "Styles",
+            elements: [
+                {
+                    $ref:'styles.uischema'
+                },
+            ]
+        },
 
         /**
          * Tab - Rule

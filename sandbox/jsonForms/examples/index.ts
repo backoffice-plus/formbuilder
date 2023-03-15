@@ -19,6 +19,7 @@ import * as anyOfsimple from './anyOfsimple';
 import * as arrayofref from './arrayofref';
 import * as objectAddProps from './object-additional-properties';
 import * as file from './file';
+import * as styles from './styles';
 
 export {
   _default,
@@ -42,4 +43,5 @@ export {
   arrayofref,
   objectAddProps,
   file,
+  styles,
 }

@@ -12,6 +12,7 @@ import {
 } from "./schema/select.schema";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
+import {prepareOptionDataStyles, setOptionDataStyles} from "./schema/control.schema";
 
 
 export class SelectTool extends AbstractTool implements ToolInterface {
@@ -77,6 +78,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
             prepareOptionDataValidation(context, schema, uischema),
             prepareOptionDataLabel(context, schema, uischema),
             prepareOptionDataRule(context, schema, uischema),
+            prepareOptionDataStyles(context, schema, uischema),
         )
 
         const enumOrOneOf = (asMultiSelect ? schema.items : schema) as JsonSchema;
@@ -106,6 +108,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         setOptionDataValidation(schema, uischema, data);
         setOptionDataLabel(schema, uischema, data);
         setOptionDataRule(schema, uischema, data);
+        setOptionDataStyles(schema, uischema, data);
 
         this.schema.uniqueItems = data.asMultiSelect ? true : undefined;
 

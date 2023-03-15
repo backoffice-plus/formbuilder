@@ -15,6 +15,7 @@ import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
 import {jsonForms as toolOptionsSchemaValidation} from "./tools/schema/validation";
 import {jsonForms as toolOptionsSchemaRule} from "./tools/schema/rule";
+import {jsonForms as toolOptionsSchemaStyles} from "./tools/schema/subschemas/styles";
 import {
     jsonForms as toolOptionsSchemaLabelAndI18n,
     uischemaDescriptionOnly,
@@ -226,6 +227,8 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
         'labelAndI18n.uischema': toolOptionsSchemaLabelAndI18n.uischema,
         'labelAndI18n.descriptionOnly.uischema': uischemaDescriptionOnly,
         'labelAndI18n.noDescription.uischema': uischemaNoDescription,
+        'styles.schema': toolOptionsSchemaStyles.schema,
+        'styles.uischema': toolOptionsSchemaStyles.uischema,
     } as Record<string, any>
 
     const resolver = new Resolver({

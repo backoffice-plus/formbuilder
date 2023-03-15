@@ -8,10 +8,12 @@ import {
     prepareOptionDataLabel,
     prepareOptionDataRule,
     prepareOptionDataValidation,
+    prepareOptionDataStyles,
     schema,
     setOptionDataLabel,
     setOptionDataRule,
     setOptionDataValidation,
+    setOptionDataStyles,
     uischema,uischemaReadOnly
 } from "./schema/control.schema";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
@@ -53,6 +55,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
             prepareOptionDataValidation(context, this.schema, this.uischema),
             prepareOptionDataLabel(context, this.schema, this.uischema),
             prepareOptionDataRule(context, this.schema, this.uischema),
+            prepareOptionDataStyles(context, this.schema, this.uischema),
         )
 
         // if('uischema' === context.builder) {
@@ -83,6 +86,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         setOptionDataValidation(this.schema, this.uischema, data);
         setOptionDataLabel(this.schema, this.uischema, data);
         setOptionDataRule(this.schema, this.uischema, data);
+        setOptionDataStyles(this.schema, this.uischema, data);
 
         this.isRequired = data.required;
     }
