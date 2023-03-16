@@ -1,5 +1,5 @@
 import CategorizationRenderer from "./components/CategorizationRenderer.vue";
-import EnumArrayRenderer from "./components/EnumArrayRenderer.vue";
+//import EnumArrayRenderer from "./components/EnumArrayRenderer.vue";
 //import ArrayControlRenderer from "./components/ArrayControlRenderer.vue";
 //import ArrayLayoutRenderer from "./components/ArrayLayoutRenderer.vue";
 import BooleanToggleControlRenderer from "./components/BooleanToggleControlRenderer.vue";
@@ -38,17 +38,17 @@ export const categorizationRendererEntry = {
 const hasOneOfItems = (schema: JsonSchema): boolean => (schema?.oneOf ?? [] as JsonSchema[]).every((entry: JsonSchema) => entry.const !== undefined);
 const hasEnumItems = (schema: JsonSchema): boolean => schema.type === 'string' && schema.enum !== undefined;
 
-export const enumArrayRendererEntry = {
-    renderer: EnumArrayRenderer,
-    tester: rankWith(5,
-        and(
-            uiTypeIs('Control'),
-            and(
-                schemaMatches((schema) => hasType(schema, 'array') && !Array.isArray(schema.items) && schema.uniqueItems === true),
-                schemaSubPathMatches('items', (schema) => hasOneOfItems(schema) || hasEnumItems(schema))
-            )
-        ))
-};
+// export const enumArrayRendererEntry = {
+//     renderer: EnumArrayRenderer,
+//     tester: rankWith(5,
+//         and(
+//             uiTypeIs('Control'),
+//             and(
+//                 schemaMatches((schema) => hasType(schema, 'array') && !Array.isArray(schema.items) && schema.uniqueItems === true),
+//                 schemaSubPathMatches('items', (schema) => hasOneOfItems(schema) || hasEnumItems(schema))
+//             )
+//         ))
+// };
 
 
 export const booleanToggleControlRendererEntry = {
@@ -72,7 +72,7 @@ export const sliderControlRendererEntry = {
 
 export const boplusVueVanillaRenderers = [
     categorizationRendererEntry,
-    enumArrayRendererEntry,
+    //enumArrayRendererEntry,
     booleanToggleControlRendererEntry,
     radioGroupControlRendererEntry,
     sliderControlRendererEntry,

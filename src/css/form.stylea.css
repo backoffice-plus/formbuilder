@@ -479,3 +479,14 @@ fieldset.styleA.group .group-item {
     color:var(--text-color-error);
     @apply mt-6 px-2
 }
+
+
+.styleA .enum-array {
+    @apply flex flex-col items-start
+}
+.styleA .enum-array .enum-array-item {
+    @apply flex flex-row-reverse items-center
+}
+.styleA .enum-array .enum-array-item label {
+    @apply block m-0 p-0
+}

@@ -5,7 +5,7 @@ import  {entry as anyOfEntry} from "./AnyOfRenderer.vue";
 import  {entry as objectEntry} from "./ObjectRenderer.vue";
 import  {entry as arrayLayoutEntry} from "./ArrayLayoutRenderer.vue";
 import  {entry as arrayControlEntry} from "./ArrayControlRenderer.vue";
-import  {entry as constEntry} from "./ConstRenderer.vue";
+import  {entry as enumArrayEntry} from "./EnumArrayRenderer.vue";
 
 export default [
   passwordEntry,
@@ -15,5 +15,5 @@ export default [
   objectEntry,
   arrayLayoutEntry,
   arrayControlEntry,
-  constEntry,
+  enumArrayEntry,
 ];
