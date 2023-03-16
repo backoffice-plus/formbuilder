@@ -20,6 +20,7 @@ import * as arrayofref from './arrayofref';
 import * as objectAddProps from './object-additional-properties';
 import * as file from './file';
 import * as styles from './styles';
+import * as stylesLayout from './stylesLayout';
 
 export {
   _default,
@@ -44,4 +45,5 @@ export {
   objectAddProps,
   file,
   styles,
+  stylesLayout,
 }

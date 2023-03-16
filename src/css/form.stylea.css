@@ -185,6 +185,16 @@
     @apply gap-2
 }
 
+/**
+ * custom class "horizontalFirstChildOneQuarter"
+ * select the first horizontal item if the parent vertical item has 2 horizontal items
+ */
+.styleA .horizontalFirstChildOneQuarter > .vertical-layout-item > .horizontal-layout > .horizontal-layout-item:nth-last-child(2):first-child {
+    flex-shrink: 3;
+}
+.styleA .horizontalFirstChildOneQuarter > .vertical-layout-item > .horizontal-layout > .horizontal-layout-item:nth-last-child(2):first-child > label.label-element {
+    @apply p-0 m-0 mt-5 leading-none text-base tracking-normal
+}
 
 
 /**
