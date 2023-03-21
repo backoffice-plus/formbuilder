@@ -2,9 +2,9 @@ import CategorizationRenderer from "./components/CategorizationRenderer.vue";
 //import EnumArrayRenderer from "./components/EnumArrayRenderer.vue";
 //import ArrayControlRenderer from "./components/ArrayControlRenderer.vue";
 //import ArrayLayoutRenderer from "./components/ArrayLayoutRenderer.vue";
-import BooleanToggleControlRenderer from "./components/BooleanToggleControlRenderer.vue";
+//import BooleanToggleControlRenderer from "./components/BooleanToggleControlRenderer.vue";
 import RadioGroupControlRenderer from "./components/RadioGroupControlRenderer.vue";
-import SliderControlRenderer from "./components/SliderControlRenderer.vue";
+//import SliderControlRenderer from "./components/SliderControlRenderer.vue";
 import AutocompleteRenderer from "./components/AutocompleteRenderer.vue";
 //import {constEntry} from "./components/ConstRenderer.vue";
 import {fileEntry} from "./components/FileRenderer.vue";
@@ -51,20 +51,20 @@ const hasEnumItems = (schema: JsonSchema): boolean => schema.type === 'string' &
 // };
 
 
-export const booleanToggleControlRendererEntry = {
-    renderer: BooleanToggleControlRenderer,
-    tester: rankWith(3, and(isBooleanControl, optionIs('toggle', true))),
-};
+// export const booleanToggleControlRendererEntry = {
+//     renderer: BooleanToggleControlRenderer,
+//     tester: rankWith(3, and(isBooleanControl, optionIs('toggle', true))),
+// };
 
 export const radioGroupControlRendererEntry = {
     renderer: RadioGroupControlRenderer,
     tester: rankWith(20, and(or(isEnumControl, isOneOfEnumControl), optionIs('format', 'radio'))),
 };
 
-export const sliderControlRendererEntry = {
-    renderer: SliderControlRenderer,
-    tester: rankWith(4, isRangeControl),
-};
+// export const sliderControlRendererEntry = {
+//     renderer: SliderControlRenderer,
+//     tester: rankWith(4, isRangeControl),
+// };
 // export const passwordControlRendererEntry = {
 //     renderer: PasswordControlRenderer,
 //     tester: rankWith(2, and(isStringControl, formatIs('password'))),
@@ -73,9 +73,9 @@ export const sliderControlRendererEntry = {
 export const boplusVueVanillaRenderers = [
     categorizationRendererEntry,
     //enumArrayRendererEntry,
-    booleanToggleControlRendererEntry,
+    //booleanToggleControlRendererEntry,
     radioGroupControlRendererEntry,
-    sliderControlRendererEntry,
+    //sliderControlRendererEntry,
     fileEntry,
 
     //from package

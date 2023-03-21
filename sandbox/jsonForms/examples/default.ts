@@ -11,6 +11,15 @@ const schema = {
       //"i18n": "nameI18n",
       "description": "Please enter your name 1",
     },
+    number: {
+      type: "integer",
+      minimum:0,
+      maximum:9,
+      default:3,
+    },
+    boolean: {
+      type:'boolean'
+    }
     // address: {
     //   //$ref: '/schemas/address',
     //   //$ref: "http://localhost:5173/schemas/address",
@@ -20,13 +29,27 @@ const schema = {
 };
 
 const uischema = {
-  "type": "HorizontalLayout",
+  "type": "VerticalLayout",
   "elements": [
+    {
+      "type": "Control",
+      "scope": "#/properties/number",
+      options: {
+        slider: true,
+      }
+    },
     {
       "type": "Control",
       "scope": "#/properties/name",
       options: {
         showUnfocusedDescription: true,
+      }
+    },
+    {
+      type: "Control",
+      scope: "#/properties/boolean",
+      options: {
+        toggle:true,
       }
     },
     // {
