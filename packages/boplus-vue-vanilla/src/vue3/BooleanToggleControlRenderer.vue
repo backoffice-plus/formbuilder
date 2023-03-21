@@ -17,7 +17,7 @@
              :checked="control.data"
              @focus="isFocused = true"
              @blur="isFocused = false"
-             @change="e => handleChange(control.path, !!e.target.checked)"
+             @change="onChange"
       />
       <!--
         ref="checkbox"
@@ -139,7 +139,7 @@ const controlRenderer = defineComponent({
     ...rendererProps<ControlElement>(),
   },
   setup(props: RendererProps<ControlElement>) {
-    const control = useBoPlusVanillaControl(useJsonFormsControl(props), (value) => Number(value.value));
+    const control = useBoPlusVanillaControl(useJsonFormsControl(props), (value) => value.checked);
 
     return {
       ...control,
