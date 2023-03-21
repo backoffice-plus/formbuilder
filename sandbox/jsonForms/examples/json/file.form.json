@@ -1,0 +1,42 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "imageDataUri": {
+        "type": "string",
+        "format": "uri",
+        "contentEncoding": "base64",
+        "contentMediaType": "image/*",
+        "description": "Image encoded as data URI"
+      },
+      "fileDataUriWithFileName": {
+        "type": "string",
+        "format": "binary",
+        "description": "File with maximum size of 1MB encoded as data URI and including the file name"
+      },
+      "base64String": {
+        "type": "string",
+        "contentEncoding": "base64",
+        "description": "File encoded as base64"
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/imageDataUri"
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/fileDataUriWithFileName"
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/base64String"
+      }
+    ]
+  },
+  "data": {}
+}

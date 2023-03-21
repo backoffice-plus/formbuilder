@@ -1,99 +1,12 @@
 import {registerExamples} from "@jsonforms/examples/src/register";
-
-const schema = {
-  type: "object",
-  properties: {
-    constString: {
-      const: "lorem ipsum",
-    },
-    constInteger: {
-      const: 128,
-    },
-    constNumber: {
-      const: 0.015,
-    },
-    constBoolean: {
-      const: true,
-    },
-    constBooleanFalse: {
-      const: false,
-    },
-    constNull: {
-      const: null,
-    },
-    constArray: {
-      const: ['foo','bar'],
-    },
-    constObject: {
-      const: {
-        type: "object",
-        properties: {
-          string: {
-            type: "string",
-          },
-        }
-      }
-    },
-  },
-};
-
-const uischema = {
-  type: "VerticalLayout",
-  elements: [
-    {
-      type: "Control",
-      scope: "#/properties/constString",
-    },
-    {
-      type: "HorizontalLayout",
-      elements: [
-        {
-          type: "Control",
-          scope: "#/properties/constInteger",
-        },
-        {
-          type: "Control",
-          scope: "#/properties/constNumber",
-        },
-      ]
-    },
-    {
-      type: "HorizontalLayout",
-      elements: [
-        {
-          type: "Control",
-          scope: "#/properties/constBoolean",
-        },
-        {
-          type: "Control",
-          scope: "#/properties/constBooleanFalse",
-        },
-      ]
-    },
-    {
-      type: "Control",
-      scope: "#/properties/constNull",
-    },
-    {
-      type: "Control",
-      scope: "#/properties/constArray",
-    },
-    {
-      type: "Control",
-      scope: "#/properties/constObject",
-    },
-  ]
-};
-
-
-export const data = {};
+import jsonForms from './json/const.form.json'
 
 registerExamples([
   {
     name: 'fb.const',
     label: 'FormBuilder - const',
-    data,
-    schema,
-    uischema,//uischema
+    schema: jsonForms.schema,
+    uischema: jsonForms.uischema,
+    data: jsonForms.data,
   }
 ]);

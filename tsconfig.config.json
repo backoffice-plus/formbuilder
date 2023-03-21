@@ -5,6 +5,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "composite": true,
-    "types": ["node"]
+    "types": ["node"],
+    "resolveJsonModule": true
   }
 }

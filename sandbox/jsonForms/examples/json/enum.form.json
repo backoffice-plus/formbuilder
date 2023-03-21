@@ -1,0 +1,146 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "singleEnum": {
+        "type": "string",
+        "enum": [
+          "DE",
+          "IT",
+          "JP"
+        ]
+      },
+      "singleOneOf": {
+        "type": "string",
+        "oneOf": [
+          {
+            "const": "DE",
+            "title": "Germany"
+          },
+          {
+            "const": "IT",
+            "title": "Italy"
+          },
+          {
+            "const": "JP",
+            "title": "Japan"
+          }
+        ]
+      },
+      "multiEnum": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "DE",
+            "IT",
+            "JP"
+          ],
+          "type": "string"
+        }
+      },
+      "oneOfMultiEnum": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "oneOf": [
+            {
+              "const": "DE",
+              "title": "Germany"
+            },
+            {
+              "const": "IT",
+              "title": "Italy"
+            },
+            {
+              "const": "JP",
+              "title": "Japan"
+            }
+          ],
+          "type": "string"
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Group",
+            "elements": [
+              {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/singleEnum",
+                    "label": "Enum"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/singleOneOf",
+                    "label": "One Of"
+                  }
+                ]
+              }
+            ],
+            "label": "Select"
+          },
+          {
+            "type": "Group",
+            "elements": [
+              {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/singleEnum",
+                    "options": {
+                      "format": "radio"
+                    },
+                    "label": "Enum as Radio Button"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/singleOneOf",
+                    "options": {
+                      "format": "radio"
+                    },
+                    "label": "oneOf Radio Button"
+                  }
+                ]
+              }
+            ],
+            "label": "Radio Buttons"
+          }
+        ],
+        "label": "Single Select"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/multiEnum",
+                "label": "Enum"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/oneOfMultiEnum",
+                "label": "One Of"
+              }
+            ]
+          }
+        ],
+        "label": "Multi Select"
+      }
+    ]
+  },
+  "data": {}
+}
