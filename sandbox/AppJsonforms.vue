@@ -93,7 +93,11 @@ const jsonForms = computed(() => {
     exampleData.uischema = generateDefaultUISchema(exampleData.schema)
   }
 
-  return exampleData
+  return {
+    schema:exampleData.schema,
+    uischema:exampleData.uischema,
+    data:exampleData.data,
+  }
 });
 
 const jsonFormRenderesMore = Object.freeze([
