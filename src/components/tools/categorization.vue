@@ -49,7 +49,6 @@
                        @deleteByTool="onDeleteByTool"
 
                        class="dropItem"
-                       :ref="addChildComponent"
 
                        v-show="currentTab===-1 || index===currentTab"
             />
@@ -134,18 +133,9 @@ const emit = defineEmits(['deleteByTool']);
 const {onDrag, toolDragging} = useFormbuilder();
 
 const childTools = ref([]);
-const childComponents = ref({});
 const tabs = ref([]);
 const currentTab = ref(-1);
 const collapsed = ref(false);
-
-const addChildComponent = (e) => {
-  if(e?.tool?.uuid) {
-    childComponents.value[e.tool.uuid]=e;
-  }
-}
-
-//defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComponents })
 
 onMounted(() => {
   if (!props.isToolbar) {

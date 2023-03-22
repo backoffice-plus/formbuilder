@@ -44,7 +44,6 @@
                        @deleteByTool="onDeleteByTool"
 
                        class="dropItem"
-                       :ref="addChildComponent"
             />
           </div>
         </template>
@@ -101,7 +100,6 @@ const emit = defineEmits(['deleteByTool']);
 const {onDrag, toolDragging} = useFormbuilder();
 
 const childTools = ref([]);
-const childComponents = ref({});
 const collapsed = ref(false);
 
 const isArrayOfObject = computed(() => 'object' === getFirstChildItemsType.value);
@@ -146,11 +144,7 @@ onMounted(() => {
   }
 })
 
-const addChildComponent = (e) => {
-  if (e?.tool?.uuid) {
-    childComponents.value[e.tool.uuid] = e;
-  }
-}
+
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
   emitter.emit('formBuilderUpdated')
@@ -195,8 +189,6 @@ const groupPut = (from, to, node, dragEvent) => {
   }
   return !hasOneItem
 };
-
-//defineExpose({tool: props.tool, childTools: childTools, childComponents: childComponents})
 
 const onDeleteByTool = async (e) => {
   e.tool && deleteToolInChilds(e.tool, childTools.value)

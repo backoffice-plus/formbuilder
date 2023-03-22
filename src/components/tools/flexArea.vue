@@ -38,7 +38,6 @@
                        @deleteByTool="onDeleteByTool"
 
                        class="dropItem"
-                       :ref="addChildComponent"
             />
           </div>
         </template>
@@ -156,14 +155,7 @@ const emit = defineEmits(['deleteByTool']);
 const {onDrag, toolDragging} = useFormbuilder();
 
 const childTools = ref([]);
-const childComponents = ref({});
 const collapsed = ref(false);
-
-const addChildComponent = (e) => {
-  if(e?.tool?.uuid) {
-    childComponents.value[e.tool.uuid]=e;
-  }
-}
 
 
 onMounted(() => {
@@ -204,7 +196,5 @@ const showDragClass = computed(() => {
 
   return !isCategory && !!toolDragging.value;
 })
-
-//defineExpose({ tool:props.tool, childTools:childTools, childComponents:childComponents })
 
 </script>
