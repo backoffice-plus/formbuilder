@@ -30,13 +30,16 @@
       </div>
 
       <Vuedraggable
+          v-bind="vuedraggableOptions"
+
           :class="['dropArea nestedFlexArea flex-col', {drag:showDragClass}]"
           :list="childTools"
           group="formBuilderCategorization"
-          item-key="uuid"
           @start="onDrag"
           @end="onDrag"
           @change="onDropAreaChange"
+
+
           v-show="!collapsed"
       >
         <template #item="{ element: tool, index }">
@@ -111,7 +114,7 @@
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
 import {cloneEmptyTool, deleteToolInChilds} from "../../lib/formbuilder";
-import {toolComponentProps} from "../../lib/models";
+import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {initElements} from "../../lib/initializer";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";

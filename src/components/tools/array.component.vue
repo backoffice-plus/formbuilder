@@ -24,13 +24,15 @@
 <!--      </div>-->
 
       <Vuedraggable
+          v-bind="vuedraggableOptions"
+
           :class="['dropArea nestedFlexArea flex-col', {drag:showDragClass}]"
           :list="childTools"
           :group="{name:'formBuilder', pull: true, put: groupPut}"
-          item-key="uuid"
           @start="onDrag"
           @end="onDrag"
           @change="onDropAreaChange"
+
           v-show="!collapsed"
       >
         <template #item="{ element: tool, index }">
@@ -84,7 +86,7 @@ import {initArrayElements} from "../../lib/initializer";
 import {useJsonforms} from "../../composable/jsonforms";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
-import {scalarTypes, toolComponentProps} from "../../lib/models";
+import {scalarTypes, toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {ReferenceTool} from "../../lib/tools/referenceTool";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import {useFormbuilder} from "../../composable/formbuilder";

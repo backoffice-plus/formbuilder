@@ -52,3 +52,19 @@ export const toolComponentProps = () => ({
         default: false as false,
     },
 });
+
+
+/**
+ *
+ * @see http://sortablejs.github.io/Sortable/#thresholds
+ *
+ */
+export const vuedraggableOptions = {
+
+    'item-key': "uuid",
+
+    swapThreshold:0.7,
+    invertSwap: true,
+    fallbackOnBody: true,
+    animation: 150,
+}

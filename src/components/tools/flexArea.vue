@@ -10,21 +10,16 @@
         <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
       </Actions>
 
-      <!--
-        @see http://sortablejs.github.io/Sortable/#thresholds
-      -->
+
       <Vuedraggable
+          v-bind="vuedraggableOptions"
+
           :class="['dropArea nestedFlexArea', tool.uischema.type, {drag:showDragClass}]"
           :list="childTools"
           group="formBuilder"
-          item-key="uuid"
           @start="onDrag"
           @end="onDrag"
           @change="onDropAreaChange"
-
-          :swapThreshold=".7"
-          :invertSwap="true"
-          :fallbackOnBody="true"
 
           v-show="!collapsed"
       >
@@ -139,7 +134,7 @@ import {  initElements} from "../../lib/initializer";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
 import {deleteToolInChilds, Vuedraggable} from '../../index'
-import {toolComponentProps} from "../../lib/models";
+import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {ref, computed, onMounted, unref, toRaw} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
