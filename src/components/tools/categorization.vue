@@ -111,6 +111,7 @@
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
 import {cloneEmptyTool, deleteToolInChilds} from "../../lib/formbuilder";
+import {toolComponentProps} from "../../lib/models";
 import {initElements} from "../../lib/initializer";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
@@ -122,11 +123,7 @@ import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {useFormbuilder} from "../../composable/formbuilder";
 
-const props = defineProps({
-  tool: Object,//ToolInterface,
-  isRoot: Boolean,
-  isToolbar: Boolean,
-})
+const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 

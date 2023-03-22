@@ -7,6 +7,8 @@ import type {
     Layout,
     UISchemaElement,
 } from "@jsonforms/core/src/models/uischema";
+import type {PropType} from "vue";
+import type {ToolInterface} from "./tools";
 
 export const scalarTypes = ['string', 'number', 'integer', 'boolean', 'null'];
 
@@ -23,3 +25,30 @@ export interface JsonFormsInterface {
     schema: JsonSchema;
     uischema: Layout;
 }
+
+export const toolComponentProps = () => ({
+
+    tool: {
+        required: true as true,
+        type: Object as PropType<ToolInterface>
+    },
+
+    isToolbar: {
+        required: false as false,
+        type: Boolean,
+        default: false as false,
+    },
+
+    isRoot: {
+        required: false as false,
+        type: Boolean,
+        default: false as false,
+    },
+
+    //from arrayTool
+    isInlineType: {
+        required: false as false,
+        type: Boolean,
+        default: false as false,
+    },
+});

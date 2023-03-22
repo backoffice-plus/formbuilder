@@ -80,6 +80,7 @@ import {computed, onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
 import {useTools} from "../../composable/tools";
 import {cloneEmptyTool} from "../../lib/formbuilder";
+import {toolComponentProps} from "../../lib/models";
 import {initObjectElements} from "../../lib/initializer";
 import {useJsonforms} from "../../composable/jsonforms";
 import _ from "lodash";
@@ -87,12 +88,7 @@ import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {useFormbuilder} from "../../composable/formbuilder";
 
-const props = defineProps({
-  tool: Object,//ToolInterface,
-  isRoot: Boolean,
-  isToolbar: Boolean,
-  isInlineType: Boolean, //from arrayTool
-})
+const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 

@@ -139,16 +139,13 @@ import {  initElements} from "../../lib/initializer";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
 import {deleteToolInChilds, Vuedraggable} from '../../index'
+import {toolComponentProps} from "../../lib/models";
 import {ref, computed, onMounted, unref, toRaw} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {useFormbuilder} from "../../composable/formbuilder";
 
-const props = defineProps({
-  tool: Object,//ToolInterface,
-  isRoot: Boolean,
-  isToolbar: Boolean,
-})
+const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 

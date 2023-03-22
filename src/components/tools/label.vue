@@ -28,11 +28,9 @@
 <script setup>
 import Actions from "./utils/Actions.vue";
 import ToolIcon from "./utils/ToolIcon.vue";
+import {toolComponentProps} from "../../lib/models";
 
-const props = defineProps({
-  tool: Object,//ToolInterface,
-  isToolbar: Boolean,
-})
+const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 

@@ -84,16 +84,12 @@ import {initArrayElements} from "../../lib/initializer";
 import {useJsonforms} from "../../composable/jsonforms";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
-import {scalarTypes} from "../../lib/models";
+import {scalarTypes, toolComponentProps} from "../../lib/models";
 import {ReferenceTool} from "../../lib/tools/referenceTool";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import {useFormbuilder} from "../../composable/formbuilder";
 
-const props = defineProps({
-  tool: Object,//ToolInterface,
-  isToolbar: Boolean,
-  isRoot: Boolean,
-})
+const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 

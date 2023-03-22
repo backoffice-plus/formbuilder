@@ -68,11 +68,12 @@
 import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 
-import {deleteToolInChilds, Vuedraggable} from '../../index'
+import {deleteToolInChilds,  Vuedraggable} from '../../index'
 import {computed, onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
 import {useTools} from "../../composable/tools";
 import {cloneEmptyTool} from "../../lib/formbuilder";
+import {toolComponentProps} from "../../lib/models";
 import {initCombinatorElements} from "../../lib/initializer";
 import {useJsonforms} from "../../composable/jsonforms";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
@@ -81,12 +82,7 @@ import {Icon} from "@iconify/vue";
 import _ from "lodash";
 import {useFormbuilder} from "../../composable/formbuilder";
 
-const props = defineProps({
-  tool: Object,//ToolInterface,
-  isToolbar: Boolean,
-  isRoot: Boolean,
-  isInlineType: Boolean, //from arrayTool
-})
+const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 
