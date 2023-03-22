@@ -1,0 +1,50 @@
+{
+  "schema": {
+    "type": "object",
+    "definitions": {
+      "refString": {
+        "type": "string",
+        "title": "Reference",
+        "description": "#/definitions/NAME"
+      }
+    },
+    "properties": {
+      "propertyName": {
+        "type": "string"
+      },
+      "_reference": {
+        "anyOf": [
+          {"$ref":"referenceTool.definitions","title":"asdasd"},
+          {"$ref":"#/definitions/refString"}
+        ]
+      }
+    }
+  },
+  "uischema": {
+
+    "type": "Categorization",
+    "elements": [
+      {
+        "type": "Category",
+        "label": "Base",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/propertyName"
+              }
+            ]
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/_reference",
+            "label": "Reference to Definitions"
+          }
+        ]
+      }
+    ]
+  } ,
+  "data": {}
+}

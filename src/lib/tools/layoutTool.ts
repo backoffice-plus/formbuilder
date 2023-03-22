@@ -5,7 +5,7 @@ import {AbstractTool} from "./AbstractTool";
 import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
-import {schema, uischema} from "./schema/layout.schema";
+import {schema, uischema} from "./schema/layout.form.json";
 import * as subschemas from "./subschemas";
 
 export class VerticalLayout extends AbstractTool implements ToolInterface {

@@ -2,7 +2,7 @@ import {GroupTool,} from "./groupTool";
 import type {ToolInterface} from "./index";
 import type {JsonFormsInterface, ToolContext} from "./index";
 import {resolveSchema} from "../formbuilder";
-import {schema, uischema} from "./schema/category.schema";
+import {schema, uischema} from "./schema/category.form.json";
 
 export class CategoryTool extends GroupTool {
 

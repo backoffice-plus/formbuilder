@@ -3,10 +3,8 @@ import {and, rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import referenceComp from "../../components/tools/reference.vue";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
-
 import {AbstractTool} from "./AbstractTool";
-import {schema, uischema} from "./schema/reference.schema";
-import type {ControlElement} from "@jsonforms/core/src/models/uischema";
+import jsonForms from "./schema/reference.form.json";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {useJsonforms} from "../../composable/jsonforms";
 
@@ -59,8 +57,8 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
             return undefined;
         }
         return {
-            schema: await resolveSchema(schema, definitionResolver),
-            uischema: await resolveSchema(uischema),
+            schema: await resolveSchema(jsonForms.schema, definitionResolver),
+            uischema: await resolveSchema(jsonForms.uischema),
         } as JsonFormsInterface
     }
 

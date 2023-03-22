@@ -1,0 +1,57 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "uischemaType": {
+        "type":"string",
+        "enum": ["VerticalLayout","HorizontalLayout"]
+      },
+      "rule": {
+        "$ref":"rule.schema#/properties/rule"
+      },
+      "styles": {
+        "$ref":"styles.schema#/properties/styles"
+      }
+    }
+  },
+  "uischema": {
+
+    "type": "Categorization",
+    "elements": [
+
+      {
+        "type": "Category",
+        "label": "Base",
+        "elements": [
+          {
+            "scope": "#/properties/uischemaType",
+            "type": "Control"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Styles",
+        "elements": [
+          {
+            "type": "LayoutRef",
+            "$ref":"styles.uischema"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Rule",
+        "elements": [
+          {
+            "type": "LayoutRef",
+            "$ref":"rule.uischema"
+          }
+        ]
+      }
+    ]
+  } ,
+  "data": {}
+}

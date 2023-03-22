@@ -1,0 +1,39 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "styles": {
+        "$ref": "rule.schema#/properties/styles"
+      },
+      "rule": {
+        "$ref": "rule.schema#/properties/rule"
+      }
+    }
+  },
+  "uischema": {
+    "type": "Categorization",
+    "elements": [
+      {
+        "type": "Category",
+        "elements": [
+          {
+            "type": "LayoutRef",
+            "$ref": "styles.uischema"
+          }
+        ],
+        "label": "Styles"
+      },
+      {
+        "type": "Category",
+        "elements": [
+          {
+            "type": "LayoutRef",
+            "$ref": "rule.uischema"
+          }
+        ],
+        "label": "Rule"
+      }
+    ]
+  },
+  "data": {}
+}

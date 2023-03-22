@@ -3,7 +3,7 @@ import {VerticalLayout} from "./layoutTool";
 import type {ToolInterface} from "./index";
 import type {JsonFormsInterface, ToolContext} from "./index";
 import {resolveSchema} from "../formbuilder";
-import {schema, uischema} from "./schema/categorization.schema";
+import {schema, uischema} from "./schema/categorization.form.json";
 
 export class CategorizationTool extends VerticalLayout {
     importer = () => categorizationComp;

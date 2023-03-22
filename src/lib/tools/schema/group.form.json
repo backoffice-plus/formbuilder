@@ -1,0 +1,71 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "labelAndI18n": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "i18n": {
+            "type": "string",
+            "title": "i18n",
+            "description": "alternative lookup key for translation catalogue"
+          }
+        }
+      },
+      "styles": {
+        "$ref": "styles.schema#/properties/styles"
+      },
+      "rule": {
+        "$ref": "rule.schema#/properties/rule"
+      }
+    }
+  },
+  "uischema": {
+    "type": "Categorization",
+    "elements": [
+      {
+        "type": "Category",
+        "label": "Base",
+        "elements": [
+          {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "properties/labelAndI18n/properties/label"
+              },
+              {
+                "type": "Control",
+                "scope": "properties/labelAndI18n/properties/i18n"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Category",
+        "label": "Styles",
+        "elements": [
+          {
+            "type": "LayoutRef",
+            "$ref": "styles.uischema"
+          }
+        ]
+      },
+      {
+        "type": "Category",
+        "label": "Rule",
+        "elements": [
+          {
+            "type": "LayoutRef",
+            "$ref": "rule.uischema"
+          }
+        ]
+      }
+    ]
+  },
+  "data": {}
+}

@@ -1,21 +1,54 @@
 import {registerExamples} from "@jsonforms/examples/src/register";
+import category from '../../../src/lib/tools/schema/category.form.json'
+import categorization from '../../../src/lib/tools/schema/categorization.form.json'
+import combinator from '../../../src/lib/tools/schema/combinator.form.json'
 import constJsonForms from '../../../src/lib/tools/schema/const.form.json'
+import group from '../../../src/lib/tools/schema/group.form.json'
+import label from '../../../src/lib/tools/schema/label.form.json'
+import layout from '../../../src/lib/tools/schema/layout.form.json'
+import object from '../../../src/lib/tools/schema/object.form.json'
+import reference from '../../../src/lib/tools/schema/reference.form.json'
 import constPartJsonForms from '../../../src/lib/tools/schema/subschemas/const.form.json'
 import stylesPartJsonForms from '../../../src/lib/tools/schema/subschemas/styles.form.json'
 import validationSubschema from '../../../src/lib/tools/schema/subschemas/validation.form.json'
 import labelSubschema from '../../../src/lib/tools/schema/subschemas/label.form.json'
 import ruleSubschema from '../../../src/lib/tools/schema/subschemas/rule.form.json'
 
-registerExamples([
-  {
-    name: 'fb.option.const',
-    label: 'FormBuilder - Option: Const',
-    schema: constJsonForms.schema,
-    uischema: constJsonForms.uischema,
-    data: constJsonForms.data,
-  }
-]);
+const examples = [
+  {name:"category", schema:category},
+  {name:"categorization", schema:categorization},
+  {name:"combinator", schema:combinator},
+  {name:"const", schema:constJsonForms},
+  {name:"group", schema:group},
+  {name:"label", schema:label},
+  {name:"layout", schema:layout},
+  {name:"object", schema:object},
+  {name:"reference", schema:reference},
 
+    //:TODO
+  // {name:"array", schema:array},
+ // {name:"control", schema:control},
+ // {name:"select", schema:select},
+];
+
+examples.forEach(item => {
+  const {name,schema} = item;
+  registerExamples([
+    {
+      name: 'fb.option.' + name,
+      label: 'FormBuilder - Option: '+ name,
+      ...schema
+    }
+  ]);
+})
+
+
+
+/**
+ *
+ * Subschemas
+ *
+ */
 registerExamples([
   {
     name: 'fb.option.subschema.const',

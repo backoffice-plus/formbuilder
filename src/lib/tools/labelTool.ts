@@ -4,7 +4,7 @@ import {AbstractTool} from "./AbstractTool";
 import type {JsonFormsInterface, ToolInterface} from "../../index";
 import {resolveSchema} from "../../index";
 import labelComp from "../../components/tools/label.vue";
-import {schema, uischema} from "./schema/label.schema";
+import {schema, uischema} from "./schema/label.form.json";
 import type {ToolContext} from "./index";
 import * as subschemas from "./subschemas";
 

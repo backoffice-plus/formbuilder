@@ -1,6 +1,6 @@
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {resolveSchema} from "../formbuilder";
-import {schema, uischema} from "./schema/group.schema";
+import {schema, uischema} from "./schema/group.form.json";
 import _ from "lodash";
 import {VerticalLayout} from "./layoutTool";
 import * as subschemas from "./subschemas";

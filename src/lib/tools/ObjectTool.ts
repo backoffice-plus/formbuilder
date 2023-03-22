@@ -2,7 +2,7 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/object.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
-import {schema, uischema} from "./schema/object.schema";
+import {schema, uischema} from "./schema/object.form.json";
 import {rankWith} from "@jsonforms/core";
 
 export class ObjectTool extends AbstractTool implements ToolInterface {

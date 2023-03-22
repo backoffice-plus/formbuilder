@@ -5,7 +5,7 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/combinator.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
-import {schema, uischema} from "./schema/combinator.schema";
+import {schema, uischema} from "./schema/combinator.form.json";
 
 export class CombinatorTool extends AbstractTool implements ToolInterface {
 
