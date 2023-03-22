@@ -33,9 +33,8 @@
 
                        :tool="tool"
                        :isToolbar="false"
-                       :index="index"
 
-                       @deleteByIndex="onDeleteByIndex"
+                       @deleteByTool="onDeleteByTool"
 
                        class="dropItem"
                        :ref="addChildComponent"
@@ -70,7 +69,7 @@
 import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 
-import {Vuedraggable} from '../../index'
+import {deleteToolInChilds, Vuedraggable} from '../../index'
 import {computed, onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
 import {useTools} from "../../composable/tools";
@@ -87,12 +86,10 @@ const props = defineProps({
   tool: Object,//ToolInterface,
   isToolbar: Boolean,
   isRoot: Boolean,
-  index: Number, //for deleting correct element in list
-
   isInlineType: Boolean, //from arrayTool
 })
 
-const emit = defineEmits(['deleteByIndex']);
+const emit = defineEmits(['deleteByTool']);
 
 const {onDrag, toolDragging} = useFormbuilder();
 
@@ -144,22 +141,16 @@ const groupPut = (from, to, node, dragEvent) => {
 
 //defineExpose({tool: props.tool, childTools: childTools, childComponents: childComponents})
 
-const onDeleteByIndex = (e) => {
-  const index = e.index;
-  const toolDeleted = childTools.value[index];
-
-  childTools.value.splice(index, 1);
-  delete childComponents.value[toolDeleted.uuid];
-
-  emitter.emit('formBuilderUpdated')
+const onDeleteByTool = async (e) => {
+  e.tool && deleteToolInChilds(e.tool, childTools.value)
+      .then(newChildTools => {
+        childTools.value = newChildTools;
+        onDropAreaChange(e);
+      })
 };
+
 const onDelete = () => {
-  Promise.resolve(window.confirm("Wirklich löschen?"))
-      .then((confirmed) => {
-        if(confirmed) {
-          emit("deleteByIndex", { index: props.index });
-        }
-      });
+  emit("deleteByTool", { tool: props.tool });
 };
 
 const showDragClass = computed(() => {

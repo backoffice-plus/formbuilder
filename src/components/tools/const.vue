@@ -37,7 +37,6 @@ import {computed} from "vue";
 const props = defineProps({
   tool: Object,//ToolInterface,
   isToolbar: Boolean,
-  index: Number, //for deleting correct element in list
 })
 
 let constValue = computed(() => props.tool.schema.const);
@@ -45,17 +44,12 @@ if(null === constValue.value) {
   constValue.value = 'null';
 }
 
-const emit = defineEmits(['deleteByIndex']);
+const emit = defineEmits(['deleteByTool']);
 
 //defineExpose({tool: props.tool})
 
 const onDelete = () => {
-  Promise.resolve(window.confirm("Wirklich löschen?"))
-      .then((confirmed) => {
-        if(confirmed) {
-          emit("deleteByIndex", { index: props.index });
-        }
-      });
+  emit("deleteByTool", { tool: props.tool });
 };
 
 </script>

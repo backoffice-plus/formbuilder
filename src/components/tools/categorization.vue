@@ -45,9 +45,8 @@
 
                        :tool="tool"
                        :isToolbar="false"
-                       :index="index"
 
-                       @deleteByIndex="onDeleteByIndex"
+                       @deleteByTool="onDeleteByTool"
 
                        class="dropItem"
                        :ref="addChildComponent"
@@ -112,7 +111,7 @@
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {cloneEmptyTool} from "../../lib/formbuilder";
+import {cloneEmptyTool, deleteToolInChilds} from "../../lib/formbuilder";
 import {initElements} from "../../lib/initializer";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
@@ -128,10 +127,9 @@ const props = defineProps({
   tool: Object,//ToolInterface,
   isRoot: Boolean,
   isToolbar: Boolean,
-  index: Number, //for deleting correct element in list
 })
 
-const emit = defineEmits(['deleteByIndex']);
+const emit = defineEmits(['deleteByTool']);
 
 const {onDrag, toolDragging} = useFormbuilder();
 
@@ -193,23 +191,16 @@ const onDropAreaChange = (e) => {
   emitter.emit('formBuilderUpdated')
 };
 
-const onDeleteByIndex = (e) => {
-  const index = e.index;
-  const toolDeleted = childTools.value[index];
-
-  childTools.value.splice(index, 1);
-  delete childComponents.value[toolDeleted.uuid];
-
-  emitter.emit('formBuilderUpdated')
+const onDeleteByTool = async (e) => {
+  e.tool && deleteToolInChilds(e.tool, childTools.value)
+      .then(newChildTools => {
+        childTools.value = newChildTools;
+        onDropAreaChange(e);
+      })
 };
 
 const onDelete = () => {
-  Promise.resolve(window.confirm("Wirklich löschen?"))
-      .then((confirmed) => {
-        if(confirmed) {
-          emit("deleteByIndex", { index: props.index });
-        }
-      });
+  emit("deleteByTool", { tool: props.tool });
 };
 
 const showDragClass = computed(() => {

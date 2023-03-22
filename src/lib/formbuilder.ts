@@ -256,5 +256,17 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
         })
 }
 
+export const deleteToolInChilds = async (toolToDelete:ToolInterface, childTools:ToolInterface[]) : Promise<ToolInterface[]> => {
 
+    const confirmed = window?.confirm ? window.confirm("Wirklich löschen?") : true;
+
+    return await Promise.resolve(confirmed)
+        .then((confirmed) => {
+            if(confirmed) {
+                childTools = childTools.filter(childTool => childTool.uuid !== toolToDelete.uuid)
+            }
+
+            return childTools;
+        });
+};
 
