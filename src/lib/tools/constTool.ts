@@ -1,12 +1,13 @@
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {resolveSchema} from "../formbuilder";
-import {schema, uischema} from "./schema/const.schema";
+import jsonForms from "./schema/const.form.json";
 import constComponent from "../../components/tools/const.vue";
 import {rankWith} from "@jsonforms/core";
 import type {TesterContext} from "@jsonforms/core/src/testers/testers";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core/src/models";
 import {ControlTool} from "./controlTool";
-
+import _ from "lodash";
+import * as subschemaConst from "./schema/subschemas/const";
 
 export class ConstTool extends ControlTool {
 
@@ -24,19 +25,10 @@ export class ConstTool extends ControlTool {
     optionDataPrepare(context: ToolContext): Record<string, any> {
         const data = super.optionDataPrepare(context);
 
-        data.const = this.schema.const;
-        data._parse = undefined;
-        if(null === data.const) {
-            data.const = 'null';
-            data._parse = 'null';
-        }
-        else if(['array','object'].includes(typeof data.const)) {
-            data.const = JSON.stringify(data.const);
-            data._parse = 'json';
-        }
-
-
-        //data.title = this.schema.title;
+        _.merge(
+            data,
+            subschemaConst.prepareOptionData(context, this.schema, this.uischema),
+        )
 
         return data;
     }
@@ -44,29 +36,13 @@ export class ConstTool extends ControlTool {
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         super.optionDataUpdate(context, data);
 
-        this.schema.const = data.const;
-        //this.schema.title = data.title;
-
-        if('string' === typeof data.const) {
-            if('json' === data._parse && data.const.match(/^[\[{].*[\]}]$/)) {
-                try {
-                    const json = JSON.parse(data.const)
-                    this.schema.const = json;
-                }
-                catch (e) {}
-            }
-            else if('null' === data._parse && 'null' === data.const) {
-                this.schema.const = null;
-            }
-        }
-
-        delete this.schema.type; //no type for const, right?!
+        subschemaConst.setOptionData(this.schema, this.uischema, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
-            schema: await resolveSchema(schema),
-            uischema: await resolveSchema(uischema),
+             schema: await resolveSchema(jsonForms.schema),
+             uischema: await resolveSchema(jsonForms.uischema),
         } as JsonFormsInterface
     }
 

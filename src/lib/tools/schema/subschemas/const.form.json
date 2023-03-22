@@ -1,0 +1,72 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "const": {
+        "type": "object",
+        "properties": {
+          "const": {
+            "oneOf": [
+              {
+                "type": "string",
+                "title": "string"
+              },
+              {
+                "type": "number",
+                "title": "number"
+              },
+              {
+                "type": "boolean",
+                "title": "boolean"
+              }
+            ]
+          },
+          "parseAs": {
+            "type": "string",
+            "enum": [
+              "json",
+              "null"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/const/properties/const"
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/const/properties/parseAs",
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/const/properties/const",
+            "schema": {
+              "allOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "oneOf": [
+                    {
+                      "const": "null"
+                    },
+                    {
+                      "pattern": "^\\{|\\[.*\\}|\\]$"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  "data": {}
+}

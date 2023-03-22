@@ -21,6 +21,8 @@ import {
     uischemaDescriptionOnly,
     uischemaNoDescription
 } from "./tools/schema/subschemas/labelAndI18n";
+import constSubschema from "./tools/schema/subschemas/const.form.json";
+
 import {Resolver} from "@stoplight/json-ref-resolver";
 import {CombinatorTool} from "./tools/combinatorTool";
 import {ArrayTool} from "./tools/ArrayTool";
@@ -229,6 +231,8 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
         'labelAndI18n.noDescription.uischema': uischemaNoDescription,
         'styles.schema': toolOptionsSchemaStyles.schema,
         'styles.uischema': toolOptionsSchemaStyles.uischema,
+        'const.schema': constSubschema.schema,
+        'const.uischema': constSubschema.uischema,
     } as Record<string, any>
 
     const resolver = new Resolver({
@@ -244,7 +248,9 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
     return await resolver.resolve(schema)
         .then(resolved => {
             if (resolved.errors.length) {
-                throw resolved.errors.map(error => error.message);
+                //throw resolved.errors.map(error => error.message);
+                console.log("resolveSchema error", resolved.errors.map(error => error.message));
+                return {}
             }
             return resolved.result
         })
