@@ -1,0 +1,109 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "labelAndI18n": {
+        "type": "object",
+        "properties": {
+          "_type": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string",
+            "description": "like label, but stored at schema"
+          },
+          "description": {
+            "type": "string"
+          },
+          "i18n": {
+            "type": "string",
+            "title": "i18n",
+            "description": "alternative lookup key for translation catalogue"
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "showUnfocusedDescription": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "scope": "#/properties/labelAndI18n/properties/label",
+            "type": "Control"
+          },
+          {
+            "scope": "#/properties/labelAndI18n/properties/title",
+            "type": "Control"
+          }
+        ]
+      },
+
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "scope": "#/properties/labelAndI18n/properties/description",
+            "type": "Control",
+            "options": {
+              "multi": true
+            },
+            "rule": {
+              "effect": "HIDE",
+              "condition": {
+                "type": "OR",
+                "conditions": [
+                  {
+                    "scope": "#/properties/_isSchemaReadOnly",
+                    "schema": {"const": true}
+                  },
+                  {
+                    "scope": "#/properties/labelAndI18n/properties/_type",
+                    "schema": {"enum": ["Category","Group"]}
+                  }
+                ]
+              }
+            }
+          },
+          {
+            "scope": "#/properties/labelAndI18n/properties/options/properties/showUnfocusedDescription",
+            "type": "Control",
+            "rule": {
+              "effect": "SHOW",
+              "condition": {
+                "scope": "#/properties/labelAndI18n/properties/_type",
+                "schema": { "const":"Control" }
+              }
+            }
+          }
+        ]
+      },
+      {
+        "scope": "#/properties/labelAndI18n/properties/i18n",
+        "type": "Control"
+      },
+      {
+        "scope": "#/properties/labelAndI18n/properties/_type",
+        "type": "Control",
+        "rule": {
+          "effect": "HIDE",
+          "condition": {}
+        }
+      }
+    ]
+  },
+  "data": {}
+}

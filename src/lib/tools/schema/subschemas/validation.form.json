@@ -1,0 +1,159 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "validation": {
+        "type": "object",
+        "properties": {
+
+          "maximum": { "type": "number" },
+          "minimum": {"type": "number"},
+          "multipleOf": {"type": "number"},
+          "exclusiveMinimum": {"type": "number"},
+          "exclusiveMaximum": {"type": "number"},
+
+          "minLength": {
+            "type": "integer"
+          },
+          "maxLength": {
+            "type": "integer"
+          },
+          "pattern": {
+            "type": "string",
+            "format": "regex",
+            "description": "eg: \"[abc]+\""
+          },
+          "minItems": {
+            "type": "integer"
+          },
+          "maxItems": {
+            "type": "integer"
+          },
+          "uniqueItems": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+
+      {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/minimum",
+                "type": "Control"
+              },
+              {
+                "scope": "#/properties/validation/properties/maximum",
+                "type": "Control"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/exclusiveMinimum",
+                "type": "Control"
+              },
+              {
+                "scope": "#/properties/validation/properties/exclusiveMaximum",
+                "type": "Control"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/multipleOf",
+                "type": "Control"
+              }
+            ]
+          }
+        ],
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/type",
+            "schema": {"enum": ["number", "integer"]}
+          }
+        }
+      },
+
+
+
+
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "scope": "#/properties/validation/properties/minLength",
+            "type": "Control"
+          },
+          {
+            "scope": "#/properties/validation/properties/maxLength",
+            "type": "Control"
+          }
+        ],
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/type",
+            "schema": {"enum": ["string"]}
+          }
+        }
+      },
+      {
+        "scope": "#/properties/validation/properties/pattern",
+        "type": "Control",
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/type",
+            "schema": {"enum": ["string"]}
+          }
+        }
+      },
+
+
+      {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/minItems",
+                "type": "Control"
+              },
+              {
+                "scope": "#/properties/validation/properties/maxItems",
+                "type": "Control"
+              }
+            ]
+          },
+          {
+            "scope": "#/properties/validation/properties/uniqueItems",
+            "type": "Control"
+          }
+        ],
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/type",
+            "schema": {"enum": ["array"]}
+          }
+        }
+      }
+    ]
+  },
+  "data": {}
+}

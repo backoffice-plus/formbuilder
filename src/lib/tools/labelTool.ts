@@ -4,9 +4,9 @@ import {AbstractTool} from "./AbstractTool";
 import type {JsonFormsInterface, ToolInterface} from "../../index";
 import {resolveSchema} from "../../index";
 import labelComp from "../../components/tools/label.vue";
-import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./schema/label.schema";
+import {schema, uischema} from "./schema/label.schema";
 import type {ToolContext} from "./index";
-import {prepareOptionDataStyles, setOptionDataStyles} from "./schema/control.schema";
+import * as subschemas from "./subschemas";
 
 export class LabelTool extends AbstractTool implements ToolInterface {
 
@@ -18,8 +18,8 @@ export class LabelTool extends AbstractTool implements ToolInterface {
             text: this.uischema.text,
             i18n: this.uischema.i18n,
             options: this.uischema.options ?? {},
-            ...prepareOptionDataRule(context, this.schema, this.uischema),
-            ...prepareOptionDataStyles(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
         } as any;
     }
 
@@ -28,8 +28,8 @@ export class LabelTool extends AbstractTool implements ToolInterface {
         this.uischema.i18n = data.i18n;
         this.uischema.options = data.options ?? {};
 
-        setOptionDataRule(this.schema, this.uischema, data);
-        setOptionDataStyles(this.schema, this.uischema, data);
+        subschemas.setOptionDataRule(this.schema, this.uischema, data);
+        subschemas.setOptionDataStyles(this.schema, this.uischema, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {

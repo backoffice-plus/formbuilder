@@ -7,7 +7,7 @@ import type {TesterContext} from "@jsonforms/core/src/testers/testers";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core/src/models";
 import {ControlTool} from "./controlTool";
 import _ from "lodash";
-import * as subschemaConst from "./schema/subschemas/const";
+import * as subschemas from "./subschemas";
 
 export class ConstTool extends ControlTool {
 
@@ -27,7 +27,7 @@ export class ConstTool extends ControlTool {
 
         _.merge(
             data,
-            subschemaConst.prepareOptionData(context, this.schema, this.uischema),
+            subschemas.prepareOptionDataConst(context, this.schema, this.uischema),
         )
 
         return data;
@@ -36,7 +36,7 @@ export class ConstTool extends ControlTool {
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         super.optionDataUpdate(context, data);
 
-        subschemaConst.setOptionData(this.schema, this.uischema, data);
+        subschemas.setOptionDataConst(this.schema, this.uischema, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {

@@ -5,14 +5,10 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
-import {
-    prepareOptionDataLabel, prepareOptionDataRule, prepareOptionDataValidation,
-    setOptionDataLabel, setOptionDataRule, setOptionDataValidation,
-    schema, uischema
-} from "./schema/select.schema";
+import {schema, uischema} from "./schema/select.schema";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
-import {prepareOptionDataStyles, setOptionDataStyles} from "./schema/control.schema";
+import * as subschemas from "./subschemas";
 
 
 export class SelectTool extends AbstractTool implements ToolInterface {
@@ -75,10 +71,10 @@ export class SelectTool extends AbstractTool implements ToolInterface {
 
         _.merge(
             data,
-            prepareOptionDataValidation(context, schema, uischema),
-            prepareOptionDataLabel(context, schema, uischema),
-            prepareOptionDataRule(context, schema, uischema),
-            prepareOptionDataStyles(context, schema, uischema),
+            subschemas.prepareOptionDataValidation(context, schema, uischema),
+            subschemas.prepareOptionDataLabel(context, schema, uischema),
+            subschemas.prepareOptionDataRule(context, schema, uischema),
+            subschemas.prepareOptionDataStyles(context, schema, uischema),
         )
 
         const enumOrOneOf = (asMultiSelect ? schema.items : schema) as JsonSchema;
@@ -105,10 +101,10 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         this.schema.format = data.format;
         this.uischema.options = data.options ?? {};
 
-        setOptionDataValidation(schema, uischema, data);
-        setOptionDataLabel(schema, uischema, data);
-        setOptionDataRule(schema, uischema, data);
-        setOptionDataStyles(schema, uischema, data);
+        subschemas.setOptionDataValidation(schema, uischema, data);
+        subschemas.setOptionDataLabel(schema, uischema, data);
+        subschemas.setOptionDataRule(schema, uischema, data);
+        subschemas.setOptionDataStyles(schema, uischema, data);
 
         this.schema.uniqueItems = data.asMultiSelect ? true : undefined;
 

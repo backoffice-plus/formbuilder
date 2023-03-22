@@ -1,0 +1,178 @@
+{
+  "schema": {
+    "type": "object",
+    "definitions": {
+      "schemaConstTypes": {
+        "oneOf": [
+          {
+            "type": "string",
+            "title": "string"
+          },
+          {
+            "type": "number",
+            "title": "number"
+          },
+          {
+            "type": "boolean",
+            "title": "boolean"
+          }
+        ]
+      },
+      "schema": {
+        "type": "object",
+        "properties": {
+          "const": {
+            "oneOf": [
+              {
+                "type": "string",
+                "title": "string"
+              },
+              {
+                "type": "number",
+                "title": "number"
+              },
+              {
+                "type": "boolean",
+                "title": "boolean"
+              }
+            ]
+          }
+        },
+        "required": [
+          "const"
+        ]
+      },
+      "ruleCondition": {
+        "type": "object",
+        "title": "Single Condition",
+        "properties": {
+          "scope": {
+            "type": "string"
+          },
+          "schema": {
+            "type": "object",
+            "properties": {
+              "const": {
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "title": "string"
+                  },
+                  {
+                    "type": "number",
+                    "title": "number"
+                  },
+                  {
+                    "type": "boolean",
+                    "title": "boolean"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "const"
+            ]
+          }
+        },
+        "required": [
+          "scope",
+          "schema"
+        ]
+      },
+      "ruleConditions": {
+        "type": "object",
+        "title": "Combined Conditions",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "AND",
+              "OR"
+            ],
+            "default": "AND"
+          },
+          "conditions": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "scope": {
+                  "type": "string",
+                  "description": "like: #/properties/name"
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "const": {
+                      "oneOf": [
+                        {
+                          "type": "string",
+                          "title": "string"
+                        },
+                        {
+                          "type": "number",
+                          "title": "number"
+                        },
+                        {
+                          "type": "boolean",
+                          "title": "boolean"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "type"
+        ]
+      }
+    },
+    "properties": {
+      "rule": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "type": "object",
+            "properties": {
+              "effect": {
+                "type": "string",
+                "enum": [
+                  "SHOW",
+                  "HIDE",
+                  "ENABLE",
+                  "DISABLE"
+                ]
+              },
+              "condition": {
+                "title": "ConditionType",
+                "oneOf": [
+                  {
+                    "$ref": "#/definitions/ruleCondition",
+                    "title": "SingleCondition"
+                  },
+                  {
+                    "$ref": "#/definitions/ruleConditions",
+                    "title": "CombinedConditions"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "effect",
+              "condition"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "Control",
+    "scope": "#/properties/rule/properties/rule"
+  },
+  "data": {}
+}

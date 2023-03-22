@@ -1,16 +1,9 @@
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {resolveSchema} from "../formbuilder";
-import {
-    prepareOptionDataLabel,
-    prepareOptionDataRule,
-    schema,
-    setOptionDataLabel,
-    setOptionDataRule,
-    uischema
-} from "./schema/group.schema";
+import {schema, uischema} from "./schema/group.schema";
 import _ from "lodash";
 import {VerticalLayout} from "./layoutTool";
-import {prepareOptionDataStyles, setOptionDataStyles} from "./schema/control.schema";
+import * as subschemas from "./subschemas";
 
 
 export class GroupTool extends VerticalLayout {
@@ -20,9 +13,9 @@ export class GroupTool extends VerticalLayout {
 
         _.merge(
             data,
-            prepareOptionDataLabel(context, this.schema, this.uischema),
-            prepareOptionDataRule(context, this.schema, this.uischema),
-            prepareOptionDataStyles(context, this.schema, this.uischema),
+            subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
+            subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
+            subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
         )
         return data;
     }
@@ -30,9 +23,9 @@ export class GroupTool extends VerticalLayout {
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         this.uischema.options = data.options ?? {};
 
-        setOptionDataLabel(this.schema, this.uischema, data);
-        setOptionDataRule(this.schema, this.uischema, data);
-        setOptionDataStyles(this.schema, this.uischema, data);
+        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
+        subschemas.setOptionDataRule(this.schema, this.uischema, data);
+        subschemas.setOptionDataStyles(this.schema, this.uischema, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {

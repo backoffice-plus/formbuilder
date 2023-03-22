@@ -1,11 +1,6 @@
 import type {Categorization, JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 
-export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './subschemas/labelAndI18n'
-export { prepareOptionData as prepareOptionDataValidation, setOptionData as setOptionDataValidation } from './subschemas/validation'
-export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './subschemas/rule'
-export { prepareOptionData as prepareOptionDataStyles, setOptionData as setOptionDataStyles } from './subschemas/styles'
-
 export const schema = {
     type: "object",
 

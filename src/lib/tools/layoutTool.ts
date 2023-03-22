@@ -5,9 +5,8 @@ import {AbstractTool} from "./AbstractTool";
 import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
-import {prepareOptionDataRule, schema, setOptionDataRule, uischema} from "./schema/layout.schema";
-import _ from "lodash";
-import {prepareOptionDataStyles, setOptionDataStyles} from "./schema/control.schema";
+import {schema, uischema} from "./schema/layout.schema";
+import * as subschemas from "./subschemas";
 
 export class VerticalLayout extends AbstractTool implements ToolInterface {
 
@@ -27,8 +26,8 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
         return {
             options: this.uischema?.options,
             uischemaType: this.uischema.type,
-            ...prepareOptionDataRule(context, this.schema, this.uischema),
-            ...prepareOptionDataStyles(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
         } as any;
     }
 
@@ -39,8 +38,8 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
 
         this.uischema.options = data.options ?? {};
 
-        setOptionDataRule(this.schema, this.uischema, data);
-        setOptionDataStyles(this.schema, this.uischema, data);
+        subschemas.setOptionDataRule(this.schema, this.uischema, data);
+        subschemas.setOptionDataStyles(this.schema, this.uischema, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {

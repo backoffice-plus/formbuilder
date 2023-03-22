@@ -1,31 +1,13 @@
 // @ts-ignore
 import _ from "lodash";
+import {Resolver} from "@stoplight/json-ref-resolver";
 import type {ToolInterface,} from "./tools/index";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
-import {
-    fromPropertyToScope,
-    fromScopeToProperty,
-    getPlainProperty,
-    getRequiredFromSchema,
-    normalizePath,
-    normalizeScope
-} from './normalizer';
+import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
 import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
-import {jsonForms as toolOptionsSchemaValidation} from "./tools/schema/subschemas/validation";
-import {jsonForms as toolOptionsSchemaRule} from "./tools/schema/subschemas/rule";
-import {jsonForms as toolOptionsSchemaStyles} from "./tools/schema/subschemas/styles";
-import {
-    jsonForms as toolOptionsSchemaLabelAndI18n,
-    uischemaDescriptionOnly,
-    uischemaNoDescription
-} from "./tools/schema/subschemas/labelAndI18n";
-import constSubschema from "./tools/schema/subschemas/const.form.json";
-
-import {Resolver} from "@stoplight/json-ref-resolver";
-import {CombinatorTool} from "./tools/combinatorTool";
-import {ArrayTool} from "./tools/ArrayTool";
+import {subschemaMap} from "./tools/subschemas";
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {
@@ -220,26 +202,12 @@ export const findAllScopes = (uischema: ControlElement | Layout | UISchemaElemen
 
 type Callback = (ref:URI) => JsonSchema|undefined;
 export const resolveSchema = async (schema: any, callback:Callback|undefined = undefined): Promise<any> => {
-    const schemaMap = {
-        'validation.schema': toolOptionsSchemaValidation.schema,
-        'validation.uischema': toolOptionsSchemaValidation.uischema,
-        'rule.schema': toolOptionsSchemaRule.schema,
-        'rule.uischema': toolOptionsSchemaRule.uischema,
-        'labelAndI18n.schema': toolOptionsSchemaLabelAndI18n.schema,
-        'labelAndI18n.uischema': toolOptionsSchemaLabelAndI18n.uischema,
-        'labelAndI18n.descriptionOnly.uischema': uischemaDescriptionOnly,
-        'labelAndI18n.noDescription.uischema': uischemaNoDescription,
-        'styles.schema': toolOptionsSchemaStyles.schema,
-        'styles.uischema': toolOptionsSchemaStyles.uischema,
-        'const.schema': constSubschema.schema,
-        'const.uischema': constSubschema.uischema,
-    } as Record<string, any>
 
     const resolver = new Resolver({
         resolvers: {
             file: {
                 async resolve(ref: URI) {
-                    return schemaMap[String(ref)] ?? (callback && callback(ref)) ?? {}
+                    return subschemaMap[String(ref)] ?? (callback && callback(ref)) ?? {}
                 }
             },
         }

@@ -5,12 +5,7 @@ import {schema, uischema} from "./schema/array.schema";
 import {getItemsType, resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
 import {AbstractTool} from "./AbstractTool";
-import {
-    prepareOptionDataLabel,
-    prepareOptionDataRule, prepareOptionDataStyles,
-    prepareOptionDataValidation, setOptionDataLabel, setOptionDataRule, setOptionDataStyles,
-    setOptionDataValidation
-} from "./schema/control.schema";
+import * as subschemas from "./subschemas";
 
 export class ArrayTool extends AbstractTool implements ToolInterface {
 
@@ -99,10 +94,10 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         _.merge(
             data,
-            prepareOptionDataValidation(context, this.schema, this.uischema),
-            prepareOptionDataLabel(context, this.schema, this.uischema),
-            prepareOptionDataRule(context, this.schema, this.uischema),
-            prepareOptionDataStyles(context, this.schema, this.uischema),
+            subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
+            subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
+            subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
+            subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
         )
 
         return data;
@@ -154,10 +149,10 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         this.uischema.options = options;
 
-        setOptionDataValidation(this.schema, this.uischema, data);
-        setOptionDataLabel(this.schema, this.uischema, data);
-        setOptionDataRule(this.schema, this.uischema, data);
-        setOptionDataStyles(this.schema, this.uischema, data);
+        subschemas.setOptionDataValidation(this.schema, this.uischema, data);
+        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
+        subschemas.setOptionDataRule(this.schema, this.uischema, data);
+        subschemas.setOptionDataStyles(this.schema, this.uischema, data);
 
         //this.isRequired = data.required;
     }

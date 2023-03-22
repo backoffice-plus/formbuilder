@@ -1,0 +1,36 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "labelAndI18n": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "like label, but stored at schema"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "scope": "#/properties/labelAndI18n/properties/title",
+        "type": "Control"
+      },
+      {
+        "scope": "#/properties/labelAndI18n/properties/description",
+        "type": "Control",
+        "options": {
+          "multi":true
+        }
+      }
+    ]
+  },
+  "data": {}
+}
