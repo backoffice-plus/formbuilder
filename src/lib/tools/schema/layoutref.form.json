@@ -1,0 +1,31 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "_reference": {
+        "type": "string"
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Categorization",
+        "elements": [
+          {
+            "type": "Category",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/_reference"
+              }
+            ],
+            "label": "Base"
+          }
+        ]
+      }
+    ]
+  },
+  "data": {}
+}
