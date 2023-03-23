@@ -13,12 +13,14 @@
         v-if="isModalOpen && toolEdit"
     />
 
-    Builder:
-    <select v-model="showBuilder" @change="onChangeBuilder">
-      <option>schema</option>
-      <option>uischema</option>
-      <option>definitions</option>
-    </select>
+    <div class="styleA">
+      Builder:
+      <select v-model="showBuilder" @change="onChangeBuilder" class="!w-auto !inline">
+        <option>schema</option>
+        <option>uischema</option>
+        <option>definitions</option>
+      </select>
+    </div>
 
     <nav>
 
