@@ -9,7 +9,18 @@ export const prepareOptionData = (context:ToolContext, schema:JsonSchema, uische
 }
 export const setOptionData = (schema: JsonSchema, uischema: UISchemaElement, data: Record<string, any>): void => {
 
-    const rule = data?.rule?.rule;
+    let rule = data?.rule?.rule;
+
+    //ruleSchema (WIP)
+    if(data.rule?.ruleSchema) {
+        rule =  {
+            "effect": "ENABLE",
+            "condition": {
+                "scope": "#",
+                "schema": data.rule?.ruleSchema ?? {}
+            }
+        }
+    }
 
     uischema.rule = rule;
 

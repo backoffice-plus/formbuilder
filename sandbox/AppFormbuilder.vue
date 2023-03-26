@@ -65,6 +65,7 @@ import SchemaCode from "./SchemaCode.vue";
 import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
 import _ from "lodash";
 import type {EventAfterOptionJsonforms} from "../src/lib/mitt";
+import {formbuilderRenderers} from "../src/components/renderers";
 
 const tools = [
     ...defaultTools,
@@ -73,6 +74,7 @@ const tools = [
 const jsonFormsRenderers = Object.freeze([
   ...vanillaRenderers,
   ...boplusVueVanillaRenderers,
+  //...formbuilderRenderers,
 ]);
 
 const oe = ownExamples;//import own examples

@@ -262,7 +262,10 @@ const updateJsonForm = () => {
 const updateSchemaBuilder = () => {
   if (baseSchemaTool?.value) {
     const r = createTypeObjectSchema(baseSchemaTool.value);
-    update(r.schema, rootUischema.value)
+
+
+    //:DEV composables with sub-formbuilder does not work!!
+    //update(r.schema, rootUischema.value)
     emit('schemaUpdated', {schema:r.schema, uischema:rootUischema.value})
   }
 }

@@ -131,7 +131,9 @@ const onChange = (e) => {
     props.tool.optionDataUpdate(context, data)
 
     emit('change', data);
-    emitter.emit('formBuilderUpdated');
+
+    //:DEV global emit do not work with sub-formeditors
+    //emitter.emit('formBuilderUpdated');
   }
 }
 
