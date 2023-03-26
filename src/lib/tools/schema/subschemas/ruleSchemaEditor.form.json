@@ -1,0 +1,15 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "ruleSchema": {
+        "type": "object"
+      }
+    }
+  },
+  "uischema": {
+    "type": "Formbuilder",
+    "scope": "#/properties/rule/properties/ruleSchema"
+  },
+  "data": {}
+}
