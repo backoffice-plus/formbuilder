@@ -13,12 +13,10 @@
         v-if="isModalOpen && toolEdit"
     />
 
-    <div class="styleA">
+    <div class="styleA" v-if="filteredBuilders.length>1">
       Builder:
       <select v-model="showBuilder" @change="onChangeBuilder" class="!w-auto !inline">
-        <option>schema</option>
-        <option>uischema</option>
-        <option>definitions</option>
+        <option v-for="builder in filteredBuilders">{{ builder }}</option>
       </select>
     </div>
 
@@ -99,6 +97,8 @@ const props = defineProps({
   jsonFormsRenderers: Array,
   schemaReadOnly: Boolean,
   tools: Array,
+  builders: Array,
+  initBuilder: String,
 })
 
 const emit = defineEmits(['schemaUpdated']);
@@ -111,6 +111,12 @@ const isModalOpen = ref(false);
 const toolEdit = ref(null);
 const showBuilder = ref('uischema');
 const showBar = ref('schema');
+
+const filteredBuilders = computed(() => {
+  const showBuilders = props.builders;
+  const allowedBuilders = ['schema','uischema','definitions'];
+  return showBuilders ? showBuilders.filter(value => allowedBuilders.includes(value)) : allowedBuilders;
+})
 
 const {registerTools, unregisterAllTools, findLayoutToolByUiType, findMatchingTool} = useTools();
 const {getControlTools, getLayoutTools} = useTools();
@@ -323,8 +329,9 @@ onBeforeMount(() => {
   schemaReadOnly.value = props.schemaReadOnly;
 
   //init baseTool
+  showBuilder.value = props.initBuilder ?? 'uischema';
   update(props?.jsonForms?.schema, props?.jsonForms?.uischema)
-  onChangeBuilder({target:{value:'uischema'}})
+  onChangeBuilder({target:{value:showBuilder.value}})
   if(schemaReadOnly.value) {
     showBar.value='properties';
   }
