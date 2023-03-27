@@ -55,6 +55,7 @@ import {onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
 import {useFormbuilder} from "../composable/formbuilder";
+import {getFormbuilder} from "../lib/vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -75,6 +76,8 @@ const error = ref('');
 const {builder, schemaReadOnly} = useFormbuilder();
 
 onMounted(async () => {
+  const fb = getFormbuilder();
+  console.log("modalcontent.mounted", "root fb", fb)
 
   const context = {
     builder: builder.value,
