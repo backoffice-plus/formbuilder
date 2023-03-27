@@ -91,6 +91,7 @@ import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
 import {generateJsonSchema} from "@jsonforms/core";
 import {useToolInstance} from "../composable/toolinstance";
 import {useFormbuilder} from "../composable/formbuilder";
+import {getFormbuilder} from "../lib/vue";
 
 const props = defineProps({
   jsonForms: Object,
@@ -326,6 +327,9 @@ const updateUischemaBuilder = () => {
 // const setRootSchemaForm = (e) => rootSchemaForm.value = e
 
 onBeforeMount(() => {
+  const fb = getFormbuilder();
+  console.log("FB.onBeforeMount", "root fb", fb)
+
   unregisterAllTools();   //is that a good behavior?
   registerTools(props.tools);
 
