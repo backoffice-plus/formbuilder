@@ -1,386 +1,382 @@
 {
-  "schema": {
-    "type": "object",
-    "properties": {
-      "boolean": {
-        "type": "boolean"
-      },
-      "string": {
-        "type": "string"
-      },
-      "enum": {
-        "type": "string",
-        "enum": [
-          "off",
-          "on",
-          "true",
-          "false"
-        ]
-      },
-      "integer": {
-        "type": "integer"
-      },
-      "array": {
-        "type": "array",
-        "items": {
-          "type": "string"
+    "schema": {
+        "type": "object",
+        "properties": {
+            "boolean": {
+                "type": "boolean"
+            },
+            "string": {
+                "type": "string"
+            },
+            "enum": {
+                "type": "string",
+                "enum": [
+                    "off",
+                    "on",
+                    "true",
+                    "false"
+                ]
+            },
+            "integer": {
+                "type": "integer"
+            },
+            "array": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            }
         }
-      }
+    },
+    "uischema": {
+        "type": "VerticalLayout",
+        "elements": [
+            {
+                "type": "Group",
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/boolean"
+                            },
+                            {
+                                "type": "Label",
+                                "text": "Rule was successful",
+                                "rule": {
+                                    "effect": "SHOW",
+                                    "condition": {
+                                        "scope": "#/properties/boolean",
+                                        "schema": {
+                                            "const": true
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "label": "Boolean equals const"
+            },
+            {
+                "type": "Group",
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/string",
+                                "label": "enter \"on\" to enable input field"
+                            },
+                            {
+                                "type": "Label",
+                                "text": "Rule was successful",
+                                "rule": {
+                                    "effect": "SHOW",
+                                    "condition": {
+                                        "scope": "#/properties/string",
+                                        "schema": {
+                                            "const": "on"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "label": "String equals const"
+            },
+            {
+                "type": "Group",
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/string",
+                                "label": "enter \"on\" or \"true\" to enable input field"
+                            },
+                            {
+                                "type": "Label",
+                                "text": "Rule was successful",
+                                "rule": {
+                                    "effect": "SHOW",
+                                    "condition": {
+                                        "scope": "#/properties/string",
+                                        "schema": {
+                                            "enum": [
+                                                "on",
+                                                "true"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "label": "String equals enum"
+            },
+            {
+                "type": "Group",
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/enum",
+                                "label": "select \"on\" to enable input field"
+                            },
+                            {
+                                "type": "Label",
+                                "text": "Rule was successful",
+                                "rule": {
+                                    "effect": "SHOW",
+                                    "condition": {
+                                        "scope": "#/properties/enum",
+                                        "schema": {
+                                            "const": "on"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "label": "Enum equals const"
+            },
+            {
+                "type": "Group",
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/string",
+                                "label": "enter \"two letters followed by three numbers\" to enable input field"
+                            },
+                            {
+                                "type": "Label",
+                                "text": "Rule was successful",
+                                "rule": {
+                                    "effect": "SHOW",
+                                    "condition": {
+                                        "scope": "#",
+                                        "schema": {
+                                            "properties": {
+                                                "string": {
+                                                    "pattern": "^\\w{2}\\d{3}"
+                                                }
+                                            },
+                                            "required": [
+                                                "string"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "label": "String Pattern"
+            },
+            {
+                "type": "Group",
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/string",
+                                "label": "enter at least 3 signs to enable input field"
+                            },
+                            {
+                                "type": "Label",
+                                "text": "Rule was successful",
+                                "rule": {
+                                    "effect": "SHOW",
+                                    "condition": {
+                                        "scope": "#",
+                                        "schema": {
+                                            "properties": {
+                                                "string": {
+                                                    "minLength": 3
+                                                }
+                                            },
+                                            "required": [
+                                                "string"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "label": "String minLength"
+            },
+            {
+                "type": "Group",
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/enum",
+                                "label": "select neither \"off\" nor \"false\" to enable input field"
+                            },
+                            {
+                                "type": "Label",
+                                "text": "Rule was successful",
+                                "rule": {
+                                    "effect": "SHOW",
+                                    "condition": {
+                                        "scope": "#",
+                                        "schema": {
+                                            "properties": {
+                                                "enum": {
+                                                    "not": {
+                                                        "enum": [
+                                                            "off",
+                                                            "false"
+                                                        ]
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "enum"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "label": "String not"
+            },
+            {
+                "type": "Group",
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/integer",
+                                "label": "enter a number between 5 and 10 to enable input field"
+                            },
+                            {
+                                "type": "Label",
+                                "text": "Rule was successful",
+                                "rule": {
+                                    "effect": "SHOW",
+                                    "condition": {
+                                        "scope": "#",
+                                        "schema": {
+                                            "properties": {
+                                                "integer": {
+                                                    "minimum": 5,
+                                                    "exclusiveMaximum": 10
+                                                }
+                                            },
+                                            "required": [
+                                                "integer"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "label": "Number Minimum & exclusiveMaximum"
+            },
+            {
+                "type": "Group",
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/array",
+                                "label": "create at least one entry with \"on\" to enable input field"
+                            },
+                            {
+                                "type": "Label",
+                                "text": "Rule was successful",
+                                "rule": {
+                                    "effect": "SHOW",
+                                    "condition": {
+                                        "scope": "#",
+                                        "schema": {
+                                            "properties": {
+                                                "array": {
+                                                    "contains": {
+                                                        "const": "on"
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "array"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "label": "Array contains const"
+            },
+            {
+                "type": "Group",
+                "elements": [
+                    {
+                        "type": "HorizontalLayout",
+                        "elements": [
+                            {
+                                "type": "Control",
+                                "scope": "#/properties/array",
+                                "label": "create at least 3 unique filled items to enable input field"
+                            },
+                            {
+                                "type": "Label",
+                                "text": "Rule was successful",
+                                "rule": {
+                                    "effect": "SHOW",
+                                    "condition": {
+                                        "scope": "#",
+                                        "schema": {
+                                            "properties": {
+                                                "array": {
+                                                    "minItems": 3,
+                                                    "uniqueItems": true,
+                                                    "items": {
+                                                        "minLength": 1
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "array"
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "label": "Array minItems"
+            }
+        ]
     }
-  },
-  "uischema": {
-    "type": "VerticalLayout",
-    "elements": [
-      {
-        "type": "Group",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/boolean",
-                "options": {
-                  "toggle": true
-                }
-              },
-              {
-                "type": "Label",
-                "text": "Rule was successful",
-                "rule": {
-                  "effect": "SHOW",
-                  "condition": {
-                    "scope": "#/properties/boolean",
-                    "schema": {
-                      "const": true
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "label": "Boolean equals const"
-      },
-      {
-        "type": "Group",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/string",
-                "label": "enter \"on\" to enable input field"
-              },
-              {
-                "type": "Label",
-                "text": "Rule was successful",
-                "rule": {
-                  "effect": "SHOW",
-                  "condition": {
-                    "scope": "#/properties/string",
-                    "schema": {
-                      "const": "on"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "label": "String equals const"
-      },
-      {
-        "type": "Group",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/string",
-                "label": "enter \"on\" or \"true\" to enable input field"
-              },
-              {
-                "type": "Label",
-                "text": "Rule was successful",
-                "rule": {
-                  "effect": "SHOW",
-                  "condition": {
-                    "scope": "#/properties/string",
-                    "schema": {
-                      "enum": [
-                        "on",
-                        "true"
-                      ]
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "label": "String equals enum"
-      },
-      {
-        "type": "Group",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/enum",
-                "label": "select \"on\" to enable input field"
-              },
-              {
-                "type": "Label",
-                "text": "Rule was successful",
-                "rule": {
-                  "effect": "SHOW",
-                  "condition": {
-                    "scope": "#/properties/enum",
-                    "schema": {
-                      "const": "on"
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "label": "Enum equals const"
-      },
-      {
-        "type": "Group",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/string",
-                "label": "enter \"two letters followed by three numbers\" to enable input field"
-              },
-              {
-                "type": "Label",
-                "text": "Rule was successful",
-                "rule": {
-                  "effect": "SHOW",
-                  "condition": {
-                    "scope": "#",
-                    "schema": {
-                      "properties": {
-                        "string": {
-                          "pattern": "^\\w{2}\\d{3}"
-                        }
-                      },
-                      "required": [
-                        "string"
-                      ]
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "label": "String Pattern"
-      },
-      {
-        "type": "Group",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/string",
-                "label": "enter at least 3 signs to enable input field"
-              },
-              {
-                "type": "Label",
-                "text": "Rule was successful",
-                "rule": {
-                  "effect": "SHOW",
-                  "condition": {
-                    "scope": "#",
-                    "schema": {
-                      "properties": {
-                        "string": {
-                          "minLength": 3
-                        }
-                      },
-                      "required": [
-                        "string"
-                      ]
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "label": "String minLength"
-      },
-      {
-        "type": "Group",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/enum",
-                "label": "select neither \"off\" nor \"false\" to enable input field"
-              },
-              {
-                "type": "Label",
-                "text": "Rule was successful",
-                "rule": {
-                  "effect": "SHOW",
-                  "condition": {
-                    "scope": "#",
-                    "schema": {
-                      "properties": {
-                        "enum": {
-                          "not": {
-                            "enum": [
-                              "off",
-                              "false"
-                            ]
-                          }
-                        }
-                      },
-                      "required": [
-                        "enum"
-                      ]
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "label": "String not"
-      },
-      {
-        "type": "Group",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/integer",
-                "label": "enter a number between 5 and 10 to enable input field"
-              },
-              {
-                "type": "Label",
-                "text": "Rule was successful",
-                "rule": {
-                  "effect": "SHOW",
-                  "condition": {
-                    "scope": "#",
-                    "schema": {
-                      "properties": {
-                        "integer": {
-                          "minimum": 5,
-                          "exclusiveMaximum": 10
-                        }
-                      },
-                      "required": [
-                        "integer"
-                      ]
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "label": "Number Minimum & exclusiveMaximum"
-      },
-      {
-        "type": "Group",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/array",
-                "label": "create at least one entry with \"on\" to enable input field"
-              },
-              {
-                "type": "Label",
-                "text": "Rule was successful",
-                "rule": {
-                  "effect": "SHOW",
-                  "condition": {
-                    "scope": "#",
-                    "schema": {
-                      "properties": {
-                        "array": {
-                          "contains": {
-                            "const": "on"
-                          }
-                        }
-                      },
-                      "required": [
-                        "array"
-                      ]
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "label": "Array contains const"
-      },
-      {
-        "type": "Group",
-        "elements": [
-          {
-            "type": "HorizontalLayout",
-            "elements": [
-              {
-                "type": "Control",
-                "scope": "#/properties/array",
-                "label": "create at least 3 unique filled items to enable input field"
-              },
-              {
-                "type": "Label",
-                "text": "Rule was successful",
-                "rule": {
-                  "effect": "SHOW",
-                  "condition": {
-                    "scope": "#",
-                    "schema": {
-                      "properties": {
-                        "array": {
-                          "minItems": 3,
-                          "uniqueItems": true,
-                          "items": {
-                            "minLength": 1
-                          }
-                        }
-                      },
-                      "required": [
-                        "array"
-                      ]
-                    }
-                  }
-                }
-              }
-            ]
-          }
-        ],
-        "label": "Array minItems"
-      }
-    ]
-  },
-  "data": {}
 }
