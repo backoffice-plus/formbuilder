@@ -7,6 +7,7 @@
     <div v-if="!isToolbar" :class="['flex',{'mr-5':!isRoot}]">
 
       <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
+        <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>
         <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
       </Actions>
 
@@ -133,12 +134,13 @@
 import {  initElements} from "../../lib/initializer";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
-import {deleteToolInChilds, Vuedraggable} from '../../index'
+import {cloneEmptyTool, deleteToolInChilds, useJsonforms, Vuedraggable} from '../../index'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {ref, computed, onMounted, unref, toRaw} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {useFormbuilder} from "../../composable/formbuilder";
+import {useTools} from "../../composable/tools";
 
 const props = defineProps({...toolComponentProps()})
 
@@ -164,6 +166,17 @@ const init = () => {
     //wait to render dom (:TODO use nextTick)
     setTimeout(onDropAreaChange, 50);
   }
+};
+
+const addItem = (type) => {
+  const {schema} = useJsonforms();
+  const {findMatchingTool} = useTools();
+
+  const initSchema = {type:'string'}
+  const tool = cloneEmptyTool(findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
+
+  childTools.value.push(tool);
+  onDropAreaChange(null);
 };
 
 const onDeleteByTool = async (e) => {
