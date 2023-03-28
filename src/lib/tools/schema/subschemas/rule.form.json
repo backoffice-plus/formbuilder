@@ -50,27 +50,47 @@
             "type": "string"
           },
           "schema": {
-            "type": "object",
-            "properties": {
-              "const": {
-                "oneOf": [
-                  {
-                    "type": "string",
-                    "title": "string"
-                  },
-                  {
-                    "type": "number",
-                    "title": "number"
-                  },
-                  {
-                    "type": "boolean",
-                    "title": "boolean"
+            "oneOf": [
+              {
+                "type": "object",
+                "title": "const",
+                "properties": {
+                  "const": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "title": "string"
+                      },
+                      {
+                        "type": "number",
+                        "title": "number"
+                      },
+                      {
+                        "type": "boolean",
+                        "title": "boolean"
+                      }
+                    ]
                   }
+                },
+                "required": [
+                  "const"
+                ]
+              },
+              {
+                "type": "object",
+                "title": "required",
+                "properties": {
+                  "required": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "required"
                 ]
               }
-            },
-            "required": [
-              "const"
             ]
           }
         },
@@ -102,25 +122,48 @@
                   "description": "like: #/properties/name"
                 },
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "const": {
-                      "oneOf": [
-                        {
-                          "type": "string",
-                          "title": "string"
-                        },
-                        {
-                          "type": "number",
-                          "title": "number"
-                        },
-                        {
-                          "type": "boolean",
-                          "title": "boolean"
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "title": "const",
+                      "properties": {
+                        "const": {
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "title": "string"
+                            },
+                            {
+                              "type": "number",
+                              "title": "number"
+                            },
+                            {
+                              "type": "boolean",
+                              "title": "boolean"
+                            }
+                          ]
                         }
+                      },
+                      "required": [
+                        "const"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "title": "required",
+                      "properties": {
+                        "required": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "required"
                       ]
                     }
-                  }
+                  ]
                 }
               }
             }
