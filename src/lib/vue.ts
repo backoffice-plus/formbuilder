@@ -1,5 +1,6 @@
 import type {ComponentInternalInstance} from "@vue/runtime-core";
 import {getCurrentInstance} from "vue";
+import type {ToolFinder} from "./ToolFinder";
 
 export const getFormbuilder = () : ComponentInternalInstance|null => {
     let instance = getCurrentInstance();
@@ -13,4 +14,8 @@ export const findFormbuilder = (instance:ComponentInternalInstance) : ComponentI
     else {
         return instance.parent ? findFormbuilder(instance.parent) : null;
     }
+}
+
+export const getToolfinder = (): ToolFinder | undefined => {
+    return getFormbuilder()?.exposed?.toolFinder
 }

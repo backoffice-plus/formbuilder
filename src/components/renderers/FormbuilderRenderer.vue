@@ -29,7 +29,7 @@ import {boplusVueVanillaRenderers} from "../../../packages/boplus-vue-vanilla/sr
 import {formbuilderRenderers} from "./index";
 import {controlTools} from "../../lib/tools";
 import FormBuilder from "../FormBuilder.vue";
-import {useTools} from "../../composable/tools";
+import {getFormbuilder} from "../../lib/vue";
 
 const formbuilderRenderer = defineComponent({
   components: {
@@ -47,8 +47,8 @@ const formbuilderRenderer = defineComponent({
       ...formbuilderRenderers,
     ]);
 
-    const {tools} = useTools()
-
+    const fb = getFormbuilder();
+    const tools = fb?.props.tools ?? [];
 
     const jsonForms = {};
 

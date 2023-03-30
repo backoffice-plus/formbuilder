@@ -79,10 +79,13 @@ import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount} from 'v
 import {
   FormBuilderBar,
   createJsonForms,
-  emitter, cloneToolWithSchema, createTypeObjectSchema, findAllProperties, findAllScopes,
+  emitter,
+  cloneToolWithSchema,
+  createTypeObjectSchema,
+  findAllProperties,
+  findAllScopes,
 } from "../index";
 import Modal from "./Modal.vue";
-import {useTools} from "../composable/tools";
 import {useJsonforms} from "../composable/jsonforms";
 import {normalizePath, normalizeScope} from "../lib/normalizer";
 import _ from "lodash";
@@ -92,6 +95,7 @@ import {generateJsonSchema} from "@jsonforms/core";
 import {useToolInstance} from "../composable/toolinstance";
 import {useFormbuilder} from "../composable/formbuilder";
 import {getFormbuilder} from "../lib/vue";
+import {ToolFinder} from "../lib/ToolFinder";
 
 const props = defineProps({
   jsonForms: Object,
@@ -104,7 +108,6 @@ const props = defineProps({
 
 const emit = defineEmits(['schemaUpdated']);
 
-
 const drag = ref(false);
 const jsonFormsUiSchema = ref(props?.jsonForms?.uischema);
 const jsonFormsSchema = ref(props?.jsonForms?.schema);
@@ -113,14 +116,15 @@ const toolEdit = ref(null);
 const showBuilder = ref('uischema');
 const showBar = ref('schema');
 
+
+const toolFinder = new ToolFinder(props.tools);
+defineExpose({toolFinder})
+
 const filteredBuilders = computed(() => {
   const showBuilders = props.builders;
   const allowedBuilders = ['schema','uischema','definitions'];
   return showBuilders ? showBuilders.filter(value => allowedBuilders.includes(value)) : allowedBuilders;
 })
-
-const {registerTools, unregisterAllTools, findLayoutToolByUiType, findMatchingTool} = useTools();
-const {getControlTools, getLayoutTools} = useTools();
 
 const {update, schema: rootSchema, uischema: rootUischema} = useJsonforms();
 const {baseTool: baseUiTool2, createBaseTool, createSchemaTool, createDefTool} = useToolInstance();
@@ -152,10 +156,10 @@ const onChangeBuilder = (e) => {
       //:TODO add property & scope changed check!
 
         if(schemaReadOnly.value) {
-          baseUiTool.value = createBaseTool().value;
+          baseUiTool.value = createBaseTool(props.tools).value;
         }
         else {
-          baseUiTool.value = createBaseTool(rootSchema.value, rootUischema.value).value;
+          baseUiTool.value = createBaseTool(props.tools, rootSchema.value, rootUischema.value).value;
         }
 
       currentBaseTool.value = baseUiTool.value;
@@ -184,21 +188,13 @@ const tools = computed(() => {
       return readonlyTools.value;
 
     case 'schema':
-      all = getControlTools();
+      all = toolFinder.findControlTools();
       break;
 
     case 'uischema':
-      all = getLayoutTools();
+      all = toolFinder.findLayoutTools();
       break;
   }
-
-  // if(!props.schema-Read-Only) {
-  //   all.push(...getControlTools())
-  // }
-  //
-  // if('uischema' === showBuilder.value) {
-  //   all.push(...getLayoutTools())
-  // }
 
   all = all.filter(tool => !tool.toolbarOptions()?.hideToolAtBar);
 
@@ -223,7 +219,7 @@ const readonlyTools = computed(() => {
       const itemSchema = allProps[name];
       const itemUischema = {type:'Control',scope:'#'};
 
-      const clone = cloneToolWithSchema(findMatchingTool(rootSchema, itemSchema, itemUischema),  itemSchema, itemUischema)
+      const clone = cloneToolWithSchema(toolFinder.findMatchingTool(rootSchema, itemSchema, itemUischema),  itemSchema, itemUischema)
       clone.propertyName = name;
 
       return clone;
@@ -329,9 +325,6 @@ const updateUischemaBuilder = () => {
 onBeforeMount(() => {
   const fb = getFormbuilder();
   console.log("FB.onBeforeMount", "root fb", fb)
-
-  unregisterAllTools();   //is that a good behavior?
-  registerTools(props.tools);
 
   schemaReadOnly.value = props.schemaReadOnly;
 

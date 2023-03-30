@@ -139,18 +139,17 @@ import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {ref, computed, onMounted, unref, toRaw} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
-import {useFormbuilder} from "../../composable/formbuilder";
-import {useTools} from "../../composable/tools";
+import {getToolfinder} from "../../lib/vue";
 
 const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 
-const {onDrag, toolDragging} = useFormbuilder();
-
 const childTools = ref([]);
 const collapsed = ref(false);
 
+
+const toolFinder = getToolfinder();
 
 onMounted(() => {
   if (!props.isToolbar) {
@@ -160,7 +159,7 @@ onMounted(() => {
 
 const init = () => {
   childTools.value = [];
-  childTools.value.push(...initElements(props.tool))
+  childTools.value.push(...initElements(toolFinder, props.tool))
 
   if (childTools.value.length) {
     //wait to render dom (:TODO use nextTick)
@@ -169,11 +168,8 @@ const init = () => {
 };
 
 const addItem = (type) => {
-  const {schema} = useJsonforms();
-  const {findMatchingTool} = useTools();
-
   const initSchema = {type:'string'}
-  const tool = cloneEmptyTool(findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
+  const tool = cloneEmptyTool(toolFinder.findMatchingTool({}, initSchema, {type: 'Control', scope: '#'}), initSchema);
 
   childTools.value.push(tool);
   onDropAreaChange(null);
