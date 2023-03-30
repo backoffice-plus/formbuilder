@@ -41,21 +41,17 @@ const formbuilderRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const control = useVanillaControl(useJsonFormsAllOfControl(props))
 
-    const jsonFormsRenderers = Object.freeze([
-      ...vanillaRenderers,
-      ...boplusVueVanillaRenderers,
-      ...formbuilderRenderers,
-    ]);
-
     const fb = getFormbuilder();
-    const tools = fb?.props.tools ?? [];
 
-    const jsonForms = {};
+    const jsonForms = {
+      schema: control.control.value.data,
+      uischema: {},
+    };
 
     return {
       ...control,
-      tools,
-      jsonFormsRenderers,
+      tools: fb?.props.tools ?? [],
+      jsonFormsRenderers: fb?.props.jsonFormsRenderers ?? [],
       jsonForms
     };
   },

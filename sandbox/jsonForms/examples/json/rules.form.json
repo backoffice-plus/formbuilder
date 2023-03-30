@@ -356,11 +356,14 @@
                                     "condition": {
                                         "scope": "#",
                                         "schema": {
-                                            "properties": {
+                                            "type": "object",
+                      "properties": {
                                                 "array": {
+                          "type": "array",
                                                     "minItems": 3,
                                                     "uniqueItems": true,
                                                     "items": {
+                            "type": "string",
                                                         "minLength": 1
                                                     }
                                                 }
