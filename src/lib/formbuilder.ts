@@ -205,7 +205,7 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
     return await resolver.resolve(schema)
         .then(resolved => {
             if (resolved.errors.length) {
-                //throw resolved.errors.map(error => error.message);
+                throw resolved.errors.map(error => error.message);
                 console.log("resolveSchema error", resolved.errors.map(error => error.message));
                 return {}
             }

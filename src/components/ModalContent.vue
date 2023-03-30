@@ -82,6 +82,7 @@ onMounted(async () => {
     rootSchema: fb?.exposed?.rootSchema?.value,
   }
 
+  try {
   options.value = props.tool.optionDataPrepare(context);
   jsonFormSchema.value = await props.tool.optionJsonforms(context)
       .then(e => {
@@ -94,7 +95,14 @@ onMounted(async () => {
 
         return {schema:event.schema, uischema:event.uischema};
     })
-    .catch(e => error.value=e)
+    .catch(e => {
+      error.value = e
+    })
+  }
+  catch(e) {
+    error.value = e;
+  }
+
 
 
 
