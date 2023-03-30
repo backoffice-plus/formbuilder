@@ -19,6 +19,7 @@
           :schemaReadOnly="schemaReadOnly"
           :tools="tools"
           :key="example + (schemaReadOnly?1:0)"
+          @schemaUpdated="onSchemaUpdated"
       />
     <!--            -->
 
@@ -50,7 +51,7 @@
 
 <script setup lang="ts">
 
-import {defaultTools, emitter, FormBuilder, useJsonforms} from "../src/index.ts";
+import {defaultTools, emitter, FormBuilder} from "../src/index.ts";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
 import {computed, onMounted, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
@@ -87,7 +88,13 @@ const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
 
-const {schema: rootSchema, uischema:rootUiSchema} = useJsonforms();
+const rootSchema = ref();
+const rootUiSchema = ref();
+const onSchemaUpdated = (jsonForms) => {
+  rootSchema.value = jsonForms.schema;
+  rootUiSchema.value = jsonForms.uischema;
+  jsonFormsResolved.value = unref(jsonForms);
+}
 
 const jsonForms = computed(() => {
   let exampleData = {schema:undefined, uischema:undefined} as any;
@@ -128,7 +135,7 @@ const jsonForms = computed(() => {
 });
 
 const updateJsonFormDebounced = _.debounce((a) => {
-  latestSchemaAfterExampleData.value = {schema:rootSchema,uischema:rootUiSchema};
+  latestSchemaAfterExampleData.value = {schema:rootSchema.value,uischema:rootUiSchema.value};
 },300,{leading:false, trailing:true})
 
 
