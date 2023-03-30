@@ -124,7 +124,10 @@ const onEditTool = (data) => {
   isModalOpen.value = true;
   toolEdit.value = data.tool;
 }
-defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, rootUischema, onEditTool})
+const onDropAreaChanged = () => {
+  updateJsonFormDebounced();
+};
+defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, rootUischema, onEditTool, onDropAreaChanged})
 
 
 const filteredBuilders = computed(() => {
@@ -320,6 +323,10 @@ const updateUischemaBuilder = () => {
 // const setRootDefinitionForm = (e) => rootDefinitionForm.value = e
 // const setRootSchemaForm = (e) => rootSchemaForm.value = e
 
+const updateJsonFormDebounced = _.debounce(() => {
+  window.setTimeout(updateJsonForm, 100);
+},100,{leading:false, trailing:true})
+
 onBeforeMount(() => {
   const fb = getFormbuilder();
   console.log("FB.onBeforeMount", "root fb", fb)
@@ -333,9 +340,6 @@ onBeforeMount(() => {
     showBar.value='properties';
   }
 
-  const updateJsonFormDebounced = _.debounce(() => {
-    window.setTimeout(updateJsonForm, 100);
-  },100,{leading:false, trailing:true})
 
   //trigger update if there are no elements (that would emit 'formBuilderUpdated')
   const hasElements = (props.jsonForms?.uischema?.elements?.length ?? 0) > 0;
@@ -347,13 +351,14 @@ onBeforeMount(() => {
   //   isModalOpen.value = true;
   //   toolEdit.value = data.tool;
   // })
-  emitter.on('formBuilderUpdated', (data) => {
-    updateJsonFormDebounced();
-  });
+  // emitter.on('formBuilderUpdated', (data) => {
+  //   console.log("fb.formBuilderUpdated")
+  //   updateJsonFormDebounced();
+  // });
 });
 onBeforeUnmount(() => {
   //emitter.off('formBuilderModal');
-  emitter.off('formBuilderUpdated');
+  //emitter.off('formBuilderUpdated');
 })
 
 </script>
