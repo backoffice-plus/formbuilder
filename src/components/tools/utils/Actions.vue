@@ -1,7 +1,7 @@
 <template>
 
   <div class="toolActions">
-    <button type="button" class="options" @click="openModal"><Icon icon="mdi:gear" /></button>
+    <button type="button" class="options" @click="onGear"><Icon icon="mdi:gear" /></button>
     <button type="button" class="remove" @click="emit('delete')" v-if="props.deletable"><Icon icon="mdi:trash" /></button>
     <slot></slot>
   </div>
@@ -59,6 +59,7 @@
 
 import {emitter} from "../../../lib/mitt";
 import {Icon} from "@iconify/vue";
+import {getFormbuilder} from "../../../lib/vue";
 
 const props = defineProps(
     {
@@ -68,8 +69,9 @@ const props = defineProps(
 )
 const emit = defineEmits(['gear', 'delete'])
 
-const openModal = () => {
-  emitter.emit('formBuilderModal', {tool:props.tool})
+const fb = getFormbuilder();
+const onGear = () => {
+  fb?.exposed?.onEditTool({tool:props.tool})
 };
 
 </script>
