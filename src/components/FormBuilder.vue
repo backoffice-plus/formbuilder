@@ -83,7 +83,7 @@ import {
   cloneToolWithSchema,
   createTypeObjectSchema,
   findAllProperties,
-  findAllScopes,
+  findAllScopes, createBaseTool, createDefTool, createSchemaTool,
 } from "../index";
 import Modal from "./Modal.vue";
 import {useJsonforms} from "../composable/jsonforms";
@@ -92,7 +92,6 @@ import _ from "lodash";
 import {objectTool} from "../lib/tools/ObjectTool";
 import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
 import {generateJsonSchema} from "@jsonforms/core";
-import {useToolInstance} from "../composable/toolinstance";
 import {useFormbuilder} from "../composable/formbuilder";
 import {getFormbuilder} from "../lib/vue";
 import {ToolFinder} from "../lib/ToolFinder";
@@ -127,7 +126,6 @@ const filteredBuilders = computed(() => {
 })
 
 const {update, schema: rootSchema, uischema: rootUischema} = useJsonforms();
-const {baseTool: baseUiTool2, createBaseTool, createSchemaTool, createDefTool} = useToolInstance();
 
 const {builder, schemaReadOnly} = useFormbuilder();
 
@@ -156,10 +154,10 @@ const onChangeBuilder = (e) => {
       //:TODO add property & scope changed check!
 
         if(schemaReadOnly.value) {
-          baseUiTool.value = createBaseTool(props.tools).value;
+          baseUiTool.value = createBaseTool(toolFinder);
         }
         else {
-          baseUiTool.value = createBaseTool(props.tools, rootSchema.value, rootUischema.value).value;
+          baseUiTool.value = createBaseTool(toolFinder, rootSchema.value, rootUischema.value);
         }
 
       currentBaseTool.value = baseUiTool.value;
