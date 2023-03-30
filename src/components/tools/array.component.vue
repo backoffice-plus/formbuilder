@@ -80,7 +80,6 @@ import Actions from "./utils/Actions.vue";
 import {deleteToolInChilds, Vuedraggable} from '../../index'
 import {computed, onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
-import {useTools} from "../../composable/tools";
 import {cloneEmptyTool} from "../../lib/formbuilder";
 import {initArrayElements} from "../../lib/initializer";
 import {useJsonforms} from "../../composable/jsonforms";
@@ -90,6 +89,7 @@ import {scalarTypes, toolComponentProps, vuedraggableOptions} from "../../lib/mo
 import {ReferenceTool} from "../../lib/tools/referenceTool";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import {useFormbuilder} from "../../composable/formbuilder";
+import {getToolfinder} from "../../lib/vue";
 
 const props = defineProps({...toolComponentProps()})
 
@@ -124,11 +124,13 @@ const showAddItem = computed(() => {
   return !getFirstChild.value
 });
 
+const toolFinder = getToolfinder();
+
 onMounted(() => {
   if (!props.isToolbar) {
     if (['array'].includes(props?.tool?.schema?.type)) {
 
-      childTools.value.push(...initArrayElements(props.tool));
+      childTools.value.push(...initArrayElements(toolFinder, props.tool));
 
       //wait to render dom
       if (childTools.value.length) {
@@ -150,14 +152,13 @@ const onDropAreaChange = (e) => {
 
 const addItem = (initSchema = undefined) => {
   const {schema} = useJsonforms();
-  const {findMatchingTool} = useTools();
 
   initSchema = initSchema ?? {type:'string'};
   // if(isArrayOfRef.value) {
   //   initSchema = {$ref:'#'}
   // }
 
-  const tool = cloneEmptyTool(findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
+  const tool = cloneEmptyTool(toolFinder.findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
 
   childTools.value.push(tool);
   onDropAreaChange(null);

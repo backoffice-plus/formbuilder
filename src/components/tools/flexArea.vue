@@ -139,6 +139,7 @@ import {ref, computed, onMounted, unref, toRaw} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {useFormbuilder} from "../../composable/formbuilder";
+import {getToolfinder} from "../../lib/vue";
 
 const props = defineProps({...toolComponentProps()})
 
@@ -150,6 +151,8 @@ const childTools = ref([]);
 const collapsed = ref(false);
 
 
+const toolFinder = getToolfinder();
+
 onMounted(() => {
   if (!props.isToolbar) {
     init();
@@ -158,7 +161,7 @@ onMounted(() => {
 
 const init = () => {
   childTools.value = [];
-  childTools.value.push(...initElements(props.tool))
+  childTools.value.push(...initElements(toolFinder, props.tool))
 
   if (childTools.value.length) {
     //wait to render dom (:TODO use nextTick)

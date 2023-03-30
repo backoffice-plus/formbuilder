@@ -4,14 +4,15 @@ import type {ToolInterface} from "../lib/tools";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {generateJsonSchema} from "@jsonforms/core";
 import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
-import {cloneToolWithSchema, findBaseTool} from "../lib/formbuilder";
+import {cloneToolWithSchema} from "../lib/formbuilder";
 import {objectTool} from "../lib/tools/ObjectTool";
+import {getFormbuilder} from "../lib/vue";
 
 const baseTool: Ref<ToolInterface | null> = ref(null);
 
 export function useToolInstance() {
 
-    const createBaseTool = (schema: JsonSchema, uischema: UISchemaElement) => {
+    const createBaseTool = (tools:ToolInterface[], schema: JsonSchema, uischema: UISchemaElement) => {
         if (undefined === schema) {
             schema = generateJsonSchema({});
         }
@@ -19,7 +20,12 @@ export function useToolInstance() {
             uischema = generateDefaultUISchema(schema);
         }
 
-        baseTool.value = findBaseTool(schema, uischema);
+        const bt = getFormbuilder()?.exposed?.toolFinder.findBaseTool(schema, uischema);
+        if(bt) {
+            baseTool.value = bt;
+        }
+
+        //baseTool.value = findBaseTool(tools, schema, uischema);
 
         return baseTool;
     };

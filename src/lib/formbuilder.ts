@@ -5,7 +5,6 @@ import type {ToolInterface,} from "./tools/index";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
 import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
-import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
 import {subschemaMap} from "./tools/subschemas";
 
@@ -58,49 +57,7 @@ export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uis
 };
 
 
-export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout|UISchemaElement|Scoped) : ToolInterface => {
 
-    if(undefined === schema) {
-        throw "schema is undefined"
-    }
-    if(undefined === uischema || null === uischema) {
-        throw "uischema is undefined"
-    }
-
-    const isLayout = "elements" in uischema
-    const isScoped = "scope" in uischema;
-
-    const {findLayoutToolByUiType, findMatchingTool} = useTools();
-
-    let itemSchema = schema;
-    let tool;
-
-    if(isLayout) {
-        tool = findLayoutToolByUiType(uischema.type) ?? unknownTool;
-    }
-
-    //specialcase - some examples use none-Layout-elements as root
-    else {
-        if(isScoped) {
-            //not working well!!!
-            if ('#' === uischema?.scope) {
-                console.error("scope=# is not supported")
-                return unknownTool;
-                const props = schema.properties as any;
-                const propKeys = Object.keys(props);
-                itemSchema = propKeys[0] && props[propKeys[0]] as any
-            } else {
-                itemSchema = _.get(schema, normalizeScope(uischema.scope));
-            }
-        }
-
-        tool = findMatchingTool(schema, itemSchema, uischema) ?? unknownTool;
-    }
-
-    const clone = cloneToolWithSchema(tool, itemSchema, uischema as UISchemaElement);
-
-    return clone;
-};
 
 /** @deprecated **/
 export const getItemsType = (schema:JsonSchema):string|undefined => {
