@@ -120,7 +120,11 @@ const toolDragging = ref();
 const onToolDrag = (e) => toolDragging.value = onDragGetTool(e);
 const rootSchema = ref();
 const rootUischema = ref();
-defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, rootUischema})
+const onEditTool = (data) => {
+  isModalOpen.value = true;
+  toolEdit.value = data.tool;
+}
+defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, rootUischema, onEditTool})
 
 
 const filteredBuilders = computed(() => {
@@ -339,16 +343,16 @@ onBeforeMount(() => {
     updateJsonForm();
   }
 
-  emitter.on('formBuilderModal', (data) => {
-    isModalOpen.value = true;
-    toolEdit.value = data.tool;
-  })
+  // emitter.on('formBuilderModal', (data) => {
+  //   isModalOpen.value = true;
+  //   toolEdit.value = data.tool;
+  // })
   emitter.on('formBuilderUpdated', (data) => {
     updateJsonFormDebounced();
   });
 });
 onBeforeUnmount(() => {
-  emitter.off('formBuilderModal');
+  //emitter.off('formBuilderModal');
   emitter.off('formBuilderUpdated');
 })
 

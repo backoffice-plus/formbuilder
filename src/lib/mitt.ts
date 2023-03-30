@@ -2,7 +2,7 @@ import mitt from 'mitt'
 import type {JsonFormsUISchema, ToolInterface} from "./tools";
 import type {JsonSchema} from "@jsonforms/core";
 type Events = {
-    formBuilderModal: any,
+    //formBuilderModal: any,
     formBuilderUpdated: any,
     //formBuilderSchemaUpdated: any,
 
