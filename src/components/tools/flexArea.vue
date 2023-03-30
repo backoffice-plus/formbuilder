@@ -186,7 +186,7 @@ const onDeleteByTool = async (e) => {
 
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
-  emitter.emit('formBuilderUpdated', e)
+  fb?.exposed?.onDropAreaChanged();
 };
 
 const onDelete = () => {

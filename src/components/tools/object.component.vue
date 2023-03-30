@@ -112,7 +112,7 @@ onMounted(() => {
 
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
-  emitter.emit('formBuilderUpdated')
+  fb?.exposed?.onDropAreaChanged();
 };
 
 const addItem = (type) => {

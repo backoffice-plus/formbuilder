@@ -3,7 +3,7 @@ import type {JsonFormsUISchema, ToolInterface} from "./tools";
 import type {JsonSchema} from "@jsonforms/core";
 type Events = {
     //formBuilderModal: any,
-    formBuilderUpdated: any,
+    //formBuilderUpdated: any,
     //formBuilderSchemaUpdated: any,
 
     afterOptionJsonforms: any,
