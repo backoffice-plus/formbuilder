@@ -134,12 +134,12 @@
 import {  initElements} from "../../lib/initializer";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
-import {cloneEmptyTool, deleteToolInChilds, useJsonforms, Vuedraggable} from '../../index'
+import {cloneEmptyTool, deleteToolInChilds, Vuedraggable} from '../../index'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {ref, computed, onMounted, unref, toRaw} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
-import {getToolfinder} from "../../lib/vue";
+import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 
 const props = defineProps({...toolComponentProps()})
 
@@ -148,8 +148,9 @@ const emit = defineEmits(['deleteByTool']);
 const childTools = ref([]);
 const collapsed = ref(false);
 
-
+const fb = getFormbuilder();
 const toolFinder = getToolfinder();
+const onDrag = fb?.exposed.onToolDrag;
 
 onMounted(() => {
   if (!props.isToolbar) {
@@ -193,9 +194,10 @@ const onDelete = () => {
 };
 
 const showDragClass = computed(() => {
-  const isCategory = 'Category' === toolDragging.value?.uischema?.type;
+  const toolDragging = getToolDragging();
+  const isCategory = 'Category' === toolDragging?.uischema?.type;
 
-  return !isCategory && !!toolDragging.value;
+  return !isCategory && !!toolDragging;
 })
 
 </script>

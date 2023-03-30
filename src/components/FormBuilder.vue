@@ -92,8 +92,7 @@ import _ from "lodash";
 import {objectTool} from "../lib/tools/ObjectTool";
 import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
 import {generateJsonSchema} from "@jsonforms/core";
-import {useFormbuilder} from "../composable/formbuilder";
-import {getFormbuilder} from "../lib/vue";
+import {getFormbuilder, onDragGetTool} from "../lib/vue";
 import {ToolFinder} from "../lib/ToolFinder";
 
 const props = defineProps({
@@ -116,8 +115,12 @@ const showBuilder = ref('uischema');
 const showBar = ref('schema');
 
 
+//expose
 const toolFinder = new ToolFinder(props.tools);
-defineExpose({toolFinder})
+const toolDragging = ref();
+const onToolDrag = (e) => toolDragging.value = onDragGetTool(e);
+defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag})
+
 
 const filteredBuilders = computed(() => {
   const showBuilders = props.builders;
@@ -126,8 +129,6 @@ const filteredBuilders = computed(() => {
 })
 
 const {update, schema: rootSchema, uischema: rootUischema} = useJsonforms();
-
-const {builder, schemaReadOnly} = useFormbuilder();
 
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
 
@@ -138,8 +139,6 @@ const {builder, schemaReadOnly} = useFormbuilder();
 // });
 
 const onChangeBuilder = (e) => {
-  builder.value = e.target.value;
-
   switch (e.target.value) {
     case 'schema':
       showBar.value='schema';
@@ -153,7 +152,7 @@ const onChangeBuilder = (e) => {
 
       //:TODO add property & scope changed check!
 
-        if(schemaReadOnly.value) {
+        if(props.schemaReadOnly) {
           baseUiTool.value = createBaseTool(toolFinder);
         }
         else {
@@ -205,7 +204,7 @@ const readonlyTools = computed(() => {
 
 
   //:TODO find better solution!! use toolStore
-  if(schemaReadOnly.value) {
+  if(props.schemaReadOnly) {
 
     const {schema, uischema} = useJsonforms();
 
@@ -299,7 +298,7 @@ const updateUischemaBuilder = () => {
   }
 
   if ('uischema' === showBuilder.value) {
-    newJsonForms = createJsonForms(baseUiTool.value, jsonFormsSchema.value, schemaReadOnly.value);
+    newJsonForms = createJsonForms(baseUiTool.value, jsonFormsSchema.value, props.schemaReadOnly);
     jsonFormsSchema.value = newJsonForms.schema;
     jsonFormsUiSchema.value = newJsonForms.uischema;
   }
@@ -324,13 +323,11 @@ onBeforeMount(() => {
   const fb = getFormbuilder();
   console.log("FB.onBeforeMount", "root fb", fb)
 
-  schemaReadOnly.value = props.schemaReadOnly;
-
   //init baseTool
   showBuilder.value = props.initBuilder ?? 'uischema';
   update(props?.jsonForms?.schema, props?.jsonForms?.uischema)
   onChangeBuilder({target:{value:showBuilder.value}})
-  if(schemaReadOnly.value) {
+  if(props.schemaReadOnly) {
     showBar.value='properties';
   }
 

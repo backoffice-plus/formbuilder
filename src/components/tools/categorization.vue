@@ -123,21 +123,20 @@ import {ref, computed, onMounted} from 'vue';
 import {unknownTool} from "../../lib/tools/unknownTool";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
-import {useFormbuilder} from "../../composable/formbuilder";
-import {getToolfinder} from "../../lib/vue";
+import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 
 const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
-
-const {onDrag, toolDragging} = useFormbuilder();
 
 const childTools = ref([]);
 const tabs = ref([]);
 const currentTab = ref(-1);
 const collapsed = ref(false);
 
+const fb = getFormbuilder();
 const toolFinder = getToolfinder();
+const onDrag = fb?.exposed.onToolDrag;
 
 onMounted(() => {
   if (!props.isToolbar) {
@@ -194,7 +193,8 @@ const onDelete = () => {
 };
 
 const showDragClass = computed(() => {
-  const isCategory = 'Category' === toolDragging.value?.uischema?.type;
+  const toolDragging = getToolDragging();
+  const isCategory = 'Category' === toolDragging?.uischema?.type;
   return isCategory
 })
 
