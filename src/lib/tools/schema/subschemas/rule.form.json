@@ -165,14 +165,44 @@
               "effect",
               "condition"
             ]
+          },
+          "ruleSchema": {
+            "type": "object",
+            "additionalProperties": true
           }
         }
       }
     }
   },
   "uischema": {
-    "type": "Control",
-    "scope": "#/properties/rule/properties/rule"
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Categorization",
+        "elements": [
+          {
+            "type": "Category",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/rule/properties/rule"
+              }
+            ],
+            "label": "Rule"
+          },
+          {
+            "type": "Category",
+            "elements": [
+              {
+                "type": "Formbuilder",
+                "scope": "#/properties/rule/properties/ruleSchema"
+              }
+            ],
+            "label": "Schema Builder"
+          }
+        ]
+      }
+    ]
   },
   "data": {}
 }

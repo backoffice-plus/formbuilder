@@ -75,7 +75,7 @@ const tools = [
 const jsonFormsRenderers = Object.freeze([
   ...vanillaRenderers,
   ...boplusVueVanillaRenderers,
-  //...formbuilderRenderers,
+  ...formbuilderRenderers,
 ]);
 
 const oe = ownExamples;//import own examples
