@@ -88,14 +88,12 @@ import {Icon} from "@iconify/vue";
 import {scalarTypes, toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {ReferenceTool} from "../../lib/tools/referenceTool";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
-import {useFormbuilder} from "../../composable/formbuilder";
-import {getToolfinder} from "../../lib/vue";
+import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 
 const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 
-const {onDrag, toolDragging} = useFormbuilder();
 
 const childTools = ref([]);
 const collapsed = ref(false);
@@ -124,7 +122,9 @@ const showAddItem = computed(() => {
   return !getFirstChild.value
 });
 
+const fb = getFormbuilder();
 const toolFinder = getToolfinder();
+const onDrag = fb?.exposed.onToolDrag;
 
 onMounted(() => {
   if (!props.isToolbar) {
@@ -202,8 +202,9 @@ const onDelete = () => {
 };
 
 const showDragClass = computed(() => {
-  const isControl = 'Control' === toolDragging.value?.uischema?.type;
-  const isRefTool = toolDragging.value instanceof ReferenceTool;
+  const toolDragging = getToolDragging();
+  const isControl = 'Control' === toolDragging?.uischema?.type;
+  const isRefTool = toolDragging instanceof ReferenceTool;
 
   // if(isArrayOfRef.value && isRefTool) {
   //   return true;

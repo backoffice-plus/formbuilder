@@ -87,19 +87,18 @@ import {useJsonforms} from "../../composable/jsonforms";
 import _ from "lodash";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
-import {useFormbuilder} from "../../composable/formbuilder";
-import {getToolfinder} from "../../lib/vue";
+import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 
 const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 
-const {onDrag, toolDragging} = useFormbuilder();
-
 const childTools = ref([]);
 const collapsed = ref(false);
 
+const fb = getFormbuilder();
 const toolFinder = getToolfinder();
+const onDrag = fb?.exposed.onToolDrag;
 
 onMounted(() => {
   if (!props.isToolbar) {
@@ -147,7 +146,8 @@ const onDelete = () => {
 };
 
 const showDragClass = computed(() => {
-  const isControl = 'Control' === toolDragging.value?.uischema?.type;
+  const toolDragging = getToolDragging();
+  const isControl = 'Control' === toolDragging?.uischema?.type;
   return isControl;
 })
 

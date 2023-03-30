@@ -54,7 +54,6 @@ import {emitter} from "../lib/mitt";
 import {onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
-import {useFormbuilder} from "../composable/formbuilder";
 import {getFormbuilder} from "../lib/vue";
 
 const props = defineProps({
@@ -73,15 +72,13 @@ const errorAfterUpdated = ref([]);
 const mergedJsonFormsRenderers = ref(Object.freeze(props.jsonFormsRenderers));
 const error = ref('');
 
-const {builder, schemaReadOnly} = useFormbuilder();
+const fb = getFormbuilder();
 
 onMounted(async () => {
-  const fb = getFormbuilder();
-  console.log("modalcontent.mounted", "root fb", fb)
 
   const context = {
-    builder: builder.value,
-    schemaReadOnly: schemaReadOnly.value,
+    builder: fb?.exposed?.showBuilder,
+    schemaReadOnly: fb.props.schemaReadOnly,
   }
 
   options.value = props.tool.optionDataPrepare(context);
@@ -129,7 +126,8 @@ const onChange = (e) => {
     dataAfterUpdated.value = data;
 
     const context = {
-      builder: builder.value,
+      builder: fb?.exposed?.showBuilder,
+      schemaReadOnly: fb.props.schemaReadOnly,
     }
     props.tool.optionDataUpdate(context, data)
 
