@@ -86,7 +86,6 @@ import {
   findAllScopes, createBaseTool, createDefTool, createSchemaTool,
 } from "../index";
 import Modal from "./Modal.vue";
-import {useJsonforms} from "../composable/jsonforms";
 import {normalizePath, normalizeScope} from "../lib/normalizer";
 import _ from "lodash";
 import {objectTool} from "../lib/tools/ObjectTool";
@@ -119,7 +118,9 @@ const showBar = ref('schema');
 const toolFinder = new ToolFinder(props.tools);
 const toolDragging = ref();
 const onToolDrag = (e) => toolDragging.value = onDragGetTool(e);
-defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag})
+const rootSchema = ref();
+const rootUischema = ref();
+defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, rootUischema})
 
 
 const filteredBuilders = computed(() => {
@@ -127,8 +128,6 @@ const filteredBuilders = computed(() => {
   const allowedBuilders = ['schema','uischema','definitions'];
   return showBuilders ? showBuilders.filter(value => allowedBuilders.includes(value)) : allowedBuilders;
 })
-
-const {update, schema: rootSchema, uischema: rootUischema} = useJsonforms();
 
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
 
@@ -206,8 +205,6 @@ const readonlyTools = computed(() => {
   //:TODO find better solution!! use toolStore
   if(props.schemaReadOnly) {
 
-    const {schema, uischema} = useJsonforms();
-
     const usedProps = findAllScopes(rootUischema.value).map(scope=>normalizePath(normalizeScope(scope)));
 
     const allProps = findAllProperties(rootSchema.value);
@@ -258,8 +255,7 @@ const updateSchemaBuilder = () => {
     const r = createTypeObjectSchema(baseSchemaTool.value);
 
 
-    //:DEV composables with sub-formbuilder does not work!!
-    //update(r.schema, rootUischema.value)
+    rootSchema.value = r.schema
     emit('schemaUpdated', {schema:r.schema, uischema:rootUischema.value})
   }
 }
@@ -274,7 +270,7 @@ const updateDefinitionBuilder = () => {
       const updatedSchema = rootSchema.value
       updatedSchema.definitions = def.definitions.properties;
 
-      update(updatedSchema, rootUischema.value)
+      rootSchema.value = updatedSchema
       emit('schemaUpdated', {schema:updatedSchema, uischema:rootUischema.value})
     }
   }
@@ -304,7 +300,8 @@ const updateUischemaBuilder = () => {
   }
 
   if (newJsonForms) {
-    update(jsonFormsSchema.value, jsonFormsUiSchema.value)
+    rootSchema.value = jsonFormsSchema.value;
+    rootUischema.value = jsonFormsUiSchema.value;
     emit('schemaUpdated', newJsonForms)
   }
 
@@ -325,7 +322,8 @@ onBeforeMount(() => {
 
   //init baseTool
   showBuilder.value = props.initBuilder ?? 'uischema';
-  update(props?.jsonForms?.schema, props?.jsonForms?.uischema)
+  rootSchema.value = props?.jsonForms?.schema;
+  rootUischema.value = props?.jsonForms?.uischema;
   onChangeBuilder({target:{value:showBuilder.value}})
   if(props.schemaReadOnly) {
     showBar.value='properties';

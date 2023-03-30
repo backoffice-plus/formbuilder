@@ -23,8 +23,6 @@ export {boplusVueVanillaRenderers} from "../packages/boplus-vue-vanilla/src/inde
 export {emitter} from './lib/mitt'
 export type {EventAfterOptionJsonforms} from './lib/mitt'
 
-export { useJsonforms } from './composable/jsonforms'
-
 /** @ts-ignore */
 export {default as Vuedraggable} from "../packages/_vuedraggable/src/vuedraggable.js";
 

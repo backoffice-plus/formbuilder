@@ -79,6 +79,7 @@ onMounted(async () => {
   const context = {
     builder: fb?.exposed?.showBuilder,
     schemaReadOnly: fb.props.schemaReadOnly,
+    rootSchema: fb?.exposed?.rootSchema?.value,
   }
 
   options.value = props.tool.optionDataPrepare(context);

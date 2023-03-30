@@ -83,7 +83,6 @@ import {emitter} from "../../lib/mitt";
 import {cloneEmptyTool} from "../../lib/formbuilder";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {initObjectElements} from "../../lib/initializer";
-import {useJsonforms} from "../../composable/jsonforms";
 import _ from "lodash";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
@@ -117,7 +116,7 @@ const onDropAreaChange = (e) => {
 };
 
 const addItem = (type) => {
-  const {schema} = useJsonforms();
+  const schema = fb?.exposed?.rootSchema?.value;
 
   const initSchema = {type:'string'}
   const tool = cloneEmptyTool(toolFinder.findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);

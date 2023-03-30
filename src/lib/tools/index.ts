@@ -64,4 +64,5 @@ export interface ToolInterface {
 export interface ToolContext {
     builder?: string;
     schemaReadOnly?: string;
+    rootSchema?: JsonSchema
 }

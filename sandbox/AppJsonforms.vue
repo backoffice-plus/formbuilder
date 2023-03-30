@@ -59,7 +59,6 @@ import {computed, ref, watch} from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv, generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import SchemaCode from './SchemaCode.vue'
-import {useJsonforms} from "../src";
 import {getExamples} from "@jsonforms/examples/src";
 import {getExampleFromUrl, getUrl} from "./lib";
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
@@ -70,9 +69,8 @@ const examples = computed(() => getExamples().sort((a, b) => a.label.toLowerCase
 const example = ref(getExampleFromUrl());
 
 
-const {schema, uischema} = useJsonforms();
-const jsonFormsSchema = schema;
-const jsonFormsUiSchema = uischema;
+// const jsonFormsSchema = schema;
+// const jsonFormsUiSchema = uischema;
 const jsonFormsData = ref({});
 const jsonFormsUpdated = ref({});
 
