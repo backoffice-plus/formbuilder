@@ -1,12 +1,44 @@
 // @ts-ignore
 import _ from "lodash";
 import {Resolver} from "@stoplight/json-ref-resolver";
-import type {ToolInterface,} from "./tools/index";
+import type {ToolInterface} from "./tools";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
+import {generateJsonSchema, generateDefaultUISchema} from "@jsonforms/core";
 import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
 import {unknownTool} from "./tools/unknownTool";
 import {subschemaMap} from "./tools/subschemas";
+import {objectTool} from "./tools/ObjectTool";
+import type {ToolFinder} from "./ToolFinder";
+
+export const   createBaseTool = (toolFinder:ToolFinder, schema: JsonSchema, uischema: UISchemaElement):ToolInterface => {
+    if (undefined === schema) {
+        schema = generateJsonSchema({});
+    }
+    if (undefined === uischema) {
+        uischema = generateDefaultUISchema(schema);
+    }
+
+    return toolFinder.findBaseTool(schema, uischema);
+};
+
+export const createSchemaTool = (schema: JsonSchema): ToolInterface => {
+    const tool = cloneToolWithSchema(objectTool, schema);
+    tool.propertyName = 'schema';
+
+    return tool;
+}
+export const createDefTool = (schema: JsonSchema): ToolInterface => {
+    const defSchema = {
+        type:'object',
+        properties: schema.definitions
+    } as JsonSchema;
+
+    const tool = cloneToolWithSchema(objectTool, defSchema);
+    tool.propertyName = 'definitions';
+
+    return tool;
+}
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {
@@ -36,7 +68,7 @@ export const cloneEmptyTool = (tool: ToolInterface, schema:JsonSchema|undefined 
 };
 
 
-export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: UISchemaElement|undefined = undefined) => {
+export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: UISchemaElement|undefined = undefined) : ToolInterface => {
 
     //clone
     const clone = tool.clone();
