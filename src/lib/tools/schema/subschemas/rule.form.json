@@ -172,6 +172,28 @@
         "required": [
           "type"
         ]
+      },
+      "ruleLeafCondition": {
+        "type": "object",
+        "title": "Leaf Condition",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "LEAF"
+          },
+          "scope": {
+            "type": "string",
+            "description": "like: #/properties/name"
+          },
+          "expectedValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "scope",
+          "expectedValue"
+        ]
       }
     },
     "properties": {
@@ -193,6 +215,10 @@
               "condition": {
                 "title": "ConditionType",
                 "oneOf": [
+                  {
+                    "$ref": "#/definitions/ruleLeafCondition",
+                    "title": "Leaf Condition"
+                  },
                   {
                     "$ref": "#/definitions/ruleCondition",
                     "title": "SingleCondition"

@@ -10,7 +10,8 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
      * :TODO remove ruleBuilder - only use the Formbuilder in "rule"
      */
     /** @ts-ignore */
-    const isSchemaBuilder = rule && 'properties' in rule?.condition?.schema;
+    const isSchema = rule?.condition?.schema;
+    const isSchemaBuilder = isSchema && 'properties' in rule?.condition?.schema;
 
     return {
         rule: {

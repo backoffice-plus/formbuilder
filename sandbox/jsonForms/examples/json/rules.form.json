@@ -310,6 +310,36 @@
         ],
         "label": "Number Minimum & exclusiveMaximum"
       },
+
+      {
+        "type": "Group",
+        "label": "Rule Condition with type=Leaf and expectedValue",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/string",
+                "label": "enter \"on\" to match the rule"
+              },
+              {
+                "type": "Label",
+                "text": "Rule was successful",
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "type": "LEAF",
+                    "scope": "#/properties/string",
+                    "expectedValue": "on"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+
       {
         "type": "Group",
         "elements": [
