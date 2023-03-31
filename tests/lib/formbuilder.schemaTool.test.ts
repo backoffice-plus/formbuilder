@@ -1,5 +1,6 @@
 import {expect, test} from 'vitest'
-import {setItemSchemaToSchema, ToolInterface} from '../../src'
+import {setItemSchemaToSchema} from '../../src'
+import type {ToolInterface} from '../../src'
 
 test('optionDataPrepare - with empty', () => {
     const tool = {
@@ -12,15 +13,15 @@ test('optionDataPrepare - with empty', () => {
         properties: {
             control1: {
                 type: "array",
-                items: {
-                    type: 'object'
-                }
+                // items: {
+                //     type: 'object'
+                // }
             }
         }
     };
 
     const rootSchema = {};
-    setItemSchemaToSchema(tool as ToolInterface, rootSchema, undefined)
+    setItemSchemaToSchema(tool as ToolInterface, rootSchema)
     expect(rootSchema).toEqual(expected)
 })
 
@@ -42,7 +43,7 @@ test('setItemSchemaToSchema - with $ref', () => {
     };
 
     const rootSchema = {};
-    setItemSchemaToSchema(tool as ToolInterface, rootSchema, undefined)
+    setItemSchemaToSchema(tool as ToolInterface, rootSchema)
     expect(rootSchema).toEqual(expected)
 })
 
@@ -68,7 +69,7 @@ test('setItemSchemaToSchema - with object', () => {
     };
 
     const rootSchema = {};
-    setItemSchemaToSchema(tool as ToolInterface, rootSchema, undefined)
+    setItemSchemaToSchema(tool as ToolInterface, rootSchema)
     expect(rootSchema).toEqual(expected)
 })
 
@@ -105,6 +106,6 @@ test('setItemSchemaToSchema - with string items -> existing properties will be r
             }
         }
     }
-    setItemSchemaToSchema(tool as ToolInterface, rootSchema, undefined)
+    setItemSchemaToSchema(tool as ToolInterface, rootSchema)
     expect(rootSchema).toEqual(expected)
 })
