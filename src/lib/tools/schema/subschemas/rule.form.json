@@ -225,16 +225,19 @@
                 "type": "object",
                 "properties": {
                   "scope": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "like: #"
                   },
                   "schema": {
                     "type": "object",
                     "additionalProperties": true,
                     "properties": {}
                   }
-                }
+                },
+                "required": ["scope","schema"]
               }
-            }
+            },
+            "required": ["effect","condition"]
           }
         }
       }
