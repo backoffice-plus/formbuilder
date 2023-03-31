@@ -4,6 +4,7 @@
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
         <pre>{{ ref }}</pre>
+        <SchemaFeatures :tool="tool" />
       </template>
     </ToolIcon>
 
@@ -36,6 +37,7 @@ import Actions from "./utils/Actions.vue";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {computed} from "vue";
 import {toolComponentProps} from "../../lib/models";
+import SchemaFeatures from "./utils/SchemaFeatures.vue";
 
 const props = defineProps({...toolComponentProps()})
 

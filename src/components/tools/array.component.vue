@@ -7,6 +7,7 @@
         <span v-if="getFirstChildItemsType"> of {{ getFirstChildItemsType }}</span>
         <span v-else-if="isArrayOfRef"> of Ref</span>
         <span v-else-if="isArrayOfCombinator"> of {{ isArrayOfCombinator }}</span>
+        <SchemaFeatures :tool="tool" />
       </template>
 
     </ToolIcon>
@@ -88,6 +89,7 @@ import {scalarTypes, toolComponentProps, vuedraggableOptions} from "../../lib/mo
 import {ReferenceTool} from "../../lib/tools/referenceTool";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
+import SchemaFeatures from "./utils/SchemaFeatures.vue";
 
 const props = defineProps({...toolComponentProps()})
 

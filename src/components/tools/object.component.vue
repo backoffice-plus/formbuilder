@@ -6,6 +6,7 @@
         <template v-if="!isInlineType">
           <b>{{ tool.propertyName }}</b>
         </template>
+        <SchemaFeatures :tool="tool" />
       </template>
     </ToolIcon>
 
@@ -87,6 +88,7 @@ import _ from "lodash";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
+import SchemaFeatures from "./utils/SchemaFeatures.vue";
 
 const props = defineProps({...toolComponentProps()})
 

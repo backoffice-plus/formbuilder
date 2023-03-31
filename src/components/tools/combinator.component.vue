@@ -7,6 +7,7 @@
           <b>{{ tool.propertyName }}:</b>
         </template>
         {{ CombinatorTool.getKeyword(tool.schema) }}
+        <SchemaFeatures :tool="tool" />
       </template>
     </ToolIcon>
 
@@ -82,6 +83,7 @@ import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import _ from "lodash";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
+import SchemaFeatures from "./utils/SchemaFeatures.vue";
 
 const props = defineProps({...toolComponentProps()})
 

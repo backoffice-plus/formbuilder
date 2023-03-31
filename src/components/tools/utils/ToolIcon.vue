@@ -22,6 +22,7 @@
       <slot name="droparea">
         <div class="flex gap-2 items-center">
           <label>{{ toolOptions.title }}</label>
+          <SchemaFeatures :tool="tool" />
         </div>
       </slot>
 
@@ -72,6 +73,7 @@
 <script setup>
 import {computed} from 'vue'
 import {Icon} from "@iconify/vue";
+import SchemaFeatures from "./SchemaFeatures.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface
