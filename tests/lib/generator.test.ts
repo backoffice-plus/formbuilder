@@ -1,19 +1,15 @@
 import {expect, test} from 'vitest'
-import {cloneEmptyTool, findBaseTool,} from '../../src'
-import {createJsonForms, generateSchemaByTool,} from '../../src'
+import {cloneEmptyTool, ToolFinder, createJsonForms, generateSchemaByTool, defaultTools} from '../../src'
 import type {ToolInterface} from '../../src'
-import {useTools} from "../../src/composable/tools";
 import type {JsonSchema} from "@jsonforms/core";
-import {defaultTools} from "../../src";
 
-const {findMatchingTool, registerTools} = useTools();
-registerTools(defaultTools);
+const toolFinder = new ToolFinder(defaultTools);
 
-const stringControlTool = findMatchingTool({}, {type: 'string'}, {type: 'Control', scope: '#'});
-const arrayControlTool = findMatchingTool({}, {type: 'array', items: {}}, {type: 'Control', scope: '#'});
-const objectControlTool = findMatchingTool({}, {type: 'object', properties: {}}, {type: 'Control', scope: '#'});
-const combinatorControlTool = findMatchingTool({}, {oneOf: []}, {type: 'Control', scope: '#'});
-const refControlTool = findMatchingTool({}, {'$ref':''}, {type: 'Control', scope: '#'});
+const stringControlTool = toolFinder.findMatchingTool({}, {type: 'string'}, {type: 'Control', scope: '#'});
+const arrayControlTool = toolFinder.findMatchingTool({}, {type: 'array', items: {}}, {type: 'Control', scope: '#'});
+const objectControlTool = toolFinder.findMatchingTool({}, {type: 'object', properties: {}}, {type: 'Control', scope: '#'});
+const combinatorControlTool = toolFinder.findMatchingTool({}, {oneOf: []}, {type: 'Control', scope: '#'});
+const refControlTool = toolFinder.findMatchingTool({}, {'$ref':''}, {type: 'Control', scope: '#'});
 
 const clone = (tool:ToolInterface, propName:string|undefined = undefined, schema:JsonSchema|undefined = undefined) => {
     const clone = cloneEmptyTool(tool, schema);
@@ -30,7 +26,7 @@ const clone = (tool:ToolInterface, propName:string|undefined = undefined, schema
 
 test('createJsonForms - string in layout', () => {
 
-    const baseTool = findBaseTool({}, {type: 'Group', elements: []});
+    const baseTool = toolFinder.findBaseTool({}, {type: 'Group', elements: []});
     baseTool.childs.push(clone(stringControlTool,'myString'))
 
     const jsonforms = createJsonForms(baseTool)
@@ -62,8 +58,8 @@ test('createJsonForms - string in layout', () => {
 
 test('createJsonForms - multichoice enum in layout', () => {
 
-    const selectEnumControlTool = findMatchingTool({}, {type:'string', enum: []}, {type: 'Control', scope: '#'});
-    const selectOneOfControlTool = findMatchingTool({}, {type:'string', oneOf: []}, {type: 'Control', scope: '#'});
+    const selectEnumControlTool = toolFinder.findMatchingTool({}, {type:'string', enum: []}, {type: 'Control', scope: '#'});
+    const selectOneOfControlTool = toolFinder.findMatchingTool({}, {type:'string', oneOf: []}, {type: 'Control', scope: '#'});
 
     const oneOf =  [
         {const: 'foo', title: 'Foo'},
@@ -71,7 +67,7 @@ test('createJsonForms - multichoice enum in layout', () => {
         {const: 'foobar', title: 'FooBar'}
     ];
 
-    const baseTool = findBaseTool({}, {type: 'Group', elements: []});
+    const baseTool = toolFinder.findBaseTool({}, {type: 'Group', elements: []});
     baseTool.childs.push(clone(selectEnumControlTool,'myString', {type:'string',enum: ['foo', 'bar', 'foobar']}))
     baseTool.childs.push(clone(selectOneOfControlTool,'oneOfEnum', {type:'string',oneOf: oneOf}))
 
@@ -120,7 +116,7 @@ test('createJsonForms - array of object in layout', () => {
     object.childs.push(string)
     array.childs.push(object)
 
-    const baseTool = findBaseTool({}, {type: 'Group', elements: []});
+    const baseTool = toolFinder.findBaseTool({}, {type: 'Group', elements: []});
     baseTool.childs.push(array)
 
     const jsonforms = createJsonForms(baseTool)
@@ -164,7 +160,7 @@ test('createJsonForms - array of string in layout', () => {
 
     //array.optionDataUpdate({}, {...array.optionDataPrepare({}), ...{asInlineType: true}})
 
-    const baseTool = findBaseTool({}, {type: 'Group', elements: []});
+    const baseTool = toolFinder.findBaseTool({}, {type: 'Group', elements: []});
     baseTool.childs.push(array)
 
     const jsonforms = createJsonForms(baseTool)
@@ -203,7 +199,7 @@ test('createJsonForms - combinator with strings in layout', () => {
     combinator.childs.push(clone(stringControlTool))
     combinator.childs.push(clone(stringControlTool))
 
-    const baseTool = findBaseTool({}, {type: 'Group', elements: []});
+    const baseTool = toolFinder.findBaseTool({}, {type: 'Group', elements: []});
     baseTool.childs.push(combinator)
 
     const jsonforms = createJsonForms(baseTool)
@@ -243,7 +239,7 @@ test('createJsonForms - nested combinator in layout', () => {
     combinator1.childs.push(combinator2)
     combinator2.childs.push(clone(stringControlTool))
 
-    const baseTool = findBaseTool({}, {type: 'Group', elements: []});
+    const baseTool = toolFinder.findBaseTool({}, {type: 'Group', elements: []});
     baseTool.childs.push(combinator1)
 
     const jsonforms = createJsonForms(baseTool)
@@ -707,7 +703,7 @@ test('generateSchemaByTool - combinators nested', () => {
     expect(schemaCleaned).toEqual(expected)
 })
 test('generateSchemaByTool - combinators object with required', () => {
-    const selectEnumControlTool = findMatchingTool({}, {type:'string', enum: []}, {type: 'Control', scope: '#'});
+    const selectEnumControlTool = toolFinder.findMatchingTool({}, {type:'string', enum: []}, {type: 'Control', scope: '#'});
 
     const baseTool = clone(objectControlTool)
     const combinator = clone(combinatorControlTool, 'myComb')

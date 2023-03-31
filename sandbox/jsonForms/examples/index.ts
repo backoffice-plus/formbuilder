@@ -18,6 +18,7 @@ import * as objectAddProps from './object-additional-properties';
 import * as file from './file';
 import * as styles from './styles';
 import * as formbuilderOptions from './formbuilderOptions';
+import * as personalbogen from './personalbogen';
 
 export {
   _default,
@@ -40,4 +41,5 @@ export {
   file,
   styles,
   formbuilderOptions,
+  personalbogen,
 }

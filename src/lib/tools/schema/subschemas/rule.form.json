@@ -50,27 +50,47 @@
             "type": "string"
           },
           "schema": {
-            "type": "object",
-            "properties": {
-              "const": {
-                "oneOf": [
-                  {
-                    "type": "string",
-                    "title": "string"
-                  },
-                  {
-                    "type": "number",
-                    "title": "number"
-                  },
-                  {
-                    "type": "boolean",
-                    "title": "boolean"
+            "oneOf": [
+              {
+                "type": "object",
+                "title": "const",
+                "properties": {
+                  "const": {
+                    "oneOf": [
+                      {
+                        "type": "string",
+                        "title": "string"
+                      },
+                      {
+                        "type": "number",
+                        "title": "number"
+                      },
+                      {
+                        "type": "boolean",
+                        "title": "boolean"
+                      }
+                    ]
                   }
+                },
+                "required": [
+                  "const"
+                ]
+              },
+              {
+                "type": "object",
+                "title": "required",
+                "properties": {
+                  "required": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "required"
                 ]
               }
-            },
-            "required": [
-              "const"
             ]
           }
         },
@@ -102,25 +122,48 @@
                   "description": "like: #/properties/name"
                 },
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "const": {
-                      "oneOf": [
-                        {
-                          "type": "string",
-                          "title": "string"
-                        },
-                        {
-                          "type": "number",
-                          "title": "number"
-                        },
-                        {
-                          "type": "boolean",
-                          "title": "boolean"
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "title": "const",
+                      "properties": {
+                        "const": {
+                          "oneOf": [
+                            {
+                              "type": "string",
+                              "title": "string"
+                            },
+                            {
+                              "type": "number",
+                              "title": "number"
+                            },
+                            {
+                              "type": "boolean",
+                              "title": "boolean"
+                            }
+                          ]
                         }
+                      },
+                      "required": [
+                        "const"
+                      ]
+                    },
+                    {
+                      "type": "object",
+                      "title": "required",
+                      "properties": {
+                        "required": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        }
+                      },
+                      "required": [
+                        "required"
                       ]
                     }
-                  }
+                  ]
                 }
               }
             }
@@ -128,6 +171,28 @@
         },
         "required": [
           "type"
+        ]
+      },
+      "ruleLeafCondition": {
+        "type": "object",
+        "title": "Leaf Condition",
+        "properties": {
+          "type": {
+            "type": "string",
+            "const": "LEAF"
+          },
+          "scope": {
+            "type": "string",
+            "description": "like: #/properties/name"
+          },
+          "expectedValue": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "scope",
+          "expectedValue"
         ]
       }
     },
@@ -151,6 +216,10 @@
                 "title": "ConditionType",
                 "oneOf": [
                   {
+                    "$ref": "#/definitions/ruleLeafCondition",
+                    "title": "Leaf Condition"
+                  },
+                  {
                     "$ref": "#/definitions/ruleCondition",
                     "title": "SingleCondition"
                   },
@@ -165,14 +234,89 @@
               "effect",
               "condition"
             ]
+          },
+          "ruleBuilder": {
+            "type": "object",
+            "properties": {
+              "effect": {
+                "type": "string",
+                "enum": [
+                  "SHOW",
+                  "HIDE",
+                  "ENABLE",
+                  "DISABLE"
+                ]
+              },
+              "condition": {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "description": "like: #"
+                  },
+                  "schema": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "properties": {}
+                  }
+                },
+                "required": ["scope","schema"]
+              }
+            },
+            "required": ["effect","condition"]
           }
         }
       }
     }
   },
   "uischema": {
-    "type": "Control",
-    "scope": "#/properties/rule/properties/rule"
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Categorization",
+        "elements": [
+          {
+            "type": "Category",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/rule/properties/rule",
+                "options": {
+                  "detail": {
+                    "type": "VerticalLayout",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#"
+                      }
+                    ]
+                  }
+                }
+              }
+            ],
+            "label": "Rule"
+          },
+          {
+            "type": "Category",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/rule/properties/ruleBuilder/properties/effect"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/rule/properties/ruleBuilder/properties/condition/properties/scope"
+              },
+              {
+                "type": "Formbuilder",
+                "scope": "#/properties/rule/properties/ruleBuilder/properties/condition/properties/schema"
+              }
+            ],
+            "label": "Schema Builder"
+          }
+        ]
+      }
+    ]
   },
   "data": {}
 }

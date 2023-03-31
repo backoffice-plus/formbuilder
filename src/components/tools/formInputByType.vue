@@ -10,6 +10,7 @@
           <label class="font-bold">{{ tool.propertyName }}</label>
           {{ tool.uischema?.label ?? tool.schema?.title }}
         </template>
+        <SchemaFeatures :tool="tool" />
       </template>
     </ToolIcon>
 
@@ -78,6 +79,7 @@ import {guessInputType} from '../../lib/normalizer'
 import {computed} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {toolComponentProps} from "../../lib/models";
+import SchemaFeatures from "./utils/SchemaFeatures.vue";
 
 const props = defineProps({...toolComponentProps()})
 

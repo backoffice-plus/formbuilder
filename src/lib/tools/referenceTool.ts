@@ -6,7 +6,6 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {AbstractTool} from "./AbstractTool";
 import jsonForms from "./schema/reference.form.json";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
-import {useJsonforms} from "../../composable/jsonforms";
 
 export class ReferenceTool extends AbstractTool implements ToolInterface {
     importer = () => referenceComp;
@@ -45,8 +44,8 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         const definitionResolver = (ref: URI) => {
             if ('referenceTool.definitions' === String(ref)) {
-                const {schema: s} = useJsonforms();
-                const definitionPaths = s.value?.definitions && Object.keys(s.value?.definitions).map(key => '#/definitions/' + key);
+                const s = context.rootSchema;
+                const definitionPaths = s?.definitions && Object.keys(s?.definitions).map(key => '#/definitions/' + key);
 
                 return {
                     type: 'string',

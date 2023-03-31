@@ -6,6 +6,7 @@
         <label class="font-bold">{{ tool.propertyName }}</label>
         <span>{{ tool.uischema.label ?? tool.schema.title }}</span>
         {{ constValue }}
+        <SchemaFeatures :tool="tool" />
       </template>
 
     </ToolIcon>
@@ -34,6 +35,7 @@ import Actions from "./utils/Actions.vue";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {computed} from "vue";
 import {toolComponentProps} from "../../lib/models";
+import SchemaFeatures from "./utils/SchemaFeatures.vue";
 
 const props = defineProps({...toolComponentProps()})
 

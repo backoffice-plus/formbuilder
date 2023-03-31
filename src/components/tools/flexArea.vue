@@ -7,6 +7,7 @@
     <div v-if="!isToolbar" :class="['flex',{'mr-5':!isRoot}]">
 
       <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
+        <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>
         <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
       </Actions>
 
@@ -133,22 +134,23 @@
 import {  initElements} from "../../lib/initializer";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
-import {deleteToolInChilds, Vuedraggable} from '../../index'
+import {cloneEmptyTool, deleteToolInChilds, Vuedraggable} from '../../index'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {ref, computed, onMounted, unref, toRaw} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
-import {useFormbuilder} from "../../composable/formbuilder";
+import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 
 const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 
-const {onDrag, toolDragging} = useFormbuilder();
-
 const childTools = ref([]);
 const collapsed = ref(false);
 
+const fb = getFormbuilder();
+const toolFinder = getToolfinder();
+const onDrag = fb?.exposed.onToolDrag;
 
 onMounted(() => {
   if (!props.isToolbar) {
@@ -158,12 +160,20 @@ onMounted(() => {
 
 const init = () => {
   childTools.value = [];
-  childTools.value.push(...initElements(props.tool))
+  childTools.value.push(...initElements(toolFinder, props.tool))
 
   if (childTools.value.length) {
     //wait to render dom (:TODO use nextTick)
     setTimeout(onDropAreaChange, 50);
   }
+};
+
+const addItem = (type) => {
+  const initSchema = {type:'string'}
+  const tool = cloneEmptyTool(toolFinder.findMatchingTool({}, initSchema, {type: 'Control', scope: '#'}), initSchema);
+
+  childTools.value.push(tool);
+  onDropAreaChange(null);
 };
 
 const onDeleteByTool = async (e) => {
@@ -176,7 +186,7 @@ const onDeleteByTool = async (e) => {
 
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
-  emitter.emit('formBuilderUpdated', e)
+  fb?.exposed?.onDropAreaChanged();
 };
 
 const onDelete = () => {
@@ -184,9 +194,10 @@ const onDelete = () => {
 };
 
 const showDragClass = computed(() => {
-  const isCategory = 'Category' === toolDragging.value?.uischema?.type;
+  const toolDragging = getToolDragging();
+  const isCategory = 'Category' === toolDragging?.uischema?.type;
 
-  return !isCategory && !!toolDragging.value;
+  return !isCategory && !!toolDragging;
 })
 
 </script>

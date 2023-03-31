@@ -1,0 +1,914 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "familienname": {
+        "type": "string"
+      },
+      "strasse": {
+        "type": "string"
+      },
+      "geburtsdatum": {
+        "type": "string",
+        "format": "date"
+      },
+      "vorname": {
+        "type": "string"
+      },
+      "plz_ort": {
+        "type": "string"
+      },
+      "geschlecht": {
+        "type": "string",
+        "enum": [
+          "männlich",
+          "weiblich"
+        ]
+      },
+      "versicherungsnr": {
+        "type": "string",
+        "description": "gem. Sozialvers. Ausweis"
+      },
+      "familienstand": {
+        "type": "string",
+        "enum": [
+          "ledig",
+          "verheiratet",
+          "verwitwet",
+          "geschieden",
+          "anderes"
+        ]
+      },
+      "familienstand_anderes": {
+        "type": "string"
+      },
+      "geburtsort": {
+        "type": "string",
+        "description": "nur bei fehlender Versicherungs-Nr"
+      },
+      "schwerbehindert": {
+        "type": "boolean"
+      },
+      "staatsangehörigkeit": {
+        "type": "string"
+      },
+      "kontonr": {
+        "type": "string"
+      },
+      "blz": {
+        "type": "string"
+      },
+      "arbeitnehmernr": {
+        "type": "string"
+      },
+      "eintrittsdatum": {
+        "type": "string",
+        "format": "date"
+      },
+      "ersteintrittsdatum": {
+        "type": "string",
+        "format": "date"
+      },
+      "betriebsstätte": {
+        "type": "string"
+      },
+      "berufsbezeichnung": {
+        "type": "string"
+      },
+      "tätigkeit": {
+        "type": "string"
+      },
+      "beschäftigung": {
+        "type": "string",
+        "enum": [
+          "haupt",
+          "neben"
+        ]
+      },
+      "weitere_beschäftigungen": {
+        "type": "boolean",
+        "description": "Üben Sie weitere Beschäftigungen aus?"
+      },
+      "schulabschluss_hoehst": {
+        "type": "string",
+        "enum": [
+          "ohne Schulabschluss",
+          "Haupt-/Volksschulabschluss",
+          "Mittlere Reife/gleichwertiger  Abschluss",
+          " Abitur/Fachabitur"
+        ]
+      },
+      "berufsausbildung_hoest": {
+        "type": "string",
+        "enum": [
+          "ohne beruflichen Ausbildungsabschluss",
+          "Anerkannte Berufsausbildung",
+          "Meister/Techniker/gleichwertiger  Fachschulabschluss",
+          "Bachelor",
+          "Diplom/Magister/ Master/Staatsexamen",
+          "Promotion"
+        ]
+      },
+      "ausbildung_start": {
+        "type": "string",
+        "format": "date"
+      },
+      "ausbildung_ende": {
+        "type": "string",
+        "format": "date"
+      },
+      "baugewerbe_beschäftigt": {
+        "type": "string",
+        "format": "date"
+      },
+      "wochen_arbeitszeit": {
+        "type": "string",
+        "enum": [
+          "vollzeit",
+          "teilzeit"
+        ]
+      },
+      "arbeitszeit_verteilung": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "tag": {
+              "type": "string"
+            },
+            "anzahl": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "urlaubsanspruch": {
+        "type": "number",
+        "description": "pro Kalenderjahr"
+      },
+      "kostenstelle": {
+        "type": "string"
+      },
+      "abteilungsnr": {
+        "type": "string"
+      },
+      "personengruppe": {
+        "type": "string"
+      },
+      "befristet": {
+        "type": "boolean"
+      },
+      "zweckbefristet": {
+        "type": "boolean"
+      },
+      "befristet_bis": {
+        "type": "string",
+        "format": "date"
+      },
+      "abschluss_befristung": {
+        "type": "boolean",
+        "description": "Schriftlicher Abschluss des befristeten Arbeitsvertrages "
+      },
+      "abschluss_am": {
+        "type": "string",
+        "format": "date"
+      },
+      "befristung_weiter": {
+        "type": "boolean",
+        "description": "befristete Beschäftigung ist für mindestens 2 Monate vorgesehen, mit Aussicht auf Weiterbeschäftigung "
+      },
+      "identifikationsnr": {
+        "type": "string"
+      },
+      "finanzamtnr": {
+        "type": "string"
+      },
+      "steuerklasse": {
+        "type": "string"
+      },
+      "kinderfreibeträge": {
+        "type": "string"
+      },
+      "konfession": {
+        "type": "string"
+      },
+      "krankenkasse": {
+        "type": "string",
+        "description": "Gesetzl. Krankenkasse (bei PKV: letzte ges. Krankenkasse)"
+      },
+      "elterneigenschaft": {
+        "type": "boolean"
+      },
+      "kv": {
+        "type": "string"
+      },
+      "rv": {
+        "type": "string"
+      },
+      "av": {
+        "type": "string"
+      },
+      "pv": {
+        "type": "string"
+      },
+      "uv": {
+        "type": "string"
+      },
+      "entlohnung": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "bezeichnung": {
+              "type": "string"
+            },
+            "betrag": {
+              "type": "number"
+            },
+            "gueltig_ab": {
+              "type": "string",
+              "format": "date"
+            },
+            "stundenlohn": {
+              "type": "string"
+            },
+            "stundenlohn_gueltig_ab": {
+              "type": "string",
+              "format": "date"
+            }
+          }
+        }
+      },
+      "vwl": {
+        "type": "object",
+        "properties": {
+          "empfaenger": {
+            "type": "string"
+          },
+          "betrag": {
+            "type": "number"
+          },
+          "anteil_ag": {
+            "type": "number"
+          },
+          "start": {
+            "type": "string",
+            "format": "date"
+          },
+          "vertragsnr": {
+            "type": "string"
+          },
+          "iban": {
+            "type": "string"
+          },
+          "bic": {
+            "type": "string"
+          }
+        }
+      },
+      "arbeitsvertrag": {
+        "type": "boolean"
+      },
+      "bescheinigung_lstabzug": {
+        "type": "boolean"
+      },
+      "sv_ausweis": {
+        "type": "boolean"
+      },
+      "kk_mitglied": {
+        "type": "boolean"
+      },
+      "pkv_bescheinigung": {
+        "type": "boolean"
+      },
+      "vwl_vertrag": {
+        "type": "boolean"
+      },
+      "elterneigenschaft_nachweis": {
+        "type": "boolean"
+      },
+      "betriebliche_altersversorgung": {
+        "type": "boolean"
+      },
+      "schwerbehindertenausweis": {
+        "type": "boolean"
+      },
+      "sozialkasse_unterlagen": {
+        "type": "boolean"
+      },
+      "vorbeschäftigungen": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "von": {
+              "type": "string",
+              "format": "date"
+            },
+            "bis": {
+              "type": "string",
+              "format": "date"
+            },
+            "beschäftigungsart": {
+              "type": "string"
+            },
+            "beschäftigungstage": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "erklaerung_arbeitnehmer": {
+        "type": "boolean",
+        "description": " Ich versichere, dass die vorstehenden Angaben der Wahrheit entsprechen. Ich\nverpflichte mich, meinem Arbeitgeber alle Änderungen, insbesondere in Bezug auf weitere Beschäftigungen (in Bezug auf\nArt, Dauer und Entgelt) unverzüglich mitzuteilen. "
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/familienname"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/strasse",
+                    "label": "Straße und Hausnummer"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/geburtsdatum"
+                  }
+                ]
+              },
+              {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/vorname"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/plz_ort",
+                    "label": "PLZ, Ort"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/geschlecht"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/versicherungsnr",
+                "label": "Versicherungsnummer"
+              },
+              {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/familienstand"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/familienstand_anderes",
+                    "label": "anderer Familienstand",
+                    "rule": {
+                      "effect": "SHOW",
+                      "condition": {
+                        "scope": "#/properties/familienstand",
+                        "schema": {
+                          "const": "anderes"
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/geburtsort",
+                "options": {
+                  "showUnfocusedDescription": true
+                },
+                "rule": {
+                  "effect": "DISABLE",
+                  "condition": {
+                    "scope": "#",
+                    "schema": {
+                      "required": [
+                        "versicherungsnr"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/schwerbehindert"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/staatsangehörigkeit"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/kontonr",
+                    "label": "Kontonummer (IBAN)"
+                  }
+                ]
+              },
+              {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/blz",
+                    "label": "Bankleitzahl (BIC)"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/arbeitnehmernr"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "label": "Persönliche Angaben"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/eintrittsdatum"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/ersteintrittsdatum"
+                  }
+                ]
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/betriebsstätte",
+                "label": "Betriebsstätte"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/berufsbezeichnung"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/tätigkeit",
+                "label": "Ausgeübte Tätigkeit"
+              }
+            ]
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/beschäftigung"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/weitere_beschäftigungen",
+            "label": "Weitere Beschäftigungen",
+            "options": {
+              "showUnfocusedDescription": true
+            }
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/schulabschluss_hoehst",
+                "label": "Höchster Schulabschluss"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/berufsausbildung_hoest",
+                "label": "Höchste Berufsausbildung"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/ausbildung_start",
+                "label": "Beginn der Ausbildung: "
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/ausbildung_ende",
+                "label": "Voraussichtliches Ende der Ausbildung: "
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/baugewerbe_beschäftigt",
+                "label": "Im Baugewerbe beschäftigt seit "
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/wochen_arbeitszeit",
+                "label": "Wöchentliche Arbeitszeit"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/arbeitszeit_verteilung",
+                "label": "Ggf.Verteilung d. wöchentl. Arbeitszeit (Std.)"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/urlaubsanspruch"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/kostenstelle"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/abteilungsnr"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/personengruppe"
+              }
+            ]
+          }
+        ],
+        "label": "Beschäftigung"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/befristet"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/zweckbefristet"
+                  }
+                ]
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/befristet_bis",
+                "rule": {
+                  "effect": "ENABLE",
+                  "condition": {
+                    "type": "OR",
+                    "conditions": [
+                      {
+                        "scope": "#/properties/befristet",
+                        "schema": {
+                          "const": true
+                        }
+                      },
+                      {
+                        "scope": "#/properties/zweckbefristet",
+                        "schema": {
+                          "const": true
+                        }
+                      }
+                    ]
+                  }
+                },
+                "label": "Befristung Arbeitsvertrag zum"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/abschluss_befristung",
+                "options": {
+                  "showUnfocusedDescription": true
+                }
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/abschluss_am",
+                "label": "Abschluss Arbeitsvertrag am",
+                "rule": {
+                  "effect": "ENABLE",
+                  "condition": {
+                    "scope": "#/properties/abschluss_befristung",
+                    "schema": {
+                      "const": true
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/befristung_weiter",
+            "options": {
+              "showUnfocusedDescription": true
+            }
+          }
+        ],
+        "label": "Befristung"
+      },
+      {
+        "type": "Label",
+        "text": "Weitere Angaben"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/identifikationsnr"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/finanzamtnr"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/steuerklasse"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/kinderfreibeträge"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/konfession"
+              }
+            ]
+          }
+        ],
+        "label": "Steuer"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/krankenkasse"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/elterneigenschaft"
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/kv"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/rv"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/av"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/pv"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/uv"
+              }
+            ]
+          }
+        ],
+        "label": "Sozialversicherung"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/entlohnung"
+          }
+        ],
+        "label": "Entlohnung"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/vwl/properties/empfaenger",
+                "label": "Empfänger",
+                "options": {
+                  "multi": true
+                }
+              },
+              {
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "HorizontalLayout",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/vwl/properties/betrag",
+                        "label": "Betrag"
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/vwl/properties/anteil_ag",
+                        "label": "AG-Anteil (Höhe mtl.) "
+                      }
+                    ]
+                  },
+                  {
+                    "type": "HorizontalLayout",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/vwl/properties/start"
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/vwl/properties/vertragsnr",
+                        "label": "Vertragsnr"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/vwl/properties/iban",
+                "label": "Kontonummer (IBAN)"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/vwl/properties/bic",
+                "label": "Bankleitzahl (BIC) "
+              }
+            ]
+          }
+        ],
+        "label": "VWL"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/arbeitsvertrag"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/bescheinigung_lstabzug",
+            "label": "Bescheinigung über LSt.-Abzug"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/sv_ausweis",
+            "label": "SV Ausweis"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/kk_mitglied",
+            "label": "Mitgliedsbescheinigung Krankenkasse"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/pkv_bescheinigung",
+            "label": "Bescheinigung zur privaten Krankenversicherung "
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/vwl_vertrag"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/elterneigenschaft_nachweis",
+            "label": "Nachweis Elterneigenschaft "
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/betriebliche_altersversorgung",
+            "label": "Vertrag Betriebliche Altersversorgung"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/schwerbehindertenausweis"
+          },
+          {
+            "type": "Control",
+            "scope": "#/properties/sozialkasse_unterlagen",
+            "label": "Unterlagen Sozialkasse Bau/Maler "
+          }
+        ],
+        "label": "Angaben zu den Arbeitspapieren "
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/vorbeschäftigungen"
+          }
+        ],
+        "label": "Angaben zu steuerpflichtigen Vorbeschäftigungszeiten im laufenden Kalenderjahr"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/erklaerung_arbeitnehmer",
+            "label": "Erklärung des Arbeitnehmers:",
+            "options": {
+              "showUnfocusedDescription": true
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "data": {}
+}

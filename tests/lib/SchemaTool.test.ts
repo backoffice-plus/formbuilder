@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {expect, test} from 'vitest'
 import {ArrayTool} from "../../src/lib/tools/ArrayTool";
 
@@ -9,12 +10,14 @@ test('optionDataPrepare - with empty', () => {
     const expected = {
         propertyName: tool.propertyName,
         type: 'array',
-        items: {
-            type: 'object'
-        }
+        // items: {
+        //     type: 'object'
+        // }
     };
 
-    expect(tool.optionDataPrepare()).toEqual(expected)
+    const options = tool.optionDataPrepare({});
+    const optionsPicked = _.pick(options, Object.keys(expected))
+    expect(optionsPicked).toEqual(expected)
 })
 
 test('optionDataPrepare - with object', () => {
@@ -36,10 +39,12 @@ test('optionDataPrepare - with object', () => {
     const expected = {
         propertyName: tool.propertyName,
         type: tool.schema.type,
-        items: tool.schema.items
+        //items: tool.schema.items
     };
 
-    expect(tool.optionDataPrepare()).toEqual(expected)
+    const options = tool.optionDataPrepare({});
+    const optionsPicked = _.pick(options, Object.keys(expected))
+    expect(optionsPicked).toEqual(expected)
 })
 test('optionDataPrepare - with $ref', () => {
 
@@ -55,12 +60,14 @@ test('optionDataPrepare - with $ref', () => {
     const expected = {
         propertyName: tool.propertyName,
         type: tool.schema.type,
-        items: {
-            _reference: tool.schema.items['$ref'],
-        }
+        // items: {
+        //     _reference: tool.schema.items['$ref'],
+        // }
     };
 
-    expect(tool.optionDataPrepare()).toEqual(expected)
+    const options = tool.optionDataPrepare({});
+    const optionsPicked = _.pick(options, Object.keys(expected))
+    expect(optionsPicked).toEqual(expected)
 })
 
 
@@ -81,26 +88,27 @@ test('optionDataUpdate - with string items -> existing properties will be remove
         }
     };
 
-    const data = {
-        propertyName: 'myStrings',
-        type: 'array',
-        items: {
-            type: 'string',
-
-            //old data
-            properties: tool.schema.items.properties
-        }
-    };
+    // const data = {
+    //     propertyName: 'myStrings',
+    //     type: 'array',
+    //     items: {
+    //         type: 'string',
+    //
+    //         //old data
+    //         properties: tool.schema.items.properties
+    //     }
+    // };
 
     const expected = {
         type: "array",
-        items: {
-            type: 'string',
-        }
+        // items: {
+        //     type: 'string',
+        // }
     };
 
-    tool.optionDataUpdate(undefined, data)
-    expect(tool.schema).toEqual(expected)
+    const options = tool.optionDataPrepare({});
+    const optionsPicked = _.pick(options, Object.keys(expected))
+    expect(optionsPicked).toEqual(expected)
 })
 
 

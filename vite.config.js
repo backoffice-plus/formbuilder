@@ -36,5 +36,9 @@ export default defineConfig({
         },
     },
 
-    test: {}
+    test: {
+        deps: {
+            interopDefault: true,
+        },
+    }
 })

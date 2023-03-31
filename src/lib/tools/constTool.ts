@@ -1,6 +1,7 @@
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import {resolveSchema} from "../formbuilder";
 import jsonForms from "./schema/const.form.json";
+import jsonFormsSchema from "./schema/const.schemaBuilder.form.json";
 import constComponent from "../../components/tools/const.vue";
 import {rankWith} from "@jsonforms/core";
 import type {TesterContext} from "@jsonforms/core/src/testers/testers";
@@ -40,9 +41,15 @@ export class ConstTool extends ControlTool {
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
+
+        let currentJsonForm = jsonForms
+        if('schema' === context.builder) {
+            currentJsonForm = jsonFormsSchema as any;
+        }
+
         return {
-             schema: await resolveSchema(jsonForms.schema),
-             uischema: await resolveSchema(jsonForms.uischema),
+             schema: await resolveSchema(currentJsonForm.schema),
+             uischema: await resolveSchema(currentJsonForm.uischema),
         } as JsonFormsInterface
     }
 

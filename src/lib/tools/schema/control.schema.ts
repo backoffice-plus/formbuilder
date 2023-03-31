@@ -346,7 +346,14 @@ export const uischema = {
                 {
                     $ref:'styles.uischema'
                 },
-            ]
+            ],
+            rule: {
+                effect: "SHOW",
+                condition: {
+                    scope: "#/properties/_isUischema",
+                    schema:{ const: true }
+                }
+            }
         },
 
         /**

@@ -120,27 +120,28 @@ import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
 import {Vuedraggable} from '../../index'
 import {ref, computed, onMounted} from 'vue';
-import {useTools} from "../../composable/tools";
 import {unknownTool} from "../../lib/tools/unknownTool";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
-import {useFormbuilder} from "../../composable/formbuilder";
+import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 
 const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
-
-const {onDrag, toolDragging} = useFormbuilder();
 
 const childTools = ref([]);
 const tabs = ref([]);
 const currentTab = ref(-1);
 const collapsed = ref(false);
 
+const fb = getFormbuilder();
+const toolFinder = getToolfinder();
+const onDrag = fb?.exposed.onToolDrag;
+
 onMounted(() => {
   if (!props.isToolbar) {
     if (props?.tool?.uischema?.elements?.length) {
-      childTools.value.push(...initElements(props.tool));
+      childTools.value.push(...initElements(toolFinder, props.tool));
 
       //wait to render dom
       if(childTools.value.length) {
@@ -166,9 +167,7 @@ onMounted(() => {
 
 
 const addTab = () => {
-  const {findLayoutToolByUiType} = useTools();
-
-  const tabTool = cloneEmptyTool(findLayoutToolByUiType('Category') ?? unknownTool);
+  const tabTool = cloneEmptyTool(toolFinder.findLayoutToolByUiType('Category') ?? unknownTool);
   tabTool.uischema.label = 'Tab';
 
   childTools.value.push(tabTool);
@@ -178,7 +177,7 @@ const addTab = () => {
 
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
-  emitter.emit('formBuilderUpdated')
+  fb?.exposed?.onDropAreaChanged();
 };
 
 const onDeleteByTool = async (e) => {
@@ -194,7 +193,8 @@ const onDelete = () => {
 };
 
 const showDragClass = computed(() => {
-  const isCategory = 'Category' === toolDragging.value?.uischema?.type;
+  const toolDragging = getToolDragging();
+  const isCategory = 'Category' === toolDragging?.uischema?.type;
   return isCategory
 })
 

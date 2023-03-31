@@ -1,29 +1,40 @@
 {
-  "schema": {
-    "type": "object",
-    "properties": {
-      "boolean": {
-        "type": "boolean"
-      },
-      "string": {
-        "type": "string"
-      },
-      "enum": {
-        "type": "string",
-        "enum": [
-          "off",
-          "on",
-          "true",
-          "false"
-        ]
-      },
-      "integer": {
-        "type": "integer"
-      },
-      "array": {
-        "type": "array",
-        "items": {
-          "type": "string"
+    "schema": {
+        "type": "object",
+        "properties": {
+            "boolean": {
+                "type": "boolean"
+            },
+            "string": {
+                "type": "string"
+            },
+            "enum": {
+                "type": "string",
+                "enum": [
+                    "off",
+                    "on",
+                    "true",
+                    "false"
+                ]
+            },
+            "integer": {
+                "type": "integer"
+            },
+            "array": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+      "object": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          }
         }
       }
     }
@@ -39,10 +50,7 @@
             "elements": [
               {
                 "type": "Control",
-                "scope": "#/properties/boolean",
-                "options": {
-                  "toggle": true
-                }
+                "scope": "#/properties/boolean"
               },
               {
                 "type": "Label",
@@ -71,7 +79,7 @@
               {
                 "type": "Control",
                 "scope": "#/properties/string",
-                "label": "enter \"on\" to enable input field"
+                "label": "enter \"on\" to match the rule"
               },
               {
                 "type": "Label",
@@ -100,7 +108,7 @@
               {
                 "type": "Control",
                 "scope": "#/properties/string",
-                "label": "enter \"on\" or \"true\" to enable input field"
+                "label": "enter \"on\" or \"true\" to match the rule"
               },
               {
                 "type": "Label",
@@ -132,7 +140,7 @@
               {
                 "type": "Control",
                 "scope": "#/properties/enum",
-                "label": "select \"on\" to enable input field"
+                "label": "select \"on\" to match the rule"
               },
               {
                 "type": "Label",
@@ -161,7 +169,7 @@
               {
                 "type": "Control",
                 "scope": "#/properties/string",
-                "label": "enter \"two letters followed by three numbers\" to enable input field"
+                "label": "enter \"two letters followed by three numbers\" to match the rule"
               },
               {
                 "type": "Label",
@@ -197,7 +205,7 @@
               {
                 "type": "Control",
                 "scope": "#/properties/string",
-                "label": "enter at least 3 signs to enable input field"
+                "label": "enter at least 3 signs to match the rule"
               },
               {
                 "type": "Label",
@@ -233,7 +241,7 @@
               {
                 "type": "Control",
                 "scope": "#/properties/enum",
-                "label": "select neither \"off\" nor \"false\" to enable input field"
+                "label": "select neither \"off\" nor \"false\" to match the rule"
               },
               {
                 "type": "Label",
@@ -274,7 +282,7 @@
               {
                 "type": "Control",
                 "scope": "#/properties/integer",
-                "label": "enter a number between 5 and 10 to enable input field"
+                "label": "enter a number between 5 and 10 to match the rule"
               },
               {
                 "type": "Label",
@@ -302,6 +310,36 @@
         ],
         "label": "Number Minimum & exclusiveMaximum"
       },
+
+      {
+        "type": "Group",
+        "label": "Rule Condition with type=Leaf and expectedValue",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/string",
+                "label": "enter \"on\" to match the rule"
+              },
+              {
+                "type": "Label",
+                "text": "Rule was successful",
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "type": "LEAF",
+                    "scope": "#/properties/string",
+                    "expectedValue": "on"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+
       {
         "type": "Group",
         "elements": [
@@ -311,7 +349,7 @@
               {
                 "type": "Control",
                 "scope": "#/properties/array",
-                "label": "create at least one entry with \"on\" to enable input field"
+                "label": "create at least one entry with \"on\" to match the rule"
               },
               {
                 "type": "Label",
@@ -340,16 +378,121 @@
         ],
         "label": "Array contains const"
       },
+          {
+            "type": "Group",
+            "elements": [
+              {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/array",
+                    "label": "create at least 3 unique filled items to match the rule"
+                  },
+                  {
+                    "type": "Label",
+                    "text": "Rule was successful",
+                    "rule": {
+                      "effect": "SHOW",
+                      "condition": {
+                        "scope": "#",
+                        "schema": {
+                          "properties": {
+                            "array": {
+                              "minItems": 3,
+                              "uniqueItems": true,
+                              "items": {
+                                "minLength": 1
+                              }
+                            }
+                          },
+                          "required": [
+                            "array"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            ],
+            "label": "Array minItems"
+          },
+          {
+            "type": "Group",
+            "elements": [
+              {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "VerticalLayout",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/boolean",
+                        "label": "enable boolean",
+                        "options": {
+                          "toggle": true
+                        }
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/string",
+                        "label": "enter at least 3 charaters"
+                      },
+                      {
+                        "type": "Control",
+                        "scope": "#/properties/integer",
+                        "label": "enter a number greater then 3"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Label",
+                    "text": "Rule was successful",
+                    "rule": {
+                      "condition": {
+                        "schema": {
+                          "type": "object",
+                          "properties": {
+                            "string": {
+                              "type": "string",
+                              "minLength": 3
+                            },
+                            "integer": {
+                              "type": "integer",
+                              "minimum": 3
+                            },
+                            "boolean": {
+                              "const": true
+                            }
+                          },
+                          "required": ["string", "integer", "boolean"]
+                        },
+                        "scope": "#"
+                      },
+                      "effect": "SHOW"
+                    }
+                  }
+                ]
+              }
+            ],
+            "label": "Several Schema Conditions"
+          },
       {
         "type": "Group",
+        "label": "Rule Schema with $ref",
         "elements": [
           {
             "type": "HorizontalLayout",
             "elements": [
               {
                 "type": "Control",
-                "scope": "#/properties/array",
-                "label": "create at least 3 unique filled items to enable input field"
+                "scope": "#/properties/boolean",
+                "label": "enable boolean",
+                "options": {
+                  "toggle": true
+                }
               },
               {
                 "type": "Label",
@@ -359,17 +502,75 @@
                   "condition": {
                     "scope": "#",
                     "schema": {
+                      "definitions": {
+                        "defBoolean": {
+                          "const": true
+                        }
+                      },
                       "properties": {
-                        "array": {
-                          "minItems": 3,
-                          "uniqueItems": true,
-                          "items": {
-                            "minLength": 1
-                          }
+                        "boolean": {
+                          "$ref": "#/definitions/defBoolean"
+                        }
+                      },
+                      "required": ["boolean"]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "label": "Rule Schema with type=object  ",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+
+                "type": "VerticalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/object/properties/name",
+                    "label": "enter a name with more then 3 characters"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/object/properties/country",
+                    "label": "enter DE or US as country"
+                  }
+                ]
+              },
+              {
+                "type": "Label",
+                "text": "Rule was successful",
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "scope": "#",
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "object": {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "minLength": 3
+                            },
+                            "country": {
+                              "enum": ["DE","US"]
+                            }
+                          },
+                          "required": [
+                            "name","country"
+                          ]
                         }
                       },
                       "required": [
-                        "array"
+                        "object"
                       ]
                     }
                   }
@@ -377,10 +578,55 @@
               }
             ]
           }
-        ],
-        "label": "Array minItems"
+        ]
+      },
+
+      {
+        "type": "Group",
+        "label": "Rule Schema with oneOf",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/string",
+                "label": "Enter foo or bar to to match the rule "
+              },
+              {
+                "type": "Label",
+                "text": "Rule was successful",
+
+                "rule": {
+                  "effect": "SHOW",
+                  "condition": {
+                    "scope": "#",
+                    "schema": {
+                      "type": "object",
+                      "properties": {
+                        "string": {
+                          "oneOf": [
+                            {
+                              "const": "foo"
+                            },
+                            {
+                              "const": "bar"
+                            }
+                          ]
+                        }
+                      },
+                      "required": ["string"]
+                    }
+                  }
+                }
+
+              }
+            ]
+          }
+        ]
       }
     ]
   },
   "data": {}
 }
+

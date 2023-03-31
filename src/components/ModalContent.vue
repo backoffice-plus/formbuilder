@@ -54,7 +54,7 @@ import {emitter} from "../lib/mitt";
 import {onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
-import {useFormbuilder} from "../composable/formbuilder";
+import {getFormbuilder} from "../lib/vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -72,15 +72,17 @@ const errorAfterUpdated = ref([]);
 const mergedJsonFormsRenderers = ref(Object.freeze(props.jsonFormsRenderers));
 const error = ref('');
 
-const {builder, schemaReadOnly} = useFormbuilder();
+const fb = getFormbuilder();
 
 onMounted(async () => {
 
   const context = {
-    builder: builder.value,
-    schemaReadOnly: schemaReadOnly.value,
+    builder: fb?.exposed?.showBuilder.value,
+    schemaReadOnly: fb.props.schemaReadOnly,
+    rootSchema: fb?.exposed?.rootSchema?.value,
   }
 
+  try {
   options.value = props.tool.optionDataPrepare(context);
   jsonFormSchema.value = await props.tool.optionJsonforms(context)
       .then(e => {
@@ -93,7 +95,14 @@ onMounted(async () => {
 
         return {schema:event.schema, uischema:event.uischema};
     })
-    .catch(e => error.value=e)
+    .catch(e => {
+      error.value = e
+    })
+  }
+  catch(e) {
+    error.value = e;
+  }
+
 
 
 
@@ -126,12 +135,15 @@ const onChange = (e) => {
     dataAfterUpdated.value = data;
 
     const context = {
-      builder: builder.value,
+      builder: fb?.exposed?.showBuilder,
+      schemaReadOnly: fb.props.schemaReadOnly,
     }
     props.tool.optionDataUpdate(context, data)
 
     emit('change', data);
-    emitter.emit('formBuilderUpdated');
+
+    //:DEV global emit do not work with sub-formeditors
+    //emitter.emit('formBuilderUpdated');
   }
 }
 

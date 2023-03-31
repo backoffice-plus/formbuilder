@@ -6,6 +6,7 @@
         <template v-if="!isInlineType">
           <b>{{ tool.propertyName }}</b>
         </template>
+        <SchemaFeatures :tool="tool" />
       </template>
     </ToolIcon>
 
@@ -80,28 +81,29 @@ import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 import {deleteToolInChilds, Vuedraggable} from '../../index'
 import {computed, onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
-import {useTools} from "../../composable/tools";
 import {cloneEmptyTool} from "../../lib/formbuilder";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {initObjectElements} from "../../lib/initializer";
-import {useJsonforms} from "../../composable/jsonforms";
 import _ from "lodash";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
-import {useFormbuilder} from "../../composable/formbuilder";
+import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
+import SchemaFeatures from "./utils/SchemaFeatures.vue";
 
 const props = defineProps({...toolComponentProps()})
 
 const emit = defineEmits(['deleteByTool']);
 
-const {onDrag, toolDragging} = useFormbuilder();
-
 const childTools = ref([]);
 const collapsed = ref(false);
 
+const fb = getFormbuilder();
+const toolFinder = getToolfinder();
+const onDrag = fb?.exposed.onToolDrag;
+
 onMounted(() => {
   if (!props.isToolbar) {
-      childTools.value.push(...initObjectElements(props?.tool));
+      childTools.value.push(...initObjectElements(toolFinder, props?.tool));
 
       //wait to render dom
       if (childTools.value.length) {
@@ -112,15 +114,14 @@ onMounted(() => {
 
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
-  emitter.emit('formBuilderUpdated')
+  fb?.exposed?.onDropAreaChanged();
 };
 
 const addItem = (type) => {
-  const {schema} = useJsonforms();
-  const {findMatchingTool} = useTools();
+  const schema = fb?.exposed?.rootSchema?.value;
 
   const initSchema = {type:'string'}
-  const tool = cloneEmptyTool(findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
+  const tool = cloneEmptyTool(toolFinder.findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
 
   childTools.value.push(tool);
   onDropAreaChange(null);
@@ -146,7 +147,8 @@ const onDelete = () => {
 };
 
 const showDragClass = computed(() => {
-  const isControl = 'Control' === toolDragging.value?.uischema?.type;
+  const toolDragging = getToolDragging();
+  const isControl = 'Control' === toolDragging?.uischema?.type;
   return isControl;
 })
 

@@ -2,6 +2,7 @@ import {rankWith} from '@jsonforms/core';
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
 import toolComponent from "../../components/tools/array.component.vue";
 import {schema, uischema} from "./schema/array.schema";
+import jsonFormsSchema from "./schema/array.schemaBuilder.form.json";
 import {getItemsType, resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
 import {AbstractTool} from "./AbstractTool";
@@ -88,7 +89,10 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             type: this.schema.type,
             //asInlineType: couldBeInlineType,
             isRef: isRef,
-            options: options
+            options: options,
+
+            _isUischema: 'uischema' === context.builder,
+            _isSchemaReadOnly: context.schemaReadOnly,
         } as any;
 
 
@@ -158,9 +162,18 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
+
+        let currentJsonSchema = {
+            schema: schema,
+            uischema: uischema,
+        }
+        if('schema' === context.builder) {
+            currentJsonSchema = jsonFormsSchema;
+        }
+
         return {
-            schema: await resolveSchema(schema),
-            uischema: await resolveSchema(uischema),
+            schema: await resolveSchema(currentJsonSchema.schema),
+            uischema: await resolveSchema(currentJsonSchema.uischema),
         } as JsonFormsInterface
     }
 

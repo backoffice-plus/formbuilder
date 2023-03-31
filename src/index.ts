@@ -5,6 +5,7 @@ export * from './lib/formbuilder';
 export * from './lib/generator';
 export * from './lib/normalizer';
 export * from './lib/tools/subschemas';
+export * from './lib/ToolFinder';
 export {AbstractTool} from "./lib/tools/AbstractTool";
 export type {ToolInterface, ToolContext, JsonFormsInterface} from "./lib/tools";
 export const defaultTools = [...controlTools, ...layoutTools]
@@ -22,8 +23,6 @@ export {boplusVueVanillaRenderers} from "../packages/boplus-vue-vanilla/src/inde
 
 export {emitter} from './lib/mitt'
 export type {EventAfterOptionJsonforms} from './lib/mitt'
-
-export { useJsonforms } from './composable/jsonforms'
 
 /** @ts-ignore */
 export {default as Vuedraggable} from "../packages/_vuedraggable/src/vuedraggable.js";

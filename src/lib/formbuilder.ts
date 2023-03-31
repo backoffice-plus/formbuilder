@@ -1,13 +1,44 @@
 // @ts-ignore
 import _ from "lodash";
 import {Resolver} from "@stoplight/json-ref-resolver";
-import type {ToolInterface,} from "./tools/index";
+import type {ToolInterface} from "./tools";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
+import {generateJsonSchema, generateDefaultUISchema} from "@jsonforms/core";
 import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
-import {useTools} from "../composable/tools";
 import {unknownTool} from "./tools/unknownTool";
 import {subschemaMap} from "./tools/subschemas";
+import {objectTool} from "./tools/ObjectTool";
+import type {ToolFinder} from "./ToolFinder";
+
+export const   createBaseTool = (toolFinder:ToolFinder, schema: JsonSchema, uischema: UISchemaElement):ToolInterface => {
+    if (undefined === schema) {
+        schema = generateJsonSchema({});
+    }
+    if (undefined === uischema) {
+        uischema = generateDefaultUISchema(schema);
+    }
+
+    return toolFinder.findBaseTool(schema, uischema);
+};
+
+export const createSchemaTool = (schema: JsonSchema): ToolInterface => {
+    const tool = cloneToolWithSchema(objectTool, schema);
+    tool.propertyName = 'schema';
+
+    return tool;
+}
+export const createDefTool = (schema: JsonSchema): ToolInterface => {
+    const defSchema = {
+        type:'object',
+        properties: schema.definitions
+    } as JsonSchema;
+
+    const tool = cloneToolWithSchema(objectTool, defSchema);
+    tool.propertyName = 'definitions';
+
+    return tool;
+}
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {
@@ -37,7 +68,7 @@ export const cloneEmptyTool = (tool: ToolInterface, schema:JsonSchema|undefined 
 };
 
 
-export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: UISchemaElement|undefined = undefined) => {
+export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uischema: UISchemaElement|undefined = undefined) : ToolInterface => {
 
     //clone
     const clone = tool.clone();
@@ -58,49 +89,7 @@ export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uis
 };
 
 
-export const findBaseTool = (schema:JsonSchema, uischema:ControlElement|Layout|UISchemaElement|Scoped) : ToolInterface => {
 
-    if(undefined === schema) {
-        throw "schema is undefined"
-    }
-    if(undefined === uischema || null === uischema) {
-        throw "uischema is undefined"
-    }
-
-    const isLayout = "elements" in uischema
-    const isScoped = "scope" in uischema;
-
-    const {findLayoutToolByUiType, findMatchingTool} = useTools();
-
-    let itemSchema = schema;
-    let tool;
-
-    if(isLayout) {
-        tool = findLayoutToolByUiType(uischema.type) ?? unknownTool;
-    }
-
-    //specialcase - some examples use none-Layout-elements as root
-    else {
-        if(isScoped) {
-            //not working well!!!
-            if ('#' === uischema?.scope) {
-                console.error("scope=# is not supported")
-                return unknownTool;
-                const props = schema.properties as any;
-                const propKeys = Object.keys(props);
-                itemSchema = propKeys[0] && props[propKeys[0]] as any
-            } else {
-                itemSchema = _.get(schema, normalizeScope(uischema.scope));
-            }
-        }
-
-        tool = findMatchingTool(schema, itemSchema, uischema) ?? unknownTool;
-    }
-
-    const clone = cloneToolWithSchema(tool, itemSchema, uischema as UISchemaElement);
-
-    return clone;
-};
 
 /** @deprecated **/
 export const getItemsType = (schema:JsonSchema):string|undefined => {
@@ -216,7 +205,7 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
     return await resolver.resolve(schema)
         .then(resolved => {
             if (resolved.errors.length) {
-                //throw resolved.errors.map(error => error.message);
+                throw resolved.errors.map(error => error.message);
                 console.log("resolveSchema error", resolved.errors.map(error => error.message));
                 return {}
             }
