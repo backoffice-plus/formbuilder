@@ -15,7 +15,7 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
     tester = rankWith(2, (uischema, schema) => {
-        const hasKeyword = 'if' in schema
+        const hasKeyword = schema && 'if' in schema
         return hasKeyword
     });
     clone = (): ToolInterface => new SchemaTool(this.keyword);

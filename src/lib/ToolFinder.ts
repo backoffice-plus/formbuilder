@@ -54,7 +54,7 @@ export class ToolFinder {
             /**
              * if no tool was found, check and guess type and try again
              */
-            if(undefined === itemSchema.type){
+            if(itemSchema && undefined === itemSchema?.type){
                 itemSchema.type = this.guessType(itemSchema);
                 if(itemSchema.type) {
                     switch (itemSchema.type) {
