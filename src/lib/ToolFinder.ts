@@ -49,10 +49,56 @@ export class ToolFinder {
 
         const toolWithScore = _.maxBy(toolsWithScore, (i) => i.score)
         if (!toolWithScore?.tool || -1 === toolWithScore?.score) {
+
+            /**
+             * if no tool was found, check and guess type and try again
+             */
+            if(undefined === itemSchema.type){
+                itemSchema.type = this.guessType(itemSchema);
+                if(itemSchema.type) {
+                    switch (itemSchema.type) {
+                        case 'array':
+                            if(undefined === itemSchema.items) {
+                                itemSchema.items = {};
+                            }
+                            break;
+                    }
+                    return this.findMatchingTool(schema, itemSchema, itemUischema);
+                }
+            }
+
             return unknownTool;
         }
         return toolWithScore.tool;
     };
+
+    guessType(schema: JsonSchema):string|undefined {
+
+        //@see https://json-schema.org/understanding-json-schema/reference/index.html
+        const properties = {
+            string:['minLength','maxLength', 'pattern'],
+            array: ['contains','minContains', 'maxContains','minItems','maxItems','uniqueItems'],
+            number:['minimum','maximum','exclusiveMinimum','exclusiveMaximum','multipleOf'],
+            object:['properties','patternProperties'],
+        } as Record<string, string[]>;
+        const propKeys = Object.keys(properties);
+        const scores = {} as Record<string, number>;
+        Object.keys(schema).forEach(key => {
+            propKeys.forEach(propKey => {
+                if(properties[propKey].includes(key)) {
+                    if(undefined === scores[propKey]) {
+                        scores[propKey] = 0;
+                    }
+                    scores[propKey]++
+                }
+            })
+        })
+
+        const scoreItems = Object.keys(scores).map((key:string) => {return {type:key,score:scores[key]}})
+        const maxItem = _.maxBy(scoreItems, (i) => i.score)
+
+        return maxItem?.type;
+    }
 
     findBaseTool(schema: JsonSchema, uischema: ControlElement | Layout | UISchemaElement | Scoped): ToolInterface {
 
