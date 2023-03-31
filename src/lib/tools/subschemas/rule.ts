@@ -1,4 +1,4 @@
-import type {JsonSchema} from "@jsonforms/core";
+import type {JsonSchema, SchemaBasedCondition} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {ToolContext} from "../index";
 import _ from "lodash";
@@ -11,7 +11,7 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
      */
     /** @ts-ignore */
     const isSchema = rule?.condition?.schema;
-    const isSchemaBuilder = isSchema && 'properties' in rule?.condition?.schema;
+    const isSchemaBuilder = isSchema && 'properties' in (rule?.condition as SchemaBasedCondition)?.schema;
 
     return {
         rule: {

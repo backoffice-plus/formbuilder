@@ -44,7 +44,7 @@ const formbuilderRenderer = defineComponent({
     const fb = getFormbuilder();
 
     const jsonForms = {
-      schema: control.control.value.data,
+      schema: (control.control as any).value.data,
       uischema: {},
     };
 
@@ -56,8 +56,8 @@ const formbuilderRenderer = defineComponent({
     };
   },
   methods: {
-    onSchemaUpdated(e) {
-      this.onChange({target:{value:e.schema}});
+    onSchemaUpdated(e:any) {
+      this.onChange({target:{value:e.schema}} as any);
     }
   }
 });
