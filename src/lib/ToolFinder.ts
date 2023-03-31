@@ -21,14 +21,15 @@ export class ToolFinder {
     findControlTools(): ToolInterface[] {
         return this._tools.filter((tool: ToolInterface) => {
             const uiSchemaType = tool.uischema.type;
-            return uiSchemaType && uiSchemaType === 'Control'
+            return !uiSchemaType || uiSchemaType === 'Control' || uiSchemaType === 'Unknown'
         })
     }
 
     findLayoutTools(): ToolInterface[] {
         return this._tools.filter((tool: ToolInterface) => {
             const uiSchemaType = tool.uischema.type;
-            return uiSchemaType && uiSchemaType !== 'Control'
+            const hasElements = 'elements' in tool.uischema;
+            return (uiSchemaType && hasElements) || uiSchemaType !== 'Control' && uiSchemaType !== 'Unknown'
         })
     }
 

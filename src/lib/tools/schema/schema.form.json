@@ -1,0 +1,31 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "propertyName": {
+        "type": "string"
+      },
+      "keyword": {
+        "type": "string",
+        "enum": ["if", "then", "else", "contains", "not"]
+      }
+    }
+  },
+  "uischema": {
+
+    "type": "Categorization",
+    "elements": [
+      {
+        "type": "Category",
+        "label": "Base",
+        "elements": [
+          {
+            "scope": "#/properties/keyword",
+            "type": "Control"
+          }
+        ]
+      }
+    ]
+  },
+  "data": {}
+}

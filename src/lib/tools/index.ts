@@ -15,6 +15,7 @@ import type {RankedTester} from "@jsonforms/core/src/testers/testers";
 import type {JsonFormsInterface, JsonFormsUISchema} from "../models";
 import {listWithDetailTool} from "./ListWithDetailTool";
 import {layoutRefTool} from "./LayoutRefTool";
+import {schemaTool} from "./SchemaTool";
 export type {JsonFormsInterface, JsonFormsUISchema}
 
 export const layoutTools = [
@@ -37,6 +38,7 @@ export const controlTools = [
     arrayTool,
     objectTool,
     combinatorTool,
+    schemaTool,
 ]
 
 

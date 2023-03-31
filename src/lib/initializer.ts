@@ -7,6 +7,7 @@ import {ArrayTool} from "./tools/ArrayTool";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {CombinatorTool} from "./tools/combinatorTool";
 import type {ToolFinder} from "./ToolFinder";
+import {schemaKeywords, SchemaTool} from "./tools/SchemaTool";
 
 export const initElements = (toolFinder: ToolFinder, tool: ToolInterface): Array<ToolInterface> => {
     const tools = [] as any;
@@ -41,6 +42,8 @@ export const initElements = (toolFinder: ToolFinder, tool: ToolInterface): Array
 
         tools.push(clone);
     });
+
+    schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
 
     return tools;
 };

@@ -7,6 +7,7 @@ import type {JsonSchema} from "@jsonforms/core";
 import type {JsonFormsInterface, JsonFormsUISchema, ToolInterface} from "./tools";
 import {ArrayTool} from "./tools/ArrayTool";
 import {getItemsType} from "./formbuilder";
+import {SchemaTool} from "./tools/SchemaTool";
 
 export const generateSchemaByTool = (tool: ToolInterface): JsonSchema => {
 
@@ -16,6 +17,13 @@ export const generateSchemaByTool = (tool: ToolInterface): JsonSchema => {
 
     else if ('array' === tool.schema?.type && tool.childs?.length) {
         return createTypeArraySchemaOnly(tool);
+    }
+
+    else if(tool instanceof SchemaTool) {
+        //:TODO check if keyword is needed here
+       return {
+            [tool.keyword]: createTypeObjectSchemaOnly(tool),
+        }
     }
 
     else  {
@@ -323,9 +331,22 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema):
     } else {
         //:INFO some tools dont have elements (LabelTool)
         if(tool.childs.length) {
-            created.elements = tool.childs?.map((t: ToolInterface) => {
-                return createJsonUiSchema(t, rootSchema)
-            }) ?? [];
+            created.elements = tool.childs
+                .filter((t: ToolInterface) => {
+                    return !(t instanceof SchemaTool)
+                })
+                .map((t: ToolInterface) => {
+                    return createJsonUiSchema(t, rootSchema)
+                }) ?? [];
+
+            tool.childs
+                .filter((t: ToolInterface) => {
+                    return (t instanceof SchemaTool)
+                })
+                .forEach((t: ToolInterface) => {
+                    const schemaToSet = generateSchemaByTool(t);
+                    rootSchema[t.keyword] = schemaToSet[t.keyword];
+                });
         }
     }
 
