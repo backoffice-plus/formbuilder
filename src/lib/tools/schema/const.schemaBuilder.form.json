@@ -1,0 +1,62 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "const": {
+        "$ref": "const.schema#/properties/const"
+      },
+      "propertyName": {
+        "type": "string",
+        "pattern": "^[a-z]"
+      },
+      "required": {
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "propertyName",
+      "const"
+    ]
+  },
+  "uischema": {
+    "type": "Categorization",
+    "elements": [
+      {
+        "type": "Category",
+        "label": "Base",
+        "elements": [
+          {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/propertyName"
+              },
+              {
+                "type": "Group",
+                "label": "Const Value",
+                "elements": [
+                  {
+                    "type": "LayoutRef",
+                    "$ref": "const.uischema"
+                  }
+                ]
+              }
+            ]
+          },
+
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "scope": "#/properties/required",
+                "type": "Control"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "data": {}
+}
