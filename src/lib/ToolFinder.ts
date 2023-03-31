@@ -76,7 +76,7 @@ export class ToolFinder {
 
         //@see https://json-schema.org/understanding-json-schema/reference/index.html
         const properties = {
-            string:['minLength','maxLength', 'pattern'],
+            string:['minLength','maxLength', 'pattern', 'enum'],
             array: ['contains','minContains', 'maxContains','minItems','maxItems','uniqueItems'],
             number:['minimum','maximum','exclusiveMinimum','exclusiveMaximum','multipleOf'],
             object:['properties','patternProperties'],
