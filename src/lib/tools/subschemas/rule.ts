@@ -6,16 +6,16 @@ import _ from "lodash";
 export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uischema: UISchemaElement): Record<string, any> => {
     const rule = uischema.rule;
 
-    const ruleSchema = uischema.rule?.condition?.schema;
-
-    const isSchemaBuilder = ruleSchema && 'properties' in ruleSchema;
-
-    //console.log("rule.prepareOptionData ruleSchema", ruleSchema)
+    /**
+     * :TODO remove ruleBuilder - only use the Formbuilder in "rule"
+     */
+    /** @ts-ignore */
+    const isSchemaBuilder = rule && 'properties' in rule?.condition?.schema;
 
     return {
         rule: {
             rule: !isSchemaBuilder ? rule : undefined,
-            ruleSchema: ruleSchema ? JSON.parse(JSON.stringify(ruleSchema)) : undefined,
+            ruleBuilder: isSchemaBuilder ? JSON.parse(JSON.stringify(rule)) : undefined,
         }
     };
 }
@@ -23,23 +23,9 @@ export const setOptionData = (schema: JsonSchema, uischema: UISchemaElement, dat
 
     let rule = data?.rule?.rule;
 
-    //console.log("rule.setOptionData data.rule", data.rule)
-
-    //ruleSchema (WIP)
-    if (data.rule?.ruleSchema) {
-        //console.log("rule.setOptionData data.rule.ruleSchema", data.rule?.ruleSchema)
-
-        /**
-         * :TODO hier weiter
-         * - read/write effect & scope
-         */
-        rule = {
-            "effect": "ENABLE",
-            "condition": {
-                "scope": "#",
-                "schema": data.rule?.ruleSchema ?? {}
-            }
-        }
+    //rules by schemaBuilder
+    if (data.rule?.ruleBuilder) {
+        rule = data.rule?.ruleBuilder;
     }
 
     uischema.rule = rule;

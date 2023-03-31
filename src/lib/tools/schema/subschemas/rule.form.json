@@ -209,9 +209,32 @@
               "condition"
             ]
           },
-          "ruleSchema": {
+          "ruleBuilder": {
             "type": "object",
-            "additionalProperties": true
+            "properties": {
+              "effect": {
+                "type": "string",
+                "enum": [
+                  "SHOW",
+                  "HIDE",
+                  "ENABLE",
+                  "DISABLE"
+                ]
+              },
+              "condition": {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string"
+                  },
+                  "schema": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "properties": {}
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -228,7 +251,18 @@
             "elements": [
               {
                 "type": "Control",
-                "scope": "#/properties/rule/properties/rule"
+                "scope": "#/properties/rule/properties/rule",
+                "options": {
+                  "detail": {
+                    "type": "VerticalLayout",
+                    "elements": [
+                      {
+                        "type": "Control",
+                        "scope": "#"
+                      }
+                    ]
+                  }
+                }
               }
             ],
             "label": "Rule"
@@ -237,8 +271,16 @@
             "type": "Category",
             "elements": [
               {
+                "type": "Control",
+                "scope": "#/properties/rule/properties/ruleBuilder/properties/effect"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/rule/properties/ruleBuilder/properties/condition/properties/scope"
+              },
+              {
                 "type": "Formbuilder",
-                "scope": "#/properties/rule/properties/ruleSchema"
+                "scope": "#/properties/rule/properties/ruleBuilder/properties/condition/properties/schema"
               }
             ],
             "label": "Schema Builder"
