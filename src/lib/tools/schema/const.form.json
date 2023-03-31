@@ -17,6 +17,9 @@
       "propertyName": {
         "type": "string",
         "pattern": "^[a-z]"
+      },
+      "required": {
+        "type": "boolean"
       }
     },
     "required": [
@@ -79,6 +82,16 @@
                     }
                   }
                 ]
+              }
+            ]
+          },
+
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "scope": "#/properties/required",
+                "type": "Control"
               }
             ]
           }
