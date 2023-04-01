@@ -11,7 +11,7 @@ export const schemaKeywords = ['if', 'then', 'else', 'not', 'contains'];
 
 export class SchemaTool extends AbstractTool implements ToolInterface {
 
-    keyword:string|undefined;
+    keyword:string = 'if';
 
     importer = () => toolComponent;
     tester = rankWith(-1, (uischema, schema) => {

@@ -207,9 +207,11 @@ export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
     });
 
     const conditionalSchemas = {} as JsonSchema | any;
-    schemas.forEach((schemaTool: ToolInterface) => {
-        const schemaToSet = generateSchemaByTool(schemaTool);
-        conditionalSchemas[schemaTool.keyword] = schemaToSet[schemaTool.keyword];
+    schemas.forEach((schemaTool: ToolInterface|SchemaTool) => {
+        if(schemaTool instanceof  SchemaTool) {
+            const schemaToSet = generateSchemaByTool(schemaTool) as any;
+            conditionalSchemas[schemaTool.keyword] = schemaToSet[schemaTool.keyword];
+        }
     });
 
 
@@ -348,12 +350,14 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema):
                 }) ?? [];
 
             schemaKeywords.forEach(key => {
-                key in rootSchema && delete rootSchema[key]
+                key in rootSchema && delete (rootSchema as any)[key]
             })
-            schemas.forEach((t: ToolInterface) => {
+            schemas.forEach((t: ToolInterface)=> {
+                if(t instanceof SchemaTool) {
                     const schemaToSet = generateSchemaByTool(t);
-                    rootSchema[t.keyword] = schemaToSet[t.keyword];
-                });
+                    (rootSchema as any)[t.keyword] = (schemaToSet as any)[t.keyword];
+                }
+            });
         }
     }
 
