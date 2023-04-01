@@ -7,7 +7,7 @@
           Type: {{ schema.type }}
         </template>
         <template v-else>
-          <label class="font-bold">{{ tool.propertyName }}</label>
+          <label class="font-bold">{{ tool.propertyName }}{{tool.isRequired?'*':''}}</label>
           {{ tool.uischema?.label ?? tool.schema?.title }}
         </template>
         <SchemaFeatures :tool="tool" />
