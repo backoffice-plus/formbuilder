@@ -89,6 +89,7 @@ import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import SchemaFeatures from "./utils/SchemaFeatures.vue";
+import {SchemaTool} from "../../lib/tools/SchemaTool";
 
 const props = defineProps({...toolComponentProps()})
 
@@ -127,11 +128,19 @@ const addItem = (type) => {
   onDropAreaChange(null);
 };
 
+const allowedChild = (tool) => {
+  const isControl = 'Control' === tool?.uischema?.type;
+  const hasSchemaType = undefined !== tool?.schema?.type;
+  const isSchemaTool = tool instanceof SchemaTool;
 
+  return (hasSchemaType || isControl) || isSchemaTool;
+}
+
+const showDragClass = computed(() => {
+  return allowedChild(getToolDragging());
+})
 const groupPut = (from, to, node, dragEvent) => {
-  const tool = node._underlying_vm_;
-  const isControlTool = 'Control' === tool.uischema?.type;
-  return isControlTool
+  return allowedChild(node._underlying_vm_);
 };
 
 const onDeleteByTool = async (e) => {
@@ -146,10 +155,5 @@ const onDelete = () => {
   emit("deleteByTool", { tool: props.tool });
 };
 
-const showDragClass = computed(() => {
-  const toolDragging = getToolDragging();
-  const isControl = 'Control' === toolDragging?.uischema?.type;
-  return isControl;
-})
 
 </script>

@@ -187,5 +187,7 @@ export const initObjectElements = (toolFinder: ToolFinder, tool: ToolInterface):
         tools.push(clone);
     });
 
+    schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
+
     return tools;
 };

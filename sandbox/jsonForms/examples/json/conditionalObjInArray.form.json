@@ -1,0 +1,53 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "texts": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "needText": {
+              "type": "boolean"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "if": {
+            "type": "object",
+            "properties": {
+              "needText": {
+                "const": true
+              }
+            },
+            "required": [
+              "needText"
+            ]
+          },
+          "then": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "text"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/texts"
+      }
+    ]
+  },
+  "data": {}
+}

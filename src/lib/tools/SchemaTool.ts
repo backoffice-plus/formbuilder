@@ -14,7 +14,7 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
     keyword:string|undefined;
 
     importer = () => toolComponent;
-    tester = rankWith(2, (uischema, schema) => {
+    tester = rankWith(-1, (uischema, schema) => {
         const hasKeyword = schema && 'if' in schema
         return hasKeyword
     });
@@ -23,6 +23,7 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
 
     constructor(keyword: string = 'if') {
         super()
+        this.uischema = {};
         this.keyword = keyword;
     }
 
@@ -41,11 +42,13 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         const keywordOld = this.keyword;
 
         if(keyword && keywordOld && keyword !== keywordOld) {
-            /** @ts-ignore **/
-            this.schema[keyword] = this.schema[keywordOld] ?? [];
-            /** @ts-ignore **/
-            delete this.schema[keywordOld];
+            // // /** @ts-ignore **/
+            // this.schema[keyword] = undefined;//this.schema[keywordOld] ?? [];
+            // /** @ts-ignore **/
+            // this.schema[keywordOld] = undefined;
             this.keyword = keyword;
+
+            console.log("schemaTool","updated",this.schema);
         }
     }
 

@@ -19,6 +19,7 @@ import * as file from './file';
 import * as styles from './styles';
 import * as formbuilderOptions from './formbuilderOptions';
 import * as personalbogen from './personalbogen';
+import * as conditional from './conditional';
 
 export {
   _default,
@@ -42,4 +43,5 @@ export {
   styles,
   formbuilderOptions,
   personalbogen,
+  conditional,
 }

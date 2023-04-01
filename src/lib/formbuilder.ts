@@ -54,7 +54,9 @@ let cloneCounter = 0;
 export const cloneEmptyTool = (tool: ToolInterface, schema:JsonSchema|undefined = undefined) => {
 
     const clone = tool.clone();
-    clone.propertyName = (tool.uischema.type + ++cloneCounter).toLowerCase();
+    if(tool.uischema.type) {
+        clone.propertyName = (tool.uischema.type + ++cloneCounter).toLowerCase();
+    }
 
     if(schema) {
         _.merge(clone.schema, {...schema})

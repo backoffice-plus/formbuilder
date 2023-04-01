@@ -7,23 +7,22 @@ import type {JsonSchema} from "@jsonforms/core";
 import type {JsonFormsInterface, JsonFormsUISchema, ToolInterface} from "./tools";
 import {ArrayTool} from "./tools/ArrayTool";
 import {getItemsType} from "./formbuilder";
-import {SchemaTool} from "./tools/SchemaTool";
+import {schemaKeywords, SchemaTool} from "./tools/SchemaTool";
 
 export const generateSchemaByTool = (tool: ToolInterface): JsonSchema => {
 
-    if ('object' === tool.schema?.type) {
+    if(tool instanceof SchemaTool) {
+        //:TODO check if keyword is needed here
+        return {
+            [tool.keyword]: createTypeObjectSchemaOnly(tool),
+        }
+    }
+    else if ('object' === tool.schema?.type) {
         return createTypeObjectSchemaOnly(tool);
     }
 
     else if ('array' === tool.schema?.type && tool.childs?.length) {
         return createTypeArraySchemaOnly(tool);
-    }
-
-    else if(tool instanceof SchemaTool) {
-        //:TODO check if keyword is needed here
-       return {
-            [tool.keyword]: createTypeObjectSchemaOnly(tool),
-        }
     }
 
     else  {
@@ -184,7 +183,9 @@ export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
     const properties = {} as Record<string, JsonSchema>;
     const required = [] as Array<string>;
 
-    tool.childs?.forEach((childTool: ToolInterface) => {
+    const {childs, schemas} = splitChilds(tool.childs);
+
+    childs.forEach((childTool: ToolInterface) => {
         // if ('object' === childTool?.schema?.type) {
         //     const childSchema = createTypeObjectSchema(childTool);
         //     properties[childTool.propertyName] = childSchema[childTool.propertyName];
@@ -205,11 +206,19 @@ export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
         }
     });
 
+    const conditionalSchemas = {} as JsonSchema | any;
+    schemas.forEach((schemaTool: ToolInterface) => {
+        const schemaToSet = generateSchemaByTool(schemaTool);
+        conditionalSchemas[schemaTool.keyword] = schemaToSet[schemaTool.keyword];
+    });
+
+
     return {
         ...tool.schema,
         type: 'object',
         properties: properties,
         required: required.length ? required : undefined,
+        ...conditionalSchemas
     } as JsonSchema;
 };
 
@@ -331,19 +340,17 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema):
     } else {
         //:INFO some tools dont have elements (LabelTool)
         if(tool.childs.length) {
-            created.elements = tool.childs
-                .filter((t: ToolInterface) => {
-                    return !(t instanceof SchemaTool)
-                })
-                .map((t: ToolInterface) => {
+
+            const {childs,schemas} = splitChilds(tool.childs);
+
+            created.elements = childs.map((t: ToolInterface) => {
                     return createJsonUiSchema(t, rootSchema)
                 }) ?? [];
 
-            tool.childs
-                .filter((t: ToolInterface) => {
-                    return (t instanceof SchemaTool)
-                })
-                .forEach((t: ToolInterface) => {
+            schemaKeywords.forEach(key => {
+                key in rootSchema && delete rootSchema[key]
+            })
+            schemas.forEach((t: ToolInterface) => {
                     const schemaToSet = generateSchemaByTool(t);
                     rootSchema[t.keyword] = schemaToSet[t.keyword];
                 });
@@ -352,3 +359,20 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema):
 
     return created;
 };
+
+const splitChilds = (tools:ToolInterface[]) : {childs:ToolInterface[], schemas:ToolInterface[]}  => {
+
+    const childs = [] as ToolInterface[];
+    const schemas = [] as ToolInterface[];
+
+    tools.forEach((t: ToolInterface) => {
+        if(t instanceof SchemaTool) {
+            schemas.push(t)
+        }
+        else {
+            childs.push(t)
+        }
+    });
+
+    return {childs, schemas}
+}
