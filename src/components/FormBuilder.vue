@@ -83,7 +83,7 @@ import {
   cloneToolWithSchema,
   createTypeObjectSchema,
   findAllProperties,
-  findAllScopes, createBaseTool, createDefTool, createSchemaTool,
+  findAllScopes, createBaseTool, createDefTool, createSchemaTool, generateSchemaByTool,
 } from "../index";
 import Modal from "./Modal.vue";
 import {normalizePath, normalizeScope} from "../lib/normalizer";
@@ -93,6 +93,7 @@ import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
 import {generateJsonSchema} from "@jsonforms/core";
 import {getFormbuilder, onDragGetTool} from "../lib/vue";
 import {ToolFinder} from "../lib/ToolFinder";
+import {SchemaTool} from "../lib/tools/SchemaTool";
 
 const props = defineProps({
   jsonForms: Object,
@@ -101,6 +102,7 @@ const props = defineProps({
   tools: Array,
   builders: Array,
   initBuilder: String,
+  schemaTool: String,
 })
 
 const emit = defineEmits(['schemaUpdated']);
@@ -149,7 +151,7 @@ const onChangeBuilder = (e) => {
     case 'schema':
       showBar.value='schema';
 
-      baseSchemaTool.value = createSchemaTool(rootSchema.value);
+      baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
       currentBaseTool.value = baseSchemaTool.value;
       break;
 
@@ -259,11 +261,17 @@ const updateJsonForm = () => {
 
 const updateSchemaBuilder = () => {
   if (baseSchemaTool?.value) {
-    const r = createTypeObjectSchema(baseSchemaTool.value);
+    let setSchema;
+    if(baseSchemaTool.value instanceof SchemaTool) {
+      const firstChild = baseSchemaTool.value.childs[0];
+      setSchema = firstChild && generateSchemaByTool(firstChild);
+    }
+    else {
+      setSchema = createTypeObjectSchema(baseSchemaTool.value).schema
+    }
 
-
-    rootSchema.value = r.schema
-    emit('schemaUpdated', {schema:r.schema, uischema:rootUischema.value})
+    rootSchema.value = setSchema
+    emit('schemaUpdated', {schema: setSchema, uischema: rootUischema.value})
   }
 }
 

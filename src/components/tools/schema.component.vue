@@ -35,6 +35,7 @@
 
                        :tool="tool"
                        :isToolbar="false"
+                       :isInlineType="true"
 
                        @deleteByTool="onDeleteByTool"
 
@@ -69,12 +70,13 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import {Icon} from "@iconify/vue";
-import {deleteToolInChilds, Vuedraggable} from '../../index'
+import {cloneToolWithSchema, deleteToolInChilds, normalizePath, Vuedraggable} from '../../index'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import {initObjectElements} from "../../lib/initializer";
 import ToolIcon from "./utils/ToolIcon.vue";
 import Actions from "./utils/Actions.vue";
+import _ from "lodash";
 
 const props = defineProps({...toolComponentProps()})
 
@@ -89,7 +91,19 @@ const onDrag = fb?.exposed.onToolDrag;
 
 onMounted(() => {
   if (!props.isToolbar) {
-    childTools.value.push(...initObjectElements(toolFinder, props.tool));
+
+    //old behavior: schemaTool behaves like a normal child
+    //childTools.value.push(...initObjectElements(toolFinder, props.tool));
+
+    const itemSchema = props.tool.schema;
+    if(!_.isEmpty(itemSchema)) {
+      const itemUischema = {type:'Control',scope:'#'};
+      const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema, itemUischema), itemSchema, itemUischema)
+      clone.propertyName = false;
+
+      childTools.value.push(clone);
+    }
+
 
     //wait to render dom
     if (childTools.value.length) {
@@ -117,7 +131,8 @@ const onDropAreaChange = (e) => {
 const groupPut = (from, to, node, dragEvent) => {
   const tool = node._underlying_vm_;
   const isControlTool = 'Control' === tool.uischema?.type;
-  return isControlTool;
+  const hasNoItem = from.el.children.length === 0;
+  return hasNoItem && isControlTool;
 };
 
 const onDeleteByTool = async (e) => {
@@ -135,8 +150,9 @@ const onDelete = () => {
 const showDragClass = computed(() => {
   const toolDragging = getToolDragging();
   const isControl = 'Control' === toolDragging?.uischema?.type;
+  const hasNoItem = props.tool.childs.length === 0;
 
-  return isControl;
+  return hasNoItem && isControl;
 })
 
 </script>

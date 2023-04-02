@@ -43,7 +43,8 @@ export const initElements = (toolFinder: ToolFinder, tool: ToolInterface): Array
         tools.push(clone);
     });
 
-    schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
+    //:TODO remove
+    //schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
 
     return tools;
 };
@@ -170,6 +171,7 @@ export const initObjectElements = (toolFinder: ToolFinder, tool: ToolInterface):
         return tool.childs;
     }
 
+
     const properties = tool.schema?.properties ?? {};
     !_.isEmpty(properties) && Object.keys(properties).forEach((propertyName:string) => {
         const itemSchema = properties[propertyName];
@@ -187,7 +189,8 @@ export const initObjectElements = (toolFinder: ToolFinder, tool: ToolInterface):
         tools.push(clone);
     });
 
-    schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
+    //:TODO remove
+    //schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
 
     return tools;
 };

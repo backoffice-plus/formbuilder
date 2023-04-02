@@ -10,6 +10,7 @@ import {unknownTool} from "./tools/unknownTool";
 import {subschemaMap} from "./tools/subschemas";
 import {objectTool} from "./tools/ObjectTool";
 import type {ToolFinder} from "./ToolFinder";
+import {SchemaTool, schemaTool} from "./tools/SchemaTool";
 
 export const   createBaseTool = (toolFinder:ToolFinder, schema: JsonSchema, uischema: UISchemaElement):ToolInterface => {
     if (undefined === schema) {
@@ -22,11 +23,30 @@ export const   createBaseTool = (toolFinder:ToolFinder, schema: JsonSchema, uisc
     return toolFinder.findBaseTool(schema, uischema);
 };
 
-export const createSchemaTool = (schema: JsonSchema): ToolInterface => {
-    const tool = cloneToolWithSchema(objectTool, schema);
-    tool.propertyName = 'schema';
+export const createSchemaTool = (schema: JsonSchema, baseToolName:string|undefined = undefined): ToolInterface => {
 
-    return tool;
+    let clone;
+    switch (baseToolName) {
+        case "schema":
+        case "schema.not":
+        case "schema.if":
+        case "schema.else":
+        case "schema.then":
+            clone = cloneToolWithSchema(schemaTool, schema);
+            if(clone instanceof SchemaTool) {
+                clone.keyword = baseToolName?.match(/[^.]+$/)?.[0] ?? 'if';
+                //clone.propertyName = false;
+            }
+            break;
+
+        default:
+            clone = cloneToolWithSchema(objectTool, schema);
+            clone.propertyName = 'schema';
+            break;
+    }
+
+    return clone;
+
 }
 export const createDefTool = (schema: JsonSchema): ToolInterface => {
     const defSchema = {

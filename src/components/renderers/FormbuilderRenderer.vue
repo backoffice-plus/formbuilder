@@ -6,6 +6,7 @@
       :tools="tools"
       :builders="['schema']"
       initBuilder="schema"
+      :schemaTool="baseSchemaTool"
       @schemaUpdated="onSchemaUpdated"
   />
 <!--  :schemaReadOnly="schemaReadOnly"-->
@@ -48,15 +49,19 @@ const formbuilderRenderer = defineComponent({
       uischema: {},
     };
 
+    const baseSchemaTool = control.appliedOptions?.value?.baseTool;
+
     return {
       ...control,
       tools: fb?.props.tools ?? [],
       jsonFormsRenderers: fb?.props.jsonFormsRenderers ?? [],
-      jsonForms
+      jsonForms,
+      baseSchemaTool
     };
   },
   methods: {
     onSchemaUpdated(e:any) {
+      console.log("formbuilderRenderer","onupdated",e);
       this.onChange({target:{value:e.schema}} as any);
     }
   }

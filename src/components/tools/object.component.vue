@@ -89,7 +89,6 @@ import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import SchemaFeatures from "./utils/SchemaFeatures.vue";
-import {SchemaTool} from "../../lib/tools/SchemaTool";
 
 const props = defineProps({...toolComponentProps()})
 
@@ -131,9 +130,8 @@ const addItem = (type) => {
 const allowedChild = (tool) => {
   const isControl = 'Control' === tool?.uischema?.type;
   const hasSchemaType = undefined !== tool?.schema?.type;
-  const isSchemaTool = tool instanceof SchemaTool;
 
-  return (hasSchemaType || isControl) || isSchemaTool;
+  return (hasSchemaType || isControl)
 }
 
 const showDragClass = computed(() => {

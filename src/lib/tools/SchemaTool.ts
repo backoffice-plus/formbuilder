@@ -47,8 +47,6 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
             // /** @ts-ignore **/
             // this.schema[keywordOld] = undefined;
             this.keyword = keyword;
-
-            console.log("schemaTool","updated",this.schema);
         }
     }
 
@@ -65,6 +63,7 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
             title: 'Schema',
             icon: 'mdi:code-not-equal',
             //  labelAtDropArea:this.keyword ?? 'anyOf',
+            hideToolAtBar: true,
 
         }
     }

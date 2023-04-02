@@ -31,6 +31,11 @@
           },
           "uniqueItems": {
             "type": "boolean"
+          },
+
+
+          "not": {
+            "type": "object"
           }
         }
       }
@@ -152,6 +157,21 @@
             "schema": {"enum": ["array"]}
           }
         }
+      },
+
+
+
+      {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Formbuilder",
+            "scope": "#/properties/validation/properties/not",
+            "options": {
+              "baseTool": "schema.not"
+            }
+          }
+        ]
       }
     ]
   },

@@ -4,6 +4,7 @@ import toolComponent from "../../components/tools/object.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/object.form.json";
 import {rankWith} from "@jsonforms/core";
+import * as subschemas from "./subschemas";
 
 export class ObjectTool extends AbstractTool implements ToolInterface {
 
@@ -29,11 +30,16 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
         return {
             propertyName: this.propertyName,
             schema: schema,
+            ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
         } as any;
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
+
+        subschemas.setOptionDataValidation(this.schema, this.uischema, data);
+        subschemas.setOptionDataconditional(this.schema, this.uischema, data);
 
         this.schema = {
             ...this.schema,

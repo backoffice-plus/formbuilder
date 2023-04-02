@@ -52,6 +52,14 @@
             }
           }
         }
+      },
+
+      "validation": {
+        "$ref": "validation.schema#/properties/validation"
+      },
+
+      "conditional": {
+        "$ref": "conditional.schema#/properties/conditional"
       }
     },
     "required": [
@@ -76,7 +84,6 @@
             ]
           },
 
-
           {
             "scope": "#/properties/schema/properties/additionalProperties",
             "type": "Control"
@@ -86,8 +93,27 @@
             "type": "Control"
           }
         ]
-      }
+      },
 
+      {
+        "type": "Category",
+        "label": "Validation",
+        "elements": [
+          {
+            "$ref":"validation.uischema"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Conditional",
+        "elements": [
+          {
+            "$ref": "conditional.uischema"
+          }
+        ]
+      }
     ]
   } ,
   "data": {}

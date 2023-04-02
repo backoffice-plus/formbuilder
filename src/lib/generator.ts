@@ -11,13 +11,15 @@ import {schemaKeywords, SchemaTool} from "./tools/SchemaTool";
 
 export const generateSchemaByTool = (tool: ToolInterface): JsonSchema => {
 
-    if(tool instanceof SchemaTool) {
-        //:TODO check if keyword is needed here
-        return {
-            [tool.keyword]: createTypeObjectSchemaOnly(tool),
-        }
-    }
-    else if ('object' === tool.schema?.type) {
+    //:TOO remove
+    // if(tool instanceof SchemaTool) {
+    //     //:TODO check if keyword is needed here
+    //     return {
+    //         [tool.keyword]: createTypeObjectSchemaOnly(tool),
+    //     }
+    // }
+    // else
+    if ('object' === tool.schema?.type) {
         return createTypeObjectSchemaOnly(tool);
     }
 
@@ -183,9 +185,9 @@ export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
     const properties = {} as Record<string, JsonSchema>;
     const required = [] as Array<string>;
 
-    const {childs, schemas} = splitChilds(tool.childs);
+    //const {childs, schemas} = splitChilds(tool.childs);
 
-    childs.forEach((childTool: ToolInterface) => {
+    tool.childs.forEach((childTool: ToolInterface) => {
         // if ('object' === childTool?.schema?.type) {
         //     const childSchema = createTypeObjectSchema(childTool);
         //     properties[childTool.propertyName] = childSchema[childTool.propertyName];
@@ -206,13 +208,15 @@ export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
         }
     });
 
-    const conditionalSchemas = {} as JsonSchema | any;
-    schemas.forEach((schemaTool: ToolInterface|SchemaTool) => {
-        if(schemaTool instanceof  SchemaTool) {
-            const schemaToSet = generateSchemaByTool(schemaTool) as any;
-            conditionalSchemas[schemaTool.keyword] = schemaToSet[schemaTool.keyword];
-        }
-    });
+    // const conditionalSchemas = {} as JsonSchema | any;
+    // schemas.forEach((schemaTool: ToolInterface|SchemaTool) => {
+    //     if(schemaTool instanceof  SchemaTool) {
+    //         const schemaToSet = generateSchemaByTool(schemaTool) as any;
+    //         conditionalSchemas[schemaTool.keyword] = schemaToSet[schemaTool.keyword];
+    //     }
+    // });
+
+    console.log("generator object",tool.schema)
 
 
     return {
@@ -220,7 +224,7 @@ export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
         type: 'object',
         properties: properties,
         required: required.length ? required : undefined,
-        ...conditionalSchemas
+        //...conditionalSchemas
     } as JsonSchema;
 };
 
@@ -343,40 +347,40 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema):
         //:INFO some tools dont have elements (LabelTool)
         if(tool.childs.length) {
 
-            const {childs,schemas} = splitChilds(tool.childs);
+            //const {childs,schemas} = splitChilds(tool.childs);
 
-            created.elements = childs.map((t: ToolInterface) => {
+            created.elements = tool.childs.map((t: ToolInterface) => {
                     return createJsonUiSchema(t, rootSchema)
                 }) ?? [];
 
-            schemaKeywords.forEach(key => {
-                key in rootSchema && delete (rootSchema as any)[key]
-            })
-            schemas.forEach((t: ToolInterface)=> {
-                if(t instanceof SchemaTool) {
-                    const schemaToSet = generateSchemaByTool(t);
-                    (rootSchema as any)[t.keyword] = (schemaToSet as any)[t.keyword];
-                }
-            });
+            // schemaKeywords.forEach(key => {
+            //     key in rootSchema && delete (rootSchema as any)[key]
+            // })
+            // schemas.forEach((t: ToolInterface)=> {
+            //     if(t instanceof SchemaTool) {
+            //         const schemaToSet = generateSchemaByTool(t);
+            //         (rootSchema as any)[t.keyword] = (schemaToSet as any)[t.keyword];
+            //     }
+            // });
         }
     }
 
     return created;
 };
 
-const splitChilds = (tools:ToolInterface[]) : {childs:ToolInterface[], schemas:ToolInterface[]}  => {
-
-    const childs = [] as ToolInterface[];
-    const schemas = [] as ToolInterface[];
-
-    tools.forEach((t: ToolInterface) => {
-        if(t instanceof SchemaTool) {
-            schemas.push(t)
-        }
-        else {
-            childs.push(t)
-        }
-    });
-
-    return {childs, schemas}
-}
+// const splitChilds = (tools:ToolInterface[]) : {childs:ToolInterface[], schemas:ToolInterface[]}  => {
+//
+//     const childs = [] as ToolInterface[];
+//     const schemas = [] as ToolInterface[];
+//
+//     tools.forEach((t: ToolInterface) => {
+//         if(t instanceof SchemaTool) {
+//             schemas.push(t)
+//         }
+//         else {
+//             childs.push(t)
+//         }
+//     });
+//
+//     return {childs, schemas}
+// }

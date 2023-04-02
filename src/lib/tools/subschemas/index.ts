@@ -5,12 +5,14 @@ import labelNoDescSubschema from "../schema/subschemas/label.noDescription.form.
 import stylesSubschema from "../schema/subschemas/styles.form.json";
 import constSubschema from "../schema/subschemas/const.form.json";
 import ruleSubschema from "../schema/subschemas/rule.form.json";
+import conditionalSubschema from "../schema/subschemas/conditional.form.json";
 
 export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './label'
 export { prepareOptionData as prepareOptionDataValidation, setOptionData as setOptionDataValidation } from './validation'
 export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './rule'
 export { prepareOptionData as prepareOptionDataStyles, setOptionData as setOptionDataStyles } from './styles'
 export { prepareOptionData as prepareOptionDataConst, setOptionData as setOptionDataConst } from './const'
+export { prepareOptionData as prepareOptionDataconditional, setOptionData as setOptionDataconditional } from './conditional'
 
 export const subschemaMap = {
     'validation.schema': validationSubschema.schema,
@@ -25,4 +27,6 @@ export const subschemaMap = {
     'styles.uischema': stylesSubschema.uischema,
     'const.schema': constSubschema.schema,
     'const.uischema': constSubschema.uischema,
+    'conditional.schema': conditionalSubschema.schema,
+    'conditional.uischema': conditionalSubschema.uischema,
 } as Record<string, any>

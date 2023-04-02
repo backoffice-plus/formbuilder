@@ -1,0 +1,64 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "foobar": {
+        "type": "string",
+        "not": {
+          "enum": ["foo","bar"]
+        },
+        "description": "this text must not be \"foo\" or \"bar\""
+      },
+      "count": {
+        "type": "number",
+        "description": "this number must not greather then 5 if lorem=ipsum"
+      },
+      "lorem": {
+        "type": "string",
+        "description": "this text must not be \"ipsum\" if count greather then 5"
+      }
+    },
+
+    "not": {
+      "type": "object",
+      "properties": {
+        "count": {
+        "exclusiveMinimum": 5
+        },
+        "lorem": {
+          "const": "ipsum"
+        }
+      },
+      "required": ["count","lorem"]
+    }
+
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/foobar"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/count"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/lorem"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "data": {}
+}

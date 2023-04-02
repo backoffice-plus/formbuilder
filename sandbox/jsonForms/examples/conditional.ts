@@ -1,6 +1,7 @@
 import {registerExamples} from "@jsonforms/examples/src/register";
 import jsonForms from './json/conditional.form.json'
 import conditionalObjInArray from './json/conditionalObjInArray.form.json'
+import conditionalNot from './json/conditionalNot.form.json'
 
 registerExamples([
   {
@@ -15,5 +16,13 @@ registerExamples([
     name: "fb.conditional.arrayofobj",
     label: "FormBuilder - conditional - Array of Objects",
     ...conditionalObjInArray
+  }
+]);
+
+registerExamples([
+  {
+    name: "fb.conditional.not",
+    label: "FormBuilder - conditional - Not",
+    ...conditionalNot
   }
 ]);

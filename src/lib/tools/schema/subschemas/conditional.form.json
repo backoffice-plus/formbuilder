@@ -1,0 +1,68 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "conditional": {
+        "type": "object",
+        "properties": {
+
+          "if": {
+            "type": "object"
+          },
+          "else": {
+            "type": "object"
+          },
+          "then": {
+            "type": "object"
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+
+      {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Formbuilder",
+            "scope": "#/properties/conditional/properties/if",
+            "options": {
+              "baseTool": "schema.if"
+            }
+          }
+        ]
+      },
+
+      {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Formbuilder",
+            "scope": "#/properties/conditional/properties/else",
+            "options": {
+              "baseTool": "schema.else"
+            }
+          }
+        ]
+      },
+
+      {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Formbuilder",
+            "scope": "#/properties/conditional/properties/then",
+            "options": {
+              "baseTool": "schema.then"
+            }
+          }
+        ]
+      }
+
+    ]
+  },
+  "data": {}
+}
