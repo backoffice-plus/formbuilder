@@ -30,8 +30,9 @@
 
     <details open="true">
       <summary class="cursor-pointer">Data</summary>
-      <div class="styleA">
-        <textarea class="w-full h-60 p-4 bg-white rounded" readonly disabled>{{ jsonFormsUpdated?.data }}</textarea>
+      <div class="styleA flex gap-4">
+        <textarea class="h-60 p-4" readonly disabled>{{ jsonFormsUpdated?.data }}</textarea>
+        <textarea class="h-60 p-4 text-red-600" readonly disabled>{{ jsonFormsUpdated?.errors }}</textarea>
       </div>
     </details>
 
