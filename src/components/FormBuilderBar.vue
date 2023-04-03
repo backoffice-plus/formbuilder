@@ -117,9 +117,12 @@ const onDrag = (drag) => {
 const onClone = (tool) => {
   if(fb.props.schemaReadOnly) {
     const context = {
+      fb:fb,
+      parentMethod:'formbuilderbar.onclone',
+      builder: fb?.exposed?.showBuilder?.value,
       schemaReadOnly: fb.props.schemaReadOnly,
     };
-    tool.optionDataUpdate(context, tool.optionDataPrepare({}));
+    tool.optionDataUpdate(context, tool.optionDataPrepare(context));
 
     return tool;
   }

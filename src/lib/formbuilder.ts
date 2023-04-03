@@ -83,8 +83,12 @@ export const cloneEmptyTool = (tool: ToolInterface, schema:JsonSchema|undefined 
     }
 
     //set default data
-    const defaultData = clone.optionDataPrepare({})
-    clone.optionDataUpdate({}, defaultData);
+    //:DEV is that needed?!?!
+    const context = {
+        parentMethod:'formbuilderbar.cloneEmptyTool',
+    } as ToolContext;
+    const defaultData = clone.optionDataPrepare(context)
+    clone.optionDataUpdate(context, defaultData);
 
     return clone;
 };
@@ -104,8 +108,13 @@ export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uis
     }
 
     //set default data (sets init data if schema hasnt)
-    const defaultData = clone.optionDataPrepare({})
-    clone.optionDataUpdate({}, defaultData);
+    //:INFO is needed for
+    //:DEV is that needed?!?!
+    const context = {
+        parentMethod:'formbuilderbar.cloneToolWithSchema',
+    } as ToolContext;
+    const defaultData = clone.optionDataPrepare(context)
+    clone.optionDataUpdate(context, defaultData);
 
     return clone;
 };

@@ -119,7 +119,7 @@ import {initElements} from "../../lib/initializer";
 import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
 import {Vuedraggable} from '../../index'
-import {ref, computed, onMounted} from 'vue';
+import {ref, computed, onMounted, nextTick} from 'vue';
 import {unknownTool} from "../../lib/tools/unknownTool";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
@@ -143,9 +143,8 @@ onMounted(() => {
     if (props?.tool?.uischema?.elements?.length) {
       childTools.value.push(...initElements(toolFinder, props.tool));
 
-      //wait to render dom
-      if(childTools.value.length) {
-        setTimeout(onDropAreaChange, 20);
+      if (childTools.value.length) {
+        nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
       }
     }
     else {
@@ -171,13 +170,13 @@ const addTab = () => {
   tabTool.uischema.label = 'Tab';
 
   childTools.value.push(tabTool);
-  onDropAreaChange(null);
+  onDropAreaChange({added: {element:tabTool}});
 };
 
 
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged();
+  fb?.exposed?.onDropAreaChanged(e);
 };
 
 const onDeleteByTool = async (e) => {

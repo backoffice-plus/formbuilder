@@ -136,7 +136,7 @@ import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
 import {cloneEmptyTool, deleteToolInChilds, Vuedraggable} from '../../index'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
-import {ref, computed, onMounted, unref, toRaw} from 'vue';
+import {ref, computed, onMounted, unref, toRaw, nextTick} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
@@ -163,8 +163,7 @@ const init = () => {
   childTools.value.push(...initElements(toolFinder, props.tool))
 
   if (childTools.value.length) {
-    //wait to render dom (:TODO use nextTick)
-    setTimeout(onDropAreaChange, 50);
+    nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
   }
 };
 
@@ -173,7 +172,7 @@ const addItem = (type) => {
   const tool = cloneEmptyTool(toolFinder.findMatchingTool({}, initSchema, {type: 'Control', scope: '#'}), initSchema);
 
   childTools.value.push(tool);
-  onDropAreaChange(null);
+  onDropAreaChange({added: {element:tool}});
 };
 
 const onDeleteByTool = async (e) => {
@@ -186,7 +185,7 @@ const onDeleteByTool = async (e) => {
 
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged();
+  fb?.exposed?.onDropAreaChanged(e);
 };
 
 const onDelete = () => {

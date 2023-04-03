@@ -68,7 +68,7 @@
 </style>
 
 <script setup>
-import {computed, onMounted, ref} from "vue";
+import {computed, nextTick, onMounted, ref} from "vue";
 import {Icon} from "@iconify/vue";
 import {cloneToolWithSchema, deleteToolInChilds, normalizePath, Vuedraggable} from '../../index'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
@@ -105,16 +105,15 @@ onMounted(() => {
     }
 
 
-    //wait to render dom
     if (childTools.value.length) {
-      setTimeout(onDropAreaChange, 20);
+      nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
     }
   }
 })
 
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged();
+  fb?.exposed?.onDropAreaChanged(e);
 };
 
 // const addItem = () => {

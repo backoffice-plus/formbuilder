@@ -135,7 +135,9 @@ const onChange = (e) => {
     dataAfterUpdated.value = data;
 
     const context = {
-      builder: fb?.exposed?.showBuilder,
+      fb:fb,
+      parentMethod:'modalcontent.onchange',
+      builder: fb?.exposed?.showBuilder?.value,
       schemaReadOnly: fb.props.schemaReadOnly,
     }
     props.tool.optionDataUpdate(context, data)

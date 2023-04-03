@@ -79,7 +79,7 @@ import Actions from "./utils/Actions.vue";
 import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
 
 import {deleteToolInChilds, Vuedraggable} from '../../index'
-import {computed, onMounted, ref} from "vue";
+import {computed, nextTick, onMounted, ref} from "vue";
 import {emitter} from "../../lib/mitt";
 import {cloneEmptyTool} from "../../lib/formbuilder";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
@@ -105,16 +105,15 @@ onMounted(() => {
   if (!props.isToolbar) {
       childTools.value.push(...initObjectElements(toolFinder, props?.tool));
 
-      //wait to render dom
       if (childTools.value.length) {
-        setTimeout(onDropAreaChange, 20);
+        nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
       }
   }
 })
 
 const onDropAreaChange = (e) => {
   props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged();
+  fb?.exposed?.onDropAreaChanged(e);
 };
 
 const addItem = (type) => {
@@ -124,7 +123,7 @@ const addItem = (type) => {
   const tool = cloneEmptyTool(toolFinder.findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
 
   childTools.value.push(tool);
-  onDropAreaChange(null);
+  onDropAreaChange({added: {element:tool}});
 };
 
 const allowedChild = (tool) => {

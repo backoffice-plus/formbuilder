@@ -64,6 +64,7 @@ export interface ToolInterface {
 }
 
 export interface ToolContext {
+    fb?: any;
     builder?: string;
     schemaReadOnly?: string;
     rootSchema?: JsonSchema

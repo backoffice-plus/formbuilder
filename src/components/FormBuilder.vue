@@ -75,7 +75,7 @@ nav {
 
 
 <script setup>
-import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount} from 'vue'
+import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount, nextTick} from 'vue'
 import {
   FormBuilderBar,
   createJsonForms,
@@ -116,6 +116,8 @@ const showBuilder = ref('uischema');
 const showBar = ref('schema');
 
 
+const fb = getFormbuilder();
+
 //expose
 const toolFinder = new ToolFinder(props.tools);
 const toolDragging = ref();
@@ -126,8 +128,8 @@ const onEditTool = (data) => {
   isModalOpen.value = true;
   toolEdit.value = data.tool;
 }
-const onDropAreaChanged = () => {
-  updateJsonFormDebounced();
+const onDropAreaChanged = (e) => {
+  updateJsonFormDebounced(e);
 };
 defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, rootUischema, onEditTool, onDropAreaChanged})
 
@@ -239,7 +241,7 @@ const onChangeModal = (data) => {
     // if(data.propertyName) {
     //   toolEdit.value.props.propertyName = data.propertyName;
     // }
-    updateJsonForm();
+    updateJsonForm({modal:{element:toolEdit.value}});
   }
 }
 
@@ -331,9 +333,10 @@ const updateUischemaBuilder = () => {
 // const setRootDefinitionForm = (e) => rootDefinitionForm.value = e
 // const setRootSchemaForm = (e) => rootSchemaForm.value = e
 
-const updateJsonFormDebounced = _.debounce(() => {
-  window.setTimeout(updateJsonForm, 100);
-},100,{leading:false, trailing:true})
+const updateJsonFormDebounced = (e) => _.debounce(() => {
+  nextTick().then(() => updateJsonForm(e))
+  // window.setTimeout(updateJsonForm, 100);
+},100,{leading:false, trailing:true})()
 
 onBeforeMount(() => {
   const fb = getFormbuilder();
