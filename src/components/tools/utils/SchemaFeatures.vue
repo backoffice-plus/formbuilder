@@ -1,6 +1,8 @@
 <template>
 
   <span v-if="hasRules" class="f" title="has Rules">R</span>
+  <span v-if="hasDefinitions" class="f" title="has Definitions">D</span>
+  <span v-if="hasConditionals" class="f" title="has Conditionals">C</span>
 
 
 </template>
@@ -23,6 +25,7 @@
 import {computed} from 'vue'
 import {Icon} from "@iconify/vue";
 import _ from "lodash";
+import {ObjectTool} from "../../../lib/tools/ObjectTool";
 
 const props = defineProps({
   tool: Object,//ToolInterface
@@ -30,5 +33,7 @@ const props = defineProps({
 
 
 const hasRules = computed(() => !_.isEmpty(props.tool.uischema?.rule));
+const hasDefinitions = computed(() => !_.isEmpty(props.tool.schema?.definitions) && props.tool instanceof ObjectTool);
+const hasConditionals = computed(() => !_.isEmpty(props.tool.schema?.if) && props.tool instanceof ObjectTool);
 
 </script>
