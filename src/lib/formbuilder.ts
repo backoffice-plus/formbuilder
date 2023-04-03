@@ -1,7 +1,7 @@
 // @ts-ignore
 import _ from "lodash";
 import {Resolver} from "@stoplight/json-ref-resolver";
-import type {ToolInterface} from "./tools";
+import type {ToolContext, ToolInterface} from "./tools";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
 import {generateJsonSchema, generateDefaultUISchema} from "@jsonforms/core";
@@ -48,17 +48,17 @@ export const createSchemaTool = (schema: JsonSchema, baseToolName:string|undefin
     return clone;
 
 }
-export const createDefTool = (schema: JsonSchema): ToolInterface => {
-    const defSchema = {
-        type:'object',
-        properties: schema.definitions
-    } as JsonSchema;
-
-    const tool = cloneToolWithSchema(objectTool, defSchema);
-    tool.propertyName = 'definitions';
-
-    return tool;
-}
+// export const createDefTool = (schema: JsonSchema): ToolInterface => {
+//     const defSchema = {
+//         type:'object',
+//         properties: schema.definitions
+//     } as JsonSchema;
+//
+//     const tool = cloneToolWithSchema(objectTool, defSchema);
+//     tool.propertyName = 'definitions';
+//
+//     return tool;
+// }
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     if (!propertyName) {

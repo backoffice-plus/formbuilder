@@ -216,7 +216,7 @@ export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
     //     }
     // });
 
-    console.log("generator object",tool.schema)
+    //console.log("generator object",tool.schema)
 
 
     return {
