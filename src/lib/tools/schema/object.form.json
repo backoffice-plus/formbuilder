@@ -60,6 +60,9 @@
 
       "conditional": {
         "$ref": "conditional.schema#/properties/conditional"
+      },
+      "definitions": {
+        "$ref": "definitions.schema#/properties/definitions"
       }
     },
     "required": [
@@ -91,6 +94,16 @@
           {
             "scope": "#/properties/schema/properties/patternProperties",
             "type": "Control"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Definitions",
+        "elements": [
+          {
+            "$ref": "definitions.uischema"
           }
         ]
       },

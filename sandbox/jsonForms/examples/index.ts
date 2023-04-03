@@ -20,6 +20,7 @@ import * as styles from './styles';
 import * as formbuilderOptions from './formbuilderOptions';
 import * as personalbogen from './personalbogen';
 import * as conditional from './conditional';
+import * as definitions from './definitions';
 
 export {
   _default,
@@ -44,4 +45,5 @@ export {
   formbuilderOptions,
   personalbogen,
   conditional,
+  definitions,
 }

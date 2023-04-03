@@ -1,0 +1,88 @@
+{
+  "schema": {
+    "type": "object",
+    "definitions": {
+      "text": {
+        "type": "string"
+      },
+      "more": {
+        "type": "object",
+        "properties": {
+          "text2": {
+            "type": "string"
+          }
+        },
+        "definitions": {
+          "textDef": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "properties": {
+      "text": {
+        "$ref": "#/definitions/text"
+      },
+      "moreText2": {
+        "$ref": "#/definitions/more/properties/text2"
+      },
+      "moreTextDef": {
+        "$ref": "#/definitions/more/definitions/textDef"
+      },
+      "user": {
+        "type": "object",
+        "definitions": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "properties": {
+          "name": {
+            "$ref": "#/properties/user/definitions/name"
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/text",
+            "label": "text - $ref:#/definitions/text"
+          }
+        ]
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/moreTextDef",
+                "label": "moreTextDef - $ref:#/definitions/more/definitions/textDef"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/moreText2",
+                "label": "moreText2 - $ref:#/definitions/more/properties/text2"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/user",
+        "label": "user - with name $ref:#/properties/user/definitions/name"
+      }
+    ]
+  },
+  "data": {}
+}

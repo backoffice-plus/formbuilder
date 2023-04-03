@@ -32,6 +32,7 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
             schema: schema,
             ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataDefinitions(context, this.schema, this.uischema),
         } as any;
     }
 
@@ -40,6 +41,7 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
 
         subschemas.setOptionDataValidation(this.schema, this.uischema, data);
         subschemas.setOptionDataconditional(this.schema, this.uischema, data);
+        subschemas.setOptionDataDefinitions(this.schema, this.uischema, data);
 
         this.schema = {
             ...this.schema,
