@@ -9,10 +9,10 @@
         :renderers="control.renderers"
         :cells="control.cells"
     />
-<!--    <additional-properties-->
-<!--        v-if="hasAdditionalProperties && showAdditionalProperties"-->
-<!--        :input="input"-->
-<!--    ></additional-properties>-->
+    <additional-properties
+        v-if="hasAdditionalProperties && showAdditionalProperties"
+        :input="input"
+    ></additional-properties>
   </div>
 </template>
 
@@ -40,13 +40,13 @@ import isObject from 'lodash/isObject';
 import { defineComponent } from 'vue';
 import {useNested} from "./utils"
 import {useVanillaControl} from "@jsonforms/vue-vanilla";
-//import { AdditionalProperties } from './components';
+import {default as AdditionalProperties} from './components/AdditionalProperties.vue';
 
 const controlRenderer = defineComponent({
   name: 'object-renderer',
   components: {
     DispatchRenderer,
-    //AdditionalProperties,
+    AdditionalProperties,
   },
   props: {
     ...rendererProps<ControlElement>(),

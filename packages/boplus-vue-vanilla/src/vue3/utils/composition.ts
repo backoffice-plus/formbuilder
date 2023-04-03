@@ -3,6 +3,9 @@ import {defaultStyles} from '../../utils';
 export * from '../../utils/composition';
 import {useComputedLabel, useControlAppliedOptions, childLabelForIndex as childLabelForIndexWithInput} from '../../utils/composition';
 import {useStyles, useVanillaControl, useVanillaLayout} from "@jsonforms/vue-vanilla";
+import {computed, inject} from "vue";
+import type {JsonFormsSubStates} from "@jsonforms/core";
+import Ajv from "ajv";
 
 export const useBoPlusLayout = <I extends { layout: any }>(input: I) => {
     const layout = useVanillaLayout(input);
@@ -45,4 +48,40 @@ export const useBoPlusArrayControl = <I extends { control: any }>(
         childLabelForIndex,
         computedLabel,
     };
+};
+
+export const useAjv = () => {
+    const jsonforms = inject<JsonFormsSubStates>('jsonforms');
+
+    if (!jsonforms) {
+        throw new Error(
+            "'jsonforms' couldn't be injected. Are you within JSON Forms?"
+        );
+    }
+
+    // should always exist
+    return jsonforms.core?.ajv as Ajv;
+};
+
+export const useTranslator = () => {
+    const jsonforms = inject<JsonFormsSubStates>('jsonforms');
+
+    if (!jsonforms) {
+        throw new Error(
+            "'jsonforms couldn't be injected. Are you within JSON Forms?"
+        );
+    }
+
+    if (!jsonforms.i18n || !jsonforms.i18n.translate) {
+        throw new Error(
+            "'jsonforms i18n couldn't be injected. Are you within JSON Forms?"
+        );
+    }
+
+    const translate = computed(() => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return jsonforms.i18n!.translate!;
+    });
+
+    return translate;
 };
