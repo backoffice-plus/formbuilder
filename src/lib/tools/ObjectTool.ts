@@ -24,11 +24,11 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
 
         const schema = {
             additionalProperties: this.schema?.additionalProperties,
-            patternProperties: this.schema?.patternProperties,
         }
 
         return {
             propertyName: this.propertyName,
+            type: this.schema.type,
             schema: schema,
             ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),

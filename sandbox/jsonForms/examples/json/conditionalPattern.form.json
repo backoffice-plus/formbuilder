@@ -1,0 +1,91 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "address": {
+        "type": "object",
+        "properties": {
+          "country": {
+            "default": "United States of America",
+            "type": "string",
+            "enum": [
+              "United States of America",
+              "Canada"
+            ]
+          },
+          "postal_code": {
+            "type": "string"
+          }
+        },
+        "if": {
+          "properties": {
+            "country": {
+              "const": "United States of America"
+            }
+          }
+        },
+        "then": {
+          "properties": {
+            "postal_code": {
+              "pattern": "[0-9]{5}(-[0-9]{4})?"
+            }
+          }
+        },
+        "else": {
+          "properties": {
+            "postal_code": {
+              "pattern": "[A-Z][0-9][A-Z] [0-9][A-Z][0-9]"
+            }
+          }
+        },
+        "required": [
+          "country",
+          "postal_code"
+        ]
+      },
+      "multiplier": {
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 1000,
+        "if": {
+          "minimum": 100
+        },
+        "then": {
+          "multipleOf": 100
+        },
+        "else": {
+          "if": {
+            "minimum": 10
+          },
+          "then": {
+            "multipleOf": 10
+          }
+        },
+        "description": "any number greather then 10 must be multipleOf 10. and any number greather then 100 must be multipleOf 100."
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/address"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/multiplier",
+            "options": {
+              "showUnfocusedDescription": true
+            }
+          }
+        ],
+        "label": "Number with multipleOf"
+      }
+    ]
+  },
+  "data": {}
+}

@@ -46,6 +46,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
             subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
             subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
             subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
+            subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
         )
 
         // if('uischema' === context.builder) {
@@ -77,6 +78,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         subschemas.setOptionDataLabel(this.schema, this.uischema, data);
         subschemas.setOptionDataRule(this.schema, this.uischema, data);
         subschemas.setOptionDataStyles(this.schema, this.uischema, data);
+        subschemas.setOptionDataconditional(this.schema, this.uischema, data);
 
         this.isRequired = data.required;
     }

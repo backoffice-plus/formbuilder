@@ -33,6 +33,38 @@
             "type": "boolean"
           },
 
+          "minProperties": {
+            "type": "integer"
+          },
+          "maxProperties": {
+            "type": "integer"
+          },
+          "patternProperties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": ["string","number","integer","boolean","array"]
+                }
+              }
+            }
+          },
+          "dependentRequired": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "array",
+                "minItems": 2,
+                "uniqueItems": true,
+                "items": {"type": "string"}
+            }
+          },
+
+          "propertyNames": {
+            "type": "object"
+          },
+
 
           "not": {
             "type": "object"
@@ -74,6 +106,12 @@
               }
             ]
           },
+
+          {
+            "scope": "#/properties/validation/properties/patternProperties",
+            "type": "Control"
+          }
+        ,
           {
             "type": "HorizontalLayout",
             "elements": [
@@ -159,6 +197,65 @@
         }
       },
 
+
+      {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/minProperties",
+                "type": "Control"
+              },
+              {
+                "scope": "#/properties/validation/properties/maxProperties",
+                "type": "Control"
+              }
+            ]
+          },
+
+
+          {
+            "type": "Group",
+            "label": "patternProperties",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/patternProperties",
+                "type": "Control"
+              }
+            ]
+          },
+
+
+          {
+            "type": "Group",
+            "label": "dependentRequired",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/dependentRequired",
+                "type": "Control"
+              }
+            ]
+          },
+
+          {
+            "scope": "#/properties/validation/properties/propertyNames",
+            "type": "Control"
+          }
+        ],
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/type",
+            "schema": {"enum": ["---object"]}
+          }
+        }
+      },
+      {
+        "type": "Label",
+        "text": ":TODO"
+      },
 
 
       {

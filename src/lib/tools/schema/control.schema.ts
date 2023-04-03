@@ -26,6 +26,9 @@ export const schema = {
         validation: {
             $ref:'validation.schema#/properties/validation'
         },
+        "conditional": {
+            "$ref": "conditional.schema#/properties/conditional"
+        },
         rule: {
             $ref:'rule.schema#/properties/rule'
         },
@@ -335,6 +338,16 @@ export const uischema = {
             }
         },
 
+
+        {
+            "type": "Category",
+            "label": "Conditional",
+            "elements": [
+                {
+                    "$ref": "conditional.uischema"
+                }
+            ]
+        },
 
         /**
          * Tab - Styles

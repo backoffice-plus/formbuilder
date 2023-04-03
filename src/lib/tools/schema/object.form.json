@@ -38,18 +38,6 @@
               {"$ref":"#/definitions/additionalPropertiesFalse"},
               {"$ref":"#/definitions/additionalProperties"}
             ]
-          },
-          "patternProperties": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": ["string","number","integer","boolean","array"]
-                }
-              }
-            }
           }
         }
       },
@@ -89,10 +77,6 @@
 
           {
             "scope": "#/properties/schema/properties/additionalProperties",
-            "type": "Control"
-          },
-          {
-            "scope": "#/properties/schema/properties/patternProperties",
             "type": "Control"
           }
         ]
