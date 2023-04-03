@@ -14,13 +14,11 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
             data[key] = schema[key]
         }
     });
-    console.log("ifeselthen prepareOptionData",data)
 
     return {conditional: data};
 }
 
 export const setOptionData = (schema: JsonSchema | any, uischema: UISchemaElement, data: Record<string, any>): void => {
-    console.log("ifeselthen setoptiondata",data)
     schemaKeys.forEach((key) => {
         schema[key] = data?.conditional[key]
         if (undefined === schema[key]) {

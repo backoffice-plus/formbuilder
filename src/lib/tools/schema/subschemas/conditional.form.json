@@ -9,10 +9,10 @@
           "if": {
             "type": "object"
           },
-          "else": {
+          "then": {
             "type": "object"
           },
-          "then": {
+          "else": {
             "type": "object"
           }
         }
@@ -41,9 +41,9 @@
         "elements": [
           {
             "type": "Formbuilder",
-            "scope": "#/properties/conditional/properties/else",
+            "scope": "#/properties/conditional/properties/then",
             "options": {
-              "baseTool": "schema.else"
+              "baseTool": "schema.then"
             }
           }
         ]
@@ -54,14 +54,13 @@
         "elements": [
           {
             "type": "Formbuilder",
-            "scope": "#/properties/conditional/properties/then",
+            "scope": "#/properties/conditional/properties/else",
             "options": {
-              "baseTool": "schema.then"
+              "baseTool": "schema.else"
             }
           }
         ]
       }
-
     ]
   },
   "data": {}
