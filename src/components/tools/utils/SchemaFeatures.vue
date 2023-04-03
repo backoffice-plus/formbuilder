@@ -34,6 +34,6 @@ const props = defineProps({
 
 const hasRules = computed(() => !_.isEmpty(props.tool.uischema?.rule));
 const hasDefinitions = computed(() => !_.isEmpty(props.tool.schema?.definitions) && props.tool instanceof ObjectTool);
-const hasConditionals = computed(() => !_.isEmpty(props.tool.schema?.if) && props.tool instanceof ObjectTool);
+const hasConditionals = computed(() => !_.isEmpty(props.tool.schema?.if));
 
 </script>
