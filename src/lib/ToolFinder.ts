@@ -5,6 +5,7 @@ import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import {normalizeScope} from "./normalizer";
 import {cloneEmptyTool, cloneToolWithSchema} from "./toolCreation";
+import {findAllProperties} from "./formbuilder";
 
 export class ToolFinder {
 
@@ -147,4 +148,19 @@ export class ToolFinder {
         return clone;
     };
 
+    findReadonlyTools(schema:JsonSchema): ToolInterface[] {
+
+        const allProps = findAllProperties(schema);
+
+        return Object.keys(allProps)?.map(name => {
+
+            const itemSchema = allProps[name];
+            const itemUischema = {type: 'Control', scope: '#'};
+
+            const clone = this.findMatchingToolAndClone({}, itemSchema, itemUischema);
+            clone.propertyName = name;
+
+            return clone;
+        });
+    }
 }

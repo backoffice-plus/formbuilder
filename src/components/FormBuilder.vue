@@ -228,7 +228,14 @@ const tools = computed(() => {
 
   switch (showBar.value) {
     case 'properties':
-      return readonlyTools.value;
+      all = toolFinder.findReadonlyTools(props?.jsonForms?.schema);
+
+      if(!_.isEmpty(rootUischema.value)) {
+        const usedProps = findAllScopes(rootUischema.value).map(scope => normalizePath(normalizeScope(scope)));
+        all = all.filter(tool => !usedProps.includes(tool.propertyName))
+      }
+
+      return all;
 
     case 'schema':
       all = toolFinder.findControlTools();
@@ -244,33 +251,35 @@ const tools = computed(() => {
   return all;
 });
 
-const readonlyTools = computed(() => {
-
-  let all = [];
-
-
-  //:TODO find better solution!! use toolStore
-  if(props.schemaReadOnly) {
-
-    const usedProps = findAllScopes(rootUischema.value).map(scope=>normalizePath(normalizeScope(scope)));
-
-    const allProps = findAllProperties(rootSchema.value);
-    const readOnlyControlTools = Object.keys(allProps)?.map(name => {
-
-      const itemSchema = allProps[name];
-      const itemUischema = {type:'Control',scope:'#'};
-
-      const clone = cloneToolWithSchema(toolFinder.findMatchingTool(rootSchema, itemSchema, itemUischema),  itemSchema, itemUischema)
-      clone.propertyName = name;
-
-      return clone;
-    }).filter(tool => !usedProps.includes(tool.propertyName))
-
-    all = [...readOnlyControlTools, ...all]
-  }
-
-  return all;
-});
+// const readonlyTools = computed(() => {
+//
+//   let all = [];
+//
+//
+//   //:TODO find better solution!! use toolStore
+//   if(props.schemaReadOnly) {
+//
+//     console.log("rootUischema",props.jsonForms.uischema);
+//
+//     const usedProps = findAllScopes(props.jsonForms.uischema).map(scope=>normalizePath(normalizeScope(scope)));
+//
+//     const allProps = findAllProperties(props.jsonForms.uischema);
+//     const readOnlyControlTools = Object.keys(allProps)?.map(name => {
+//
+//       const itemSchema = allProps[name];
+//       const itemUischema = {type:'Control',scope:'#'};
+//
+//       const clone = cloneToolWithSchema(toolFinder.findMatchingTool(rootSchema, itemSchema, itemUischema),  itemSchema, itemUischema)
+//       clone.propertyName = name;
+//
+//       return clone;
+//     }).filter(tool => !usedProps.includes(tool.propertyName))
+//
+//     all = [...readOnlyControlTools, ...all]
+//   }
+//
+//   return all;
+// });
 
 const onChangeModal = (data) => {
   if (toolEdit.value) {
