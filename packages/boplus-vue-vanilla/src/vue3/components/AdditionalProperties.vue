@@ -303,7 +303,7 @@ export default defineComponent({
         if (
             this.reservedPropertyNames.includes(this.newPropertyName) ||
             this.additionalPropertyItems.find(
-                (ap) => ap.propertyName === this.newPropertyName
+                (ap:any) => ap.propertyName === this.newPropertyName
             ) !== undefined
         ) {
           // already defined
@@ -376,7 +376,7 @@ export default defineComponent({
         if (typeof this.control.data === 'object') {
           const keys = Object.keys(newData);
           let hasChanges = false;
-          this.additionalPropertyItems.forEach((ap) => {
+          this.additionalPropertyItems.forEach((ap:any) => {
             if (
                 ap.schema &&
                 (!keys.includes(ap.propertyName) ||
@@ -435,7 +435,7 @@ export default defineComponent({
     },
     removeProperty(propName: string): void {
       this.additionalPropertyItems = this.additionalPropertyItems.filter(
-          (d) => d.propertyName !== propName
+          (d:any) => d.propertyName !== propName
       );
       if (typeof this.control.data === 'object') {
         delete this.control.data[propName];
