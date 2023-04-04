@@ -33,7 +33,8 @@ const props = defineProps({
 
 
 const hasRules = computed(() => !_.isEmpty(props.tool.uischema?.rule));
-const hasDefinitions = computed(() => !_.isEmpty(props.tool.schema?.definitions) && props.tool instanceof ObjectTool);
-const hasConditionals = computed(() => !_.isEmpty(props.tool.schema?.if));
+const hasDefinitions = computed(() => !_.isEmpty(props.tool.schema?.definitions) && !couldBeLayoutTool.value);
+const hasConditionals = computed(() => !_.isEmpty(props.tool.schema?.if) && !couldBeLayoutTool.value);
+const couldBeLayoutTool = computed(() => props.tool?.uischema?.type && 'Control' !== props.tool?.uischema.type);
 
 </script>
