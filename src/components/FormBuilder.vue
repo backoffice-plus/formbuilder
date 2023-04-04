@@ -13,12 +13,12 @@
         v-if="isModalOpen && toolEdit"
     />
 
-    <div class="styleA" v-if="filteredBuilders.length>1">
-      Builder:
-      <select v-model="showBuilder" @change="onChangeBuilder" class="!w-auto !inline">
-        <option v-for="builder in filteredBuilders">{{ builder }}</option>
-      </select>
-    </div>
+<!--    <div class="styleA" v-if="filteredBuilders.length>1">-->
+<!--      Builder:-->
+<!--      <select v-model="showBuilder" @change="onChangeBuilder" class="!w-auto !inline">-->
+<!--        <option v-for="builder in filteredBuilders">{{ builder }}</option>-->
+<!--      </select>-->
+<!--    </div>-->
 
     <nav>
 
@@ -42,7 +42,16 @@
                  :isRoot="true"
                  class="my-4"
                  :key="currentBaseTool.propertyName"
-      />
+      >
+
+        <template v-slot:header  v-if="filteredBuilders.length>1">
+          <div class="toolSwitcher">
+            <ToolIcon :tool="baseUiTool" :prefixLabel="'uischema: '" :class="{active:showBuilder==='uischema'}" @click="onChangeBuilderByTab('uischema')" />
+            <ToolIcon :tool="baseSchemaTool" :prefixLabel="'schema: '" :class="{active:showBuilder==='schema'}"  @click="onChangeBuilderByTab('schema')" />
+          </div>
+        </template>
+
+      </component>
     </template>
 
   </div>
@@ -71,6 +80,28 @@ nav {
  background-color: var(--toolBar-tab-hover);
 }
 
+.toolSwitcher {
+  @apply flex gap-4 ml-2
+}
+.toolSwitcher .toolIcon.active {
+  background-color: var(--dropArea);
+  border-color: var(--toolItem-border);
+  @apply border border-b-0
+}
+.toolSwitcher .toolIcon {
+
+  @apply px-2 py-1 rounded-t cursor-pointer
+}
+.toolSwitcher .toolIcon:hover {
+  background-color: var(--toolBar-tab-hover);
+}
+</style>
+
+<style>
+.toolSwitcher .toolIcon label {
+  @apply cursor-pointer
+}
+
 </style>
 
 
@@ -92,6 +123,7 @@ import {generateJsonSchema} from "@jsonforms/core";
 import {getFormbuilder, onDragGetTool} from "../lib/vue";
 import {ToolFinder} from "../lib/ToolFinder";
 import {SchemaTool} from "../lib/tools/SchemaTool";
+import ToolIcon from "./tools/utils/ToolIcon.vue";
 
 const props = defineProps({
   jsonForms: Object,
@@ -145,6 +177,11 @@ const filteredBuilders = computed(() => {
 // onRenderTriggered((e) => {
 //   console.log("FB.onRenderTriggered",e);
 // });
+
+const onChangeBuilderByTab = (builder) => {
+  showBuilder.value = builder;
+  onChangeBuilder({target:{value:builder}});
+}
 
 const onChangeBuilder = (e) => {
 

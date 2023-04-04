@@ -1,8 +1,10 @@
 <template>
   <div class="flexAreaTool" :class="['rootItem', {isRoot:isRoot}]" ref="flexAreaTool">
 
-    <ToolIcon :tool="tool" :isToolbar="isToolbar">
-    </ToolIcon>
+    <slot name="header">
+      <ToolIcon :tool="tool" :isToolbar="isToolbar">
+      </ToolIcon>
+    </slot>
 
     <div v-if="!isToolbar" :class="['flex',{'mr-5':!isRoot}]">
 

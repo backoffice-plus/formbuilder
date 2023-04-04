@@ -1,14 +1,16 @@
 <template>
   <div class="objectTool" :class="['rootItem', {isRoot:isRoot}]">
 
-    <ToolIcon :tool="tool" :isToolbar="isToolbar">
-      <template v-slot:droparea>
-        <template v-if="!isInlineType">
-          <b>{{ tool.propertyName }}</b>
+    <slot name="header">
+      <ToolIcon :tool="tool" :isToolbar="isToolbar">
+        <template v-slot:droparea>
+          <template v-if="!isInlineType">
+            <b>{{ tool.propertyName }}</b>
+          </template>
+          <SchemaFeatures :tool="tool" />
         </template>
-        <SchemaFeatures :tool="tool" />
-      </template>
-    </ToolIcon>
+      </ToolIcon>
+    </slot>
 
     <div v-if="!isToolbar" :class="[isRoot?'mr-9':'mr-5']">
 

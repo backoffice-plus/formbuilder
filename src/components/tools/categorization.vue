@@ -1,9 +1,11 @@
 <template>
   <div class="categorizationTool" :class="['rootItem', {isRoot:isRoot}]">
 
-    <ToolIcon :tool="tool" :isToolbar="isToolbar">
+    <slot name="header">
+      <ToolIcon :tool="tool" :isToolbar="isToolbar">
 
-    </ToolIcon>
+      </ToolIcon>
+    </slot>
 
     <div v-if="!isToolbar" class="mr-5">
 

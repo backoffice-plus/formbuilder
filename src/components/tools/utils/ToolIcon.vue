@@ -2,6 +2,7 @@
 
   <div class="toolIcon">
 
+    {{ prefixLabel }}
     <slot name="icon">
       <Icon :icon="toolOptions.icon"
             v-if="toolOptions.icon"
@@ -19,7 +20,7 @@
 
     <template v-else>
 
-      <slot name="droparea">
+      <slot name="droparea" :title="toolOptions.title">
         <div class="flex gap-2 items-center">
           <label>{{ toolOptions.title }}</label>
           <SchemaFeatures :tool="tool" />
@@ -77,6 +78,7 @@ import SchemaFeatures from "./SchemaFeatures.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface
+  prefixLabel: String,
   isToolbar: Boolean,
 })
 
