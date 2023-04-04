@@ -70,18 +70,14 @@
 <script setup>
 
 import Actions from "./utils/Actions.vue";
-import ElementHeadOrToolIcon from "./utils/ElementHeadOrToolIcon.vue";
-
-import {deleteToolInChilds,  Vuedraggable} from '../../index'
+import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
+import {deleteToolInChilds} from '../../lib/formbuilder'
 import {computed, nextTick, onMounted, ref} from "vue";
-import {emitter} from "../../lib/mitt";
-import {cloneEmptyTool} from "../../lib/formbuilder";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {initCombinatorElements} from "../../lib/initializer";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
-import _ from "lodash";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import SchemaFeatures from "./utils/SchemaFeatures.vue";
 
@@ -119,7 +115,7 @@ const addItem = () => {
 
   //const initSchema = {$ref: '#/definitions/'}
   const initSchema = {type:'string'}
-  const tool = cloneEmptyTool(toolFinder.findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
+  const tool = toolFinder.findMatchingToolAndClone(schema, initSchema, {type: 'Control', scope: '#'});
 
   childTools.value.push(tool);
   onDropAreaChange({added: {element:tool}});

@@ -78,10 +78,9 @@
 
 import Actions from "./utils/Actions.vue";
 
-import {deleteToolInChilds, Vuedraggable} from '../../index'
+import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
+import {deleteToolInChilds} from '../../lib/formbuilder'
 import {computed, nextTick, onMounted, ref} from "vue";
-import {emitter} from "../../lib/mitt";
-import {cloneEmptyTool} from "../../lib/formbuilder";
 import {initArrayElements} from "../../lib/initializer";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
@@ -158,7 +157,7 @@ const addItem = (initSchema = undefined) => {
   //   initSchema = {$ref:'#'}
   // }
 
-  const tool = cloneEmptyTool(toolFinder.findMatchingTool(schema, initSchema, {type: 'Control', scope: '#'}), initSchema);
+  const tool = toolFinder.findMatchingToolAndClone(schema, initSchema, {type: 'Control', scope: '#'});
 
   childTools.value.push(tool);
   onDropAreaChange({added: {element:tool}});

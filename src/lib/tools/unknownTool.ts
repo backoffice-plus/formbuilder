@@ -1,5 +1,5 @@
 import {AbstractTool} from "./AbstractTool";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import unknownComp from "../../components/tools/unknown.vue";
 import {rankWith} from "@jsonforms/core";
 

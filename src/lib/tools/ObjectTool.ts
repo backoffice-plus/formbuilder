@@ -1,4 +1,4 @@
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/object.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";

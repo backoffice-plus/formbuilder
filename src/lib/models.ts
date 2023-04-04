@@ -8,9 +8,38 @@ import type {
     UISchemaElement,
 } from "@jsonforms/core/src/models/uischema";
 import type {PropType} from "vue";
-import type {ToolInterface} from "./tools";
+import type {RankedTester} from "@jsonforms/core/src/testers/testers";
 
 export const scalarTypes = ['string', 'number', 'integer', 'boolean', 'null'];
+
+
+export interface ToolInterface {
+    uuid: string;
+
+    propertyName: string;
+    isRequired: boolean;
+
+    schema: JsonSchema;
+    uischema: JsonFormsUISchema|any;
+    tester: RankedTester | undefined,
+    importer: () => any,
+    optionDataPrepare: (context: ToolContext) => Record<string, any>;
+    optionDataUpdate: (context: ToolContext, data: Record<string, any>) => void;
+    optionJsonforms: (context: ToolContext) => Promise<JsonFormsInterface | undefined>;
+
+    /** :TODO add cloneWithSchema(schema,uischema) **/
+    clone: () => ToolInterface;
+    toolbarOptions: () => Record<string, any>;
+
+    childs: ToolInterface[]
+}
+
+export interface ToolContext {
+    fb?: any;
+    builder?: string;
+    schemaReadOnly?: string;
+    rootSchema?: JsonSchema
+}
 
 // @ts-ignore
 export interface JsonFormsUISchema extends UISchemaElement, LabelElement, ControlElement, Category, Categorization {

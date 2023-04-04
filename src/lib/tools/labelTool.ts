@@ -1,11 +1,10 @@
 import {rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import {AbstractTool} from "./AbstractTool";
-import type {JsonFormsInterface, ToolInterface} from "../../index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {resolveSchema} from "../../index";
 import labelComp from "../../components/tools/label.vue";
 import {schema, uischema} from "./schema/label.form.json";
-import type {ToolContext} from "./index";
 import * as subschemas from "./subschemas";
 
 export class LabelTool extends AbstractTool implements ToolInterface {

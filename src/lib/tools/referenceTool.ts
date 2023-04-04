@@ -2,7 +2,7 @@ import type {JsonSchema} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import referenceComp from "../../components/tools/reference.vue";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import jsonForms from "./schema/reference.form.json";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";

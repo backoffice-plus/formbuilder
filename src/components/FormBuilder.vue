@@ -79,16 +79,14 @@ import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount, nextTic
 import {
   FormBuilderBar,
   createJsonForms,
-  emitter,
-  cloneToolWithSchema,
-  createTypeObjectSchema,
   findAllProperties,
-  findAllScopes, createBaseTool, createSchemaTool, generateSchemaByTool,
+  findAllScopes,  generateSchemaByTool,
 } from "../index";
+import {createBaseTool, cloneToolWithSchema, createSchemaTool} from "../lib/toolCreation";
+
 import Modal from "./Modal.vue";
 import {normalizePath, normalizeScope} from "../lib/normalizer";
 import _ from "lodash";
-import {objectTool} from "../lib/tools/ObjectTool";
 import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
 import {generateJsonSchema} from "@jsonforms/core";
 import {getFormbuilder, onDragGetTool} from "../lib/vue";

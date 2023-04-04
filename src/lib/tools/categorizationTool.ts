@@ -1,7 +1,6 @@
 import categorizationComp from "../../components/tools/categorization.vue";
 import {VerticalLayout} from "./layoutTool";
-import type {ToolInterface} from "./index";
-import type {JsonFormsInterface, ToolContext} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/categorization.form.json";
 

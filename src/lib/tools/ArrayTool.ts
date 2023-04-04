@@ -1,5 +1,5 @@
 import {rankWith} from '@jsonforms/core';
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import toolComponent from "../../components/tools/array.component.vue";
 import {schema, uischema} from "./schema/array.schema";
 import jsonFormsSchema from "./schema/array.schemaBuilder.form.json";

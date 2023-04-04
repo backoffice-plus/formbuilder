@@ -113,17 +113,17 @@
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {cloneEmptyTool, deleteToolInChilds} from "../../lib/formbuilder";
+import {deleteToolInChilds} from "../../lib/formbuilder";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {initElements} from "../../lib/initializer";
-import {  emitter} from "../../lib/mitt";
 import Actions from "./utils/Actions.vue";
-import {Vuedraggable} from '../../index'
+import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
 import {ref, computed, onMounted, nextTick} from 'vue';
 import {unknownTool} from "../../lib/tools/unknownTool";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
+import {cloneEmptyTool} from "../../lib/toolCreation";
 
 const props = defineProps({...toolComponentProps()})
 

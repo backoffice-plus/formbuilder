@@ -4,7 +4,7 @@ import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import {AbstractTool} from "./AbstractTool";
 import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {schema, uischema} from "./schema/layout.form.json";
 import * as subschemas from "./subschemas";
 

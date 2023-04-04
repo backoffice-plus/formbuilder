@@ -70,10 +70,11 @@
 <script setup>
 import {computed, nextTick, onMounted, ref} from "vue";
 import {Icon} from "@iconify/vue";
-import {cloneToolWithSchema, deleteToolInChilds, normalizePath, Vuedraggable} from '../../index'
+import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
+import {deleteToolInChilds} from '../../lib/formbuilder'
+import {cloneToolWithSchema} from '../../lib/toolCreation'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
-import {initObjectElements} from "../../lib/initializer";
 import ToolIcon from "./utils/ToolIcon.vue";
 import Actions from "./utils/Actions.vue";
 import _ from "lodash";

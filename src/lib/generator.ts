@@ -2,12 +2,8 @@ import _ from "lodash";
 import {Generate} from "@jsonforms/core";
 import {denormalizePath, getAllSubpaths, getPlainProperty, getRequiredFromSchema, getRequiredPath} from "./normalizer";
 import {CombinatorTool} from "./tools/combinatorTool";
-
 import type {JsonSchema} from "@jsonforms/core";
-import type {JsonFormsInterface, JsonFormsUISchema, ToolInterface} from "./tools";
-import {ArrayTool} from "./tools/ArrayTool";
-import {getItemsType} from "./formbuilder";
-import {schemaKeywords, SchemaTool} from "./tools/SchemaTool";
+import type {JsonFormsInterface, JsonFormsUISchema, ToolInterface} from "./models";
 
 export const generateSchemaByTool = (tool: ToolInterface): JsonSchema => {
 

@@ -1,11 +1,10 @@
 import {rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import {AbstractTool} from "./AbstractTool";
-import type {JsonFormsInterface, ToolInterface} from "../../index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {resolveSchema} from "../../index";
 import refComp from "../../components/tools/layoutReference.vue";
 import jsonForms from "./schema/layoutref.form.json";
-import type {ToolContext} from "./index";
 
 export class LayoutRefTool extends AbstractTool implements ToolInterface {
 

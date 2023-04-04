@@ -1,4 +1,4 @@
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {resolveSchema} from "../formbuilder";
 import jsonForms from "./schema/const.form.json";
 import jsonFormsSchema from "./schema/const.schemaBuilder.form.json";

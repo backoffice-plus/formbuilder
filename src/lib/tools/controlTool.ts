@@ -1,7 +1,7 @@
 import {isBooleanControl, isNumberControl, isStringControl, or, rankWith} from "@jsonforms/core";
 import type {Categorization, JsonSchema} from "@jsonforms/core";
 import {isIntegerControl} from "@jsonforms/core/src/testers/testers";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {schema, uischema,uischemaReadOnly} from "./schema/control.schema";

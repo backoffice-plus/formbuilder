@@ -25,7 +25,6 @@
 import {computed} from 'vue'
 import {Icon} from "@iconify/vue";
 import _ from "lodash";
-import {ObjectTool} from "../../../lib/tools/ObjectTool";
 
 const props = defineProps({
   tool: Object,//ToolInterface

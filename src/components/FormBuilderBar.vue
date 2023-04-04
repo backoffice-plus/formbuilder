@@ -91,7 +91,7 @@ aside .toolItem {
 
 import {ref} from 'vue';
 import {Vuedraggable} from '../index'
-import {cloneEmptyTool, cloneToolWithSchema} from "../index";
+import {cloneEmptyTool} from "../lib/toolCreation";
 import {getFormbuilder, getToolDraggingRef} from "../lib/vue";
 
 

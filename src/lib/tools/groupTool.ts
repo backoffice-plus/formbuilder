@@ -1,4 +1,4 @@
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "./index";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/group.form.json";
 import _ from "lodash";

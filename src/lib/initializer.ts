@@ -1,13 +1,11 @@
-import type {ToolInterface} from "./tools";
+import type {ToolInterface} from "./models";
 import {getPlainProperty, getRequiredFromSchema, normalizePath, normalizeScope} from "./normalizer";
 import _ from "lodash";
 import {unknownTool} from "./tools/unknownTool";
-import {cloneToolWithSchema, getItemsType} from "./formbuilder";
-import {ArrayTool} from "./tools/ArrayTool";
+import {cloneToolWithSchema} from "./toolCreation";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {CombinatorTool} from "./tools/combinatorTool";
 import type {ToolFinder} from "./ToolFinder";
-import {schemaKeywords, SchemaTool} from "./tools/SchemaTool";
 
 export const initElements = (toolFinder: ToolFinder, tool: ToolInterface): Array<ToolInterface> => {
     const tools = [] as any;

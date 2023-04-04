@@ -1,10 +1,10 @@
 import _ from "lodash";
-import type {ToolInterface} from "./tools";
+import type {ToolInterface} from "./models";
 import {unknownTool} from "./tools/unknownTool";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import {normalizeScope} from "./normalizer";
-import {cloneToolWithSchema} from "./formbuilder";
+import {cloneEmptyTool, cloneToolWithSchema} from "./toolCreation";
 
 export class ToolFinder {
 
@@ -35,6 +35,10 @@ export class ToolFinder {
 
     findLayoutToolByUiType = (uiType: string): ToolInterface | undefined => {
         return this.findLayoutTools().find((tool: ToolInterface) => tool.uischema.type === uiType)
+    }
+
+    findMatchingToolAndClone = (schema: any, itemSchema: any, itemUischema: any): ToolInterface => {
+        return cloneEmptyTool(this.findMatchingTool(schema, itemSchema, itemUischema), itemSchema);
     }
 
     findMatchingTool = (schema: any, itemSchema: any, itemUischema: any): ToolInterface => {

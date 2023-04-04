@@ -1,7 +1,6 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {RankedTester} from "@jsonforms/core/src/testers/testers";
-import type {JsonFormsInterface, JsonFormsUISchema} from "../models";
-import type {ToolContext, ToolInterface} from "./index";
+import type {JsonFormsInterface, JsonFormsUISchema, ToolContext, ToolInterface} from "../models";
 
 export abstract class AbstractTool implements ToolInterface {
 
