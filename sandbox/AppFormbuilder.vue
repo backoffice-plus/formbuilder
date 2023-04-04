@@ -30,7 +30,7 @@
       <ExampleVsSchemaCode
           :example="latestExampleData"
           :jsonforms="latestSchemaAfterExampleData"
-          :key="example + (schemaReadOnly?1:0)"
+          :key="example + (schemaReadOnly?'readonly':'')"
           v-if="latestSchemaAfterExampleData?.schema"
       />
     </details>

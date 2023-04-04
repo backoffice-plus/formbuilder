@@ -44,7 +44,7 @@
                  :key="currentBaseTool.propertyName"
       >
 
-        <template v-slot:header  v-if="filteredBuilders.length>1">
+        <template v-slot:header  v-if="filteredBuilders.length>1 && !schemaReadOnly">
           <div class="toolSwitcher">
             <ToolIcon :tool="baseUiTool" :prefixLabel="'uischema: '" :class="{active:showBuilder==='uischema'}" @click="onChangeBuilderByTab('uischema')" />
             <ToolIcon :tool="baseSchemaTool" :prefixLabel="'schema: '" :class="{active:showBuilder==='schema'}"  @click="onChangeBuilderByTab('schema')" />
