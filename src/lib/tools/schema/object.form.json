@@ -42,6 +42,12 @@
         }
       },
 
+      "rule": {
+        "$ref": "rule.schema#/properties/rule"
+      },
+      "styles": {
+        "$ref": "styles.schema#/properties/styles"
+      },
       "validation": {
         "$ref": "validation.schema#/properties/validation"
       },
@@ -91,6 +97,22 @@
           }
         ]
       },
+      {
+        "type": "Category",
+        "label": "Rule",
+        "elements": [
+          {
+            "$ref": "rule.uischema"
+          }
+        ],
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/_isUischema",
+            "schema":{"const": true }
+          }
+        }
+      },
 
       {
         "type": "Category",
@@ -110,6 +132,23 @@
             "$ref": "conditional.uischema"
           }
         ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Styles",
+        "elements": [
+          {
+            "$ref": "styles.uischema"
+          }
+        ],
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/_isUischema",
+            "schema":{"const": true }
+          }
+        }
       }
     ]
   } ,
