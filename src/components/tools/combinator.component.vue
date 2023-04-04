@@ -1,15 +1,17 @@
 <template>
   <div class="combinatorTool" :class="['rootItem', {isRoot:isRoot}]">
 
-    <ToolIcon :tool="tool" :isToolbar="isToolbar">
-      <template v-slot:droparea>
-        <template v-if="!isInlineType">
-          <b>{{ tool.propertyName }}:</b>
+    <slot name="header">
+      <ToolIcon :tool="tool" :isToolbar="isToolbar">
+        <template v-slot:droparea>
+          <template v-if="!isInlineType">
+            <b>{{ tool.propertyName }}:</b>
+          </template>
+          {{ CombinatorTool.getKeyword(tool.schema) }}
+          <SchemaFeatures :tool="tool" />
         </template>
-        {{ CombinatorTool.getKeyword(tool.schema) }}
-        <SchemaFeatures :tool="tool" />
-      </template>
-    </ToolIcon>
+      </ToolIcon>
+    </slot>
 
     <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 

@@ -1,16 +1,18 @@
 <template>
   <div class="arrayTool rootItem" :class={isInlineType:isInlineType,isRoot:isRoot} :title="toolOptions.title">
 
-    <ToolIcon :tool="tool" :isToolbar="isToolbar">
-      <template v-slot:droparea>
-        <b>{{ tool.propertyName }}:</b> Array
-        <span v-if="getFirstChildItemsType"> of {{ getFirstChildItemsType }}</span>
-        <span v-else-if="isArrayOfRef"> of Ref</span>
-        <span v-else-if="isArrayOfCombinator"> of {{ isArrayOfCombinator }}</span>
-        <SchemaFeatures :tool="tool" />
-      </template>
+    <slot name="header">
+      <ToolIcon :tool="tool" :isToolbar="isToolbar">
+        <template v-slot:droparea>
+          <b>{{ tool.propertyName }}:</b> Array
+          <span v-if="getFirstChildItemsType"> of {{ getFirstChildItemsType }}</span>
+          <span v-else-if="isArrayOfRef"> of Ref</span>
+          <span v-else-if="isArrayOfCombinator"> of {{ isArrayOfCombinator }}</span>
+          <SchemaFeatures :tool="tool" />
+        </template>
 
-    </ToolIcon>
+      </ToolIcon>
+    </slot>
 
     <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
