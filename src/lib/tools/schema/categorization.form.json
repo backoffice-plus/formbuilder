@@ -3,7 +3,7 @@
     "type": "object",
     "properties": {
       "styles": {
-        "$ref": "rule.schema#/properties/styles"
+        "$ref": "styles.schema#/properties/styles"
       },
       "rule": {
         "$ref": "rule.schema#/properties/rule"
