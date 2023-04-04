@@ -1,6 +1,6 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
-import type {ToolContext} from "../index";
+import type {ToolContext} from "../../models";
 import _ from "lodash";
 /** @ts-ignore */
 import flatten, {unflatten} from "flat";

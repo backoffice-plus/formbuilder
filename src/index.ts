@@ -7,7 +7,7 @@ export * from './lib/normalizer';
 export * from './lib/tools/subschemas';
 export * from './lib/ToolFinder';
 export {AbstractTool} from "./lib/tools/AbstractTool";
-export type {ToolInterface, ToolContext, JsonFormsInterface} from "./lib/tools";
+export type {ToolInterface, ToolContext, JsonFormsInterface} from "./lib/models";
 export const defaultTools = [...controlTools, ...layoutTools]
 
 

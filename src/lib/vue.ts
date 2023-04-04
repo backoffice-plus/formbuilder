@@ -2,7 +2,7 @@ import type {ComponentInternalInstance} from "@vue/runtime-core";
 import {getCurrentInstance} from "vue";
 import type {Ref} from "vue";
 import type {ToolFinder} from "./ToolFinder";
-import type {ToolInterface} from "./tools";
+import type {ToolInterface} from "./models";
 
 export const getFormbuilder = () : ComponentInternalInstance|null => {
     let instance = getCurrentInstance();

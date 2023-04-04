@@ -1,7 +1,7 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {JsonFormsInterface} from "../../models";
-import type {ToolContext} from "../index";
+import type {ToolContext} from "../../models";
 
 export const schemaKeysString = ['minLength', 'maxLength', 'pattern'] as Array<string>;
 export const schemaKeysNumber = ['minimum', 'maximum', 'multipleOf', 'exclusiveMinimum', 'exclusiveMaximum'] as Array<string>;
