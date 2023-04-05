@@ -12,10 +12,26 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
             properties: schema.definitions,
         }
     }
+    if(!_.isEmpty(schema['$defs'])) {
+        data.definitions = {
+            type: "object",
+            properties: schema['$defs'],
+        }
+        data._asDefs = true;
+    }
 
-    return {definitions: data};
+    return {
+        definitions: data
+    };
 }
 
 export const setOptionData = (schema: JsonSchema | any, uischema: UISchemaElement, data: Record<string, any>): void => {
-    schema.definitions = data?.definitions?.definitions?.properties;
+    const defProps = data?.definitions?.definitions?.properties;
+
+    if(data?.definitions?._asDefs) {
+        schema['$defs'] = defProps;
+    }
+    else {
+        schema.definitions = defProps;
+    }
 }
