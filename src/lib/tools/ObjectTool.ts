@@ -10,7 +10,7 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
     tester = rankWith(1, (uischema, schema, context) => {
-        return uischema?.type === 'Control' && schema?.type === 'object' && undefined !== schema?.properties
+        return uischema?.type === 'Control' && schema?.type === 'object'// && undefined !== schema?.properties
     })
     clone = (): ToolInterface => new ObjectTool(this.uischema.type);
 
