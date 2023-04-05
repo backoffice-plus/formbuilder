@@ -4,6 +4,7 @@ import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schema.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/schema.form.json";
+import _ from "lodash";
 
 export const schemaKeywords = ['if', 'then', 'else', 'not', 'contains'];
 
@@ -13,7 +14,7 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
     tester = rankWith(-1, (uischema, schema) => {
-        const hasKeyword = schema && 'if' in schema
+        const hasKeyword = _.isObject(schema) && 'if' in schema
         return hasKeyword
     });
     clone = (): ToolInterface => new SchemaTool(this.keyword);

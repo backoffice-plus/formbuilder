@@ -21,6 +21,7 @@
       <summary class="cursor-pointer">JsonForms Preview</summary>
       <ResizeArea>
         <div class="card p-4 styleA" style="min-height: 106px">
+          <Suspense>
             <JsonForms
                 :schema="jsonFormsSchema"
                 :uischema="jsonFormsUiSchema"
@@ -32,6 +33,10 @@
                 :key="newKey"
                 @change="r => jsonFormsUpdated=r"
             />
+            <template #fallback>
+              JsonForms Loading...
+            </template>
+          </Suspense>
         </div>
       </ResizeArea>
 
@@ -112,7 +117,34 @@ onMounted(() => {
 //   emitter.off('formBuilderSchemaUpdated');
 // })
 
-const ajv = createAjv();//is needed because reactive :schema & :uischema will throw error
+/**
+ * @see https://ajv.js.org/options.html#advanced-options
+ */
+console.log("FBD.setup");
+const ajv = createAjv(
+    {
+      validateSchema: false, //ignore $schema
+      addUsedSchema: false, //ignore $id
+      //missingRefs : 'ignore',
+      //inlineRefs: false,
+    }
+);//is needed because reactive :schema & :uischema will throw error
+
+
+/**
+ * :TODO find a way to import this $ref schemas from example schemas
+ */
+// import addressSchema from "./jsonForms/examples/json/address.schema.json";
+// import geoSchema from "./jsonForms/examples/json/geographical-location.schema.json";
+// //import schema202012 from "./jsonForms/examples/json/schema2020-12.schema.json";
+// try {
+//   ajv.addMetaSchema(addressSchema)
+//   ajv.addMetaSchema(geoSchema)
+//   //ajv.addSchema(schema202012)
+// }
+// catch (e) {
+//   console.log("FBD addMetaSchema catch",e);
+// }
 
 </script>
 

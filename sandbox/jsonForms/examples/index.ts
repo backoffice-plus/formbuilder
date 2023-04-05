@@ -21,6 +21,7 @@ import * as formbuilderOptions from './formbuilderOptions';
 import * as personalbogen from './personalbogen';
 import * as conditional from './conditional';
 import * as definitions from './definitions';
+import * as jsonSchemas from './jsonSchemas';
 
 export {
   _default,
@@ -46,4 +47,5 @@ export {
   personalbogen,
   conditional,
   definitions,
+  jsonSchemas,
 }

@@ -10,27 +10,32 @@
       </select>
       <a :href="'#/jsonforms?example=' + example" v-if="example" class="ml-1 text-sm">[open Jsonforms]</a><br>
 
-      <div v-if="example">Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" /></div>
+      <div v-if="example">
+        Schema Only: <input type="checkbox" v-model="schemaOnly" /><br>
+        Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" />
+      </div>
     </div>
 
       <FormBuilder
           :jsonForms="jsonForms"
           :jsonFormsRenderers="jsonFormsRenderers"
+          :schemaOnly="schemaOnly"
           :schemaReadOnly="schemaReadOnly"
           :tools="tools"
-          :key="example + (schemaReadOnly?1:0)"
+          :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'')"
+          :builders="builders"
           @schemaUpdated="onSchemaUpdated"
       />
     <!--            -->
 
-    <FormBuilderDetails :jsonForms="jsonFormsResolved" />
+    <FormBuilderDetails :jsonForms="jsonFormsResolved" v-if="!schemaOnly" />
 
     <details v-if="example && !schemaReadOnly">
       <summary class="cursor-pointer">JSON Render Diff</summary>
       <ExampleVsSchemaCode
           :example="latestExampleData"
           :jsonforms="latestSchemaAfterExampleData"
-          :key="example + (schemaReadOnly?'readonly':'')"
+          :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'')"
           v-if="latestSchemaAfterExampleData?.schema"
       />
     </details>
@@ -59,7 +64,7 @@ import {schema as vuetifySchema, uischema as vuetifyUischema} from "./jsonForms/
 import {getExamples} from '@jsonforms/examples/src'
 import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import {resolveSchema} from "../src";
-import {getExampleFromUrl, getUrl} from "./lib";
+import {getExampleFromUrl, getKeyFromUrl, getUrl} from "./lib";
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
 import {boplusVueVanillaRenderers} from "../src/index";
 import SchemaCode from "./SchemaCode.vue";
@@ -83,10 +88,12 @@ const oe = ownExamples;//import own examples
 const url = computed(() => getUrl());
 const examples = computed(() => getExamples().sort((a,b)=>a.label.toLowerCase()>b.label.toLowerCase()?1:-1));
 const example = ref(getExampleFromUrl());
-const schemaReadOnly = ref(false);
+const schemaReadOnly = ref("1" === getKeyFromUrl('schemaReadOnly'));
+const schemaOnly = ref("1" === getKeyFromUrl('schemaOnly'));
 const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
+const builders = ref(['uischema','schema']);
 
 const rootSchema = ref();
 const rootUiSchema = ref();
@@ -107,12 +114,21 @@ const jsonForms = computed(() => {
         exampleData.schema = generateJsonSchema({});
       }
 
-      if(exampleData?.uischema && schemaReadOnly.value) {
-        exampleData.uischema = {};
+      builders.value= schemaOnly.value ? ['schema'] : ['uischema','schema'];
+
+      if(false === exampleData?.uischema) {
+        if(!schemaOnly.value) {
+          exampleData.uischema = generateDefaultUISchema(exampleData.schema)
+        }
       }
-      if(!exampleData?.uischema && !schemaReadOnly.value) {
-        console.log("sandbox app","UiSschema generated because example is empty");
-        exampleData.uischema = generateDefaultUISchema(exampleData.schema)
+      else {
+        if(exampleData?.uischema && schemaReadOnly.value) {
+          exampleData.uischema = {};
+        }
+        if(!exampleData?.uischema && !schemaReadOnly.value) {
+          console.log("sandbox app","UiSschema generated because example is empty");
+          exampleData.uischema = generateDefaultUISchema(exampleData.schema)
+        }
       }
     }
   }
@@ -146,10 +162,31 @@ watch(() => jsonForms.value, async () => {
 watch(() => rootSchema.value, async (a,b) => {
   updateJsonFormDebounced(a);
 });
-watch(() => example.value, async () => {
-  window.location.hash = example.value ? "/?example="+example.value : '';
-})
 
+const createUrl = () => {
+  const params = {
+    example: example.value,
+    schemaOnly: schemaOnly.value ? 1 : 0,
+    schemaReadOnly: schemaReadOnly.value ? 1 : 0,
+  }
+  return new URLSearchParams(params);
+};
+
+watch(() => example.value, async () => {
+  window.location.hash = "/?"+ createUrl()
+})
+watch(() => schemaOnly.value, async () => {
+  if(schemaOnly.value) {
+    schemaReadOnly.value = false;
+  }
+  window.location.hash = "/?"+ createUrl()
+})
+watch(() => schemaReadOnly.value, async () => {
+  if(schemaReadOnly.value) {
+    schemaOnly.value = false;
+  }
+  window.location.hash = "/?"+ createUrl()
+})
 
 // emitter.on('afterOptionJsonforms', (event: EventAfterOptionJsonforms) => {
 //   const tool = event.tool;

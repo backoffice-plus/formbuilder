@@ -128,6 +128,7 @@ import ToolIcon from "./tools/utils/ToolIcon.vue";
 const props = defineProps({
   jsonForms: Object,
   jsonFormsRenderers: Array,
+  schemaOnly: Boolean,
   schemaReadOnly: Boolean,
   tools: Array,
   builders: Array,
@@ -305,7 +306,9 @@ const updateJsonForm = (e) => {
       rootSchema.value = generateSchemaByTool(baseSchemaTool.value)
       //jsonFormsSchema.value = rootSchema.value; //:TODO why is jsonFormsSchema AND rootSchema? just use one?!
       //updateSchemaBuilder();
-      baseUiTool.value.schema = rootSchema.value;
+      if(baseUiTool.value) {
+        baseUiTool.value.schema = rootSchema.value;
+      }
       //baseUiTool.value.uischema = rootUischema.value;
       break;
 
@@ -422,11 +425,13 @@ const updateJsonForm = (e) => {
 const initBaseTools = () => {
   baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
 
-  if(props.schemaReadOnly) {
-    baseUiTool.value = createBaseTool(toolFinder);
-  }
-  else {
-    baseUiTool.value = createBaseTool(toolFinder, rootSchema.value, rootUischema.value);
+  if(true !== props.schemaOnly) {
+    if(props.schemaReadOnly) {
+      baseUiTool.value = createBaseTool(toolFinder);
+    }
+    else {
+      baseUiTool.value = createBaseTool(toolFinder, rootSchema.value, rootUischema.value);
+    }
   }
 }
 // const rootForm = ref(null);
@@ -446,7 +451,7 @@ onBeforeMount(() => {
   //console.log("FB.onBeforeMount", "root fb", fb)
 
   //init baseTool
-  showBuilder.value = props.initBuilder ?? 'uischema';
+  showBuilder.value = props.initBuilder ?? filteredBuilders.value[0] ?? 'uischema';
   rootSchema.value = props?.jsonForms?.schema;
   rootUischema.value = props?.jsonForms?.uischema;
   //initBaseTools();

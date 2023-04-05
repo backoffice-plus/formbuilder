@@ -13,7 +13,7 @@ import * as subschemas from "./subschemas";
 export class ConstTool extends ControlTool {
 
     importer = () => constComponent;
-    tester = rankWith(4, (uischema: UISchemaElement, schema: JsonSchema, context: TesterContext) => schema && "const" in schema);
+    tester = rankWith(4, (uischema: UISchemaElement, schema: JsonSchema, context: TesterContext) => _.isObject(schema) && "const" in schema);
 
     constructor(uischemaType: string = 'Control') {
         super(uischemaType);

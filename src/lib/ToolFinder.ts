@@ -42,7 +42,7 @@ export class ToolFinder {
         return cloneEmptyTool(this.findMatchingTool(schema, itemSchema, itemUischema), itemSchema);
     }
 
-    findMatchingTool = (schema: any, itemSchema: any, itemUischema: any): ToolInterface => {
+    findMatchingTool = (schema: any, itemSchema: JsonSchema, itemUischema: any): ToolInterface => {
         const toolsWithScore = this._tools.map((tool: ToolInterface, index) => {
             return {
                 tool: tool,
@@ -59,7 +59,7 @@ export class ToolFinder {
             /**
              * if no tool was found, check and guess type and try again
              */
-            if(itemSchema && undefined === itemSchema?.type){
+            if(_.isObject(itemSchema) && undefined === itemSchema?.type){
                 itemSchema.type = this.guessType(itemSchema);
                 if(itemSchema.type) {
                     switch (itemSchema.type) {
@@ -111,7 +111,7 @@ export class ToolFinder {
         if (undefined === schema) {
             throw "schema is undefined"
         }
-        if (undefined === uischema || null === uischema) {
+        if (undefined === uischema || null === uischema || false === uischema) {
             throw "uischema is undefined"
         }
 
