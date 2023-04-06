@@ -192,3 +192,60 @@ export const initObjectElements = (toolFinder: ToolFinder, tool: ToolInterface):
 
     return tools;
 };
+
+
+export const initSchemaElements = (toolFinder: ToolFinder, tool: ToolInterface): Array<ToolInterface> => {
+    const tools = [] as Array<ToolInterface>;
+
+    //for moving existing tools to another list
+    if(tool.childs?.length) {
+        return tool.childs;
+    }
+
+    const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+
+    const properties = tool.schema
+    const propertyKeys = Object.keys(tool.schema)
+
+    propertyKeys.forEach((propertyName:string) => {
+
+        const propertyData = properties[propertyName];
+
+        switch (propertyName) {
+            case "properties":
+            case "definitions":
+            case "patternProperties":
+            case "dependencies":
+                let itemSchema = {
+                    type: 'object',
+                    properties: propertyData
+                }
+                const clone = toolFinder.findMatchingToolAndClone({}, itemSchema, uischema);
+                clone.propertyName = propertyName;
+
+                tools.push(clone);
+                break;
+
+                //:TODO add more childs
+            // case "allOf":
+            // case "anyOf":
+            // case "oneOf":
+            // case "items":
+            //     if(childSchema.items) {
+            //         setSchema = childSchema.items
+            //         childTool.schema = childSchema;
+            //
+            //         if((childTool as any).isSchemaItem) {
+            //             setSchema = childSchema.items[0]
+            //             childTool.schema.items = setSchema;
+            //         }
+            //     }
+            //     break;
+
+            default:
+                break;
+        }
+    });
+
+    return tools;
+};
