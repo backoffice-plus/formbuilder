@@ -93,7 +93,7 @@ const createhtml = (part) => {
 const diffsSchema = diffChars(exampleSchemaString,schemaString);
 const htmlTxtSchema = diffsSchema.map(part => createhtml(part)).join('');
 
-const diffsUischema = diffChars(exampleUischemaString,uischemaString);
+const diffsUischema = diffChars(exampleUischemaString ?? '',uischemaString ?? '');
 const htmlTxtUischema = diffsUischema.map(part => createhtml(part)).join('');
 
 </script>
