@@ -78,6 +78,7 @@ import ToolIcon from "./utils/ToolIcon.vue";
 import Actions from "./utils/Actions.vue";
 import _ from "lodash";
 import {SchemaTool} from "../../lib/tools/SchemaTool";
+import {initSchemaElements} from "../../lib/initializer";
 
 const props = defineProps({...toolComponentProps()})
 
@@ -94,15 +95,13 @@ onMounted(() => {
   if (!props.isToolbar) {
 
     //old behavior: schemaTool behaves like a normal child
-    //childTools.value.push(...initObjectElements(toolFinder, props.tool));
+    childTools.value.push(...initSchemaElements(toolFinder, props.tool));
 
-    const itemSchema = props.tool.schema;
-
-    //:TODO init childs
+    // const itemSchema = props.tool.schema;
+    //
     // if(!_.isEmpty(itemSchema)) {
     //   const itemUischema = {type:'Control',scope:'#'};
     //   const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema, itemUischema), itemSchema, itemUischema)
-    //   clone.propertyName = false;
     //
     //   childTools.value.push(clone);
     // }

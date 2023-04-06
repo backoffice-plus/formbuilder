@@ -25,17 +25,16 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
 
         const isBaseTool = context.baseSchemaTool === this;
 
+        let type = this.schema.type;
+
         const data = {
-            type: this.schema.type,
+            type: type,
             _isBaseTool: isBaseTool,
-            //...(this.schema ?? {})
         } as any;
 
         if(this.propertyName) {
             data.propertyName = this.propertyName;
         }
-
-        console.log("schematool","data", data)
 
         return data;
     }
@@ -58,9 +57,10 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         delete schema.propertyName;
         delete schema._isBaseTool;
 
-        console.log("schemaTool","set schema",this.schema)
-
-        this.schema = schema
+        this.schema = {
+            ...this.schema,
+            ...schema
+        }
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
