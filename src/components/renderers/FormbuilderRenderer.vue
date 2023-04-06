@@ -4,8 +4,7 @@
       :jsonForms="jsonForms"
       :jsonFormsRenderers="jsonFormsRenderers"
       :tools="tools"
-      :builders="['schema']"
-      initBuilder="schema"
+      :schemaOnly="true"
       :schemaTool="baseSchemaTool"
       @schemaUpdated="onSchemaUpdated"
   />
@@ -55,7 +54,7 @@ const formbuilderRenderer = defineComponent({
       ...control,
       tools: fb?.props.tools ?? [],
       jsonFormsRenderers: fb?.props.jsonFormsRenderers ?? [],
-      jsonForms,
+      schema: jsonForms.schema,
       baseSchemaTool
     };
   },

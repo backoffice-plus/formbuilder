@@ -35,7 +35,6 @@
 
     </nav>
 
-
     <template  v-if="currentBaseTool">
       <component :is="currentBaseTool.importer()"
                  :tool="currentBaseTool"
@@ -44,7 +43,7 @@
                  :key="currentBaseTool.propertyName"
       >
 
-        <template v-slot:header  v-if="filteredBuilders.length>1 && !schemaReadOnly">
+        <template v-slot:header  v-if="!schemaOnly && !schemaReadOnly">
           <div class="toolSwitcher">
             <ToolIcon :tool="baseUiTool" :prefixLabel="'uischema: '" :class="{active:showBuilder==='uischema'}" @click="onChangeBuilderByTab('uischema')" />
             <ToolIcon :tool="baseSchemaTool" :prefixLabel="'schema: '" :class="{active:showBuilder==='schema'}"  @click="onChangeBuilderByTab('schema')" />
@@ -126,13 +125,12 @@ import {SchemaTool} from "../lib/tools/SchemaTool";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
 
 const props = defineProps({
+  schema:Object,
   jsonForms: Object,
   jsonFormsRenderers: Array,
   schemaOnly: Boolean,
   schemaReadOnly: Boolean,
   tools: Array,
-  builders: Array,
-  initBuilder: String,
   schemaTool: String,
 })
 
@@ -140,7 +138,7 @@ const emit = defineEmits(['schemaUpdated']);
 
 const drag = ref(false);
 const jsonFormsUiSchema = ref(props?.jsonForms?.uischema);
-const jsonFormsSchema = ref(props?.jsonForms?.schema);
+const jsonFormsSchema = ref(props?.schema ?? props?.jsonForms?.schema);
 const isModalOpen = ref(false);
 const toolEdit = ref(null);
 const showBuilder = ref('uischema');
@@ -165,11 +163,11 @@ const onDropAreaChanged = (e) => {
 defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, rootUischema, onEditTool, onDropAreaChanged})
 
 
-const filteredBuilders = computed(() => {
-  const showBuilders = props.builders;
-  const allowedBuilders = ['schema','uischema'];//,'definitions'
-  return showBuilders ? showBuilders.filter(value => allowedBuilders.includes(value)) : allowedBuilders;
-})
+// const filteredBuilders = computed(() => {
+//   const showBuilders = props.schemaOnly ? ['schema'] : ['schema','uischema'];
+//   const allowedBuilders = ['schema','uischema'];//,'definitions'
+//   return showBuilders ? showBuilders.filter(value => allowedBuilders.includes(value)) : allowedBuilders;
+// })
 
 //update(props.jsonForms?.schema, props.jsonForms?.uischema);
 
@@ -229,7 +227,7 @@ const tools = computed(() => {
 
   switch (showBar.value) {
     case 'properties':
-      all = toolFinder.findReadonlyTools(props?.jsonForms?.schema);
+      all = toolFinder.findReadonlyTools(props?.schema ?? props?.jsonForms?.schema);
 
       if(!_.isEmpty(rootUischema.value)) {
         const usedProps = findAllScopes(rootUischema.value).map(scope => normalizePath(normalizeScope(scope)));
@@ -451,8 +449,8 @@ onBeforeMount(() => {
   //console.log("FB.onBeforeMount", "root fb", fb)
 
   //init baseTool
-  showBuilder.value = props.initBuilder ?? filteredBuilders.value[0] ?? 'uischema';
-  rootSchema.value = props?.jsonForms?.schema;
+  showBuilder.value = props?.schemaOnly ? 'schema' : 'uischema';
+  rootSchema.value = props?.schema ?? props?.jsonForms?.schema;
   rootUischema.value = props?.jsonForms?.uischema;
   //initBaseTools();
   onChangeBuilder({target:{value:showBuilder.value}})

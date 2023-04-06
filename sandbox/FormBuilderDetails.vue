@@ -17,7 +17,7 @@
       </div>
     </details>
 
-    <details>
+    <details v-if="false !== jsonFormsUiSchema">
       <summary class="cursor-pointer">JsonForms Preview</summary>
       <ResizeArea>
         <div class="card p-4 styleA" style="min-height: 106px">
@@ -29,7 +29,7 @@
                 :renderers="jsonFormRenderesMore"
                 :ajv="ajv"
                 :i18n="{translate: createI18nTranslate(localeCatalogue)}"
-                v-if="jsonFormsSchema"
+                v-if="jsonFormsSchema && jsonFormsUiSchema"
                 :key="newKey"
                 @change="r => jsonFormsUpdated=r"
             />
@@ -120,7 +120,6 @@ onMounted(() => {
 /**
  * @see https://ajv.js.org/options.html#advanced-options
  */
-console.log("FBD.setup");
 const ajv = createAjv(
     {
       validateSchema: false, //ignore $schema

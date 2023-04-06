@@ -10,9 +10,11 @@
       </select>
       <a :href="'#/jsonforms?example=' + example" v-if="example" class="ml-1 text-sm">[open Jsonforms]</a><br>
 
-      <div v-if="example">
+      <div>
         Schema Only: <input type="checkbox" v-model="schemaOnly" /><br>
-        Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" />
+        <template v-if="example">
+          Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" />
+        </template>
       </div>
     </div>
 
@@ -28,7 +30,7 @@
       />
     <!--            -->
 
-    <FormBuilderDetails :jsonForms="jsonFormsResolved" v-if="!schemaOnly" />
+    <FormBuilderDetails :jsonForms="jsonFormsResolved" />
 
     <details v-if="example && !schemaReadOnly">
       <summary class="cursor-pointer">JSON Render Diff</summary>
@@ -165,11 +167,11 @@ watch(() => rootSchema.value, async (a,b) => {
 
 const createUrl = () => {
   const params = {
-    example: example.value,
-    schemaOnly: schemaOnly.value ? 1 : 0,
-    schemaReadOnly: schemaReadOnly.value ? 1 : 0,
+    example: example.value ?? undefined,
+    schemaOnly: schemaOnly.value ? "1" : undefined,
+    schemaReadOnly: schemaReadOnly.value ? "1" : undefined,
   }
-  return new URLSearchParams(params);
+  return new URLSearchParams(_.omitBy(params, _.isEmpty));
 };
 
 watch(() => example.value, async () => {
