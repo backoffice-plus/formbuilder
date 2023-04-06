@@ -3,15 +3,19 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import toolComponent from "../../components/tools/array.component.vue";
 import {schema, uischema} from "./schema/array.schema";
 import jsonFormsSchema from "./schema/array.schemaBuilder.form.json";
+import jsonFormsAsSchemaChild from "./schema/array.asSchemaChild.form.json";
 import {getItemsType, resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
 import {AbstractTool} from "./AbstractTool";
 import * as subschemas from "./subschemas";
+import {SchemaTool} from "./SchemaTool";
+import jsonFormAsSchemaChild from "./schema/object.asSchemaChild.form.json";
 
 export class ArrayTool extends AbstractTool implements ToolInterface {
 
     /** @deprecated **/
     isInlineType: boolean = false;
+    isSchemaItem: boolean = false; //items is not array
 
     importer = () => toolComponent;
     //tester = rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl));//not working for $ref (we want unresolved schema)
@@ -38,6 +42,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         const itemsType = this.schema?.items?.type;
         /** @ts-ignore **/
         const isRef = '$ref' in this.schema?.items;
+        const asSchema = undefined !== itemsType;
 
 
         /**
@@ -90,6 +95,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             //asInlineType: couldBeInlineType,
             isRef: isRef,
             options: options,
+            _asSchema: asSchema,
 
             _isUischema: 'uischema' === context.builder,
             _isSchemaReadOnly: context.schemaReadOnly,
@@ -159,6 +165,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         subschemas.setOptionDataStyles(this.schema, this.uischema, data);
 
         //this.isRequired = data.required;
+        this.isSchemaItem = data._asSchema;
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
@@ -169,6 +176,11 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         }
         if('schema' === context.builder) {
             currentJsonSchema = jsonFormsSchema;
+        }
+
+        const parentTool = this.parentTool;
+        if(parentTool instanceof SchemaTool) {
+            currentJsonSchema = jsonFormsAsSchemaChild;
         }
 
         return {

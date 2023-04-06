@@ -6,47 +6,61 @@ import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/schema.form.json";
 import _ from "lodash";
 
-export const schemaKeywords = ['if', 'then', 'else', 'not', 'contains'];
+//export const schemaKeywords = ['if', 'then', 'else', 'not', 'contains'];
 
 export class SchemaTool extends AbstractTool implements ToolInterface {
 
-    keyword:string = 'if';
-
     importer = () => toolComponent;
-    tester = rankWith(-1, (uischema, schema) => {
-        const hasKeyword = _.isObject(schema) && 'if' in schema
-        return hasKeyword
-    });
-    clone = (): ToolInterface => new SchemaTool(this.keyword);
+    tester = rankWith(-1, () => {});
+    clone = (): ToolInterface => new SchemaTool();
 
 
-    constructor(keyword: string = 'if') {
+    constructor() {
         super()
-        this.uischema = {};
-        this.keyword = keyword;
+        this.uischema = false;
+        this.propertyName = '';
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
 
-        return {
-            propertyName: this.propertyName,
-            keyword: this.keyword,
+        const isBaseTool = context.baseSchemaTool === this;
+
+        const data = {
+            type: this.schema.type,
+            _isBaseTool: isBaseTool,
+            //...(this.schema ?? {})
         } as any;
+
+        if(this.propertyName) {
+            data.propertyName = this.propertyName;
+        }
+
+        console.log("schematool","data", data)
+
+        return data;
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
+        //
+        // const keyword = data?.keyword;
+        // const keywordOld = this.keyword;
+        //
+        // if(keyword && keywordOld && keyword !== keywordOld) {
+        //     // // /** @ts-ignore **/
+        //     // this.schema[keyword] = undefined;//this.schema[keywordOld] ?? [];
+        //     // /** @ts-ignore **/
+        //     // this.schema[keywordOld] = undefined;
+        //     this.keyword = keyword;
+        // }
 
-        const keyword = data?.keyword;
-        const keywordOld = this.keyword;
+        const schema = {...data}
+        delete schema.propertyName;
+        delete schema._isBaseTool;
 
-        if(keyword && keywordOld && keyword !== keywordOld) {
-            // // /** @ts-ignore **/
-            // this.schema[keyword] = undefined;//this.schema[keywordOld] ?? [];
-            // /** @ts-ignore **/
-            // this.schema[keywordOld] = undefined;
-            this.keyword = keyword;
-        }
+        console.log("schemaTool","set schema",this.schema)
+
+        this.schema = schema
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
@@ -62,11 +76,11 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
             title: 'Schema',
             icon: 'mdi:code-not-equal',
             //  labelAtDropArea:this.keyword ?? 'anyOf',
-            hideToolAtBar: true,
+            //hideToolAtBar: true,
 
         }
     }
 }
 
 // @ts-ignore
-export const schemaTool = new SchemaTool('if');
+export const schemaTool = new SchemaTool();

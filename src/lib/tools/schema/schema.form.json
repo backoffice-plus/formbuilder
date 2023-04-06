@@ -1,16 +1,33 @@
 {
+
   "schema": {
     "type": "object",
+    "definitions": {
+      "simpleTypes": {
+        "$ref": "http://json-schema.org/draft-07/schema#/definitions/simpleTypes"
+      }
+    },
     "properties": {
       "propertyName": {
-        "type": "string"
-      },
-      "keyword": {
         "type": "string",
-        "enum": ["if", "then", "else", "contains", "not"]
+        "enum": [
+          "if",
+          "then",
+          "else",
+          "not",
+          "contains",
+          "propertyNames",
+          "additionalItems",
+          "additionalProperties"
+        ]
+      },
+      "type": {
+        "$ref": "#/definitions/simpleTypes"
       }
     }
+
   },
+
   "uischema": {
 
     "type": "Categorization",
@@ -20,7 +37,21 @@
         "label": "Base",
         "elements": [
           {
-            "scope": "#/properties/keyword",
+            "scope": "#/properties/propertyName",
+            "type": "Control",
+            "rule": {
+              "effect": "HIDE",
+              "condition": {
+                "scope": "#/properties/_isBaseTool",
+                "schema": {
+                  "const": true
+                }
+              }
+            }
+          },
+
+          {
+            "scope": "#/properties/type",
             "type": "Control"
           }
         ]

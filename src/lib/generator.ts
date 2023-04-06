@@ -4,18 +4,14 @@ import {denormalizePath, getAllSubpaths, getPlainProperty, getRequiredFromSchema
 import {CombinatorTool} from "./tools/combinatorTool";
 import type {JsonSchema} from "@jsonforms/core";
 import type {JsonFormsInterface, JsonFormsUISchema, ToolInterface} from "./models";
+import {SchemaTool} from "./tools/SchemaTool";
 
 export const generateSchemaByTool = (tool: ToolInterface): JsonSchema => {
 
-    //:TOO remove
-    // if(tool instanceof SchemaTool) {
-    //     //:TODO check if keyword is needed here
-    //     return {
-    //         [tool.keyword]: createTypeObjectSchemaOnly(tool),
-    //     }
-    // }
-    // else
-    if ('object' === tool.schema?.type) {
+    if(tool instanceof SchemaTool) {
+        return createTypeSchemaOnly(tool);
+    }
+    else if ('object' === tool.schema?.type) {
         return createTypeObjectSchemaOnly(tool);
     }
 
@@ -97,6 +93,7 @@ export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
 
     const hasChilds = tool.childs?.length > 0;
     const hasOneChild = tool.childs?.length === 1;
+    const parentIsSchema = tool.parentTool instanceof SchemaTool;
 
     // if(hasOneChild && isInlineType) {
     //     allowInlineType = true
@@ -104,7 +101,7 @@ export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
 
     let items = {
         type: 'null',
-    } as JsonSchema;
+    } as JsonSchema|JsonSchema[];
 
 
     if (hasChilds) {
@@ -112,8 +109,13 @@ export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
             return generateSchemaByTool(childTool);
         });
 
-        //use only the first child (it that correct?!)
-        items = schemas[0];
+        if(parentIsSchema) {
+            items = schemas;
+        }
+        else {
+            //use only the first child (it that correct?!)
+            items = schemas[0];
+        }
     }
 
     const addToSchema = {} as any;
@@ -225,6 +227,81 @@ export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
 };
 
 
+export const createTypeSchemaOnly = (tool: ToolInterface): JsonSchema => {
+
+    const schema = tool.schema;
+
+    const propertiesDefinedByChilds = [
+        //schema
+        "if",
+        "then",
+        "else",
+        "not",
+        "contains",
+        "propertyNames",
+        "additionalItems",
+        "additionalProperties",
+
+        //object
+        "properties",
+        "definitions",
+        "patternProperties",
+        "dependencies",
+
+        //array
+        "allOf",
+        "anyOf",
+        "oneOf",
+        "items"
+    ];
+
+    const schemaByKeys = {};
+    propertiesDefinedByChilds.forEach(key => schemaByKeys[key] = undefined)
+
+    tool.childs.forEach((childTool: ToolInterface) => {
+        const propertyName = childTool.propertyName;
+        if(propertyName && propertiesDefinedByChilds.includes(propertyName)) {
+            let childSchema = generateSchemaByTool(childTool);
+            let setSchema = childSchema;
+
+            switch (propertyName) {
+               case "properties":
+               case "definitions":
+               case "patternProperties":
+               case "dependencies":
+                    if(childSchema.properties) {
+                        setSchema = childSchema.properties
+                    }
+                    break;
+
+                case "allOf":
+                case "anyOf":
+                case "oneOf":
+                case "items":
+                    if(childSchema.items) {
+                        setSchema = childSchema.items
+                        childTool.schema = childSchema;
+
+                        if((childTool as any).isSchemaItem) {
+                            setSchema = childSchema.items[0]
+                            childTool.schema.items = setSchema;
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+
+            schemaByKeys[propertyName] = setSchema;
+        }
+    });
+
+    return {...schema, ...schemaByKeys} as JsonSchema;
+};
+
+
+
 export const createTypeObjectSchema = (tool: ToolInterface): Record<string, JsonSchema> => {
     const schemas = {} as Record<string, JsonSchema>;
 
@@ -279,6 +356,8 @@ export const setRequiredToSchema = (propertyName: string, schema: JsonSchema, is
 }
 export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchema): void => {
 
+    console.log("setItemSchemaToSchema",tool,rootSchema);
+
     const subpaths = getAllSubpaths(tool.propertyName, 0);
 
     //create type=object in subpaths if not exists
@@ -321,6 +400,7 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema):
     const isScoped = "scope" in created;
     //const isLayout = "elements" in created;
 
+
     if (isScoped) {
         if ('array' === tool?.schema?.type) {
 
@@ -340,6 +420,7 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema):
 
         generateSchemaForUiSchema(tool, rootSchema);
     } else {
+
         //:INFO some tools dont have elements (LabelTool)
         if(tool.childs.length) {
 

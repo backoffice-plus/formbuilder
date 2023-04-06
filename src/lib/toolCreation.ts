@@ -29,15 +29,18 @@ export const createSchemaTool = (schema: JsonSchema, baseToolName: string | unde
         case "schema.else":
         case "schema.then":
             clone = cloneToolWithSchema(schemaTool, schema);
-            if (clone instanceof SchemaTool) {
-                clone.keyword = baseToolName?.match(/[^.]+$/)?.[0] ?? 'if';
-                //clone.propertyName = false;
-            }
+            // if (clone instanceof SchemaTool) {
+            //     clone.keyword = baseToolName?.match(/[^.]+$/)?.[0] ?? 'if';
+            //     //clone.propertyName = false;
+            // }
             break;
 
         default:
-            clone = cloneToolWithSchema(new ObjectTool(), schema);
-            clone.propertyName = 'schema';
+            // clone = cloneToolWithSchema(new ObjectTool(), schema);
+            // clone.propertyName = 'schema';
+            schema.type ??= 'object';
+            clone = cloneToolWithSchema(schemaTool, schema);
+            //clone.propertyName = 'schema';
             break;
     }
 
@@ -90,8 +93,8 @@ export const cloneToolWithSchema = (tool: ToolInterface, schema: JsonSchema, uis
         _.merge(clone.uischema, {...uischema})
     }
 
-    if ('scope' in clone.uischema) {
-        clone.propertyName = fromScopeToProperty(clone.uischema.scope)
+    if (_.isObject(clone.uischema) && "scope" in clone.uischema) {
+        clone.propertyName = fromScopeToProperty(clone.uischema.scope as string)
     }
 
     //set default data (sets init data if schema hasnt)

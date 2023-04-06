@@ -3,8 +3,10 @@ import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/object.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/object.form.json";
-import {rankWith} from "@jsonforms/core";
+import jsonFormAsSchemaChild from "./schema/object.asSchemaChild.form.json";
+import {rankWith, setSchema} from "@jsonforms/core";
 import * as subschemas from "./subschemas";
+import {SchemaTool} from "./SchemaTool";
 
 export class ObjectTool extends AbstractTool implements ToolInterface {
 
@@ -55,9 +57,19 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
+
+        let setSchema = schema;
+        let setUischema = uischema;
+
+        const parentTool = this.parentTool;
+        if(parentTool instanceof SchemaTool) {
+            setSchema = jsonFormAsSchemaChild.schema as any;
+            setUischema = jsonFormAsSchemaChild.uischema;
+        }
+
         return {
-            schema: await resolveSchema(schema),
-            uischema: await resolveSchema(uischema),
+            schema: await resolveSchema(setSchema),
+            uischema: await resolveSchema(setUischema),
         } as JsonFormsInterface
     }
 

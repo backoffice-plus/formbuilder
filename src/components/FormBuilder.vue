@@ -112,7 +112,7 @@ import {
   findAllProperties,
   findAllScopes,  generateSchemaByTool,
 } from "../index";
-import {createBaseTool, cloneToolWithSchema, createSchemaTool} from "../lib/toolCreation";
+import {cloneToolWithSchema, createBaseTool, createSchemaTool} from "../lib/toolCreation";
 
 import Modal from "./Modal.vue";
 import {normalizePath, normalizeScope} from "../lib/normalizer";
@@ -123,6 +123,7 @@ import {getFormbuilder, onDragGetTool} from "../lib/vue";
 import {ToolFinder} from "../lib/ToolFinder";
 import {SchemaTool} from "../lib/tools/SchemaTool";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
+import {ObjectTool} from "../lib/tools/ObjectTool";
 
 const props = defineProps({
   schema:Object,
@@ -145,6 +146,11 @@ const showBuilder = ref('uischema');
 const showBar = ref('schema');
 
 
+const baseUiTool = ref(null);
+const baseSchemaTool = ref(null);
+//const baseDefinitionTool = ref(null);
+const currentBaseTool = ref(null);
+
 const fb = getFormbuilder();
 
 //expose
@@ -160,7 +166,7 @@ const onEditTool = (data) => {
 const onDropAreaChanged = (e) => {
   updateJsonFormDebounced(e);
 };
-defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, rootUischema, onEditTool, onDropAreaChanged})
+defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, baseSchemaTool, rootUischema, onEditTool, onDropAreaChanged})
 
 
 // const filteredBuilders = computed(() => {
@@ -216,10 +222,6 @@ const onChangeBuilder = (e) => {
   }
 }
 
-const baseUiTool = ref(null);
-const baseSchemaTool = ref(null);
-//const baseDefinitionTool = ref(null);
-const currentBaseTool = ref(null);
 
 const tools = computed(() => {
 
@@ -421,7 +423,12 @@ const updateJsonForm = (e) => {
 
 
 const initBaseTools = () => {
-  baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
+  if(props.schemaOnly) {
+    baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
+  }
+  else {
+    baseSchemaTool.value = cloneToolWithSchema(new ObjectTool(), rootSchema.value)
+  }
 
   if(true !== props.schemaOnly) {
     if(props.schemaReadOnly) {

@@ -3,7 +3,7 @@
 
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
       <template v-slot:droparea>
-        {{ tool.keyword }}
+        {{ tool.propertyName }}
       </template>
     </ToolIcon>
 
@@ -35,7 +35,6 @@
 
                        :tool="tool"
                        :isToolbar="false"
-                       :isInlineType="true"
 
                        @deleteByTool="onDeleteByTool"
 
@@ -68,16 +67,17 @@
 </style>
 
 <script setup>
-import {computed, nextTick, onMounted, ref} from "vue";
+import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {Icon} from "@iconify/vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
 import {deleteToolInChilds} from '../../lib/formbuilder'
-import {cloneToolWithSchema} from '../../lib/toolCreation'
+import {cloneEmptyTool, cloneToolWithSchema} from '../../lib/toolCreation'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import ToolIcon from "./utils/ToolIcon.vue";
 import Actions from "./utils/Actions.vue";
 import _ from "lodash";
+import {SchemaTool} from "../../lib/tools/SchemaTool";
 
 const props = defineProps({...toolComponentProps()})
 
@@ -97,14 +97,21 @@ onMounted(() => {
     //childTools.value.push(...initObjectElements(toolFinder, props.tool));
 
     const itemSchema = props.tool.schema;
-    if(!_.isEmpty(itemSchema)) {
-      const itemUischema = {type:'Control',scope:'#'};
-      const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema, itemUischema), itemSchema, itemUischema)
-      clone.propertyName = false;
 
-      childTools.value.push(clone);
-    }
+    //:TODO init childs
+    // if(!_.isEmpty(itemSchema)) {
+    //   const itemUischema = {type:'Control',scope:'#'};
+    //   const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema, itemUischema), itemSchema, itemUischema)
+    //   clone.propertyName = false;
+    //
+    //   childTools.value.push(clone);
+    // }
 
+
+     // if(_.isEmpty(itemSchema)) {
+     //  // const clone = cloneEmptyTool(new SchemaTool())
+     //  // childTools.value.push(clone);
+     // }
 
     if (childTools.value.length) {
       nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
@@ -113,6 +120,10 @@ onMounted(() => {
 })
 
 const onDropAreaChange = (e) => {
+  if(e.added?.element) {
+    e.added.element.parentTool = props.tool;
+  }
+
   props.tool.childs = childTools.value;
   fb?.exposed?.onDropAreaChanged(e);
 };
@@ -128,11 +139,19 @@ const onDropAreaChange = (e) => {
 //   onDropAreaChange(null);
 // };
 
+const allowChild = (tool) => {
+  const isArrayOrObject = ['array','object'].includes(tool?.schema?.type);
+  const isSchemaTool = tool instanceof SchemaTool
+
+  return isArrayOrObject || isSchemaTool;
+}
+const showDragClass = computed(() => {
+  const tool = getToolDragging();
+  return tool && allowChild(unref(tool));
+})
 const groupPut = (from, to, node, dragEvent) => {
   const tool = node._underlying_vm_;
-  const isControlTool = 'Control' === tool.uischema?.type;
-  const hasNoItem = from.el.children.length === 0;
-  return hasNoItem && isControlTool;
+  return tool && allowChild(unref(tool));
 };
 
 const onDeleteByTool = async (e) => {
@@ -147,12 +166,5 @@ const onDelete = () => {
   emit("deleteByTool", {tool: props.tool});
 };
 
-const showDragClass = computed(() => {
-  const toolDragging = getToolDragging();
-  const isControl = 'Control' === toolDragging?.uischema?.type;
-  const hasNoItem = props.tool.childs.length === 0;
-
-  return hasNoItem && isControl;
-})
 
 </script>

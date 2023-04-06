@@ -7,6 +7,8 @@ import constSubschema from "../schema/subschemas/const.form.json";
 import ruleSubschema from "../schema/subschemas/rule.form.json";
 import conditionalSubschema from "../schema/subschemas/conditional.form.json";
 import definitionsSubschema from "../schema/subschemas/definitions.form.json";
+// @ts-ignore
+import draft07 from '../schema/drafts/draft07.schema.json'
 
 export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './label'
 export { prepareOptionData as prepareOptionDataValidation, setOptionData as setOptionDataValidation } from './validation'
@@ -17,6 +19,7 @@ export { prepareOptionData as prepareOptionDataconditional, setOptionData as set
 export { prepareOptionData as prepareOptionDataDefinitions, setOptionData as setOptionDataDefinitions } from './definitions'
 
 export const subschemaMap = {
+    'http://json-schema.org/draft-07/schema': draft07,
     'validation.schema': validationSubschema.schema,
     'validation.uischema': validationSubschema.uischema,
     'rule.schema': ruleSubschema.schema,

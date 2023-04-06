@@ -29,13 +29,13 @@ export class ToolFinder {
     findLayoutTools(): ToolInterface[] {
         return this._tools.filter((tool: ToolInterface) => {
             const uiSchemaType = tool.uischema.type;
-            const hasElements = 'elements' in tool.uischema;
+            const hasElements = _.isObject(tool.uischema) && 'elements' in tool.uischema;
             return (uiSchemaType && hasElements) || uiSchemaType !== 'Control' && uiSchemaType !== 'Unknown'
         })
     }
 
     findLayoutToolByUiType = (uiType: string): ToolInterface | undefined => {
-        return this.findLayoutTools().find((tool: ToolInterface) => tool.uischema.type === uiType)
+        return this.findLayoutTools().find((tool: ToolInterface) => tool?.uischema?.type === uiType)
     }
 
     findMatchingToolAndClone = (schema: any, itemSchema: any, itemUischema: any): ToolInterface => {
@@ -106,7 +106,7 @@ export class ToolFinder {
         return maxItem?.type;
     }
 
-    findBaseTool(schema: JsonSchema, uischema: ControlElement | Layout | UISchemaElement | Scoped): ToolInterface {
+    findBaseTool(schema: JsonSchema, uischema: ControlElement | Layout | UISchemaElement | Scoped | any): ToolInterface {
 
         if (undefined === schema) {
             throw "schema is undefined"

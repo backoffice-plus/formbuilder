@@ -20,7 +20,7 @@ export interface ToolInterface {
     isRequired: boolean;
 
     schema: JsonSchema;
-    uischema: JsonFormsUISchema|any;
+    uischema: JsonFormsUISchema|boolean|any;
     tester: RankedTester | undefined,
     importer: () => any,
     optionDataPrepare: (context: ToolContext) => Record<string, any>;
@@ -32,13 +32,15 @@ export interface ToolInterface {
     toolbarOptions: () => Record<string, any>;
 
     childs: ToolInterface[]
+    parentTool: ToolInterface|undefined
 }
 
 export interface ToolContext {
     fb?: any;
     builder?: string;
     schemaReadOnly?: string;
-    rootSchema?: JsonSchema
+    rootSchema?: JsonSchema,
+    baseSchemaTool?: ToolInterface,
 }
 
 // @ts-ignore

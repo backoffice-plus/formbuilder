@@ -64,7 +64,7 @@ import {computed, onMounted, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
 import {schema as vuetifySchema, uischema as vuetifyUischema} from "./jsonForms/vuetifyOptions";
 import {getExamples} from '@jsonforms/examples/src'
-import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
+import {generateDefaultUISchema, generateJsonSchema, JsonSchema} from "@jsonforms/core";
 import {resolveSchema} from "../src";
 import {getExampleFromUrl, getKeyFromUrl, getUrl} from "./lib";
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
@@ -132,17 +132,27 @@ const jsonForms = computed(() => {
           exampleData.uischema = generateDefaultUISchema(exampleData.schema)
         }
       }
+
+      //:DEV
+      // const output = [];
+      // const p = exampleData.schema.properties;
+      // Object.keys(p).map(key => {
+      //   output.push([key,p[key].type ?? p[key]['$ref']])
+      // })
+      // console.table(output)
     }
   }
   else {
-    const schema = generateJsonSchema({});
+    const schema = schemaOnly.value ? {} : generateJsonSchema({}) as JsonSchema|any;
     const uischema = generateDefaultUISchema(schema);
-    delete schema.additionalProperties;
+    if("additionalProperties" in schema) {
+      delete schema.additionalProperties;
+    }
 
     exampleData = {schema: schema, uischema: uischema};
   }
 
-  if(schemaReadOnly.value) {
+  if(schemaReadOnly.value || schemaOnly.value) {
     delete exampleData.uischema;
   }
 

@@ -1,0 +1,40 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "propertyName": {
+        "type": "string",
+        "enum": [
+          "allOf",
+          "anyOf",
+          "oneOf",
+          "items"
+        ]
+      },
+      "_asSchema": {
+        "type": "boolean"
+      }
+    }
+  },
+
+  "uischema": {
+    "type": "Categorization",
+    "elements": [
+      {
+        "type": "Category",
+        "label": "Base",
+        "elements": [
+          {
+            "scope": "#/properties/propertyName",
+            "type": "Control"
+          },
+          {
+            "scope": "#/properties/_asSchema",
+            "type": "Control"
+          }
+        ]
+      }
+    ]
+  },
+  "data": {}
+}

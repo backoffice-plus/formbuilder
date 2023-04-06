@@ -91,6 +91,7 @@ import {ReferenceTool} from "../../lib/tools/referenceTool";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import SchemaFeatures from "./utils/SchemaFeatures.vue";
+import _ from "lodash";
 
 const props = defineProps({...toolComponentProps()})
 
@@ -111,18 +112,6 @@ const toolOptions = computed(() => props.tool?.toolbarOptions() ?? {});
 const childLayoutTools = computed(() => childTools.value.filter(tool => 'Control' !== tool.uischema.type));
 const hasOneLayoutTool = computed(() => childLayoutTools.value.length>=1);
 
-const showAddItem = computed(() => {
-  //always if its in layout mode
-  if(hasOneLayoutTool.value) {
-    return true;
-  }
-  //array of refs
-  // if(isArrayOfRef.value) {
-  //   return true;
-  // }
-  //show only if it has no childs
-  return !getFirstChild.value
-});
 
 const fb = getFormbuilder();
 const toolFinder = getToolfinder();
@@ -140,13 +129,18 @@ onMounted(() => {
     }
 
     if(!childTools.value?.length) {
-      addItem({type:'object',properties:{}})
+      //:DEV disabled for dev
+      //addItem({type:'object',properties:{}})
     }
   }
 })
 
 
 const onDropAreaChange = (e) => {
+  if(e.added?.element) {
+    e.added.element.parentTool = props.tool;
+  }
+
   props.tool.childs = childTools.value;
   fb?.exposed?.onDropAreaChanged(e);
 };
@@ -166,16 +160,36 @@ const addItem = (initSchema = undefined) => {
 };
 
 
-const groupPut = (from, to, node, dragEvent) => {
-  const tool = node._underlying_vm_;
-
-  const isControlTool = 'Control' === tool.uischema?.type;
+const allowChild = (tool) => {
+  const isControl = 'Control' === tool?.uischema?.type;
+  const isRefTool = tool instanceof ReferenceTool;
   //const isRefTool = '$ref' in tool.schema;//not working!!!
   //const isRefTool = tool instanceof ReferenceTool;//not working!!!
-  const isRefTool = 'ReferenceTool' === tool.constructor.name;
+  //const isRefTool = 'ReferenceTool' === tool.constructor.name;
+
+  // if(isArrayOfRef.value && isRefTool) {
+  //   return true;
+  // }
+
+  if(!isControl) {
+    return false;
+  }
+
+  const hasOneItem = childTools.value.length > 0;
+  const itemsIsArray = _.isArray(props.tool.schema.items);
+
+
+  if(itemsIsArray) {
+    return true;
+  }
+
+  if(hasOneItem) {
+    return false;
+  }
+
+  return true;
 
   //const isInlineType = scalarTypes.includes(props.tool?.schema?.items?.type)
-  const hasOneItem = from.el.children.length > 0;
 
   // if(isArrayOfRef.value && isRefTool) {
   //   return true;
@@ -188,7 +202,26 @@ const groupPut = (from, to, node, dragEvent) => {
     return false;
   }
   return !hasOneItem
+
+
+  return isControl && !getFirstChild.value;
+}
+
+const showAddItem = computed(() => {
+  return allowChild({uischema:{type:'Control'}})
+});
+const showDragClass = computed(() => {
+  const toolDragging = getToolDragging();
+
+  return allowChild(toolDragging);
+})
+
+const groupPut = (from, to, node, dragEvent) => {
+  const tool = node._underlying_vm_;
+
+  return allowChild(tool);
 };
+
 
 const onDeleteByTool = async (e) => {
   e.tool && deleteToolInChilds(e.tool, childTools.value)
@@ -202,19 +235,5 @@ const onDelete = () => {
   emit("deleteByTool", { tool: props.tool });
 };
 
-const showDragClass = computed(() => {
-  const toolDragging = getToolDragging();
-  const isControl = 'Control' === toolDragging?.uischema?.type;
-  const isRefTool = toolDragging instanceof ReferenceTool;
 
-  // if(isArrayOfRef.value && isRefTool) {
-  //   return true;
-  // }
-
-  if(true === isInlineType.value) {
-    return false;
-  }
-
-  return isControl && !getFirstChild.value;
-})
 </script>

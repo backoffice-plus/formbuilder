@@ -9,6 +9,7 @@ export abstract class AbstractTool implements ToolInterface {
     isRequired: boolean = false;//neccesary because required is stored in parentNode
 
     childs: ToolInterface[] = [];
+    parentTool:ToolInterface|undefined = undefined;
 
     //from props
     schema: JsonSchema = {};

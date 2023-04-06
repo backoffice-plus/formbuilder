@@ -51,7 +51,7 @@
 import {JsonForms} from "@jsonforms/vue";
 import {createI18nTranslate} from "../lib/formbuilder";
 import {emitter} from "../lib/mitt";
-import {onMounted, ref} from "vue";
+import {getCurrentInstance, onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
 import {getFormbuilder} from "../lib/vue";
@@ -80,6 +80,7 @@ onMounted(async () => {
     builder: fb?.exposed?.showBuilder.value,
     schemaReadOnly: fb.props.schemaReadOnly,
     rootSchema: fb?.exposed?.rootSchema?.value,
+    baseSchemaTool: fb?.exposed?.baseSchemaTool?.value,
   }
 
   try {

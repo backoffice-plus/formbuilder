@@ -10,11 +10,17 @@ import {subschemaMap} from "./tools/subschemas";
 
 
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
-    if (!propertyName) {
-        throw "invalid propertyName";
-    }
+    //:INFO disabled bc baseSchemaTool has no propertyName
+    // if (!propertyName) {
+    //     throw "invalid propertyName";
+    // }
+
+    //console.log("updatePropertyNameAndScope",tool.uischema)
+
     tool.propertyName = propertyName;
-    tool.uischema.scope = fromPropertyToScope(tool.propertyName)
+    if(_.isObject(tool.uischema)) {
+        tool.uischema.scope = fromPropertyToScope(tool.propertyName)
+    }
 
     return propertyName;
 };
