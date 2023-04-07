@@ -74,7 +74,8 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
     toolbarOptions(): Record<string, any> {
         return {
             title: 'Schema',
-            icon: 'mdi:code-not-equal',
+            //icon: 'mdi:code-not-equal',
+            icon: 'mdi:folder-pound',
             //  labelAtDropArea:this.keyword ?? 'anyOf',
             //hideToolAtBar: true,
 

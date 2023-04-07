@@ -32,9 +32,9 @@ export const controlTools = [
     referenceTool,
     constTool,
 
-    arrayTool,
     objectTool,
-    combinatorTool,
+    arrayTool,
     schemaTool,
+    combinatorTool,
 ]
 
