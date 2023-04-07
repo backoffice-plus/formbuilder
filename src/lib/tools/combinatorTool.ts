@@ -92,8 +92,10 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
     toolbarOptions(): Record<string, any> {
         return {
             title: 'Combinator',
-            icon: 'mdi:folder-pound',
+            icon: 'mdi:arrow-decision',
+            //icon: 'mdi:folder-pound',
             //  labelAtDropArea:this.keyword ?? 'anyOf',
+            //hideToolAtBar: true,
 
         }
     }

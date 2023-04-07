@@ -56,20 +56,18 @@ export const initArrayElements = (toolFinder: ToolFinder, tool: ToolInterface): 
         return tool.childs;
     }
 
-    const itemSchema =  tool.schema?.items;
-    const isSchemObj = 'object' === typeof itemSchema; //:INFO array is not supported yet
 
-    if(!isSchemObj) {
-        console.warn("initArrayElements", "schema.items is not an object");
+    let items =  tool.schema?.items as any[];
+    if(!_.isArray(items)) {
+        items = [items];
     }
 
-    if(!_.isEmpty(itemSchema)) {
-        const uischema = {type: 'Control', scope: '#/properties/unnamed'} as UISchemaElement;
-        const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema as JsonSchema, uischema), itemSchema as JsonSchema, uischema)
+    items.forEach((item:JsonSchema) => {
+        const uischema = {type: 'Control', scope: '#'} as UISchemaElement;
+        const clone = toolFinder.findMatchingToolAndClone({}, item, uischema);
 
         tools.push(clone);
-    }
-
+    })
 
     return tools;
 
@@ -210,37 +208,36 @@ export const initSchemaElements = (toolFinder: ToolFinder, tool: ToolInterface):
     propertyKeys.forEach((propertyName:string) => {
 
         const propertyData = properties[propertyName];
+        let clone, itemSchema;
 
         switch (propertyName) {
+            case "$defs":
             case "properties":
             case "definitions":
             case "patternProperties":
             case "dependencies":
-                let itemSchema = {
+                itemSchema = {
                     type: 'object',
                     properties: propertyData
                 }
-                const clone = toolFinder.findMatchingToolAndClone({}, itemSchema, uischema);
+                clone = toolFinder.findMatchingToolAndClone({}, itemSchema, uischema);
                 clone.propertyName = propertyName;
-
                 tools.push(clone);
+
                 break;
 
-                //:TODO add more childs
-            // case "allOf":
-            // case "anyOf":
-            // case "oneOf":
-            // case "items":
-            //     if(childSchema.items) {
-            //         setSchema = childSchema.items
-            //         childTool.schema = childSchema;
-            //
-            //         if((childTool as any).isSchemaItem) {
-            //             setSchema = childSchema.items[0]
-            //             childTool.schema.items = setSchema;
-            //         }
-            //     }
-            //     break;
+            case "allOf":
+            case "anyOf":
+            case "oneOf":
+            case "items":
+                itemSchema = {
+                    type: 'array',
+                    items: propertyData
+                }
+                clone = toolFinder.findMatchingToolAndClone({}, itemSchema, uischema);
+                clone.propertyName = propertyName;
+                tools.push(clone);
+                break;
 
             default:
                 break;
