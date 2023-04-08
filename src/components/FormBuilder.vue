@@ -22,14 +22,17 @@
 
     <nav>
 
-      <div class="tabs">
-        <button @click="showBar='schema';" :class="{active:'schema'===showBar}" v-if="!schemaReadOnly">Controls</button>
-        <button @click="showBar='uischema';" :class="{active:'uischema'===showBar}" v-if="showBuilder==='uischema'">Layout</button>
-        <button @click="showBar='properties';" :class="{active:'properties'===showBar}" v-if="schemaReadOnly">Properties</button>
-      </div>
+<!--      <div class="tabs">-->
+<!--        <button @click="showBar='schema';" :class="{active:'schema'===showBar}" v-if="!schemaReadOnly">Controls</button>-->
+<!--        <button @click="showBar='uischema';" :class="{active:'uischema'===showBar}" v-if="showBuilder==='uischema'">Layout</button>-->
+<!--        <button @click="showBar='properties';" :class="{active:'properties'===showBar}" v-if="schemaReadOnly">Properties</button>-->
+<!--      </div>-->
 
-      <FormBuilderBar
-          :tools="tools"
+      <FormBuilderToolbar
+          :toolFinder="toolFinder"
+          :schemaOnly="schemaOnly"
+          :schemaReadOnly="schemaReadOnly"
+          :showBuilder="showBuilder"
           @drag="e=>drag = !!e"
       />
 
@@ -61,23 +64,7 @@
 nav {
   background-color: var(--toolBar-bg);
 }
-.tabs {
-  @apply
-  flex gap-2
-}
-.tabs > button {
-  @apply
-  p-1 px-4
-  rounded-t
-}
 
-.tabs > button.active {
-  background-color: var(--toolBar-tab);
-}
-
-.tabs > button:hover {
- background-color: var(--toolBar-tab-hover);
-}
 
 .toolSwitcher {
   @apply flex gap-4 ml-2
@@ -124,6 +111,7 @@ import {ToolFinder} from "../lib/ToolFinder";
 import {SchemaTool} from "../lib/tools/SchemaTool";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
 import {ObjectTool} from "../lib/tools/ObjectTool";
+import FormBuilderToolbar from "./FormBuilderToolbar.vue";
 
 const props = defineProps({
   schema:Object,
@@ -143,8 +131,6 @@ const jsonFormsSchema = ref(props?.schema ?? props?.jsonForms?.schema);
 const isModalOpen = ref(false);
 const toolEdit = ref(null);
 const showBuilder = ref('uischema');
-const showBar = ref('schema');
-
 
 const baseUiTool = ref(null);
 const baseSchemaTool = ref(null);
@@ -199,13 +185,13 @@ const onChangeBuilder = (e) => {
 
   switch (e.target.value) {
     case 'schema':
-      showBar.value='schema';
+      //showBar.value='schema';
 
       currentBaseTool.value = baseSchemaTool.value;
       break;
 
     case 'uischema':
-      showBar.value='schema';
+      //showBar.value='schema';
 
       // //:TODO add property & scope changed check!
       //
@@ -223,34 +209,6 @@ const onChangeBuilder = (e) => {
 }
 
 
-const tools = computed(() => {
-
-  let all = [];
-
-  switch (showBar.value) {
-    case 'properties':
-      all = toolFinder.findReadonlyTools(props?.schema ?? props?.jsonForms?.schema);
-
-      if(!_.isEmpty(rootUischema.value)) {
-        const usedProps = findAllScopes(rootUischema.value).map(scope => normalizePath(normalizeScope(scope)));
-        all = all.filter(tool => !usedProps.includes(tool.propertyName))
-      }
-
-      return all;
-
-    case 'schema':
-      all = toolFinder.findControlTools();
-      break;
-
-    case 'uischema':
-      all = toolFinder.findLayoutTools();
-      break;
-  }
-
-  all = all.filter(tool => !tool.toolbarOptions()?.hideToolAtBar);
-
-  return all;
-});
 
 // const readonlyTools = computed(() => {
 //
