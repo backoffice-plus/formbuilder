@@ -6,6 +6,7 @@ import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import {normalizeScope} from "./normalizer";
 import {cloneEmptyTool, cloneToolWithSchema} from "./toolCreation";
 import {findAllProperties} from "./formbuilder";
+import {ScopeTool} from "./tools/ScopeTool";
 
 export class ToolFinder {
 
@@ -19,23 +20,24 @@ export class ToolFinder {
         return this._tools;
     }
 
-    findControlTools(): ToolInterface[] {
-        return this._tools.filter((tool: ToolInterface) => {
-            const uiSchemaType = tool.uischema.type;
-            return !uiSchemaType || uiSchemaType === 'Control' || uiSchemaType === 'Unknown'
-        })
-    }
+    // findControlTools(): ToolInterface[] {
+    //     return this._tools.filter((tool: ToolInterface) => {
+    //         const hasUischema = _.isObject(tool.uischema);
+    //         const uiSchemaType = hasUischema && tool.uischema.type;
+    //         return !uiSchemaType || uiSchemaType === 'Control' || uiSchemaType === 'Unknown'
+    //     })
+    // }
 
-    findLayoutTools(): ToolInterface[] {
-        return this._tools.filter((tool: ToolInterface) => {
-            const uiSchemaType = tool.uischema.type;
-            const hasElements = _.isObject(tool.uischema) && 'elements' in tool.uischema;
-            return (uiSchemaType && hasElements) || uiSchemaType !== 'Control' && uiSchemaType !== 'Unknown'
-        })
-    }
+    // findLayoutTools(): ToolInterface[] {
+    //     return this._tools.filter((tool: ToolInterface) => {
+    //         const uiSchemaType = tool.uischema.type;
+    //         const hasElements = _.isObject(tool.uischema) && 'elements' in tool.uischema;
+    //         return (uiSchemaType && hasElements) || uiSchemaType !== 'Control' && uiSchemaType !== 'Unknown'
+    //     })
+    // }
 
     findLayoutToolByUiType = (uiType: string): ToolInterface | undefined => {
-        return this.findLayoutTools().find((tool: ToolInterface) => tool?.uischema?.type === uiType)
+        return this.getTypedTools().layout.find((tool: ToolInterface) => tool?.uischema?.type === uiType)
     }
 
     findMatchingToolAndClone = (schema: any, itemSchema: any, itemUischema: any): ToolInterface => {
@@ -130,12 +132,13 @@ export class ToolFinder {
             if (isScoped) {
                 //not working well!!!
                 if ('#' === uischema?.scope) {
-                    console.error("scope=# is not supported")
-                    return unknownTool;
+                    //console.error("scope=# is not supported",itemSchema, uischema)
+                    return cloneToolWithSchema(new ScopeTool(), itemSchema, uischema);
                     // const props = schema.properties as any;
                     // const propKeys = Object.keys(props);
                     // itemSchema = propKeys[0] && props[propKeys[0]] as any
                 } else {
+                    throw ":TODO please explain whats that for?!?!"
                     itemSchema = _.get(schema, normalizeScope(uischema.scope));
                 }
             }
@@ -165,36 +168,28 @@ export class ToolFinder {
     }
 
 
-    getTypedTools(): Record<'control'|'layout'|'unknown',Array<ToolInterface>> {
+    getTypedTools(): Record<'control'|'layout',Array<ToolInterface>> {
         const typedTools = {
             control: [] as ToolInterface[],
             layout: [] as ToolInterface[],
-            unknown: [] as ToolInterface[],
         };
 
         this.tools.forEach(tool => {
 
             const hasUischema = _.isObject(tool.uischema);
-            const uiSchemaType = hasUischema && tool.uischema.type;
-            const hasElements = uiSchemaType && hasUischema && 'elements' in tool.uischema;
-            const isControlType = uiSchemaType === 'Control';
-            const isUnknownType = !isControlType && uiSchemaType === 'Unknown';
+            const hasUischemaType = hasUischema && tool.uischema.type;
+            const hasElements = hasUischemaType && 'elements' in tool.uischema;
+            const isScoped = hasUischemaType && 'scope' in tool.uischema;
+            const isAutoLayout = isScoped && tool.uischema.scope === '#'; //:TODO are there other scopes?
+            const isLabel = tool.uischema.type === 'Label';
 
-            const isControl = !uiSchemaType || isControlType || isUnknownType;
-            const isLayout = (uiSchemaType && hasElements) || !isControlType && !isUnknownType
+            const isLayout = (hasElements) || isLabel || isAutoLayout;
 
-            if(tool.toolbarOptions()?.hideToolAtBar) {
-                return;
-            }
-
-            if(isControl) {
-                typedTools.control.push(tool)
-            }
-            else if(isLayout) {
+            if(isLayout) {
                 typedTools.layout.push(tool)
             }
             else {
-                typedTools.unknown.push(tool)
+                typedTools.control.push(tool)
             }
         })
 

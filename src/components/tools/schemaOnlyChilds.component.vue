@@ -4,7 +4,7 @@
     <slot name="header">
       <ToolIcon :tool="tool" :isToolbar="isToolbar">
         <template v-slot:droparea>
-          {{ tool.propertyName }}
+          asd
         </template>
       </ToolIcon>
     </slot>
@@ -141,10 +141,9 @@ const onDropAreaChange = (e) => {
 // };
 
 const allowChild = (tool) => {
-  const isArrayOrObject = ['array','object'].includes(tool?.schema?.type);
-  const isSchemaTool = tool instanceof SchemaTool
+  const isControl = 'Control' === tool?.uischema?.type;
 
-  return isArrayOrObject || isSchemaTool;
+  return isControl;
 }
 const showDragClass = computed(() => {
   const tool = getToolDragging();
