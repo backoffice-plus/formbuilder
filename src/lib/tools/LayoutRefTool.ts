@@ -50,6 +50,7 @@ export class LayoutRefTool extends AbstractTool implements ToolInterface {
         return {
             title: 'LayoutRef',
             icon: 'mdi:link-box-variant',
+            hideToolAtBar: true,
         }
     }
 }

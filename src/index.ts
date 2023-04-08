@@ -1,5 +1,3 @@
-import {controlTools, layoutTools} from "./lib/tools";
-
 //lib
 export * from './lib/formbuilder';
 export * from './lib/generator';
@@ -8,8 +6,7 @@ export * from './lib/tools/subschemas';
 export * from './lib/ToolFinder';
 export {AbstractTool} from "./lib/tools/AbstractTool";
 export type {ToolInterface, ToolContext, JsonFormsInterface} from "./lib/models";
-export const defaultTools = [...controlTools, ...layoutTools]
-
+export {defaultTools} from "./lib/tools";
 
 //components
 export { default as FormBuilder } from './components/FormBuilder.vue';

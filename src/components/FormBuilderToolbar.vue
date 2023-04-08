@@ -14,7 +14,7 @@
   </div>
 
   <FormBuilderBar
-      :tools="typedTools[showBar] ?? []"
+      :tools="getFilteredTools"
       @drag="e=>emits('drag',e)"
   />
 
@@ -100,6 +100,12 @@ const availableTabs = computed(() => {
   }
 
   return availableTabs;
+})
+
+const getFilteredTools = computed(() => {
+    return (typedTools[showBar.value] ?? []).filter(tool => {
+      return !tool.toolbarOptions()?.hideToolAtBar
+    })
 })
 
 </script>
