@@ -163,4 +163,42 @@ export class ToolFinder {
             return clone;
         });
     }
+
+
+    getTypedTools(): Record<'control'|'layout'|'unknown',Array<ToolInterface>> {
+        const typedTools = {
+            control: [] as ToolInterface[],
+            layout: [] as ToolInterface[],
+            unknown: [] as ToolInterface[],
+        };
+
+        this.tools.forEach(tool => {
+
+            const hasUischema = _.isObject(tool.uischema);
+            const uiSchemaType = hasUischema && tool.uischema.type;
+            const hasElements = uiSchemaType && hasUischema && 'elements' in tool.uischema;
+            const isControlType = uiSchemaType === 'Control';
+            const isUnknownType = !isControlType && uiSchemaType === 'Unknown';
+
+            const isControl = !uiSchemaType || isControlType || isUnknownType;
+            const isLayout = (uiSchemaType && hasElements) || !isControlType && !isUnknownType
+
+            if(tool.toolbarOptions()?.hideToolAtBar) {
+                return;
+            }
+
+            if(isControl) {
+                typedTools.control.push(tool)
+            }
+            else if(isLayout) {
+                typedTools.layout.push(tool)
+            }
+            else {
+                typedTools.unknown.push(tool)
+            }
+        })
+
+        return typedTools;
+    }
+
 }
