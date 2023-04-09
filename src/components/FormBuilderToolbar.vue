@@ -58,10 +58,10 @@ const props = defineProps(
     }
 );
 
-watch(props.showBuilder, () => {
-
-  console.log("watch props.showBuilder", props.showBuilder)
-});
+// watch(props.showBuilder, () => {
+//
+//   console.log("watch props.showBuilder", props.showBuilder)
+// });
 
 const fb = getFormbuilder();
 const toolDragging = getToolDraggingRef();
