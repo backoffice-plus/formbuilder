@@ -1,4 +1,5 @@
 import {rankWith} from '@jsonforms/core';
+import type {JsonSchema} from "@jsonforms/core";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import toolComponent from "../../components/tools/array.component.vue";
 import {schema, uischema} from "./schema/array.schema";
@@ -199,6 +200,57 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             icon: 'mdi:code-array',
 
         }
+    }
+    generateJsonSchema(): JsonSchema {
+
+        let isInlineType;
+        let allowInlineType = false;
+        // if(tool instanceof ArrayTool) {
+        //     isInlineType = tool.isInlineType;
+        // }
+
+        const hasChilds = this.childs?.length > 0;
+        const hasOneChild = this.childs?.length === 1;
+        const parentIsSchema = this.parentTool instanceof SchemaTool;
+
+        // if(hasOneChild && isInlineType) {
+        //     allowInlineType = true
+        // }
+
+        let items = {
+            type: 'null',
+        } as JsonSchema|JsonSchema[];
+
+
+        if (hasChilds) {
+            const schemas = this.childs.map((childTool: ToolInterface) => {
+                return childTool.generateJsonSchema();
+            });
+
+            if(parentIsSchema) {
+                items = schemas;
+            }
+            else {
+                //use only the first child (it that correct?!)
+                items = schemas[0];
+            }
+        }
+
+        const addToSchema = {} as any;
+        ['uniqueItems'].forEach((key:string) => {
+            /** @ts-ignore **/
+            if(undefined !== this.schema[key]) {
+                /** @ts-ignore **/
+                addToSchema[key] = this.schema[key];
+            }
+        })
+
+        return {
+            ...this.schema, //must be enabled to get all schema data from tool.optionDataUpdate
+            ...addToSchema,
+            type: 'array',
+            items: items,
+        } as JsonSchema;
     }
 }
 

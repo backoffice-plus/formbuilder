@@ -1,4 +1,5 @@
 import {and, rankWith} from "@jsonforms/core";
+import type {JsonSchema} from "@jsonforms/core";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schema.component.vue";
@@ -77,6 +78,32 @@ export class SchemaOnlyChildsTool extends SchemaTool {
             //hideToolAtBar: true,
 
         }
+    }
+
+    generateJsonSchema(): JsonSchema {
+        const properties = {} as Record<string, JsonSchema>;
+        const required = [] as Array<string>;
+
+        this.childs.forEach((childTool: ToolInterface) => {
+            //probably uischema
+            if(_.isEmpty(childTool.schema)) {
+                return;
+            }
+
+            properties[childTool.propertyName] = childTool.generateJsonSchema();
+
+            if (childTool.isRequired) {
+                required.push(childTool.propertyName);
+            }
+        });
+
+        return {
+            ...this.schema,
+            type: 'object',
+            properties: properties,
+            required: required.length ? required : undefined,
+            //...conditionalSchemas
+        } as JsonSchema;
     }
 }
 

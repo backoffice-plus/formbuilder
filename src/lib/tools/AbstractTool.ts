@@ -45,4 +45,8 @@ export abstract class AbstractTool implements ToolInterface {
     toolbarOptions(): Record<string, any> {
         return {}
     }
+
+    generateJsonSchema(): JsonSchema {
+        return this.schema
+    }
 }

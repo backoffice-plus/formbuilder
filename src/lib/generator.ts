@@ -6,27 +6,32 @@ import type {JsonSchema} from "@jsonforms/core";
 import type {JsonFormsInterface, JsonFormsUISchema, ToolInterface} from "./models";
 import {SchemaTool} from "./tools/SchemaTool";
 
+/**
+ * @deprecated
+ */
 export const generateSchemaByTool = (tool: ToolInterface): JsonSchema => {
 
-    if(tool instanceof SchemaTool) {
-        return createTypeSchemaOnly(tool);
-    }
-    else if ('object' === tool.schema?.type) {
-        return createTypeObjectSchemaOnly(tool);
-    }
+    return tool.generateJsonSchema();
 
-    else if ('array' === tool.schema?.type && tool.childs?.length) {
-        return createTypeArraySchemaOnly(tool);
-    }
-
-    else  {
-        const keyword = CombinatorTool.getKeyword(tool.schema);
-        if(keyword) {
-            return createCombinatorSchema(tool, keyword);
-        }
-    }
-
-    return tool.schema;
+    // if(tool instanceof SchemaTool) {
+    //     return createTypeSchemaOnly(tool);
+    // }
+    // else if ('object' === tool.schema?.type) {
+    //     return createTypeObjectSchemaOnly(tool);
+    // }
+    //
+    // else if ('array' === tool.schema?.type && tool.childs?.length) {
+    //     return createTypeArraySchemaOnly(tool);
+    // }
+    //
+    // else  {
+    //     const keyword = CombinatorTool.getKeyword(tool.schema);
+    //     if(keyword) {
+    //         return createCombinatorSchema(tool, keyword);
+    //     }
+    // }
+    //
+    // return tool.schema;
 }
 
 
@@ -59,21 +64,12 @@ export const generateSchemaForUiSchema = (tool: ToolInterface, rootSchema: JsonS
 
 }
 
-export const createJsonForms = (tool: ToolInterface, rootSchema: JsonSchema | undefined = undefined, schemaReadOnly: boolean = false): JsonFormsInterface => {
+export const createJsonForms = (tool: ToolInterface, baseSchemaTool:ToolInterface, rootSchema: JsonSchema, schemaReadOnly: boolean = false): JsonFormsInterface => {
 
-    if (!rootSchema) {
-        rootSchema = Generate.jsonSchema({})
-        delete rootSchema.additionalProperties;
-    }
-
-    const schema = _.clone(rootSchema);
-    if (!schemaReadOnly) {
-        schema.properties = {}; //clear properties
-        schema.required = undefined;
-    }
+    const schema = schemaReadOnly ? rootSchema : baseSchemaTool.generateJsonSchema()
 
     return {
-        schema: schemaReadOnly ? rootSchema : schema,
+        schema: schema,
         uischema: createJsonUiSchema(tool, schema, schemaReadOnly)
     } as JsonFormsInterface;
 }
@@ -83,148 +79,150 @@ export const cleanSchema = (tool: ToolInterface) => {
         delete tool.uischema.options;
     }
 }
-export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
+// //:moved to arrayTool
+// export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
+//
+//     let isInlineType;
+//     let allowInlineType = false;
+//     // if(tool instanceof ArrayTool) {
+//     //     isInlineType = tool.isInlineType;
+//     // }
+//
+//     const hasChilds = tool.childs?.length > 0;
+//     const hasOneChild = tool.childs?.length === 1;
+//     const parentIsSchema = tool.parentTool instanceof SchemaTool;
+//
+//     // if(hasOneChild && isInlineType) {
+//     //     allowInlineType = true
+//     // }
+//
+//     let items = {
+//         type: 'null',
+//     } as JsonSchema|JsonSchema[];
+//
+//
+//     if (hasChilds) {
+//         const schemas = tool.childs.map((childTool: ToolInterface) => {
+//             return childTool.generateJsonSchema();
+//         });
+//
+//         if(parentIsSchema) {
+//             items = schemas;
+//         }
+//         else {
+//             //use only the first child (it that correct?!)
+//             items = schemas[0];
+//         }
+//     }
+//
+//     const addToSchema = {} as any;
+//     ['uniqueItems'].forEach((key:string) => {
+//         /** @ts-ignore **/
+//         if(undefined !== tool.schema[key]) {
+//             /** @ts-ignore **/
+//             addToSchema[key] = tool.schema[key];
+//         }
+//     })
+//
+//     return {
+//         ...tool.schema, //must be enabled to get all schema data from tool.optionDataUpdate
+//         ...addToSchema,
+//         type: 'array',
+//         items: items,
+//     } as JsonSchema;
+// };
 
-    let isInlineType;
-    let allowInlineType = false;
-    // if(tool instanceof ArrayTool) {
-    //     isInlineType = tool.isInlineType;
-    // }
+//@deprecated
+// export const createTypeArraySchema = (tool: ToolInterface): Record<string, JsonSchema> => {
+//     const schemas = {} as Record<string, JsonSchema>;
+//
+//     /** @ts-ignore */
+//     if ('object' === tool?.schema?.items?.type) {
+//         const properties = {} as Record<string, JsonSchema>;
+//         const required = [] as Array<string>;
+//
+//         tool.childs.forEach((childTool: ToolInterface) => {
+//             if ('array' === childTool?.schema?.type) {
+//                 const childSchema = createTypeArraySchema(childTool);
+//                 properties[childTool.propertyName] = childSchema[childTool.propertyName];
+//
+//             } else {
+//                 properties[childTool.propertyName] = childTool.schema;
+//             }
+//
+//             if (childTool.isRequired) {
+//                 required.push(childTool.propertyName);
+//             }
+//         });
+//
+//         schemas[tool.propertyName] = {
+//             ...tool.schema,
+//             type: 'array',
+//             items: {
+//                 type: "object",
+//                 properties: properties,
+//                 required: required.length ? required : undefined,
+//             }
+//         } as JsonSchema;
+//
+//     } else {
+//         schemas[tool.propertyName] = {
+//             ...tool.schema,
+//             type: 'array',
+//             items: tool.childs?.length ? tool.childs[0].schema : {type: 'null'}
+//         } as JsonSchema;
+//     }
+//
+//     return schemas;
+// };
 
-    const hasChilds = tool.childs?.length > 0;
-    const hasOneChild = tool.childs?.length === 1;
-    const parentIsSchema = tool.parentTool instanceof SchemaTool;
-
-    // if(hasOneChild && isInlineType) {
-    //     allowInlineType = true
-    // }
-
-    let items = {
-        type: 'null',
-    } as JsonSchema|JsonSchema[];
-
-
-    if (hasChilds) {
-        const schemas = tool.childs.map((childTool: ToolInterface) => {
-            return generateSchemaByTool(childTool);
-        });
-
-        if(parentIsSchema) {
-            items = schemas;
-        }
-        else {
-            //use only the first child (it that correct?!)
-            items = schemas[0];
-        }
-    }
-
-    const addToSchema = {} as any;
-    ['uniqueItems'].forEach((key:string) => {
-        /** @ts-ignore **/
-        if(undefined !== tool.schema[key]) {
-            /** @ts-ignore **/
-            addToSchema[key] = tool.schema[key];
-        }
-    })
-
-    return {
-        ...tool.schema, //must be enabled to get all schema data from tool.optionDataUpdate
-        ...addToSchema,
-        type: 'array',
-        items: items,
-    } as JsonSchema;
-};
-
-
-export const createTypeArraySchema = (tool: ToolInterface): Record<string, JsonSchema> => {
-    const schemas = {} as Record<string, JsonSchema>;
-
-    /** @ts-ignore */
-    if ('object' === tool?.schema?.items?.type) {
-        const properties = {} as Record<string, JsonSchema>;
-        const required = [] as Array<string>;
-
-        tool.childs.forEach((childTool: ToolInterface) => {
-            if ('array' === childTool?.schema?.type) {
-                const childSchema = createTypeArraySchema(childTool);
-                properties[childTool.propertyName] = childSchema[childTool.propertyName];
-
-            } else {
-                properties[childTool.propertyName] = childTool.schema;
-            }
-
-            if (childTool.isRequired) {
-                required.push(childTool.propertyName);
-            }
-        });
-
-        schemas[tool.propertyName] = {
-            ...tool.schema,
-            type: 'array',
-            items: {
-                type: "object",
-                properties: properties,
-                required: required.length ? required : undefined,
-            }
-        } as JsonSchema;
-
-    } else {
-        schemas[tool.propertyName] = {
-            ...tool.schema,
-            type: 'array',
-            items: tool.childs?.length ? tool.childs[0].schema : {type: 'null'}
-        } as JsonSchema;
-    }
-
-    return schemas;
-};
-
-export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
-    const properties = {} as Record<string, JsonSchema>;
-    const required = [] as Array<string>;
-
-    //const {childs, schemas} = splitChilds(tool.childs);
-
-    tool.childs.forEach((childTool: ToolInterface) => {
-        // if ('object' === childTool?.schema?.type) {
-        //     const childSchema = createTypeObjectSchema(childTool);
-        //     properties[childTool.propertyName] = childSchema[childTool.propertyName];
-        //
-        // } else {
-        //     properties[childTool.propertyName] = childTool.schema;
-        // }
-
-        //probably uischema
-        if(_.isEmpty(childTool.schema)) {
-            return;
-        }
-
-        properties[childTool.propertyName] = generateSchemaByTool(childTool);
-
-        if (childTool.isRequired) {
-            required.push(childTool.propertyName);
-        }
-    });
-
-    // const conditionalSchemas = {} as JsonSchema | any;
-    // schemas.forEach((schemaTool: ToolInterface|SchemaTool) => {
-    //     if(schemaTool instanceof  SchemaTool) {
-    //         const schemaToSet = generateSchemaByTool(schemaTool) as any;
-    //         conditionalSchemas[schemaTool.keyword] = schemaToSet[schemaTool.keyword];
-    //     }
-    // });
-
-    //console.log("generator object",tool.schema)
-
-
-    return {
-        ...tool.schema,
-        type: 'object',
-        properties: properties,
-        required: required.length ? required : undefined,
-        //...conditionalSchemas
-    } as JsonSchema;
-};
+//:moved to objectTool
+// export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
+//     const properties = {} as Record<string, JsonSchema>;
+//     const required = [] as Array<string>;
+//
+//     //const {childs, schemas} = splitChilds(tool.childs);
+//
+//     tool.childs.forEach((childTool: ToolInterface) => {
+//         // if ('object' === childTool?.schema?.type) {
+//         //     const childSchema = createTypeObjectSchema(childTool);
+//         //     properties[childTool.propertyName] = childSchema[childTool.propertyName];
+//         //
+//         // } else {
+//         //     properties[childTool.propertyName] = childTool.schema;
+//         // }
+//
+//         //probably uischema
+//         if(_.isEmpty(childTool.schema)) {
+//             return;
+//         }
+//
+//         properties[childTool.propertyName] = childTool.generateJsonSchema();
+//
+//         if (childTool.isRequired) {
+//             required.push(childTool.propertyName);
+//         }
+//     });
+//
+//     // const conditionalSchemas = {} as JsonSchema | any;
+//     // schemas.forEach((schemaTool: ToolInterface|SchemaTool) => {
+//     //     if(schemaTool instanceof  SchemaTool) {
+//     //         const schemaToSet = generateSchemaByTool(schemaTool) as any;
+//     //         conditionalSchemas[schemaTool.keyword] = schemaToSet[schemaTool.keyword];
+//     //     }
+//     // });
+//
+//     //console.log("generator object",tool.schema)
+//
+//
+//     return {
+//         ...tool.schema,
+//         type: 'object',
+//         properties: properties,
+//         required: required.length ? required : undefined,
+//         //...conditionalSchemas
+//     } as JsonSchema;
+// };
 
 
 export const createTypeSchemaOnly = (tool: ToolInterface): JsonSchema => {
@@ -232,27 +230,27 @@ export const createTypeSchemaOnly = (tool: ToolInterface): JsonSchema => {
     const schema = tool.schema;
 
     const propertiesDefinedByChilds = [
-        //schema
-        "if",
-        "then",
-        "else",
-        "not",
-        "contains",
-        "propertyNames",
-        "additionalItems",
-        "additionalProperties",
-
-        //object
+        // //schema
+        // "if",
+        // "then",
+        // "else",
+        // "not",
+        // "contains",
+        // "propertyNames",
+        // "additionalItems",
+        // "additionalProperties",
+        //
+        // //object
         "properties",
-        "definitions",
-        "patternProperties",
-        "dependencies",
-
-        //array
-        "allOf",
-        "anyOf",
-        "oneOf",
-        "items"
+        // "definitions",
+        // "patternProperties",
+        // "dependencies",
+        //
+        // //array
+        // "allOf",
+        // "anyOf",
+        // "oneOf",
+        // "items"
     ];
 
     const schemaByKeys = {} as any;
@@ -261,7 +259,7 @@ export const createTypeSchemaOnly = (tool: ToolInterface): JsonSchema => {
     tool.childs.forEach((childTool: ToolInterface) => {
         const propertyName = childTool.propertyName;
         if(propertyName && propertiesDefinedByChilds.includes(propertyName)) {
-            let childSchema = generateSchemaByTool(childTool);
+            let childSchema = childTool.generateJsonSchema();
             let setSchema = childSchema;
 
             switch (propertyName) {
@@ -297,48 +295,52 @@ export const createTypeSchemaOnly = (tool: ToolInterface): JsonSchema => {
         }
     });
 
+    console.log("generator.createTypeSchemaOnly",{...schema, ...schemaByKeys})
+
     return {...schema, ...schemaByKeys} as JsonSchema;
 };
 
 
+//@deprecated
+// export const createTypeObjectSchema = (tool: ToolInterface): Record<string, JsonSchema> => {
+//     const schemas = {} as Record<string, JsonSchema>;
+//
+//     if ('object' === tool?.schema?.type) {
+//         schemas[tool.propertyName] = createTypeObjectSchemaOnly(tool);
+//     }
+//
+//     return schemas;
+// };
 
-export const createTypeObjectSchema = (tool: ToolInterface): Record<string, JsonSchema> => {
-    const schemas = {} as Record<string, JsonSchema>;
-
-    if ('object' === tool?.schema?.type) {
-        schemas[tool.propertyName] = createTypeObjectSchemaOnly(tool);
-    }
-
-    return schemas;
-};
-export const createCombinatorSchema = (tool: ToolInterface, keyword: string): JsonSchema => {
-
-    let schema = [] as JsonSchema[];
-
-    if(tool.childs?.length) {
-        schema = tool.childs?.map((childTool: ToolInterface) => {
-            return generateSchemaByTool(childTool);
-        });
-    }
-    else {
-        //no empty combinators (otherwise jsonforms throws error)
-        /** @ts-ignore */
-        const schemas = tool.schema[keyword];
-        if(_.isEmpty(schemas)) {
-            schema = [{}];
-        }
-
-        //also for (@see https://jsonforms.io/docs/multiple-choice/#one-of)
-        else {
-            return tool.schema;
-        }
-    }
-
-    return {
-        ...tool.schema,
-        [keyword]: schema,
-    };
-};
+//@deprecated
+// export const createCombinatorSchema = (tool: ToolInterface, keyword: string): JsonSchema => {
+//
+//     let schema = [] as JsonSchema[];
+//
+//     if(tool.childs?.length) {
+//         schema = tool.childs?.map((childTool: ToolInterface) => {
+//             return childTool.generateJsonSchema();
+//         });
+//     }
+//     else {
+//         //no empty combinators (otherwise jsonforms throws error)
+//         /** @ts-ignore */
+//         const schemas = tool.schema[keyword];
+//         if(_.isEmpty(schemas)) {
+//             schema = [{}];
+//         }
+//
+//         //also for (@see https://jsonforms.io/docs/multiple-choice/#one-of)
+//         else {
+//             return tool.schema;
+//         }
+//     }
+//
+//     return {
+//         ...tool.schema,
+//         [keyword]: schema,
+//     };
+// };
 
 export const setRequiredToSchema = (propertyName: string, schema: JsonSchema, isRequired: boolean = false): void => {
     const plainProp = getPlainProperty(propertyName);
@@ -356,7 +358,7 @@ export const setRequiredToSchema = (propertyName: string, schema: JsonSchema, is
 }
 export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchema): void => {
 
-    console.log("setItemSchemaToSchema",tool,rootSchema);
+    //console.log("setItemSchemaToSchema",tool,rootSchema);
 
     const subpaths = getAllSubpaths(tool.propertyName, 0);
 
@@ -369,7 +371,7 @@ export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchem
     });
 
     let path = denormalizePath(tool.propertyName);
-    let set = generateSchemaByTool(tool);
+    let set = tool.generateJsonSchema();
 
     //console.log("setitem",set);
 

@@ -1,10 +1,12 @@
-import {and, rankWith} from "@jsonforms/core";
+import { rankWith} from "@jsonforms/core";
+import type { JsonSchema} from "@jsonforms/core";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schema.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/schema.form.json";
 import _ from "lodash";
+import {createTypeSchemaOnly} from "../generator";
 
 //export const schemaKeywords = ['if', 'then', 'else', 'not', 'contains'];
 
@@ -80,6 +82,10 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
             //hideToolAtBar: true,
 
         }
+    }
+
+    generateJsonSchema(): JsonSchema {
+        return createTypeSchemaOnly(this)
     }
 }
 
