@@ -33,6 +33,8 @@ export interface ToolInterface {
 
     childs: ToolInterface[]
     parentTool: ToolInterface|undefined
+
+    generateJsonSchema: () => JsonSchema
 }
 
 export interface ToolContext {

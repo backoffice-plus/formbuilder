@@ -5,8 +5,10 @@ import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/object.form.json";
 import jsonFormAsSchemaChild from "./schema/object.asSchemaChild.form.json";
 import {rankWith, setSchema} from "@jsonforms/core";
+import type {JsonSchema} from "@jsonforms/core";
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
+import _ from "lodash";
 
 export class ObjectTool extends AbstractTool implements ToolInterface {
 
@@ -20,6 +22,10 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
         super(uischemaType);
 
         this.schema.type ??= 'object'
+
+        if (undefined === this.schema.properties) {
+            this.schema.properties = {}
+        }
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
@@ -79,6 +85,32 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
             icon: 'mdi:code-braces-box',
 
         }
+    }
+
+    generateJsonSchema(): JsonSchema {
+        const properties = {} as Record<string, JsonSchema>;
+        const required = [] as Array<string>;
+
+        this.childs.forEach((childTool: ToolInterface) => {
+            //probably uischema
+            if(_.isEmpty(childTool.schema)) {
+                return;
+            }
+
+            properties[childTool.propertyName] = childTool.generateJsonSchema();
+
+            if (childTool.isRequired) {
+                required.push(childTool.propertyName);
+            }
+        });
+
+        return {
+            ...this.schema,
+            type: 'object',
+            properties: properties,
+            required: required.length ? required : undefined,
+            //...conditionalSchemas
+        } as JsonSchema;
     }
 }
 
