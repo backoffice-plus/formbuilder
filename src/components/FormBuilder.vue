@@ -293,7 +293,7 @@ const updateJsonForm = (e) => {
   const schemaChanged = rootSchemaAfter!==rootSchemaBefore;
   const uischemaChanged = rootUischemaAfter!==rootUischemaBefore;
 
-  const emitUpdated = schemaChanged || uischemaChanged || e.mounted;
+  const emitUpdated = schemaChanged || uischemaChanged || e.mounted || e.modal;
   if(emitUpdated) {
     emit('schemaUpdated', {schema: rootSchema.value, uischema: rootUischema.value})
   }
