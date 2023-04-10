@@ -109,6 +109,7 @@ import {generateJsonSchema} from "@jsonforms/core";
 import {getFormbuilder, onDragGetTool} from "../lib/vue";
 import {ToolFinder} from "../lib/ToolFinder";
 import {SchemaTool} from "../lib/tools/SchemaTool";
+import {SchemaOnlyChildsTool} from "../lib/tools/SchemaOnlyChildsTool";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
 import {ObjectTool} from "../lib/tools/ObjectTool";
 import FormBuilderToolbar from "./FormBuilderToolbar.vue";
@@ -261,30 +262,51 @@ const updateJsonForm = (e) => {
   const rootSchemaBefore = JSON.stringify(rootSchema.value);
   const rootUischemaBefore = JSON.stringify(rootUischema.value);
 
-  switch (showBuilder.value) {
-    case 'schema':
-      rootSchema.value = generateSchemaByTool(baseSchemaTool.value)
-      //jsonFormsSchema.value = rootSchema.value; //:TODO why is jsonFormsSchema AND rootSchema? just use one?!
-      //updateSchemaBuilder();
-      if(baseUiTool.value) {
-        baseUiTool.value.schema = rootSchema.value;
-      }
-      //baseUiTool.value.uischema = rootUischema.value;
-      break;
-
-    // case 'definitions':
-    //   updateDefinitionBuilder();
-    //   break;
-
-    default:
-      //updateUischemaBuilder();
-      const {schema, uischema} = createJsonForms(baseUiTool.value, rootSchema.value, props.schemaReadOnly);
-      rootSchema.value = schema;
-      rootUischema.value = uischema;
-
-      baseSchemaTool.value.schema = rootSchema.value;
-      break;
+  if(props.schemaOnly) {
+    rootSchema.value = baseSchemaTool.value.generateJsonSchema();
+    rootUischema.value = undefined;
   }
+  else {
+    const {schema, uischema} = createJsonForms(baseUiTool.value, baseSchemaTool.value, rootSchema.value, props.schemaReadOnly);
+    rootSchema.value = schema;
+    rootUischema.value = uischema;
+
+    baseSchemaTool.value.schema = rootSchema.value;
+  }
+
+  // switch (showBuilder.value) {
+  //   case '---schema':
+  //     rootSchema.value = baseSchemaTool.value.generateJsonSchema()
+  //     //jsonFormsSchema.value = rootSchema.value; //:TODO why is jsonFormsSchema AND rootSchema? just use one?!
+  //     //updateSchemaBuilder();
+  //     if(baseUiTool.value) {
+  //       baseUiTool.value.schema = rootSchema.value;
+  //     }
+  //     //baseUiTool.value.uischema = rootUischema.value;
+  //     break;
+  //
+  //   // case 'definitions':
+  //   //   updateDefinitionBuilder();
+  //   //   break;
+  //
+  //   default:
+  //     //updateUischemaBuilder();
+  //
+  //
+  //       //:TODO is that needed?!?!
+  //     if (!rootSchema.value) {
+  //       rootSchema.value = Generate.jsonSchema({})
+  //       delete rootSchema.value.additionalProperties;
+  //     }
+  //
+  //
+  //     const {schema, uischema} = createJsonForms(baseUiTool.value, baseSchemaTool.value, rootSchema.value, props.schemaReadOnly);
+  //     rootSchema.value = schema;
+  //     rootUischema.value = uischema;
+  //
+  //     baseSchemaTool.value.schema = rootSchema.value;
+  //     break;
+  // }
 
 
   //something changed?
@@ -384,10 +406,14 @@ const updateJsonForm = (e) => {
 
 const initBaseTools = () => {
   if(props.schemaOnly) {
-    baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
+    //baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
+    baseSchemaTool.value = cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema.value)
+    baseSchemaTool.value.propertyName = 'schema'
   }
   else {
-    baseSchemaTool.value = cloneToolWithSchema(new ObjectTool(), rootSchema.value)
+    //baseSchemaTool.value = cloneToolWithSchema(new ObjectTool(), rootSchema.value)
+    baseSchemaTool.value = cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema.value)
+    baseSchemaTool.value.propertyName = 'schema'
   }
 
   if(true !== props.schemaOnly) {

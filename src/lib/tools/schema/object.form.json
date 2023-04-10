@@ -78,7 +78,16 @@
                 "scope": "#/properties/propertyName",
                 "type": "Control"
               }
-            ]
+            ],
+            "rule": {
+              "effect": "HIDE",
+              "condition": {
+                "scope": "#/properties/_isBaseTool",
+                "schema": {
+                  "const": true
+                }
+              }
+            }
           },
 
           {
