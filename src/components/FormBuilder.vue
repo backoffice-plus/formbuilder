@@ -421,9 +421,6 @@ onBeforeMount(() => {
   rootUischema.value = props?.jsonForms?.uischema;
   //initBaseTools();
   onChangeBuilder({target:{value:showBuilder.value}})
-  if(props.schemaReadOnly) {
-    showBar.value='properties';
-  }
 
 
   //trigger update if there are no elements (that would emit 'formBuilderUpdated')
