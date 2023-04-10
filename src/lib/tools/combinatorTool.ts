@@ -6,6 +6,7 @@ import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/combinator.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/combinator.form.json";
+import _ from "lodash";
 
 export class CombinatorTool extends AbstractTool implements ToolInterface {
 
@@ -98,6 +99,37 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
             //hideToolAtBar: true,
 
         }
+    }
+
+    generateJsonSchema(): JsonSchema {
+        const keyword = CombinatorTool.getKeyword(this.schema) as string;
+
+        let schema = {
+            ...this.schema,
+        } as JsonSchema|any;
+
+        if(keyword) {
+            if(this.childs?.length) {
+                schema[keyword] = this.childs?.map((childTool: ToolInterface) => {
+                    return childTool.generateJsonSchema();
+                });
+            }
+            else {
+                //no empty combinators (otherwise jsonforms throws error)
+                /** @ts-ignore */
+                const schemas = this.schema[keyword];
+                if(_.isEmpty(schemas)) {
+                    schema[keyword] = [{}];
+                }
+
+                // //also for (@see https://jsonforms.io/docs/multiple-choice/#one-of)
+                // else {
+                //     return this.schema;
+                // }
+            }
+        }
+
+        return schema;
     }
 }
 
