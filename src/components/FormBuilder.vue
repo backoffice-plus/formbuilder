@@ -135,7 +135,7 @@ const showBuilder = ref('uischema');
 const baseUiTool = ref(null);
 const baseSchemaTool = ref(null);
 //const baseDefinitionTool = ref(null);
-const currentBaseTool = ref(null);
+//const currentBaseTool = ref(null);
 
 const fb = getFormbuilder();
 
@@ -174,6 +174,8 @@ const onChangeBuilderByTab = (builder) => {
   onChangeBuilder({target:{value:builder}});
 }
 
+const currentBaseTool = computed(() => showBuilder.value === 'uischema' ? baseUiTool.value : baseSchemaTool.value)
+
 const onChangeBuilder = (e) => {
 
 
@@ -183,29 +185,29 @@ const onChangeBuilder = (e) => {
   initBaseTools();
 
 
-  switch (e.target.value) {
-    case 'schema':
-      //showBar.value='schema';
-
-      currentBaseTool.value = baseSchemaTool.value;
-      break;
-
-    case 'uischema':
-      //showBar.value='schema';
-
-      // //:TODO add property & scope changed check!
-      //
-
-      currentBaseTool.value = baseUiTool.value;
-      break;
-
-    // case 'definitions':
-    //   showBar.value='schema';
-    //
-    //   baseDefinitionTool.value = createDefTool(rootSchema.value);
-    //   currentBaseTool.value = baseDefinitionTool.value
-    //   break;
-  }
+  // switch (e.target.value) {
+  //   case 'schema':
+  //     //showBar.value='schema';
+  //
+  //     //currentBaseTool.value = baseSchemaTool.value;
+  //     break;
+  //
+  //   case 'uischema':
+  //     //showBar.value='schema';
+  //
+  //     // //:TODO add property & scope changed check!
+  //     //
+  //
+  //     //currentBaseTool.value = baseUiTool.value;
+  //     break;
+  //
+  //   // case 'definitions':
+  //   //   showBar.value='schema';
+  //   //
+  //   //   baseDefinitionTool.value = createDefTool(rootSchema.value);
+  //   //   currentBaseTool.value = baseDefinitionTool.value
+  //   //   break;
+  // }
 }
 
 
