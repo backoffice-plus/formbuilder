@@ -13,6 +13,7 @@ import {createTypeSchemaOnly} from "../generator";
 export class SchemaTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
+    // @ts-ignore
     tester = rankWith(-1, () => {return false});
     clone = (): ToolInterface => new SchemaTool();
 
