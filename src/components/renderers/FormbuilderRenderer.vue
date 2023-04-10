@@ -42,19 +42,12 @@ const formbuilderRenderer = defineComponent({
 
     const fb = getFormbuilder();
 
-    const jsonForms = {
-      schema: (control.control as any).value.data,
-      uischema: {},
-    };
-
-    const baseSchemaTool = control.appliedOptions?.value?.baseTool;
-
     return {
       ...control,
       tools: fb?.props.tools ?? [],
       jsonFormsRenderers: fb?.props.jsonFormsRenderers ?? [],
-      schema: jsonForms.schema,
-      baseSchemaTool
+      schema: (control.control as any).value.data,
+      baseSchemaTool: control.appliedOptions?.value?.baseTool
     };
   },
   methods: {
