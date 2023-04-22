@@ -11,7 +11,11 @@
       <a :href="'#/jsonforms?example=' + example" v-if="example" class="ml-1 text-sm">[open Jsonforms]</a><br>
 
       <div>
-        Schema Only: <input type="checkbox" v-model="schemaOnly" /><br>
+        Schema Only: <input type="checkbox" v-model="schemaOnly" />
+        <template v-if="schemaOnly">
+          Auto Uischema: <input type="checkbox" v-model="schemaOnlyAutoUischema" /><br>
+        </template>
+        <br>
         <template v-if="example">
           Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" />
         </template>
@@ -64,7 +68,7 @@ import {computed, onMounted, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
 import {schema as vuetifySchema, uischema as vuetifyUischema} from "./jsonForms/vuetifyOptions";
 import {getExamples} from '@jsonforms/examples/src'
-import {generateDefaultUISchema, generateJsonSchema, JsonSchema} from "@jsonforms/core";
+import {Generate, generateDefaultUISchema, generateJsonSchema, JsonSchema} from "@jsonforms/core";
 import {resolveSchema} from "../src";
 import {getExampleFromUrl, getKeyFromUrl, getUrl} from "./lib";
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
@@ -92,6 +96,7 @@ const examples = computed(() => getExamples().sort((a,b)=>a.label.toLowerCase()>
 const example = ref(getExampleFromUrl());
 const schemaReadOnly = ref("1" === getKeyFromUrl('schemaReadOnly'));
 const schemaOnly = ref("1" === getKeyFromUrl('schemaOnly'));
+const schemaOnlyAutoUischema = ref("1" === getKeyFromUrl('schemaOnlyAutoUischema'));
 const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
@@ -102,6 +107,12 @@ const rootUiSchema = ref();
 const onSchemaUpdated = (jsonForms) => {
   rootSchema.value = jsonForms.schema;
   rootUiSchema.value = jsonForms.uischema;
+
+  if(schemaOnly.value && schemaOnlyAutoUischema.value) {
+    //jsonForms.uischema = {type:"Control",scope:"#"}
+    jsonForms.uischema = Generate.uiSchema(rootSchema.value);
+  }
+
   jsonFormsResolved.value = unref(jsonForms);
 }
 
@@ -179,6 +190,7 @@ const createUrl = () => {
   const params = {
     example: example.value ?? undefined,
     schemaOnly: schemaOnly.value ? "1" : undefined,
+    schemaOnlyAutoUischema: schemaOnlyAutoUischema.value ? "1" : undefined,
     schemaReadOnly: schemaReadOnly.value ? "1" : undefined,
   }
   return new URLSearchParams(_.omitBy(params, _.isEmpty));
@@ -191,6 +203,10 @@ watch(() => schemaOnly.value, async () => {
   if(schemaOnly.value) {
     schemaReadOnly.value = false;
   }
+  window.location.hash = "/?"+ createUrl()
+})
+watch(() => schemaOnlyAutoUischema.value, async () => {
+  onSchemaUpdated({schema:rootSchema.value,uischema:rootUiSchema.value})
   window.location.hash = "/?"+ createUrl()
 })
 watch(() => schemaReadOnly.value, async () => {
