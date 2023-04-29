@@ -4,7 +4,7 @@
     <slot name="header">
       <ToolIcon :tool="tool" :isToolbar="isToolbar">
         <template v-slot:droparea>
-          asd
+          Schema
         </template>
       </ToolIcon>
     </slot>

@@ -452,8 +452,8 @@ onBeforeMount(() => {
   //trigger update if there are no elements (that would emit 'formBuilderUpdated')
   const hasElements = (props.jsonForms?.uischema?.elements?.length ?? 0) > 0;
   if(!hasElements) {
-    //console.log("FB.onBeforeMount","-> call updateJsonForm()")
-    //updateJsonForm();
+    const currentBaseTool = ('schema' === showBuilder.value ? baseSchemaTool : baseUiTool).value;
+    updateJsonForm({mounted:{element:currentBaseTool}});
     emit('schemaUpdated', {init:true, schema: rootSchema.value, uischema: rootUischema.value})
   }
 

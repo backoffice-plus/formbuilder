@@ -4,7 +4,7 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schemaOnlyChilds.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
-import {schema, uischema} from "./schema/object.form.json";
+import {schema, uischema} from "./schema/schemaOnlyChilds.form.json";
 import _ from "lodash";
 import {SchemaTool} from "./SchemaTool";
 import * as subschemas from "./subschemas";
@@ -17,7 +17,10 @@ export class SchemaOnlyChildsTool extends SchemaTool {
     clone = (): ToolInterface => new SchemaOnlyChildsTool();
 
     constructor() {
-        super()
+        super();
+
+        //default type
+        this.schema.type = 'object'
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
@@ -56,6 +59,9 @@ export class SchemaOnlyChildsTool extends SchemaTool {
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
+        this.schema.type = data.type;
+
+        console.log("SchemaOnlyChildsTool.optionDataUpdate", data)
         //
         // const keyword = data?.keyword;
         // const keywordOld = this.keyword;
@@ -117,13 +123,20 @@ export class SchemaOnlyChildsTool extends SchemaTool {
             }
         });
 
-        return {
-            ...this.schema,
-            type: 'object',
-            properties: properties,
-            required: required.length ? required : undefined,
-            //...conditionalSchemas
-        } as JsonSchema;
+        const schema = {...this.schema} as JsonSchema;
+
+        if('object' === schema.type) {
+            schema.properties = properties
+            schema.required = required.length ? required : undefined;
+        }
+        else if('array' === schema.type) {
+            /**
+             * :TODO thats probably not correct
+             */
+            schema.items = Object.values(properties)[0];
+        }
+
+        return schema;
     }
 }
 
