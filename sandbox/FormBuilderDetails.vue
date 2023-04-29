@@ -99,7 +99,10 @@ const jsonFormRenderesMore = Object.freeze([
 watch(() => props.jsonForms, () => {
    jsonFormsSchema.value = props.jsonForms?.schema;
    jsonFormsUiSchema.value = props.jsonForms?.uischema;
-   jsonFormsData.value = props.jsonForms?.data ?? {};
+
+   const isArray = 'array' === jsonFormsSchema.value?.type;
+
+   jsonFormsData.value = props.jsonForms?.data ?? (isArray ? [] : {});
 })
 
 

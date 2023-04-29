@@ -1,0 +1,174 @@
+{
+  "schema": {
+    "type": "object",
+
+    "definitions": {
+      "additionalPropertiesFalse": {
+        "type":"boolean",
+        "title":"by boolean"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "title":"by type",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["string","number","integer","boolean","array"]
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": ["type"]
+      }
+    },
+
+    "properties": {
+      "propertyName": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string",
+        "enum": ["object", "array"]
+      },
+      "required": {
+        "type": "boolean"
+      },
+      "schema": {
+        "type":"object",
+        "properties": {
+          "additionalProperties": {
+            "oneOf": [
+              {"$ref":"#/definitions/additionalPropertiesFalse"},
+              {"$ref":"#/definitions/additionalProperties"}
+            ]
+          }
+        }
+      },
+
+      "rule": {
+        "$ref": "rule.schema#/properties/rule"
+      },
+      "styles": {
+        "$ref": "styles.schema#/properties/styles"
+      },
+      "validation": {
+        "$ref": "validation.schema#/properties/validation"
+      },
+
+      "conditional": {
+        "$ref": "conditional.schema#/properties/conditional"
+      },
+      "definitions": {
+        "$ref": "definitions.schema#/properties/definitions"
+      }
+    },
+    "required": [
+      "propertyName"
+    ]
+  },
+  "uischema": {
+
+    "type": "Categorization",
+    "elements": [
+      {
+        "type": "Category",
+        "label": "Base",
+        "elements": [
+          {
+            "type": "HorizontalLayout",
+            "elements": [
+              {
+                "scope": "#/properties/propertyName",
+                "type": "Control"
+              }
+            ],
+            "rule": {
+              "effect": "HIDE",
+              "condition": {
+                "scope": "#/properties/_isBaseTool",
+                "schema": {
+                  "const": true
+                }
+              }
+            }
+          },
+
+          {
+            "scope": "#/properties/type",
+            "type": "Control"
+          },
+          {
+            "scope": "#/properties/schema/properties/additionalProperties",
+            "type": "Control"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Definitions",
+        "elements": [
+          {
+            "$ref": "definitions.uischema"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Rule",
+        "elements": [
+          {
+            "$ref": "rule.uischema"
+          }
+        ],
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/_isUischema",
+            "schema":{"const": true }
+          }
+        }
+      },
+
+      {
+        "type": "Category",
+        "label": "Validation",
+        "elements": [
+          {
+            "$ref":"validation.uischema"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Conditional",
+        "elements": [
+          {
+            "$ref": "conditional.uischema"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Styles",
+        "elements": [
+          {
+            "$ref": "styles.uischema"
+          }
+        ],
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/_isUischema",
+            "schema":{"const": true }
+          }
+        }
+      }
+    ]
+  } ,
+  "data": {}
+}
