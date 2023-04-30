@@ -107,8 +107,8 @@ export class SchemaOnlyChildsTool extends SchemaTool {
     }
 
     generateJsonSchema(): JsonSchema {
-        const properties = {} as Record<string, JsonSchema>;
-        const required = [] as Array<string>;
+        const properties = {} as { [property: string]: JsonSchema };
+        const required = [] as string[];
 
         this.childs.forEach((childTool: ToolInterface) => {
             //probably uischema
@@ -126,14 +126,16 @@ export class SchemaOnlyChildsTool extends SchemaTool {
         const schema = {...this.schema} as JsonSchema;
 
         if('object' === schema.type) {
-            schema.properties = properties
+            (schema.properties as any) = properties
             schema.required = required.length ? required : undefined;
         }
         else if('array' === schema.type) {
             /**
              * :TODO thats probably not correct
              */
-            schema.items = Object.values(properties)[0];
+            /** @ts-ignore */
+            const items = Object.values(properties);
+            schema.items = items[0];
         }
 
         return schema;
