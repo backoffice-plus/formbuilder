@@ -40,6 +40,7 @@ export interface ToolInterface {
 export interface ToolContext {
     fb?: any;
     builder?: string;
+    schemaOnly?: boolean;
     schemaReadOnly?: string;
     rootSchema?: JsonSchema,
     baseSchemaTool?: ToolInterface,

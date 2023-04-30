@@ -119,7 +119,19 @@ export const uischema = {
                             elements: [
                                 {
                                     scope: "#/properties/propertyName",
-                                    type: "Control"
+                                    type: "Control",
+                                    rule: {
+                                        effect: "DISABLE",
+                                        condition: {
+                                            scope: "#",
+                                            schema: {
+                                                properties: {
+                                                    _isUischema:{const:false},
+                                                    _isSchemaOnly:{const:false},
+                                                }
+                                            }
+                                        }
+                                    }
                                 },
                             ]
                         },
