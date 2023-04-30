@@ -397,9 +397,8 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema, 
 
     const uischema = tool.uischema;
 
-    const created = _.cloneDeep(uischema) as JsonFormsUISchema | any;
-
-    const isScoped = "scope" in created;
+    const created = uischema && "type" in uischema && _.cloneDeep(uischema) as JsonFormsUISchema | any;
+    const isScoped = created && "scope" in created;
     //const isLayout = "elements" in created;
 
 
