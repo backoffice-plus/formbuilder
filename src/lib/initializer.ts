@@ -207,7 +207,7 @@ export const initSchemaElements = (toolFinder: ToolFinder, tool: ToolInterface):
 
     propertyKeys.forEach((propertyName:string) => {
 
-        const propertyData = properties[propertyName];
+        const propertyData = (properties as any)[propertyName];
         let clone, itemSchema;
 
         switch (propertyName) {
