@@ -260,7 +260,7 @@ export const createTypeSchemaOnly = (tool: ToolInterface): JsonSchema => {
         const propertyName = childTool.propertyName;
         if(propertyName && propertiesDefinedByChilds.includes(propertyName)) {
             let childSchema = childTool.generateJsonSchema();
-            let setSchema = childSchema;
+            let setSchema = childSchema as any;
 
             switch (propertyName) {
                case "properties":
