@@ -265,7 +265,7 @@
             "type": "Formbuilder",
             "scope": "#/properties/validation/properties/not",
             "options": {
-              "baseTool": "schema.not"
+              "___baseTool": "schema.not"
             }
           }
         ]

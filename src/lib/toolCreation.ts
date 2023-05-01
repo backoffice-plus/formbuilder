@@ -19,6 +19,10 @@ export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema, uisch
     return toolFinder.findBaseTool(schema, uischema);
 };
 
+/**
+ * @deprecated
+ * @see FormBuider::initBaseTools() hardcoded to SchemaOnlyChildsTool
+ */
 export const createSchemaTool = (schema: JsonSchema, baseToolName: string | undefined = undefined): ToolInterface => {
 
     let clone;
