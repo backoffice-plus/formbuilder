@@ -62,7 +62,8 @@
 
 <style scoped>
 nav {
-  background-color: var(--toolBar-bg);
+  ---background-color: var(--toolBar-bg);
+  background-color: transparent;
 }
 
 
