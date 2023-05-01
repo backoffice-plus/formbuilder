@@ -1,6 +1,6 @@
 <template>
 
-  <div class="tabs">
+  <section>
     <button
         v-for="key in availableTabs"
         @click="showBar=key;"
@@ -11,7 +11,7 @@
     <!--    <button @click="showBar='schema';" :class="{active:'schema'===showBar}" v-if="!schemaReadOnly">Controls</button>-->
     <!--    <button @click="showBar='uischema';" :class="{active:'uischema'===showBar}" v-if="showBuilder==='uischema'">Layout</button>-->
     <!--    <button @click="showBar='properties';" :class="{active:'properties'===showBar}" v-if="schemaReadOnly">Properties</button>-->
-  </div>
+  </section>
 
   <FormBuilderBar
       :tools="getFilteredTools"
@@ -21,22 +21,22 @@
 </template>
 
 <style scoped>
-.tabs {
+section {
   @apply
   flex gap-2
 }
 
-.tabs > button {
+section > button {
   @apply
   p-1 px-4
   rounded-t
 }
 
-.tabs > button.active {
+section > button.active {
   background-color: var(--toolBar-tab);
 }
 
-.tabs > button:hover {
+section > button:hover {
   background-color: var(--toolBar-tab-hover);
 }
 
