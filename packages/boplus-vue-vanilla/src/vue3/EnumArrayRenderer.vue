@@ -62,8 +62,17 @@ const controlRenderer = defineComponent({
   }
 });
 
-const hasOneOfItems = (schema: JsonSchema): boolean => (schema?.oneOf ?? [] as JsonSchema[]).every((entry: JsonSchema) => entry.const !== undefined);
-const hasEnumItems = (schema: JsonSchema): boolean => schema.type === 'string' && schema.enum !== undefined;
+// const hasOneOfItems = (schema: JsonSchema): boolean => (schema?.oneOf ?? [] as JsonSchema[]).every((entry: JsonSchema) => entry.const !== undefined);
+// const hasEnumItems = (schema: JsonSchema): boolean => schema.type === 'string' && schema.enum !== undefined;
+const hasOneOfItems = (schema: JsonSchema): boolean =>
+    schema.oneOf !== undefined &&
+    schema.oneOf.length > 0 &&
+    (schema.oneOf as JsonSchema[]).every((entry: JsonSchema) => {
+        return entry.const !== undefined;
+    });
+
+const hasEnumItems = (schema: JsonSchema): boolean =>
+    schema.type === 'string' && schema.enum !== undefined;
 
 export default controlRenderer;
 export const entry: JsonFormsRendererRegistryEntry = {
