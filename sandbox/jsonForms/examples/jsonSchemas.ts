@@ -18,6 +18,7 @@ import draft07 from './json/schema/draft_07/json-schema-draft-07-schema.json'
 import github from './json/schema/draft_07/github.schema.json'
 import gitlab from './json/schema/draft_07/gitlab.schema.json'
 import changeset from './json/schema/draft_07/changeset.schema.json'
+import cerbos_policy from './json/schema/draft_07/cerbos_policy.schema.json'
 //import site from './json/schema/draft_07/site.schema.json'
 
 const examples = [
@@ -39,6 +40,7 @@ const examples = [
     {name:"github", schema:github, prefix:''},
     {name:"gitlab", schema:gitlab, prefix:''},
     {name:"changeset", schema:changeset, prefix:''},
+    {name:"cerbos_policy", schema:cerbos_policy, prefix:''},
     //{name:"site", schema:site, prefix:''},//:TODO broken!
 ];
 
