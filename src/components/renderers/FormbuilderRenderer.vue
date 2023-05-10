@@ -1,7 +1,7 @@
 <template>
 
   <FormBuilder
-      :jsonForms="jsonForms"
+      :schema="schema"
       :jsonFormsRenderers="jsonFormsRenderers"
       :tools="tools"
       :schemaOnly="true"
@@ -24,13 +24,13 @@ import type {ControlElement, JsonFormsRendererRegistryEntry} from '@jsonforms/co
 import {rankWith, uiTypeIs} from "@jsonforms/core";
 import type {RendererProps} from '@jsonforms/vue';
 import {rendererProps, useJsonFormsAllOfControl,} from '@jsonforms/vue';
-import {useVanillaControl, vanillaRenderers} from "@jsonforms/vue-vanilla";
-import {formbuilderRenderers} from "./index";
-import {controlTools} from "../../lib/tools";
+import {useVanillaControl} from "@jsonforms/vue-vanilla";
 import FormBuilder from "../FormBuilder.vue";
 import {getFormbuilder} from "../../lib/vue";
 
+/** @ts-ignore */
 const formbuilderRenderer = defineComponent({
+  name: 'formbuilder-renderer',
   components: {
     FormBuilder
   },
@@ -67,6 +67,7 @@ const formbuilderRenderer = defineComponent({
 });
 
 export default formbuilderRenderer;
+
 export const entry: JsonFormsRendererRegistryEntry = {
   renderer: formbuilderRenderer,
   tester: rankWith(1, uiTypeIs('Formbuilder')),

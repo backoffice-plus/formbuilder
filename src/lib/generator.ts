@@ -255,7 +255,7 @@ export const createTypeSchemaOnly = (tool: ToolInterface): JsonSchema => {
         "items"
     ];
 
-    const schemaByKeys = {};
+    const schemaByKeys = {} as any;
     propertiesDefinedByChilds.forEach(key => schemaByKeys[key] = undefined)
 
     tool.childs.forEach((childTool: ToolInterface) => {
@@ -279,11 +279,11 @@ export const createTypeSchemaOnly = (tool: ToolInterface): JsonSchema => {
                 case "oneOf":
                 case "items":
                     if(childSchema.items) {
-                        setSchema = childSchema.items
+                        setSchema = childSchema.items as JsonSchema
                         childTool.schema = childSchema;
 
                         if((childTool as any).isSchemaItem) {
-                            setSchema = childSchema.items[0]
+                            setSchema = (childSchema.items as any)[0] as JsonSchema
                             childTool.schema.items = setSchema;
                         }
                     }

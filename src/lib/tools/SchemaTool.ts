@@ -11,7 +11,7 @@ import _ from "lodash";
 export class SchemaTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
-    tester = rankWith(-1, () => {});
+    tester = rankWith(-1, () => {return false});
     clone = (): ToolInterface => new SchemaTool();
 
 

@@ -3,7 +3,7 @@ import _ from "lodash";
 import {Resolver} from "@stoplight/json-ref-resolver";
 import type {ToolInterface} from "./models";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
-import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
+import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
 import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";
 
@@ -17,12 +17,12 @@ export const updatePropertyNameAndScope = (propertyName: string | undefined, too
 
     //console.log("updatePropertyNameAndScope",tool.uischema)
 
-    tool.propertyName = propertyName;
+    tool.propertyName = propertyName ?? '';
     if(_.isObject(tool.uischema)) {
-        tool.uischema.scope = fromPropertyToScope(tool.propertyName)
+        (tool.uischema as Scoped).scope = fromPropertyToScope(tool.propertyName)
     }
 
-    return propertyName;
+    return tool.propertyName;
 };
 
 

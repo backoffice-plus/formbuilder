@@ -12,13 +12,15 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
             properties: schema.definitions,
         }
     }
-    if(!_.isEmpty(schema['$defs'])) {
-        data.definitions = {
-            type: "object",
-            properties: schema['$defs'],
-        }
-        data._asDefs = true;
-    }
+
+    //$def is not part of Draft07
+    // if(!_.isEmpty((schema as any)['$defs'])) {
+    //     data.definitions = {
+    //         type: "object",
+    //         properties: (schema as any)['$defs'],
+    //     }
+    //     data._asDefs = true;
+    // }
 
     return {
         definitions: data
