@@ -6,7 +6,7 @@
 
     <div class="styleA">
       Select Example:
-      <select v-model="example" class="inline" >
+      <select v-model="example" class="inline" @input="onChangeExample" >
         <option></option>
         <option v-for="e in examples" :value="e.name">{{e.label}}</option>
       </select>
@@ -56,7 +56,7 @@
 
 
 <script setup>
-import {computed, ref, watch} from 'vue'
+import {computed, onMounted, ref, watch} from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv, generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import SchemaCode from './SchemaCode.vue'
@@ -72,6 +72,7 @@ const example = ref(getExampleFromUrl());
 
 // const jsonFormsSchema = schema;
 // const jsonFormsUiSchema = uischema;
+const jsonForms = ref({});
 const jsonFormsData = ref({});
 const jsonFormsUpdated = ref({});
 
@@ -80,24 +81,28 @@ const jsonFormRenderes = Object.freeze([
   ...boplusVueVanillaRenderers,
 ]);
 
+const onChangeExample = async (e) => {
+    example.value = e.target.value
+    jsonForms.value = await getExampleData(example.value)
+}
 
-const jsonForms = computed(() => {
-  const exampleData = getExamples().find(item => item.name === example.value);
+onMounted(async () => {
+    jsonForms.value = await getExampleData(example.value)
+})
 
-  if (!exampleData?.schema) {
-    exampleData.schema = generateJsonSchema({});
-  }
+const getExampleData = async (exampleName) => {
+    const exampleData = getExamples().find(item => item.name === exampleName);
 
-  if (!exampleData?.uischema) {
-    exampleData.uischema = generateDefaultUISchema(exampleData.schema)
-  }
+    if (!exampleData?.schema) {
+        exampleData.schema = generateJsonSchema({});
+    }
 
-  return {
-    schema:exampleData.schema,
-    uischema:exampleData.uischema,
-    data:exampleData.data,
-  }
-});
+    if (!exampleData?.uischema) {
+        exampleData.uischema = generateDefaultUISchema(exampleData.schema)
+    }
+
+    return exampleData;
+}
 
 const jsonFormRenderesMore = Object.freeze([
   ...jsonFormRenderes,
