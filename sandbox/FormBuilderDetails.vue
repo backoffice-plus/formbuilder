@@ -73,12 +73,12 @@ import {computed, ref, watch} from 'vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 import {JsonForms} from "@jsonforms/vue";
 import {createAjv} from "@jsonforms/core";
+import {vanillaRenderers} from "@jsonforms/vue-vanilla";
 import {createI18nTranslate} from "../src/index";
 import SchemaCode from './SchemaCode.vue'
 import ResizeArea from "./ResizeArea.vue";
 import {translationsErrors as localeCatalogue} from "../src/translations/de";
-import {vanillaRenderers} from "@jsonforms/vue-vanilla";
-import {boplusVueVanillaRenderers} from "../packages/boplus-vue-vanilla/src";
+import {boplusVueVanillaRenderers} from "../src/index";
 
 const props = defineProps({
   jsonForms: Object, //read from store

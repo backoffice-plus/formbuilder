@@ -25,7 +25,6 @@ import {rankWith, uiTypeIs} from "@jsonforms/core";
 import type {RendererProps} from '@jsonforms/vue';
 import {rendererProps, useJsonFormsAllOfControl,} from '@jsonforms/vue';
 import {useVanillaControl, vanillaRenderers} from "@jsonforms/vue-vanilla";
-import {boplusVueVanillaRenderers} from "../../../packages/boplus-vue-vanilla/src";
 import {formbuilderRenderers} from "./index";
 import {controlTools} from "../../lib/tools";
 import FormBuilder from "../FormBuilder.vue";
