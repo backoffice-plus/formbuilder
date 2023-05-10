@@ -74,7 +74,7 @@ export const createJsonForms = (tool: ToolInterface, rootSchema: JsonSchema | un
 
     return {
         schema: schemaReadOnly ? rootSchema : schema,
-        uischema: createJsonUiSchema(tool, schema)
+        uischema: createJsonUiSchema(tool, schema, schemaReadOnly)
     } as JsonFormsInterface;
 }
 
@@ -390,7 +390,7 @@ export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchem
 }
 
 
-export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema): JsonFormsUISchema => {
+export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema, schemaReadOnly: boolean = false): JsonFormsUISchema => {
     cleanSchema(tool);
 
     const uischema = tool.uischema;
@@ -409,16 +409,16 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema):
 
             if (isFirstChildLayout) {
                 const subSchema = {type: 'object'};
-                const detailSchema = createJsonUiSchema(firstChild, subSchema);
+                const detailSchema = createJsonUiSchema(firstChild, subSchema, schemaReadOnly);
 
                 tool.schema['items'] = subSchema;
-                setItemSchemaToSchema(tool, rootSchema);
+                !schemaReadOnly && setItemSchemaToSchema(tool, rootSchema);
 
                 created.options['detail'] = detailSchema
             }
         }
 
-        generateSchemaForUiSchema(tool, rootSchema);
+        !schemaReadOnly && generateSchemaForUiSchema(tool, rootSchema);
     } else {
 
         //:INFO some tools dont have elements (LabelTool)
@@ -427,7 +427,7 @@ export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema):
             //const {childs,schemas} = splitChilds(tool.childs);
 
             created.elements = tool.childs.map((t: ToolInterface) => {
-                    return createJsonUiSchema(t, rootSchema)
+                    return createJsonUiSchema(t, rootSchema, schemaReadOnly)
                 }) ?? [];
 
             // schemaKeywords.forEach(key => {
