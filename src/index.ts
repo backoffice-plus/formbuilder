@@ -19,7 +19,8 @@ export { default as ElementHeadOrToolIcon } from './components/tools/utils/Eleme
 export { default as ToolIcon } from './components/tools/utils/ToolIcon.vue'
 export { default as Actions } from './components/tools/utils/Actions.vue'
 
-export {boplusVueVanillaRenderers} from "../packages/boplus-vue-vanilla/src/index";
+import boplusJsonfromsVueVanilla from "@backoffice-plus/jsonforms-vue-vanilla";
+export const boplusVueVanillaRenderers = boplusJsonfromsVueVanilla;
 
 export {emitter} from './lib/mitt'
 export type {EventAfterOptionJsonforms} from './lib/mitt'

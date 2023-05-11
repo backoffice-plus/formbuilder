@@ -60,6 +60,7 @@
     "vue": "^3.2.45"
   },
   "dependencies": {
+    "@backoffice-plus/jsonforms-vue-vanilla": "^0.0.5",
     "diff": "^5.1.0",
     "flat": "^5.0.2",
     "sortablejs": "^1.15.0"
