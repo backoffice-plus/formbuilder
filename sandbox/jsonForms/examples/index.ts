@@ -9,7 +9,6 @@ import * as optionsdetail from './optionsdetail';
 import * as nestedRefs from './nestedRefs';
 import * as login from './login';
 import * as listwithdetail from './listwithdetail';
-import * as autocompleteEnum from './autocompleteEnum';
 import * as fbConst from './const';
 import * as nestedCombinator from './nestedCombinator';
 import * as anyOfsimple from './anyOfsimple';
@@ -36,7 +35,6 @@ export {
   nestedRefs,
   login,
   listwithdetail,
-  autocompleteEnum,
   fbConst,
   nestedCombinator,
   anyOfsimple,

@@ -6,6 +6,8 @@ import enumArray from './json/renderer-enumArray.form.json'
 import allOfAnyOfOneOf from './json/renderer-allOfAnyOfOneOf.form.json'
 import categorization from './json/renderer-categorization.form.json'
 import toggleSliderPasswordConst from './json/renderer-toggleSliderPasswordConst.form.json'
+import radioGroup from './json/renderer-radioGroup.form.json'
+import autocomplete from './json/renderer-autocomplete.form.json'
 
 const examples = [
     {name:"Array Controler", schema:arrayControler, prefix:''},
@@ -15,6 +17,8 @@ const examples = [
     {name:"AllOf, AnyOf, OneOf", schema:allOfAnyOfOneOf, prefix:''},
     {name:"Categorization", schema:categorization, prefix:''},
     {name:"Toggle, Slider, Password, Const", schema:toggleSliderPasswordConst, prefix:''},
+    {name:"RadioGroup", schema:radioGroup, prefix:''},
+    {name:"Autocomplete", schema:autocomplete, prefix:''},
 ];
 
 examples.forEach(item => {
