@@ -1,33 +1,41 @@
 {
   "schema": {
     "type": "object",
+    "definitions": {
+      "namedText": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "properties": {
-      "bucket": {
+      "colors": {
         "type": "array",
         "items": {
           "type": "object",
           "properties": {
-            "colorNames": {
+            "name": {
+              "type": "string"
+            },
+            "colorcodes": {
               "type": "array",
               "items": {
                 "type": "string"
               }
-            },
-            "colorData": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  }
-                }
-              }
             }
           }
+        }
+      },
+      "texts": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/namedText"
         }
       }
     }
@@ -36,28 +44,45 @@
     "type": "VerticalLayout",
     "elements": [
       {
-        "type": "Control",
-        "scope": "#/properties/bucket"
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/colors"
+          }
+        ],
+        "label": "ArrayLayout"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "ListWithDetail",
+            "scope": "#/properties/texts",
+            "options": {
+              "labelRef": "#/items/properties/name",
+              "detail": {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/name"
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/text",
+                    "options": {
+                      "multi": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "label": "ListWithDetail"
       }
     ]
   },
-  "data": {
-    "bucket": [
-      {
-        "colorNames": [
-          "red", "blue"
-        ],
-        "colorData": [
-          {
-            "id": "1",
-            "name": "yellow"
-          },
-          {
-            "id": "2",
-            "name": "green"
-          }
-        ]
-      }
-    ]
-  }
+  "data": {}
 }
