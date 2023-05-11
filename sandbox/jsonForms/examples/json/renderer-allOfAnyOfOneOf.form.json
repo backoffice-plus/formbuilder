@@ -1,0 +1,73 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "oneOf": {
+        "oneOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "anyOf": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      },
+      "allOf": {
+        "allOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "string"
+          }
+        ]
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/oneOf"
+          }
+        ],
+        "label": "OneOf"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/anyOf"
+          }
+        ],
+        "label": "AnyOf"
+      },
+      {
+        "type": "Group",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/allOf"
+          }
+        ],
+        "label": "allOf"
+      }
+    ]
+  },
+  "data": {}
+}

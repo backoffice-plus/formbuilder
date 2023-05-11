@@ -1,0 +1,44 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "user": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "height": {
+                "type": "number"
+              },
+              "weight": {
+                "type": "number"
+              }
+            }
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "title": "add more Properties"
+            },
+            "properties": {}
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/user"
+      }
+    ]
+  },
+  "data": {}
+}

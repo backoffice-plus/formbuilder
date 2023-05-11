@@ -22,6 +22,7 @@ import * as personalbogen from './personalbogen';
 import * as conditional from './conditional';
 import * as definitions from './definitions';
 import * as jsonSchemas from './jsonSchemas';
+import * as renderer from './renderer';
 
 export {
   _default,
@@ -48,4 +49,5 @@ export {
   conditional,
   definitions,
   jsonSchemas,
+  renderer,
 }

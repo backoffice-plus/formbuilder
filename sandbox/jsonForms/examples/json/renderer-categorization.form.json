@@ -1,0 +1,51 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "height": {
+        "type": "number"
+      },
+      "weight": {
+        "type": "number"
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Categorization",
+        "elements": [
+          {
+            "type": "Category",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/name"
+              }
+            ],
+            "label": "Base"
+          },
+          {
+            "type": "Category",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/height"
+              },
+              {
+                "type": "Control",
+                "scope": "#/properties/weight"
+              }
+            ],
+            "label": "Body"
+          }
+        ]
+      }
+    ]
+  },
+  "data": {}
+}

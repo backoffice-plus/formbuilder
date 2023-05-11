@@ -1,0 +1,31 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "colors": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "red",
+            "green",
+            "blue"
+          ],
+          "type": "string"
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/colors"
+      }
+    ]
+  },
+  "data": {
+    "colors": ["green"]
+  }
+}

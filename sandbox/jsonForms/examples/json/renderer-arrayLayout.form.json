@@ -1,0 +1,63 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "bucket": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "colorNames": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "colorData": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/bucket"
+      }
+    ]
+  },
+  "data": {
+    "bucket": [
+      {
+        "colorNames": [
+          "red", "blue"
+        ],
+        "colorData": [
+          {
+            "id": "1",
+            "name": "yellow"
+          },
+          {
+            "id": "2",
+            "name": "green"
+          }
+        ]
+      }
+    ]
+  }
+}

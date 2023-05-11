@@ -1,0 +1,56 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "colorNames": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "colorData": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "name": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/colorNames"
+      },
+      {
+        "type": "Control",
+        "scope": "#/properties/colorData"
+      }
+    ]
+  },
+  "data": {
+    "colorNames": [
+      "red",
+      "blue"
+    ],
+    "colorData": [
+      {
+        "id": 1,
+        "name": "green"
+      },
+      {
+        "id": 2,
+        "name": "yellow"
+      }
+    ]
+  }
+}
