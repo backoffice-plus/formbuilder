@@ -1,14 +1,41 @@
 // @ts-ignore
 import _ from "lodash";
 import type {ToolContext, ToolInterface} from "./models";
-import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
+import type {JsonSchema, UISchemaElement, Layout} from "@jsonforms/core";
 import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import {fromScopeToProperty} from './normalizer';
 import {ObjectTool} from "./tools/ObjectTool";
 import type {ToolFinder} from "./ToolFinder";
 import {SchemaTool, schemaTool} from "./tools/SchemaTool";
+import {SchemaOnlyChildsTool} from "./tools/SchemaOnlyChildsTool";
 
-export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema, uischema: UISchemaElement): ToolInterface => {
+export const initBaseTools = (toolFinder: ToolFinder, schemaReadOnly:boolean, schemaOnly:boolean, rootSchema:JsonSchema, rootUischema: Layout) => {
+    // if(props.schemaOnly) {
+    //   //baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
+    //   baseSchemaTool.value = cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema.value)
+    //   baseSchemaTool.value.propertyName = 'schema'
+    // }
+    // else {
+    //   //baseSchemaTool.value = cloneToolWithSchema(new ObjectTool(), rootSchema.value)
+    //   baseSchemaTool.value = cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema.value)
+    //   baseSchemaTool.value.propertyName = 'schema'
+    // }
+    // if(true !== props.schemaOnly) {
+    //     if(props.schemaReadOnly) {
+    //         baseUiTool.value = createBaseTool(toolFinder);
+    //     }
+    //     else {
+    //         baseUiTool.value = createBaseTool(toolFinder, rootSchema.value, rootUischema.value);
+    //     }
+    // }
+
+    return {
+        schema: cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema),
+        uischema: !schemaOnly ? createBaseTool(toolFinder, !schemaReadOnly ? rootSchema : undefined,schemaReadOnly ? rootUischema : undefined) : {},
+    }
+}
+
+export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema|undefined, uischema: UISchemaElement|undefined): ToolInterface => {
     if (undefined === schema) {
         schema = generateJsonSchema({});
     }

@@ -100,7 +100,7 @@ import {
   findAllProperties,
   findAllScopes,  generateSchemaByTool,
 } from "../index";
-import {cloneToolWithSchema, createBaseTool, createSchemaTool} from "../lib/toolCreation";
+import {cloneToolWithSchema, createBaseTool, initBaseTools} from "../lib/toolCreation";
 
 import Modal from "./Modal.vue";
 import {normalizePath, normalizeScope} from "../lib/normalizer";
@@ -184,7 +184,9 @@ const onChangeBuilder = (e) => {
   /**
    * :INFO after changing builder -> baseTools must be recreated to create new childs based on the new schema
    */
-  initBaseTools();
+  const {schema, uischema} = initBaseTools(toolFinder, props.schemaReadOnly, props.schemaOnly, rootSchema.value, rootUischema.value)
+  baseSchemaTool.value = schema;
+  baseUiTool.value = uischema;
 
 
   // switch (e.target.value) {
@@ -404,28 +406,6 @@ const updateJsonForm = (e) => {
 //   //emitter.emit('formBuilderSchemaUpdated', newJsonForms)
 // }
 
-
-const initBaseTools = () => {
-  if(props.schemaOnly) {
-    //baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
-    baseSchemaTool.value = cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema.value)
-    baseSchemaTool.value.propertyName = 'schema'
-  }
-  else {
-    //baseSchemaTool.value = cloneToolWithSchema(new ObjectTool(), rootSchema.value)
-    baseSchemaTool.value = cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema.value)
-    baseSchemaTool.value.propertyName = 'schema'
-  }
-
-  if(true !== props.schemaOnly) {
-    if(props.schemaReadOnly) {
-      baseUiTool.value = createBaseTool(toolFinder);
-    }
-    else {
-      baseUiTool.value = createBaseTool(toolFinder, rootSchema.value, rootUischema.value);
-    }
-  }
-}
 // const rootForm = ref(null);
 // const rootDefinitionForm = ref(null);
 // const rootSchemaForm = ref(null);
@@ -446,7 +426,6 @@ onBeforeMount(() => {
   showBuilder.value = props?.schemaOnly ? 'schema' : 'uischema';
   rootSchema.value = props?.schema ?? props?.jsonForms?.schema;
   rootUischema.value = props?.jsonForms?.uischema;
-  //initBaseTools();
   onChangeBuilder({target:{value:showBuilder.value}})
 
 
