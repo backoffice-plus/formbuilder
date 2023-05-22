@@ -2,11 +2,7 @@
   <div class="schemaTool" :class="['rootItem', {isRoot:isRoot}]">
 
     <slot name="header">
-      <ToolIcon :tool="tool" :isToolbar="isToolbar">
-        <template v-slot:droparea>
-          Schema
-        </template>
-      </ToolIcon>
+      <ToolIcon :tool="tool" :isToolbar="isToolbar" :prefixLabel="!isToolbar ? 'schema:' : ''" />
     </slot>
 
     <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
