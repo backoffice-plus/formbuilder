@@ -67,11 +67,11 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
         let setSchema = schema;
         let setUischema = uischema;
 
-        const parentTool = this.parentTool;
-        if(parentTool instanceof SchemaTool) {
-            setSchema = jsonFormAsSchemaChild.schema as any;
-            setUischema = jsonFormAsSchemaChild.uischema;
-        }
+        // const parentTool = this.parentTool;
+        // if(parentTool instanceof SchemaTool) {
+        //     setSchema = jsonFormAsSchemaChild.schema as any;
+        //     setUischema = jsonFormAsSchemaChild.uischema;
+        // }
 
         return {
             schema: await resolveSchema(setSchema),

@@ -44,6 +44,7 @@
                  :isRoot="true"
                  class="my-4"
                  :key="currentBaseTool.propertyName"
+                 v-bind="schemaToolProps"
       >
 
         <template v-slot:header  v-if="!schemaOnly && !schemaReadOnly">
@@ -114,7 +115,9 @@ import {SchemaOnlyChildsTool} from "../lib/tools/SchemaOnlyChildsTool";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
 import {ObjectTool} from "../lib/tools/ObjectTool";
 import FormBuilderToolbar from "./FormBuilderToolbar.vue";
+import {formbuilderProps, toolComponentProps} from "../lib/models";
 
+//const props = defineProps({...formbuilderProps()})
 const props = defineProps({
   schema:Object,
   jsonForms: Object,
@@ -123,6 +126,7 @@ const props = defineProps({
   schemaReadOnly: Boolean,
   tools: Array,
   schemaTool: String,
+  schemaToolProps: Object,
 })
 
 const emit = defineEmits(['schemaUpdated']);
@@ -180,11 +184,12 @@ const currentBaseTool = computed(() => showBuilder.value === 'uischema' ? baseUi
 
 const onChangeBuilder = (e) => {
 
+    console.log("FB onChangeBuilder","props",props);
 
   /**
    * :INFO after changing builder -> baseTools must be recreated to create new childs based on the new schema
    */
-  const {schema, uischema} = initBaseTools(toolFinder, props.schemaReadOnly, props.schemaOnly, rootSchema.value, rootUischema.value)
+  const {schema, uischema} = initBaseTools(toolFinder, props, rootSchema.value, rootUischema.value)
   baseSchemaTool.value = schema;
   baseUiTool.value = uischema;
 

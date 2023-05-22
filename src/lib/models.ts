@@ -2,9 +2,9 @@ import type {JsonSchema} from "@jsonforms/core";
 import type {
     Categorization,
     Category,
-    ControlElement,
+    ControlElement, Internationalizable, Labelable, LabelDescription,
     LabelElement,
-    Layout,
+    Layout, Scoped,
     UISchemaElement,
 } from "@jsonforms/core/src/models/uischema";
 import type {PropType} from "vue";
@@ -85,8 +85,47 @@ export const toolComponentProps = () => ({
         type: Boolean,
         default: false as false,
     },
+
+    //from FormbuilderRenderer
+    hideActionbar: {
+        required: false as false,
+        type: Boolean,
+        default: false as false,
+    },
+    prefixLabel: {
+        required: false as false,
+        type: String,
+        default: '' as String,
+    },
+    propertyName: {
+        required: false as false,
+        type: String,
+        default: '' as String,
+    },
+
 });
 
+
+export const formbuilderProps = () => ({
+    schema:Object,
+    jsonForms: Object,
+    jsonFormsRenderers: Array,
+    schemaOnly: Boolean,
+    schemaReadOnly: Boolean,
+    tools: [],
+    schemaTool: String,
+    schemaToolProps: Object,
+});
+export interface formbuilderPropsI {
+    schema: JsonSchema,
+    jsonForms: any,
+    jsonFormsRenderers: [],
+    schemaOnly: boolean,
+    schemaReadOnly: boolean,
+    tools: [],
+    schemaTool: string,
+    schemaToolProps: any,
+}
 
 /**
  *

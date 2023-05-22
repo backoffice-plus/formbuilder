@@ -28,6 +28,7 @@ export class SchemaOnlyChildsTool extends SchemaTool {
         return {
             propertyName: this.propertyName,
             type: this.schema.type,
+            additionalProperties: this.schema.additionalProperties,
             //schema: schema,
             // ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
             // ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
@@ -60,8 +61,7 @@ export class SchemaOnlyChildsTool extends SchemaTool {
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
         this.schema.type = data.type;
-
-        console.log("SchemaOnlyChildsTool.optionDataUpdate", data)
+        this.schema.additionalProperties = data.additionalProperties;
         //
         // const keyword = data?.keyword;
         // const keywordOld = this.keyword;
@@ -137,6 +137,8 @@ export class SchemaOnlyChildsTool extends SchemaTool {
             const items = Object.values(properties);
             schema.items = items[0];
         }
+
+        console.log("SchemaOnlyChildsTool.generateJsonSchema", schema)
 
         return schema;
     }

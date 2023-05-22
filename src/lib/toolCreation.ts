@@ -1,6 +1,6 @@
 // @ts-ignore
 import _ from "lodash";
-import type {ToolContext, ToolInterface} from "./models";
+import type {formbuilderPropsI, ToolContext, ToolInterface} from "./models";
 import type {JsonSchema, UISchemaElement, Layout} from "@jsonforms/core";
 import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import {fromScopeToProperty} from './normalizer';
@@ -8,8 +8,9 @@ import {ObjectTool} from "./tools/ObjectTool";
 import type {ToolFinder} from "./ToolFinder";
 import {SchemaTool, schemaTool} from "./tools/SchemaTool";
 import {SchemaOnlyChildsTool} from "./tools/SchemaOnlyChildsTool";
+import {formbuilderProps} from "./models";
 
-export const initBaseTools = (toolFinder: ToolFinder, schemaReadOnly:boolean, schemaOnly:boolean, rootSchema:JsonSchema, rootUischema: Layout) => {
+export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI, rootSchema:JsonSchema, rootUischema: Layout) => {
     // if(props.schemaOnly) {
     //   //baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
     //   baseSchemaTool.value = cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema.value)
@@ -29,8 +30,14 @@ export const initBaseTools = (toolFinder: ToolFinder, schemaReadOnly:boolean, sc
     //     }
     // }
 
+    const schemaOnly = props.schemaOnly;
+    const schemaReadOnly = props.schemaReadOnly;
+    const schemaTool = props.schemaTool;
+    const schemaToolProps = props.schemaToolProps;
+
     return {
-        schema: cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema),
+        //schema: cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema),
+        schema: createSchemaTool(rootSchema, schemaTool, schemaToolProps),
         uischema: !schemaOnly ? createBaseTool(toolFinder, !schemaReadOnly ? rootSchema : undefined,schemaReadOnly ? rootUischema : undefined) : {},
     }
 }
@@ -46,33 +53,21 @@ export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema|undefi
     return toolFinder.findBaseTool(schema, uischema);
 };
 
-/**
- * @deprecated
- * @see FormBuider::initBaseTools() hardcoded to SchemaOnlyChildsTool
- */
-export const createSchemaTool = (schema: JsonSchema, baseToolName: string | undefined = undefined): ToolInterface => {
+export const createSchemaTool = (schema: JsonSchema, baseToolName: string | undefined = undefined, schemaToolProps:any): ToolInterface => {
 
     let clone;
     switch (baseToolName) {
         case "schema":
-        case "schema.not":
-        case "schema.if":
-        case "schema.else":
-        case "schema.then":
             clone = cloneToolWithSchema(schemaTool, schema);
-            // if (clone instanceof SchemaTool) {
-            //     clone.keyword = baseToolName?.match(/[^.]+$/)?.[0] ?? 'if';
-            //     //clone.propertyName = false;
-            // }
             break;
 
         default:
-            // clone = cloneToolWithSchema(new ObjectTool(), schema);
-            // clone.propertyName = 'schema';
-            schema.type ??= 'object';
-            clone = cloneToolWithSchema(schemaTool, schema);
-            //clone.propertyName = 'schema';
+            clone = cloneToolWithSchema(new SchemaOnlyChildsTool(), schema);
             break;
+    }
+
+    if(schemaToolProps?.propertyName) {
+        clone.propertyName = schemaToolProps.propertyName;
     }
 
     return clone;

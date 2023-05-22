@@ -34,16 +34,11 @@
       "required": {
         "type": "boolean"
       },
-      "schema": {
-        "type":"object",
-        "properties": {
-          "additionalProperties": {
-            "oneOf": [
-              {"$ref":"#/definitions/additionalPropertiesFalse"},
-              {"$ref":"#/definitions/additionalProperties"}
-            ]
-          }
-        }
+      "additionalProperties": {
+        "oneOf": [
+          {"$ref":"#/definitions/additionalPropertiesFalse"},
+          {"$ref":"#/definitions/additionalProperties"}
+        ]
       },
 
       "rule": {
@@ -99,7 +94,7 @@
             "type": "Control"
           },
           {
-            "scope": "#/properties/schema/properties/additionalProperties",
+            "scope": "#/properties/additionalProperties",
             "type": "Control"
           }
         ]

@@ -131,9 +131,6 @@
         }
       },
 
-
-
-
       {
         "type": "HorizontalLayout",
         "elements": [
@@ -154,6 +151,7 @@
           }
         }
       },
+
       {
         "scope": "#/properties/validation/properties/pattern",
         "type": "Control",
@@ -224,7 +222,11 @@
                 "scope": "#/properties/validation/properties/patternProperties",
                 "type": "Control"
               }
-            ]
+            ],
+            "rule": {
+              "effect": "HIDE",
+              "condition": {"scope": "#"}
+            }
           },
 
 
@@ -236,27 +238,33 @@
                 "scope": "#/properties/validation/properties/dependentRequired",
                 "type": "Control"
               }
-            ]
+            ],
+            "rule": {
+              "effect": "HIDE",
+              "condition": {"scope": "#"}
+            }
           },
 
           {
             "scope": "#/properties/validation/properties/propertyNames",
-            "type": "Control"
+            "type": "Formbuilder",
+            "options": {
+              "baseTool": "schema",
+              "baseToolProps": {
+                "hideActionbar": true,
+                "prefixLabel": "propertyNames:"
+              }
+            }
           }
         ],
         "rule": {
           "effect": "SHOW",
           "condition": {
             "scope": "#/properties/type",
-            "schema": {"enum": ["---object"]}
+            "schema": {"enum": ["object"]}
           }
         }
       },
-      {
-        "type": "Label",
-        "text": ":TODO"
-      },
-
 
       {
         "type": "VerticalLayout",
@@ -265,7 +273,11 @@
             "type": "Formbuilder",
             "scope": "#/properties/validation/properties/not",
             "options": {
-              "___baseTool": "schema.not"
+              "baseTool": "schema",
+              "baseToolProps": {
+                "hideActionbar": true,
+                "prefixLabel": "not:"
+              }
             }
           }
         ]

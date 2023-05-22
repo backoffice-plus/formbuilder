@@ -13,6 +13,7 @@
       <div>
         Schema Only: <input type="checkbox" v-model="schemaOnly" />
         <template v-if="schemaOnly">
+          use schema Tool: <input type="checkbox" v-model="schemaBaseTool" />
           Auto Uischema: <input type="checkbox" v-model="schemaOnlyAutoUischema" /><br>
         </template>
         <br>
@@ -28,8 +29,9 @@
           :schemaOnly="schemaOnly"
           :schemaReadOnly="schemaReadOnly"
           :tools="tools"
-          :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'')"
+          :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'') + (schemaBaseTool?'schema':'')"
           :builders="builders"
+          :schemaTool="schemaBaseTool ? 'schema' : ''"
           @schemaUpdated="onSchemaUpdated"
       />
     <!--            -->
@@ -97,6 +99,7 @@ const example = ref(getExampleFromUrl());
 const schemaReadOnly = ref("1" === getKeyFromUrl('schemaReadOnly'));
 const schemaOnly = ref("1" === getKeyFromUrl('schemaOnly'));
 const schemaOnlyAutoUischema = ref("1" === getKeyFromUrl('schemaOnlyAutoUischema'));
+const schemaBaseTool = ref("1" === getKeyFromUrl('schemaBaseTool'));
 const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
@@ -192,6 +195,7 @@ const createUrl = () => {
     schemaOnly: schemaOnly.value ? "1" : undefined,
     schemaOnlyAutoUischema: schemaOnlyAutoUischema.value ? "1" : undefined,
     schemaReadOnly: schemaReadOnly.value ? "1" : undefined,
+    schemaBaseTool: schemaBaseTool.value ? "1" : undefined,
   }
   return new URLSearchParams(_.omitBy(params, _.isEmpty));
 };
@@ -202,6 +206,9 @@ watch(() => example.value, async () => {
 watch(() => schemaOnly.value, async () => {
   if(schemaOnly.value) {
     schemaReadOnly.value = false;
+  }
+  else {
+      schemaBaseTool.value = false;
   }
   window.location.hash = "/?"+ createUrl()
 })
@@ -214,6 +221,9 @@ watch(() => schemaReadOnly.value, async () => {
     schemaOnly.value = false;
   }
   window.location.hash = "/?"+ createUrl()
+})
+watch(() => schemaBaseTool.value, async () => {
+    window.location.hash = "/?"+ createUrl()
 })
 
 // emitter.on('afterOptionJsonforms', (event: EventAfterOptionJsonforms) => {

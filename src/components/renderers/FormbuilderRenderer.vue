@@ -6,6 +6,7 @@
       :tools="tools"
       :schemaOnly="true"
       :schemaTool="baseSchemaTool"
+      :schemaToolProps="baseSchemaToolProps"
       @schemaUpdated="onSchemaUpdated"
   />
 <!--  :schemaReadOnly="schemaReadOnly"-->
@@ -27,6 +28,7 @@ import {rendererProps, useJsonFormsAllOfControl,} from '@jsonforms/vue';
 import {useVanillaControl} from "@jsonforms/vue-vanilla";
 import FormBuilder from "../FormBuilder.vue";
 import {getFormbuilder} from "../../lib/vue";
+import type {formbuilderPropsI, ToolInterface} from "../../lib/models";
 
 /** @ts-ignore */
 const formbuilderRenderer = defineComponent({
@@ -40,14 +42,16 @@ const formbuilderRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const control = useVanillaControl(useJsonFormsAllOfControl(props))
 
-    const fb = getFormbuilder();
+    const fb = getFormbuilder() as FormBuilder;
+    const fbProps = fb?.props as formbuilderPropsI;
 
     return {
       ...control,
-      tools: fb?.props.tools ?? [],
-      jsonFormsRenderers: fb?.props.jsonFormsRenderers ?? [],
+      tools: (fbProps.tools ?? []) as ToolInterface[],
+      jsonFormsRenderers: fbProps.jsonFormsRenderers ?? [],
       schema: (control.control as any).value.data,
-      baseSchemaTool: control.appliedOptions?.value?.baseTool
+      baseSchemaTool: control.appliedOptions?.value?.baseTool,
+      baseSchemaToolProps: control.appliedOptions?.value?.baseToolProps,
     };
   },
   methods: {

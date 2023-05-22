@@ -2,12 +2,12 @@
   <div class="schemaTool" :class="['rootItem', {isRoot:isRoot}]">
 
     <slot name="header">
-      <ToolIcon :tool="tool" :isToolbar="isToolbar" :prefixLabel="!isToolbar ? 'schema:' : ''" />
+      <ToolIcon :tool="tool" :isToolbar="isToolbar" :prefixLabel="prefixLabel" />
     </slot>
 
     <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
-      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
+      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot" v-if="!props.hideActionbar">
         <!--        <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>-->
         <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot">
           <Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'"/>
@@ -88,6 +88,18 @@ const collapsed = ref(false);
 const fb = getFormbuilder();
 const toolFinder = getToolfinder();
 const onDrag = fb?.exposed.onToolDrag;
+
+const prefixLabel = computed(() => {
+    let prefixLabel = '';
+    if(!props.isToolbar) {
+        prefixLabel = 'schema:';
+
+        if(props.prefixLabel) {
+            prefixLabel = props.prefixLabel;
+        }
+    }
+    return prefixLabel
+})
 
 onMounted(() => {
   if (!props.isToolbar) {
