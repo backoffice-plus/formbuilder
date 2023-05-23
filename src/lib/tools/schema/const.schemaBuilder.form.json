@@ -30,7 +30,14 @@
             "elements": [
               {
                 "type": "Control",
-                "scope": "#/properties/propertyName"
+                "scope": "#/properties/propertyName",
+                "rule": {
+                  "effect": "HIDE",
+                  "condition": {
+                    "scope": "#/properties/_asSchemaChild",
+                    "schema": {"const": true}
+                  }
+                }
               },
               {
                 "type": "Group",
@@ -50,7 +57,14 @@
             "elements": [
               {
                 "scope": "#/properties/required",
-                "type": "Control"
+                "type": "Control",
+                "rule": {
+                  "effect": "HIDE",
+                  "condition": {
+                    "scope": "#/properties/_asSchemaChild",
+                    "schema": {"const": true}
+                  }
+                }
               }
             ]
           }

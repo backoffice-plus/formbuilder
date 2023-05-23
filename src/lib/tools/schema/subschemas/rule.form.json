@@ -309,7 +309,15 @@
               },
               {
                 "type": "Formbuilder",
-                "scope": "#/properties/rule/properties/ruleBuilder/properties/condition/properties/schema"
+                "scope": "#/properties/rule/properties/ruleBuilder/properties/condition/properties/schema",
+                "options": {
+                  "XXhideToolbar": true,
+                  "baseTool": "schema",
+                  "XXbaseToolProps": {
+                    "hideActionbar": true,
+                    "prefixLabel": "if:"
+                  }
+                }
               }
             ],
             "label": "Schema Builder"

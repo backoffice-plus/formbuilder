@@ -3,7 +3,7 @@
     <ToolIcon :tool="tool" :isToolbar="isToolbar">
 
       <template v-slot:droparea>
-        <label class="font-bold">{{ tool.propertyName }}</label>
+        <label class="font-bold" v-if="!props.isInlineType">{{ tool.propertyName }}</label>
         <span>{{ tool.uischema.label ?? tool.schema.title }}</span>
         {{ constValue }}
         <SchemaFeatures :tool="tool" />

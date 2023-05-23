@@ -11,9 +11,12 @@ import * as subschemas from "./subschemas";
 
 //export const schemaKeywords = ['if', 'then', 'else', 'not', 'contains'];
 
-export class SchemaOnlyChildsTool extends SchemaTool {
+//export class SchemaOnlyChildsTool extends SchemaTool {
+export class SchemaOnlyChildsTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
+    // @ts-ignore
+    tester = rankWith(-1, () => {return false});
     clone = (): ToolInterface => new SchemaOnlyChildsTool();
 
     constructor() {

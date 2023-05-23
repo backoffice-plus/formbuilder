@@ -133,7 +133,14 @@ export const uischema = {
                                         }
                                     }
                                 },
-                            ]
+                            ],
+                            "rule": {
+                                "effect": "HIDE",
+                                "condition": {
+                                    "scope": "#/properties/_asSchemaChild",
+                                    "schema": {"const": true}
+                                }
+                            }
                         },
 
                         {
@@ -308,7 +315,14 @@ export const uischema = {
                             elements: [
                                 {
                                     scope: "#/properties/required",
-                                    type: "Control"
+                                    type: "Control",
+                                    "rule": {
+                                        "effect": "HIDE",
+                                        "condition": {
+                                            "scope": "#/properties/_asSchemaChild",
+                                            "schema": {"const": true}
+                                        }
+                                    }
                                 },
                                 {
                                     scope: "#/properties/options/properties/readonly",

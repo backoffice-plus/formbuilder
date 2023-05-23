@@ -4,7 +4,10 @@
     <slot name="header">
       <ToolIcon :tool="tool" :isToolbar="isToolbar">
         <template v-slot:droparea>
-          <b>{{ tool.propertyName }}:</b> Array
+            <template v-if="!props.isInlineType">
+                <b>{{ tool.propertyName }}:</b>
+            </template>
+            Array
           <span v-if="getFirstChildItemsType"> of {{ getFirstChildItemsType }}</span>
           <span v-else-if="isArrayOfRef"> of Ref</span>
           <span v-else-if="isArrayOfCombinator"> of {{ isArrayOfCombinator }}</span>

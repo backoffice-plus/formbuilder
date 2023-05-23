@@ -8,6 +8,7 @@ import {schema, uischema,uischemaReadOnly} from "./schema/control.schema";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import _ from "lodash";
 import * as subschemas from "./subschemas";
+import {SchemaTool} from "./SchemaTool";
 
 
 export class ControlTool extends AbstractTool implements ToolInterface {
@@ -60,6 +61,10 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         //         prepareOptionDataRule(this.schema, this.uischema),
         //     )
         // }
+
+        if(this.parentTool instanceof SchemaTool) {
+            data._asSchemaChild = true;
+        }
 
         return data;
     }

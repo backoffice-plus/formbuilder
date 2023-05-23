@@ -9,6 +9,7 @@ import type {JsonSchema, UISchemaElement} from "@jsonforms/core/src/models";
 import {ControlTool} from "./controlTool";
 import _ from "lodash";
 import * as subschemas from "./subschemas";
+import {SchemaTool} from "./SchemaTool";
 
 export class ConstTool extends ControlTool {
 
@@ -31,6 +32,10 @@ export class ConstTool extends ControlTool {
             subschemas.prepareOptionDataConst(context, this.schema, this.uischema),
         )
 
+        if(this.parentTool instanceof SchemaTool) {
+            data._asSchemaChild = true;
+        }
+
         return data;
     }
 
@@ -46,6 +51,8 @@ export class ConstTool extends ControlTool {
         if('schema' === context.builder) {
             currentJsonForm = jsonFormsSchema as any;
         }
+
+        console.log("ConsTool",this.parentTool);
 
         return {
              schema: await resolveSchema(currentJsonForm.schema),
