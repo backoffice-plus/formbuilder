@@ -2,16 +2,12 @@
   <div class="schemaTool" :class="['rootItem', {isRoot:isRoot}]">
 
     <slot name="header">
-      <ToolIcon :tool="tool" :isToolbar="isToolbar">
-        <template v-slot:droparea>
-          {{ tool.propertyName }}
-        </template>
-      </ToolIcon>
+      <ToolIcon :tool="tool" :isToolbar="isToolbar" :prefixLabel="prefixLabel" />
     </slot>
 
     <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
 
-      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
+      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot" v-if="!props.hideActionbar">
         <!--        <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>-->
         <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot">
           <Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'"/>
@@ -120,6 +116,18 @@ onMounted(() => {
   }
 })
 
+const prefixLabel = computed(() => {
+    let prefixLabel = '';
+    if(!props.isToolbar) {
+        prefixLabel = 'schema:';
+
+        if(props.prefixLabel) {
+            prefixLabel = props.prefixLabel;
+        }
+    }
+    return prefixLabel
+})
+
 const onDropAreaChange = (e) => {
   if(e.added?.element) {
     e.added.element.parentTool = props.tool;
@@ -141,10 +149,15 @@ const onDropAreaChange = (e) => {
 // };
 
 const allowChild = (tool) => {
-  const isArrayOrObject = ['array','object'].includes(tool?.schema?.type);
-  const isSchemaTool = tool instanceof SchemaTool
 
-  return isArrayOrObject || isSchemaTool;
+    const hasOneItem = childTools.value.length > 0;
+
+    return !hasOneItem;
+
+  // const isArrayOrObject = ['array','object'].includes(tool?.schema?.type);
+  // const isSchemaTool = tool instanceof SchemaTool
+  //
+  // return isArrayOrObject || isSchemaTool;
 }
 const showDragClass = computed(() => {
   const tool = getToolDragging();

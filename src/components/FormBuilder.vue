@@ -325,7 +325,7 @@ const updateJsonForm = (e) => {
 
   const emitUpdated = schemaChanged || uischemaChanged || e.mounted || e.modal;
   if(emitUpdated) {
-    emit('schemaUpdated', {schema: rootSchema.value, uischema: rootUischema.value})
+    emitSchemaUpdated(false);
   }
 
 
@@ -423,6 +423,24 @@ const updateJsonFormDebounced = (e) => _.debounce(() => {
   // window.setTimeout(updateJsonForm, 100);
 },100,{leading:false, trailing:true})()
 
+const emitSchemaUpdated = (init) => {
+    const args = {
+        schema: JSON.parse(JSON.stringify(rootSchema.value)), //to remove undefined vars
+        uischema: rootUischema.value
+    };
+    if(init) {
+        args.init = true;
+    }
+
+    //do not emit schema={}
+    if(_.isEmpty(args.schema)) {
+        args.schema = undefined;
+    }
+
+    console.log('schemaUpdated', args)
+    emit('schemaUpdated', args)
+}
+
 onBeforeMount(() => {
   const fb = getFormbuilder();
   //console.log("FB.onBeforeMount", "root fb", fb)
@@ -439,7 +457,7 @@ onBeforeMount(() => {
   if(!hasElements) {
     const currentBaseTool = ('schema' === showBuilder.value ? baseSchemaTool : baseUiTool).value;
     updateJsonForm({mounted:{element:currentBaseTool}});
-    emit('schemaUpdated', {init:true, schema: rootSchema.value, uischema: rootUischema.value})
+    emitSchemaUpdated(true);
   }
 
   // emitter.on('formBuilderModal', (data) => {

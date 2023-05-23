@@ -56,7 +56,7 @@ const formbuilderRenderer = defineComponent({
   },
   methods: {
     onSchemaUpdated(e:any) {
-      if(e?.schema && !e?.init) {
+      if("schema" in e && !e?.init) {
         this.onChange({target:{value:e.schema}} as any);
       }
     }

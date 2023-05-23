@@ -101,7 +101,7 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         }
     }
 
-    generateJsonSchema(): JsonSchema {
+    generateJsonSchema(): JsonSchema|undefined {
         const keyword = CombinatorTool.getKeyword(this.schema) as string;
 
         let schema = {

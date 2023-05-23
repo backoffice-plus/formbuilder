@@ -201,7 +201,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         }
     }
-    generateJsonSchema(): JsonSchema {
+    generateJsonSchema(): JsonSchema|undefined {
 
         let isInlineType;
         let allowInlineType = false;

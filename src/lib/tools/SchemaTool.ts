@@ -6,7 +6,6 @@ import toolComponent from "../../components/tools/schema.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/schema.form.json";
 import _ from "lodash";
-import {createTypeSchemaOnly} from "../generator";
 
 //export const schemaKeywords = ['if', 'then', 'else', 'not', 'contains'];
 
@@ -85,8 +84,90 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         }
     }
 
-    generateJsonSchema(): JsonSchema {
-        return createTypeSchemaOnly(this)
+    generateJsonSchema(): JsonSchema|undefined {
+
+        let schema = this.schema;
+
+        const propertiesDefinedByChilds = [
+            // //schema
+            "if",
+            "then",
+            "else",
+            "not",
+            // "contains",
+            // "propertyNames",
+            // "additionalItems",
+            // "additionalProperties",
+            //
+            // //object
+            //"properties",
+            // "definitions",
+            // "patternProperties",
+            // "dependencies",
+            //
+            // //array
+            // "allOf",
+            // "anyOf",
+            // "oneOf",
+            // "items"
+        ];
+
+        const schemaByKeys = {} as any;
+        propertiesDefinedByChilds.forEach(key => schemaByKeys[key] = undefined)
+
+        this.childs.forEach((childTool: ToolInterface) => {
+            const propertyName = childTool.propertyName;
+            let childSchema = childTool.generateJsonSchema();
+
+            if(childSchema) {
+                if(propertyName && propertiesDefinedByChilds.includes(propertyName)) {
+                        let setSchema = childSchema as any;
+
+                        switch (propertyName) {
+                            case "properties":
+                            case "definitions":
+                            case "patternProperties":
+                            case "dependencies":
+                                if(childSchema.properties) {
+                                    setSchema = childSchema.properties
+                                }
+                                break;
+
+                            case "allOf":
+                            case "anyOf":
+                            case "oneOf":
+                            case "items":
+                                if(childSchema.items) {
+                                    setSchema = childSchema.items as JsonSchema
+                                    childTool.schema = childSchema;
+
+                                    if((childTool as any).isSchemaItem) {
+                                        setSchema = (childSchema.items as any)[0] as JsonSchema
+                                        childTool.schema.items = setSchema;
+                                    }
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        schemaByKeys[propertyName] = setSchema;
+
+                }
+                else {
+                    schema = {
+                        ...schema,
+                        ...childSchema
+                    } as JsonSchema;
+                }
+            }
+        });
+
+
+        schema = {...schema, ...schemaByKeys} as JsonSchema;
+
+        return !_.isEmpty(schema) ? schema : undefined;
     }
 }
 

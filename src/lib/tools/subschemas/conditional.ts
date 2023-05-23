@@ -1,6 +1,7 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
 import type {ToolContext} from "../../models";
+import _ from "lodash";
 
 export const schemaKeys = ['if', 'else', 'then'] as Array<string>;
 
@@ -21,7 +22,7 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
 export const setOptionData = (schema: JsonSchema | any, uischema: UISchemaElement, data: Record<string, any>): void => {
     schemaKeys.forEach((key) => {
         schema[key] = data?.conditional[key]
-        if (undefined === schema[key]) {
+        if (undefined === schema[key] || _.isEmpty(schema[key])) {
             delete schema[key];
         }
     });

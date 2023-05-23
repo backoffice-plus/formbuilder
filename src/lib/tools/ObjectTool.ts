@@ -87,7 +87,7 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
         }
     }
 
-    generateJsonSchema(): JsonSchema {
+    generateJsonSchema(): JsonSchema|undefined {
         const properties = {} as Record<string, JsonSchema>;
         const required = [] as Array<string>;
 

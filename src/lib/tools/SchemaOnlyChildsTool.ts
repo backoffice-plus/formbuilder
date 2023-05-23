@@ -35,6 +35,8 @@ export class SchemaOnlyChildsTool extends SchemaTool {
             // ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
             // ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataDefinitions(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
             _isUischema:'uischema' === context?.builder,
             _isBaseTool:context.baseSchemaTool === this,
         } as any;
@@ -75,6 +77,8 @@ export class SchemaOnlyChildsTool extends SchemaTool {
         // }
 
         subschemas.setOptionDataDefinitions(this.schema, this.uischema, data);
+        subschemas.setOptionDataValidation(this.schema, this.uischema, data);
+        subschemas.setOptionDataconditional(this.schema, this.uischema, data);
 
         // const schema = {...data}
         // delete schema.propertyName;
@@ -106,7 +110,7 @@ export class SchemaOnlyChildsTool extends SchemaTool {
         }
     }
 
-    generateJsonSchema(): JsonSchema {
+    generateJsonSchema(): JsonSchema|undefined {
         const properties = {} as { [property: string]: JsonSchema };
         const required = [] as string[];
 
@@ -116,10 +120,13 @@ export class SchemaOnlyChildsTool extends SchemaTool {
                 return;
             }
 
-            properties[childTool.propertyName] = childTool.generateJsonSchema();
+            let childSchema = childTool.generateJsonSchema();
+            if(childSchema) {
+                properties[childTool.propertyName] = childSchema;
 
-            if (childTool.isRequired) {
-                required.push(childTool.propertyName);
+                if (childTool.isRequired) {
+                    required.push(childTool.propertyName);
+                }
             }
         });
 

@@ -6,39 +6,26 @@
         "type": "object",
         "properties": {
 
-          "maximum": { "type": "number" },
-          "minimum": {"type": "number"},
-          "multipleOf": {"type": "number"},
-          "exclusiveMinimum": {"type": "number"},
-          "exclusiveMaximum": {"type": "number"},
+          "maximum": { "type": "number", "exclusiveMinimum": 0 },
+          "minimum": {"type": "number", "exclusiveMinimum": 0},
+          "multipleOf": {"type": "number", "exclusiveMinimum": 0},
+          "exclusiveMinimum": {"type": "number", "exclusiveMinimum": 0},
+          "exclusiveMaximum": {"type": "number", "exclusiveMinimum": 0},
 
-          "minLength": {
-            "type": "integer"
-          },
-          "maxLength": {
-            "type": "integer"
-          },
+          "minLength": {"type": "integer", "exclusiveMinimum": 0},
+          "maxLength": {"type": "integer", "exclusiveMinimum": 0},
+
           "pattern": {
             "type": "string",
             "format": "regex",
             "description": "eg: \"[abc]+\""
           },
-          "minItems": {
-            "type": "integer"
-          },
-          "maxItems": {
-            "type": "integer"
-          },
-          "uniqueItems": {
-            "type": "boolean"
-          },
+          "minItems": {"type": "integer", "exclusiveMinimum": 0},
+          "maxItems": {"type": "integer", "exclusiveMinimum": 0},
+          "minProperties": {"type": "integer", "exclusiveMinimum": 0},
+          "maxProperties": {"type": "integer", "exclusiveMinimum": 0},
+          "uniqueItems": {"type": "boolean"},
 
-          "minProperties": {
-            "type": "integer"
-          },
-          "maxProperties": {
-            "type": "integer"
-          },
           "patternProperties": {
             "type": "object",
             "additionalProperties": {
