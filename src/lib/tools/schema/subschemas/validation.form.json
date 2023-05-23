@@ -239,18 +239,23 @@
               "hideDroparea": true
             }
           },
-
           {
-            "scope": "#/properties/validation/properties/propertyNames",
-            "type": "Formbuilder",
-            "options": {
-              "baseTool": "schema",
-              "hideToolbar": true,
-              "baseToolProps": {
-                "hideActionbar": true,
-                "prefixLabel": "propertyNames:"
+            "type": "Disclosure",
+            "label": "PropertyNames",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/propertyNames",
+                "type": "Formbuilder",
+                "options": {
+                  "baseTool": "schema",
+                  "hideToolbar": true,
+                  "baseToolProps": {
+                    "hideActionbar": true,
+                    "prefixLabel": "propertyNames:"
+                  }
+                }
               }
-            }
+            ]
           }
         ],
         "rule": {
@@ -263,7 +268,8 @@
       },
 
       {
-        "type": "VerticalLayout",
+        "type": "Disclosure",
+        "label": "Not",
         "elements": [
           {
             "type": "Formbuilder",

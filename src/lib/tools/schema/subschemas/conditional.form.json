@@ -32,7 +32,8 @@
       },
 
       {
-        "type": "VerticalLayout",
+        "type": "Disclosure",
+        "label": "If",
         "elements": [
           {
             "type": "Formbuilder",
@@ -50,7 +51,8 @@
       },
 
       {
-        "type": "VerticalLayout",
+        "type": "Disclosure",
+        "label": "Then",
         "elements": [
           {
             "type": "Formbuilder",
@@ -68,7 +70,8 @@
       },
 
       {
-        "type": "VerticalLayout",
+        "type": "Disclosure",
+        "label": "Else",
         "elements": [
           {
             "type": "Formbuilder",
@@ -78,7 +81,7 @@
               "baseTool": "schema",
               "baseToolProps": {
                 "hideActionbar": true,
-                "prefixLabel": "else:"
+                "prefixLabel": "elsex:"
               }
             }
           }
