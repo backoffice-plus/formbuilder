@@ -233,10 +233,19 @@
           },
 
           {
+            "scope": "#",
+            "type": "Formbuilder",
+            "options": {
+              "hideDroparea": true
+            }
+          },
+
+          {
             "scope": "#/properties/validation/properties/propertyNames",
             "type": "Formbuilder",
             "options": {
               "baseTool": "schema",
+              "hideToolbar": true,
               "baseToolProps": {
                 "hideActionbar": true,
                 "prefixLabel": "propertyNames:"
@@ -261,6 +270,7 @@
             "scope": "#/properties/validation/properties/not",
             "options": {
               "baseTool": "schema",
+              "hideToolbar": true,
               "baseToolProps": {
                 "hideActionbar": true,
                 "prefixLabel": "not:"

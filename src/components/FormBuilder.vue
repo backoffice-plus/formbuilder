@@ -20,48 +20,54 @@
 <!--      </select>-->
 <!--    </div>-->
 
-    <nav>
+    <slot name="toolbar" v-if="!hideToolbar">
+      <nav>
 
-<!--      <div class="tabs">-->
-<!--        <button @click="showBar='schema';" :class="{active:'schema'===showBar}" v-if="!schemaReadOnly">Controls</button>-->
-<!--        <button @click="showBar='uischema';" :class="{active:'uischema'===showBar}" v-if="showBuilder==='uischema'">Layout</button>-->
-<!--        <button @click="showBar='properties';" :class="{active:'properties'===showBar}" v-if="schemaReadOnly">Properties</button>-->
-<!--      </div>-->
+  <!--      <div class="tabs">-->
+  <!--        <button @click="showBar='schema';" :class="{active:'schema'===showBar}" v-if="!schemaReadOnly">Controls</button>-->
+  <!--        <button @click="showBar='uischema';" :class="{active:'uischema'===showBar}" v-if="showBuilder==='uischema'">Layout</button>-->
+  <!--        <button @click="showBar='properties';" :class="{active:'properties'===showBar}" v-if="schemaReadOnly">Properties</button>-->
+  <!--      </div>-->
 
-      <FormBuilderToolbar
-          :toolFinder="toolFinder"
-          :schemaOnly="schemaOnly"
-          :schemaReadOnly="schemaReadOnly"
-          :showBuilder="showBuilder"
-          @drag="e=>drag = !!e"
-      />
+            <FormBuilderToolbar
+                :toolFinder="toolFinder"
+                :schemaOnly="schemaOnly"
+                :schemaReadOnly="schemaReadOnly"
+                :showBuilder="showBuilder"
+                @drag="e=>drag = !!e"
+            />
 
-    </nav>
+      </nav>
+    </slot>
 
-    <template  v-if="currentBaseTool">
-      <component :is="currentBaseTool.importer()"
-                 :tool="currentBaseTool"
-                 :isRoot="true"
-                 class="my-4"
-                 :key="currentBaseTool.propertyName"
-                 v-bind="schemaToolProps"
-      >
+    <slot name="droparea" v-if="!hideDroparea">
+      <template  v-if="currentBaseTool">
+        <component :is="currentBaseTool.importer()"
+                   :tool="currentBaseTool"
+                   :isRoot="true"
+                   :key="currentBaseTool.propertyName"
+                   v-bind="schemaToolProps"
+        >
 
-        <template v-slot:header  v-if="!schemaOnly && !schemaReadOnly">
-          <div class="toolSwitcher">
-            <ToolIcon :tool="baseUiTool" :prefixLabel="'uischema: '" :class="{active:showBuilder==='uischema'}" @click="onChangeBuilderByTab('uischema')" />
-            <ToolIcon :tool="baseSchemaTool" :prefixLabel="'schema: '" :class="{active:showBuilder==='schema'}"  @click="onChangeBuilderByTab('schema')" />
-          </div>
-        </template>
+          <template v-slot:header  v-if="!schemaOnly && !schemaReadOnly">
+            <div class="toolSwitcher">
+              <ToolIcon :tool="baseUiTool" :prefixLabel="'uischema: '" :class="{active:showBuilder==='uischema'}" @click="onChangeBuilderByTab('uischema')" />
+              <ToolIcon :tool="baseSchemaTool" :prefixLabel="'schema: '" :class="{active:showBuilder==='schema'}"  @click="onChangeBuilderByTab('schema')" />
+            </div>
+          </template>
 
-      </component>
-    </template>
+        </component>
+      </template>
+    </slot>
 
   </div>
 
 </template>
 
 <style scoped>
+.formbuilder {
+    @apply flex flex-col gap-4
+}
 nav {
   ---background-color: var(--toolBar-bg);
   background-color: transparent;
@@ -94,7 +100,7 @@ nav {
 
 
 <script setup>
-import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount, nextTick} from 'vue'
+import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount, nextTick, useSlots} from 'vue'
 import {
   FormBuilderBar,
   createJsonForms,
@@ -130,6 +136,11 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['schemaUpdated']);
+const slots = useSlots()
+const slotToolbar = slots?.toolbar && slots.toolbar();
+const slotDroparea = slots?.droparea && slots.droparea();
+const hideToolbar = 0 === slotToolbar?.length
+const hideDroparea = 0 === slotDroparea?.length
 
 const drag = ref(false);
 const jsonFormsUiSchema = ref(props?.jsonForms?.uischema);

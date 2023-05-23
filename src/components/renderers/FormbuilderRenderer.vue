@@ -5,10 +5,13 @@
       :jsonFormsRenderers="jsonFormsRenderers"
       :tools="tools"
       :schemaOnly="true"
-      :schemaTool="baseSchemaTool"
-      :schemaToolProps="baseSchemaToolProps"
+      :schemaTool="appliedOptions?.baseTool"
+      :schemaToolProps="appliedOptions?.baseToolProps"
       @schemaUpdated="onSchemaUpdated"
-  />
+  >
+      <template #toolbar v-if="!!appliedOptions?.hideToolbar"></template>
+      <template #droparea v-if="!!appliedOptions?.hideDroparea"></template>
+  </FormBuilder>
 <!--  :schemaReadOnly="schemaReadOnly"-->
 
 </template>
@@ -50,8 +53,6 @@ const formbuilderRenderer = defineComponent({
       tools: (fbProps.tools ?? []) as ToolInterface[],
       jsonFormsRenderers: fbProps.jsonFormsRenderers ?? [],
       schema: (control.control as any).value.data,
-      baseSchemaTool: control.appliedOptions?.value?.baseTool,
-      baseSchemaToolProps: control.appliedOptions?.value?.baseToolProps,
     };
   },
   methods: {

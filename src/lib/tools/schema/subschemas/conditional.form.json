@@ -24,12 +24,21 @@
     "elements": [
 
       {
+        "scope": "#",
+        "type": "Formbuilder",
+        "options": {
+          "hideDroparea": true
+        }
+      },
+
+      {
         "type": "VerticalLayout",
         "elements": [
           {
             "type": "Formbuilder",
             "scope": "#/properties/conditional/properties/if",
             "options": {
+              "hideToolbar": true,
               "baseTool": "schema",
               "baseToolProps": {
                 "hideActionbar": true,
@@ -47,6 +56,7 @@
             "type": "Formbuilder",
             "scope": "#/properties/conditional/properties/then",
             "options": {
+              "hideToolbar": true,
               "baseTool": "schema",
               "baseToolProps": {
                 "hideActionbar": true,
@@ -64,6 +74,7 @@
             "type": "Formbuilder",
             "scope": "#/properties/conditional/properties/else",
             "options": {
+              "hideToolbar": true,
               "baseTool": "schema",
               "baseToolProps": {
                 "hideActionbar": true,

@@ -1,5 +1,5 @@
 <template>
-  <div class="schemaTool" :class="['rootItem', {isRoot:isRoot}]">
+  <div class="schemaTool " :class="['rootItem', {isRoot:isRoot}]">
 
     <slot name="header">
       <ToolIcon :tool="tool" :isToolbar="isToolbar" :prefixLabel="prefixLabel" />
