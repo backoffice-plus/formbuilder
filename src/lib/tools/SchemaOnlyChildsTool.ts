@@ -104,11 +104,13 @@ export class SchemaOnlyChildsTool extends AbstractTool implements ToolInterface 
 
     toolbarOptions(): Record<string, any> {
         return {
-            title: 'Schema Onyl Childs',
+            //title: 'Schema Onyl Childs',
+            title: 'Properties or Items',
             //icon: 'mdi:code-not-equal',
-            icon: 'mdi:folder-text',
+            icon: 'mdi:folder-text',//'mdi:folder-table',
+            //icon: 'mdi:format-list-group',
             //  labelAtDropArea:this.keyword ?? 'anyOf',
-            //hideToolAtBar: true,
+            hideToolAtBar: true,
 
         }
     }

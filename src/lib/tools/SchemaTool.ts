@@ -77,9 +77,11 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         return {
             title: 'Schema',
             //icon: 'mdi:code-not-equal',
-            icon: 'mdi:folder-pound',
+            //icon: 'mdi:folder-pound',
+            //icon: 'mdi:code-block-braces',
+            icon: 'mdi:file-code',//-outline
             //  labelAtDropArea:this.keyword ?? 'anyOf',
-            //hideToolAtBar: true,
+            hideToolAtBar: true,
 
         }
     }
