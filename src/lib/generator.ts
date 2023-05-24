@@ -281,6 +281,11 @@ export const setRequiredToSchema = (propertyName: string, schema: JsonSchema, is
 }
 export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchema): void => {
 
+    let set = tool.generateJsonSchema();
+    if(undefined === set) {
+        return
+    }
+
     //console.log("setItemSchemaToSchema",tool,rootSchema);
 
     const subpaths = getAllSubpaths(tool.propertyName, 0);
@@ -294,9 +299,6 @@ export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchem
     });
 
     let path = denormalizePath(tool.propertyName);
-    let set = tool.generateJsonSchema();
-
-    //console.log("setitem",set);
 
     // //array items :TODO find better implementation (its not working for multiple nested objects)
     // const isRef = undefined !== tool?.schema?.items?.$ref;
