@@ -24,7 +24,6 @@ export class ControlTool extends AbstractTool implements ToolInterface {
 
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
-        console.log("context",context)
         const data = {
             propertyName: this.propertyName,
             type: this.schema.type,

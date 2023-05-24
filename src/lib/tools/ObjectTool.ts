@@ -30,36 +30,43 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
 
-        const schema = {
-            additionalProperties: this.schema?.additionalProperties,
+        let uidata = {};
+        const isUischema = 'uischema' === context?.builder;
+        if(isUischema) {
+            uidata = {
+                ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
+                ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
+            }
         }
 
         return {
             propertyName: this.propertyName,
             type: this.schema.type,
-            schema: schema,
-            ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
-            ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
+            schema: {
+                additionalProperties: this.schema?.additionalProperties,
+            },
+            ...subschemas.prepareOptionDataDefinitions(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
-            ...subschemas.prepareOptionDataDefinitions(context, this.schema, this.uischema),
-            _isUischema:'uischema' === context?.builder
+            ...uidata,
+            _isUischema:isUischema
         } as any;
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         updatePropertyNameAndScope(data?.propertyName, this)
+        this.schema.additionalProperties = data.schema.additionalProperties;
 
-        subschemas.setOptionDataRule(this.schema, this.uischema, data);
-        subschemas.setOptionDataStyles(this.schema, this.uischema, data);
+        const isUischema = 'uischema' === context?.builder;
+
+        if(isUischema) {
+            subschemas.setOptionDataRule(this.schema, this.uischema, data);
+            subschemas.setOptionDataStyles(this.schema, this.uischema, data);
+        }
+
         subschemas.setOptionDataValidation(this.schema, this.uischema, data);
         subschemas.setOptionDataconditional(this.schema, this.uischema, data);
         subschemas.setOptionDataDefinitions(this.schema, this.uischema, data);
-
-        this.schema = {
-            ...this.schema,
-            ...data.schema
-        };
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
@@ -97,10 +104,13 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
                 return;
             }
 
-            properties[childTool.propertyName] = childTool.generateJsonSchema();
+            let childSchema = childTool.generateJsonSchema();
+            if(childSchema) {
+                properties[childTool.propertyName] = childSchema;
 
-            if (childTool.isRequired) {
-                required.push(childTool.propertyName);
+                if (childTool.isRequired) {
+                    required.push(childTool.propertyName);
+                }
             }
         });
 

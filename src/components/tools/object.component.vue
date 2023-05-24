@@ -2,9 +2,12 @@
   <div class="objectTool" :class="['rootItem', {isRoot:isRoot}]">
 
     <slot name="header">
-      <ToolIcon :tool="tool" :isToolbar="isToolbar">
+      <ToolIcon :tool="tool" :isToolbar="isToolbar" :prefixLabel="isRoot ? 'schema:' : ''">
         <template v-slot:droparea>
-          <template v-if="!isInlineType">
+            <template v-if="isRoot">
+                Object
+            </template>
+          <template v-else-if="!isInlineType && !isRoot">
             <b>{{ tool.propertyName }}</b>
           </template>
           <SchemaFeatures :tool="tool" />
@@ -80,7 +83,7 @@
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
 import {deleteToolInChilds} from '../../lib/formbuilder'
-import {computed, nextTick, onMounted, ref} from "vue";
+import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {initObjectElements} from "../../lib/initializer";
 import ToolIcon from "./utils/ToolIcon.vue";
@@ -110,11 +113,11 @@ onMounted(() => {
 })
 
 const onDropAreaChange = (e) => {
-  if(e.added?.element?.parentTool) {
-    e.added.element.parentTool = props.tool;
-  }
-  props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged(e);
+    if(e.added?.element) {
+        e.added.element.parentTool = props.tool;
+    }
+    props.tool.childs = childTools.value;
+    fb?.exposed?.onDropAreaChanged(e);
 };
 
 const addItem = (type) => {
@@ -135,10 +138,12 @@ const allowedChild = (tool) => {
 }
 
 const showDragClass = computed(() => {
-  return allowedChild(getToolDragging());
+    const tool = getToolDragging();
+    return tool && allowedChild(unref(tool));
 })
 const groupPut = (from, to, node, dragEvent) => {
-  return allowedChild(node._underlying_vm_);
+    const tool = node._underlying_vm_;
+    return tool && allowedChild(unref(tool));
 };
 
 const onDeleteByTool = async (e) => {
