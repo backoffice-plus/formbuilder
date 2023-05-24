@@ -54,18 +54,12 @@ export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI, r
 }
 
 export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema|undefined = undefined, uischema: UISchemaElement|undefined = undefined): ToolInterface => {
-    console.log("...createBaseTool", schema, uischema);
-
     if (undefined === schema) {
         schema = generateJsonSchema({});
-        console.log("...createBaseTool NOT SCHEMA", schema);
     }
     if (undefined === uischema) {
         uischema = generateDefaultUISchema(schema);
-        console.log("...createBaseTool NOT  UISCHEMA", uischema);
     }
-
-
     return toolFinder.findBaseTool(schema, uischema);
 };
 
