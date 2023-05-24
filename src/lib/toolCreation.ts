@@ -35,20 +35,36 @@ export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI, r
     const schemaTool = props.schemaTool;
     const schemaToolProps = props.schemaToolProps;
 
+    let uischema = undefined;
+    if(!schemaOnly) {
+        if(schemaReadOnly) {
+            uischema = createBaseTool(toolFinder);
+        }
+        else {
+            uischema = createBaseTool(toolFinder, rootSchema, rootUischema);
+        }
+    }
+
     return {
         //schema: cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema),
         schema: createSchemaTool(rootSchema, schemaTool, schemaToolProps),
-        uischema: !schemaOnly ? createBaseTool(toolFinder, !schemaReadOnly ? rootSchema : undefined,schemaReadOnly ? rootUischema : undefined) : {},
+        //uischema: !schemaOnly ? createBaseTool(toolFinder, !schemaReadOnly ? rootSchema : undefined, !schemaReadOnly ? rootUischema : undefined) : {},
+        uischema: uischema,
     }
 }
 
-export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema|undefined, uischema: UISchemaElement|undefined): ToolInterface => {
+export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema|undefined = undefined, uischema: UISchemaElement|undefined = undefined): ToolInterface => {
+    console.log("...createBaseTool", schema, uischema);
+
     if (undefined === schema) {
         schema = generateJsonSchema({});
+        console.log("...createBaseTool NOT SCHEMA", schema);
     }
     if (undefined === uischema) {
         uischema = generateDefaultUISchema(schema);
+        console.log("...createBaseTool NOT  UISCHEMA", uischema);
     }
+
 
     return toolFinder.findBaseTool(schema, uischema);
 };
