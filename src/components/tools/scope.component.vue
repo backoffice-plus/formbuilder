@@ -14,6 +14,15 @@
 
       <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot"/>
 
+        <!-- fake dropArea if tool isRoot -->
+        <div class="dropArea isControl" v-if="isRoot">
+
+            <!-- fake item -->
+            <div class="scopeTool dropItem !cursor-auto" >
+                <ToolIcon :tool="tool"> <template v-slot:droparea><pre>{{ scope }}</pre></template></ToolIcon>
+            </div>
+        </div>
+
     </div>
 
   </div>

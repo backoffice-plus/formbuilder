@@ -77,6 +77,9 @@
 
   gap-2
 }
+.dropArea.isControl {
+    min-height: 80px;
+}
 
 .dropArea.drag {
   border-color:var(--dropArea-dragBorder);

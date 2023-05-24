@@ -67,6 +67,10 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
             icon: 'mdi:pound-box',
         }
     }
+
+    generateJsonSchema(): JsonSchema|undefined {
+        return undefined
+    }
 }
 
 export const scopeTool = new ScopeTool();
