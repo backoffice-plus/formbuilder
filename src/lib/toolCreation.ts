@@ -4,11 +4,11 @@ import type {formbuilderPropsI, ToolContext, ToolInterface} from "./models";
 import type {JsonSchema, UISchemaElement, Layout} from "@jsonforms/core";
 import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import {fromScopeToProperty} from './normalizer';
-import {ObjectTool} from "./tools/ObjectTool";
+import {objectTool, ObjectTool} from "./tools/ObjectTool";
 import type {ToolFinder} from "./ToolFinder";
 import {SchemaTool, schemaTool} from "./tools/SchemaTool";
-import {SchemaOnlyChildsTool} from "./tools/SchemaOnlyChildsTool";
 import {formbuilderProps} from "./models";
+import {arrayTool} from "./tools/ArrayTool";
 
 export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI, rootSchema:JsonSchema, rootUischema: Layout) => {
     // if(props.schemaOnly) {
@@ -62,7 +62,17 @@ export const createSchemaTool = (schema: JsonSchema, baseToolName: string | unde
             break;
 
         default:
-            clone = cloneToolWithSchema(new SchemaOnlyChildsTool(), schema);
+
+            //:TODO do we need SchemaOnlyChildsTool????
+            //clone = cloneToolWithSchema(new SchemaOnlyChildsTool(), schema);
+
+            if('array' === schema?.type) {
+                clone = cloneToolWithSchema(arrayTool, schema);
+            }
+            else {
+                //:TODO are any other types relevant?!
+                clone = cloneToolWithSchema(objectTool, schema);
+            }
             break;
     }
 

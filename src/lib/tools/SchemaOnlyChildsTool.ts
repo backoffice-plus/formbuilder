@@ -150,8 +150,6 @@ export class SchemaOnlyChildsTool extends AbstractTool implements ToolInterface 
             schema.items = items[0];
         }
 
-        console.log("SchemaOnlyChildsTool.generateJsonSchema", schema)
-
         return schema;
     }
 }

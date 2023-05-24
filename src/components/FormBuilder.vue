@@ -116,8 +116,6 @@ import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
 import {generateJsonSchema} from "@jsonforms/core";
 import {getFormbuilder, onDragGetTool} from "../lib/vue";
 import {ToolFinder} from "../lib/ToolFinder";
-import {SchemaTool} from "../lib/tools/SchemaTool";
-import {SchemaOnlyChildsTool} from "../lib/tools/SchemaOnlyChildsTool";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
 import {ObjectTool} from "../lib/tools/ObjectTool";
 import FormBuilderToolbar from "./FormBuilderToolbar.vue";
