@@ -282,11 +282,16 @@ const updateJsonForm = (e) => {
     rootUischema.value = undefined;
   }
   else {
-    const {schema, uischema} = createJsonForms(baseUiTool.value, baseSchemaTool.value, rootSchema.value, props.schemaReadOnly);
-    rootSchema.value = schema;
-    rootUischema.value = uischema;
+      if('schema' === showBuilder.value) {
+          rootSchema.value = baseSchemaTool.value.generateJsonSchema();
+      }
+      else {
+          const {schema, uischema} = createJsonForms(baseUiTool.value, baseSchemaTool.value, rootSchema.value, props.schemaReadOnly);
+          rootSchema.value = schema;
+          rootUischema.value = uischema;
 
-    baseSchemaTool.value.schema = rootSchema.value;
+          baseSchemaTool.value.schema = rootSchema.value;
+      }
   }
 
   // switch (showBuilder.value) {
