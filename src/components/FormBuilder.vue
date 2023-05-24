@@ -193,8 +193,6 @@ const currentBaseTool = computed(() => showBuilder.value === 'uischema' ? baseUi
 
 const onChangeBuilder = (e) => {
 
-    console.log("FB onChangeBuilder","props",props);
-
   /**
    * :INFO after changing builder -> baseTools must be recreated to create new childs based on the new schema
    */
@@ -334,7 +332,7 @@ const updateJsonForm = (e) => {
 
   const emitUpdated = schemaChanged || uischemaChanged || e.mounted || e.modal;
   if(emitUpdated) {
-    emitSchemaUpdated(false);
+    emitSchemaUpdated();
   }
 
 
@@ -432,7 +430,7 @@ const updateJsonFormDebounced = (e) => _.debounce(() => {
   // window.setTimeout(updateJsonForm, 100);
 },100,{leading:false, trailing:true})()
 
-const emitSchemaUpdated = (init) => {
+const emitSchemaUpdated = (init=false) => {
     const args = {
         schema: JSON.parse(JSON.stringify(rootSchema.value)), //to remove undefined vars
         uischema: rootUischema.value
@@ -446,14 +444,10 @@ const emitSchemaUpdated = (init) => {
         args.schema = undefined;
     }
 
-    console.log('schemaUpdated', args)
     emit('schemaUpdated', args)
 }
 
 onBeforeMount(() => {
-  const fb = getFormbuilder();
-  //console.log("FB.onBeforeMount", "root fb", fb)
-
   //init baseTool
   showBuilder.value = props?.schemaOnly ? 'schema' : 'uischema';
   rootSchema.value = props?.schema ?? props?.jsonForms?.schema;
@@ -461,9 +455,10 @@ onBeforeMount(() => {
   onChangeBuilder({target:{value:showBuilder.value}})
 
 
-  //trigger update if there are no elements (that would emit 'formBuilderUpdated')
-  const hasElements = (props.jsonForms?.uischema?.elements?.length ?? 0) > 0;
-  if(!hasElements) {
+  //trigger update if there are no elements (that would emit 'schemaUpdated')
+  const hasElements = (rootSchema.value?.elements?.length ?? 0) > 0;
+  const hasUiElements = (rootUischema.value?.elements?.length ?? 0) > 0;
+  if(!hasUiElements && 'uischema' === showBuilder.value) {
     const currentBaseTool = ('schema' === showBuilder.value ? baseSchemaTool : baseUiTool).value;
     updateJsonForm({mounted:{element:currentBaseTool}});
     emitSchemaUpdated(true);
