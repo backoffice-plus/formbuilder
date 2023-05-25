@@ -231,14 +231,6 @@
               "condition": {"scope": "#"}
             }
           },
-
-          {
-            "scope": "#",
-            "type": "Formbuilder",
-            "options": {
-              "hideDroparea": true
-            }
-          },
           {
             "type": "Disclosure",
             "label": "PropertyNames",
@@ -266,6 +258,52 @@
           }
         }
       },
+
+
+
+
+
+      {
+        "scope": "#",
+        "type": "Formbuilder",
+        "options": {
+          "hideDroparea": true
+        }
+      },
+
+      {
+        "type": "VerticalLayout",
+        "elements": [
+          {
+            "type": "Disclosure",
+            "label": "PropertyNames",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/propertyNames",
+                "type": "Formbuilder",
+                "options": {
+                  "baseTool": "schema",
+                  "hideToolbar": true,
+                  "baseToolProps": {
+                    "hideActionbar": true,
+                    "prefixLabel": "propertyNames:"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/type",
+            "schema": {"enum": ["object"]}
+          }
+        }
+      },
+
+
+
 
       {
         "type": "Disclosure",
