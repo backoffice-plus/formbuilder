@@ -6,35 +6,6 @@ import type {JsonSchema} from "@jsonforms/core";
 import type {JsonFormsInterface, JsonFormsUISchema, ToolInterface} from "./models";
 import {SchemaTool} from "./tools/SchemaTool";
 
-/**
- * @deprecated
- */
-export const generateSchemaByTool = (tool: ToolInterface): JsonSchema => {
-
-    return tool.generateJsonSchema();
-
-    // if(tool instanceof SchemaTool) {
-    //     return createTypeSchemaOnly(tool);
-    // }
-    // else if ('object' === tool.schema?.type) {
-    //     return createTypeObjectSchemaOnly(tool);
-    // }
-    //
-    // else if ('array' === tool.schema?.type && tool.childs?.length) {
-    //     return createTypeArraySchemaOnly(tool);
-    // }
-    //
-    // else  {
-    //     const keyword = CombinatorTool.getKeyword(tool.schema);
-    //     if(keyword) {
-    //         return createCombinatorSchema(tool, keyword);
-    //     }
-    // }
-    //
-    // return tool.schema;
-}
-
-
 export const generateSchemaForUiSchema = (tool: ToolInterface, rootSchema: JsonSchema): void => {
 
     const schema = tool?.schema;
@@ -62,16 +33,6 @@ export const generateSchemaForUiSchema = (tool: ToolInterface, rootSchema: JsonS
         setItemSchemaToSchema(tool, rootSchema);
     }
 
-}
-
-export const createJsonForms = (tool: ToolInterface, baseSchemaTool:ToolInterface, rootSchema: JsonSchema, schemaReadOnly: boolean = false): JsonFormsInterface => {
-
-    const schema = schemaReadOnly ? rootSchema : baseSchemaTool.generateJsonSchema()
-
-    return {
-        schema: schema,
-        uischema: createJsonUiSchema(tool, schema, schemaReadOnly)
-    } as JsonFormsInterface;
 }
 
 export const cleanSchema = (tool: ToolInterface) => {
