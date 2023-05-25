@@ -1,14 +1,16 @@
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
+import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/object.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/object.form.json";
 import jsonFormAsSchemaChild from "./schema/object.asSchemaChild.form.json";
 import {rankWith, setSchema} from "@jsonforms/core";
-import type {JsonSchema} from "@jsonforms/core";
+import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
 import _ from "lodash";
+import {cloneToolWithSchema} from "../toolCreation";
+import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
 
 export class ObjectTool extends AbstractTool implements ToolInterface {
 
@@ -121,6 +123,39 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
             required: required.length ? required : undefined,
             //...conditionalSchemas
         } as JsonSchema;
+    }
+
+
+    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+        const tools = [] as Array<ToolInterface>;
+
+        //for moving existing tools to another list
+        if(this.childs?.length) {
+            return this.childs;
+        }
+
+
+        const properties = this.schema?.properties ?? {};
+        !_.isEmpty(properties) && Object.keys(properties).forEach((propertyName:string) => {
+            const itemSchema = properties[propertyName];
+            const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+            //const clone = cloneToolWithSchema(schemaTool, itemSchema, {});
+            const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
+            clone.propertyName = propertyName;
+
+            //required
+            const required = getRequiredFromSchema(clone.propertyName, this.schema);
+            if (required?.includes(getPlainProperty(clone.propertyName))) {
+                clone.isRequired = true;
+            }
+
+            tools.push(clone);
+        });
+
+        //:TODO remove
+        //schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
+
+        return tools;
     }
 }
 

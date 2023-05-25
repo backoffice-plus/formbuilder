@@ -46,39 +46,6 @@ export const initElements = (toolFinder: ToolFinder, tool: ToolInterface): Array
     return tools;
 };
 
-export const initObjectElements = (toolFinder: ToolFinder, tool: ToolInterface): Array<ToolInterface> => {
-    const tools = [] as Array<ToolInterface>;
-
-    //for moving existing tools to another list
-    if(tool.childs?.length) {
-        return tool.childs;
-    }
-
-
-    const properties = tool.schema?.properties ?? {};
-    !_.isEmpty(properties) && Object.keys(properties).forEach((propertyName:string) => {
-        const itemSchema = properties[propertyName];
-        const uischema = {type:'Control',scope:'#'} as UISchemaElement;
-        //const clone = cloneToolWithSchema(schemaTool, itemSchema, {});
-        const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
-        clone.propertyName = propertyName;
-
-        //required
-        const required = getRequiredFromSchema(clone.propertyName, tool.schema);
-        if (required?.includes(getPlainProperty(clone.propertyName))) {
-            clone.isRequired = true;
-        }
-
-        tools.push(clone);
-    });
-
-    //:TODO remove
-    //schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
-
-    return tools;
-};
-
-
 export const initSchemaElements = (toolFinder: ToolFinder, tool: ToolInterface): Array<ToolInterface> => {
     const tools = [] as Array<ToolInterface>;
 

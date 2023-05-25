@@ -76,7 +76,6 @@ import ToolIcon from "./utils/ToolIcon.vue";
 import Actions from "./utils/Actions.vue";
 import _ from "lodash";
 import {SchemaTool} from "../../lib/tools/SchemaTool";
-import {initObjectElements} from "../../lib/initializer";
 
 const props = defineProps({...toolComponentProps()})
 
