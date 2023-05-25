@@ -177,6 +177,8 @@ export const generateOnModal = (uiTool: ToolInterface, baseUiTool: ToolInterface
     //const schemaTool = toolFinder.findMatchingToolAndClone({}, set, {type: 'Control', scope: '#'});
     //schemaTool.propertyName = uiTool.propertyName;
 
-    uiTool.scopeTool.schema = set;
-    uiTool.scopeTool.propertyName = uiTool.propertyName;
+    if(uiTool.scopeTool) {
+        uiTool.scopeTool.schema = set;
+        uiTool.scopeTool.propertyName = uiTool.propertyName;
+    }
 };

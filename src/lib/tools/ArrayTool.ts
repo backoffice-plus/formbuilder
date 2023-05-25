@@ -223,9 +223,9 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
 
         if (hasChilds) {
-            const schemas = this.childs.map((childTool: ToolInterface) => {
-                return childTool.generateJsonSchema();
-            });
+            const schemas = this.childs
+                .map((childTool: ToolInterface) => childTool.generateJsonSchema())
+                .filter(schema => schema) as JsonSchema[];
 
             if(parentIsSchema) {
                 items = schemas;
