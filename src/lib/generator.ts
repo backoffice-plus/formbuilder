@@ -104,6 +104,25 @@ export const generateJsonSchemaByUi = (e:any, baseUiTool: ToolInterface, baseSch
         rootSchema = baseSchemaTool.generateJsonSchema();
 
     }
+    else if("removed" in e) {
+        const uischemaTool = e.removed.element;
+
+        const parentTool = uischemaTool.parentTool?.scopeTool ?? baseSchemaTool;
+        if(parentTool) {
+            parentTool.childs = parentTool.childs.filter(tool => tool.propertyName !== uischemaTool.propertyName);
+        }
+
+        rootSchema = baseSchemaTool.generateJsonSchema();
+
+    }
+    else if("moved" in e) {
+        const uischemaTool = e.moved.element;
+        const oldIndex = e.moved.oldIndex;
+        const newIndex = e.moved.newIndex;
+
+        console.log("generateJsonSchemaByUi move #:TODO",e.moved);
+        rootSchema = schema;
+    }
     else {
         console.log("generateJsonSchemaByUi #:TODO for event:",e);
         rootSchema = schema;

@@ -228,7 +228,7 @@ const onDeleteByTool = async (e) => {
   e.tool && deleteToolInChilds(e.tool, childTools.value)
       .then(newChildTools => {
         childTools.value = newChildTools;
-        onDropAreaChange(e);
+        onDropAreaChange({removed: {element:e.tool}});
       })
 };
 
