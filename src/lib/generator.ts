@@ -89,7 +89,7 @@ export const generateJsonSchemaByUi = (e:any, baseUiTool: ToolInterface, baseSch
     const schema = baseSchemaTool.generateJsonSchema();
 
     if("added" in e) {
-        const uischemaTool = e.added.element;
+        const uischemaTool = e.added.element as ToolInterface;
         const newIndex = e.added.newIndex;
 
         generateOnAdded(uischemaTool, baseUiTool, baseSchemaTool, toolFinder);
@@ -105,7 +105,7 @@ export const generateJsonSchemaByUi = (e:any, baseUiTool: ToolInterface, baseSch
 
     }
     else if("removed" in e) {
-        const uischemaTool = e.removed.element;
+        const uischemaTool = e.removed.element as ToolInterface;
 
         const parentTool = uischemaTool.parentTool?.scopeTool ?? baseSchemaTool;
         if(parentTool) {
@@ -116,7 +116,7 @@ export const generateJsonSchemaByUi = (e:any, baseUiTool: ToolInterface, baseSch
 
     }
     else if("moved" in e) {
-        const uischemaTool = e.moved.element;
+        const uischemaTool = e.moved.element as ToolInterface;
         const oldIndex = e.moved.oldIndex;
         const newIndex = e.moved.newIndex;
 
