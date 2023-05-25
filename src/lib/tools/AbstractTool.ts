@@ -1,6 +1,7 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {RankedTester} from "@jsonforms/core/src/testers/testers";
 import type {JsonFormsInterface, JsonFormsUISchema, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
+import _ from "lodash";
 
 export abstract class AbstractTool implements ToolInterface {
 
@@ -52,7 +53,11 @@ export abstract class AbstractTool implements ToolInterface {
         return this.schema
     }
     generateUiSchema(): JsonFormsUISchema|undefined {
-        return this.uischema
+        const uischema = _.cloneDeep(this.uischema);
+        if(_.isEmpty(uischema.options)) {
+            delete uischema.options;
+        }
+        return uischema;
     }
     initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
         return []

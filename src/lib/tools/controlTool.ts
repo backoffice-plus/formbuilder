@@ -88,6 +88,10 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         subschemas.setOptionDataconditional(this.schema, this.uischema, data);
 
         this.isRequired = data.required;
+
+        if(false === this.uischema?.options?.multi) {
+            delete this.uischema.options.multi;
+        }
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {

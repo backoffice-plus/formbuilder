@@ -115,6 +115,9 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
                 .map((t: ToolInterface) => t.generateUiSchema())
                 .filter((uischema:any) => uischema)
         }
+        if(_.isEmpty(uischema.options)) {
+            delete uischema.options;
+        }
         return uischema;
     }
 }
