@@ -4,7 +4,7 @@ import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import {AbstractTool} from "./AbstractTool";
 import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
-import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
+import type {JsonFormsInterface, JsonFormsUISchema, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {schema, uischema} from "./schema/layout.form.json";
 import * as subschemas from "./subschemas";
 import {getPlainProperty, getRequiredFromSchema, normalizePath, normalizeScope} from "../normalizer";
@@ -104,6 +104,18 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
         //schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
 
         return tools;
+    }
+
+
+    generateUiSchema(): JsonFormsUISchema | undefined {
+        const uischema = _.cloneDeep(this.uischema);
+        if(this.childs.length) {
+            uischema.elements = this.childs
+                .filter((t:ToolInterface) => "scope" !== t.uischema.type)
+                .map((t: ToolInterface) => t.generateUiSchema())
+                .filter((uischema:any) => uischema)
+        }
+        return uischema;
     }
 }
 

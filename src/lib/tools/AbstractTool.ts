@@ -49,6 +49,9 @@ export abstract class AbstractTool implements ToolInterface {
     generateJsonSchema(): JsonSchema|undefined {
         return this.schema
     }
+    generateUiSchema(): JsonFormsUISchema|undefined {
+        return this.uischema
+    }
     initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
         return []
     }
