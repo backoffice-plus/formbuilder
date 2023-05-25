@@ -107,6 +107,9 @@ const keyword = computed(() => {
 });
 
 const onDropAreaChange = (e) => {
+  if(e.added?.element) {
+      e.added.element.parentTool = props.tool;
+  }
   props.tool.childs = childTools.value;
   fb?.exposed?.onDropAreaChanged(e);
 };
