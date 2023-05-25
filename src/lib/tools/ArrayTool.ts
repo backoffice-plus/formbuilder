@@ -264,7 +264,10 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         //items can be schema instead of schemas[]
         let items =  this.schema?.items as any[];
-        if(!_.isArray(items)) {
+        if(_.isEmpty(items)) {
+            items = []
+        }
+        else if(!_.isArray(items)) {
             items = [items];
         }
 
