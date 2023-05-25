@@ -50,6 +50,7 @@ export interface ToolFinderInterface {
     //:TODO add all methods from ToolFinder
     findMatchingToolAndClone(schema: any, itemSchema: any, itemUischema: any): ToolInterface
     findMatchingTool(schema: any, itemSchema: JsonSchema, itemUischema: any): ToolInterface
+    findLayoutToolByUiType(uiType: string): ToolInterface | undefined
 }
 
 // @ts-ignore

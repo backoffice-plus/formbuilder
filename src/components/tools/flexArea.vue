@@ -136,7 +136,6 @@
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {  initElements} from "../../lib/initializer";
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
 import {deleteToolInChilds} from '../../lib/formbuilder'
@@ -165,7 +164,7 @@ onMounted(() => {
 
 const init = () => {
   childTools.value = [];
-  childTools.value.push(...initElements(toolFinder, props.tool))
+  childTools.value.push(...props.tool.initChilds(toolFinder))
 
   if (childTools.value.length) {
     nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))

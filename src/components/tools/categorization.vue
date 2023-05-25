@@ -117,7 +117,6 @@
  */
 import {deleteToolInChilds} from "../../lib/formbuilder";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
-import {initElements} from "../../lib/initializer";
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
 import {ref, computed, onMounted, nextTick} from 'vue';
@@ -143,7 +142,7 @@ const onDrag = fb?.exposed.onToolDrag;
 onMounted(() => {
   if (!props.isToolbar) {
     if (props?.tool?.uischema?.elements?.length) {
-      childTools.value.push(...initElements(toolFinder, props.tool));
+      childTools.value.push(...props.tool.initChilds(toolFinder));
 
       if (childTools.value.length) {
         nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))

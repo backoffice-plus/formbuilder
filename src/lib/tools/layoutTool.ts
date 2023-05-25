@@ -4,9 +4,13 @@ import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import {AbstractTool} from "./AbstractTool";
 import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
+import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {schema, uischema} from "./schema/layout.form.json";
 import * as subschemas from "./subschemas";
+import {getPlainProperty, getRequiredFromSchema, normalizePath, normalizeScope} from "../normalizer";
+import _ from "lodash";
+import {cloneToolWithSchema} from "../toolCreation";
+import {unknownTool} from "./unknownTool";
 
 export class VerticalLayout extends AbstractTool implements ToolInterface {
 
@@ -59,6 +63,47 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
             title: this.uischema.type,
             icon: isVertical ? 'mdi:land-rows-horizontal' : 'mdi:land-rows-vertical',
         }
+    }
+
+
+    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+        const tools = [] as any;
+
+        //for moving existing tools to another list
+        if(this.childs?.length) {
+            return this.childs;
+        }
+
+        this.uischema?.elements?.forEach((itemUischema: any) => {
+            let clone;
+
+            //const isLayout = undefined !== itemUischema.elements
+            const isScoped = itemUischema.scope;
+
+            if(isScoped) {
+                const propertyPath = normalizeScope(itemUischema.scope);
+                const itemSchema = _.get(this.schema, propertyPath);
+
+                clone = cloneToolWithSchema(toolFinder.findMatchingTool(this.schema, itemSchema, itemUischema), itemSchema, itemUischema)
+                clone.propertyName = normalizePath(propertyPath);
+
+                //required
+                const required = getRequiredFromSchema(clone.propertyName, this.schema);
+                if (required?.includes(getPlainProperty(clone.propertyName))) {
+                    clone.isRequired = true;
+                }
+            }
+            else {
+                clone = cloneToolWithSchema(toolFinder.findLayoutToolByUiType(itemUischema.type) ?? unknownTool, this.schema, itemUischema);
+            }
+
+            tools.push(clone);
+        });
+
+        //:TODO remove
+        //schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
+
+        return tools;
     }
 }
 
