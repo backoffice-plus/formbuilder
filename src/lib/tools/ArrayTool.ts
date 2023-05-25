@@ -5,7 +5,7 @@ import toolComponent from "../../components/tools/array.component.vue";
 import {schema, uischema} from "./schema/array.schema";
 import jsonFormsSchema from "./schema/array.schemaBuilder.form.json";
 import jsonFormsAsSchemaChild from "./schema/array.asSchemaChild.form.json";
-import {getItemsType, resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import _ from "lodash";
 import {AbstractTool} from "./AbstractTool";
 import * as subschemas from "./subschemas";
@@ -115,7 +115,8 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, this)
+        this.propertyName = data?.propertyName ?? '';
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
         //this.isInlineType = data?.asInlineType;
 

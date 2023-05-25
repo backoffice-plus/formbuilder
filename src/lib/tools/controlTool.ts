@@ -5,7 +5,7 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {schema, uischema,uischemaReadOnly} from "./schema/control.schema";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import _ from "lodash";
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
@@ -69,11 +69,12 @@ export class ControlTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, this)
 
+        this.propertyName = data?.propertyName ?? '';
         this.schema.type = data.type;
         this.schema.format = data.format;
         this.uischema.options = data.options ?? {};
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
         /** @ts-ignore */
         this.schema.contentMediaType = data.contentMediaType;

@@ -3,7 +3,7 @@ import type { JsonSchema, UISchemaElement} from "@jsonforms/core";
 import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schema.component.vue";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/schema.form.json";
 import _ from "lodash";
 
@@ -42,7 +42,8 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, this)
+        this.propertyName = data?.propertyName ?? '';
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
         //
         // const keyword = data?.keyword;
         // const keywordOld = this.keyword;

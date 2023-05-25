@@ -8,7 +8,7 @@ import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normal
 import {subschemaMap} from "./tools/subschemas";
 
 
-
+/** @deprecated **/
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     //:INFO disabled bc baseSchemaTool has no propertyName
     // if (!propertyName) {
@@ -102,7 +102,6 @@ export const findAllProperties = (schema: JsonSchema, rootPath = ""): Record<str
 
     return all;
 }
-
 
 export const findAllScopes = (uischema: ControlElement | Layout | UISchemaElement): Array<string> => {
 

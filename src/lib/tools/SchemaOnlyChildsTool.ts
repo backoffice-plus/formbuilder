@@ -3,7 +3,7 @@ import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schemaOnlyChilds.component.vue";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/schemaOnlyChilds.form.json";
 import _ from "lodash";
 import {SchemaTool} from "./SchemaTool";
@@ -66,7 +66,8 @@ export class SchemaOnlyChildsTool extends AbstractTool implements ToolInterface 
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, this)
+        this.propertyName = data?.propertyName ?? '';
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
         this.schema.type = data.type;
         this.schema.additionalProperties = data.additionalProperties;
         //

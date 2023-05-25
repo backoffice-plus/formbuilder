@@ -5,7 +5,7 @@ import scopeComp from "../../components/tools/scope.component.vue";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import jsonForms from "./schema/scope.form.json";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import {fromPropertyToScope} from "../normalizer";
 
 export class ScopeTool extends AbstractTool implements ToolInterface {

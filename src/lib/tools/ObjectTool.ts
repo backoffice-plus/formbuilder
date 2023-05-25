@@ -1,7 +1,7 @@
 import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/object.component.vue";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/object.form.json";
 import jsonFormAsSchemaChild from "./schema/object.asSchemaChild.form.json";
 import {rankWith, setSchema} from "@jsonforms/core";
@@ -56,7 +56,8 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, this)
+        this.propertyName = data?.propertyName ?? '';
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
         this.schema.additionalProperties = data.schema.additionalProperties;
 
         const isUischema = 'uischema' === context?.builder;
