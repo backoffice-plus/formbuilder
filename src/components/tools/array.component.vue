@@ -86,7 +86,6 @@ import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
 import {deleteToolInChilds} from '../../lib/formbuilder'
 import {computed, nextTick, onMounted, ref} from "vue";
-import {initArrayElements} from "../../lib/initializer";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {scalarTypes, toolComponentProps, vuedraggableOptions} from "../../lib/models";
@@ -123,8 +122,7 @@ const onDrag = fb?.exposed.onToolDrag;
 onMounted(() => {
   if (!props.isToolbar) {
     if (['array'].includes(props?.tool?.schema?.type)) {
-
-      childTools.value.push(...initArrayElements(toolFinder, props.tool));
+      childTools.value.push(...props.tool.initChilds(toolFinder));
 
       if (childTools.value.length) {
         nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))

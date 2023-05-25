@@ -1,6 +1,6 @@
 import {rankWith} from '@jsonforms/core';
-import type {JsonSchema} from "@jsonforms/core";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
+import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
+import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import toolComponent from "../../components/tools/array.component.vue";
 import {schema, uischema} from "./schema/array.schema";
 import jsonFormsSchema from "./schema/array.schemaBuilder.form.json";
@@ -251,6 +251,30 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             type: 'array',
             items: items,
         } as JsonSchema;
+    }
+
+    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+        const tools = [] as ToolInterface[];
+
+        //for moving existing tools to another list
+        if(this.childs?.length) {
+            return this.childs;
+        }
+
+
+        //items can be schema instead of schemas[]
+        let items =  this.schema?.items as any[];
+        if(!_.isArray(items)) {
+            items = [items];
+        }
+
+        items.forEach((item:JsonSchema) => {
+            const uischema = {type: 'Control', scope: '#'} as UISchemaElement;
+            const clone = toolFinder.findMatchingToolAndClone({}, item, uischema);
+            tools.push(clone);
+        })
+
+        return tools;
     }
 }
 

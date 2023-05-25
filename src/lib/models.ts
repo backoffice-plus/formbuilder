@@ -35,6 +35,7 @@ export interface ToolInterface {
     parentTool: ToolInterface|undefined
 
     generateJsonSchema: () => JsonSchema|undefined
+    initChilds: (toolFinder: ToolFinderInterface) => ToolInterface[]
 }
 
 export interface ToolContext {
@@ -44,6 +45,10 @@ export interface ToolContext {
     schemaReadOnly?: string;
     rootSchema?: JsonSchema,
     baseSchemaTool?: ToolInterface,
+}
+export interface ToolFinderInterface {
+    //:TODO add all methods from ToolFinder
+    findMatchingToolAndClone(schema: any, itemSchema: any, itemUischema: any): ToolInterface
 }
 
 // @ts-ignore
