@@ -1,6 +1,6 @@
-import { rankWith} from "@jsonforms/core";
-import type { JsonSchema} from "@jsonforms/core";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
+import {rankWith} from "@jsonforms/core";
+import type { JsonSchema, UISchemaElement} from "@jsonforms/core";
+import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schema.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
@@ -170,6 +170,62 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         schema = {...schema, ...schemaByKeys} as JsonSchema;
 
         return !_.isEmpty(schema) ? schema : undefined;
+    }
+
+
+    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+        const tools = [] as Array<ToolInterface>;
+
+        //for moving existing tools to another list
+        if(this.childs?.length) {
+            return this.childs;
+        }
+
+        const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+
+        const properties = this.schema
+        const propertyKeys = Object.keys(this.schema)
+
+        propertyKeys.forEach((propertyName:string) => {
+
+            const propertyData = (properties as any)[propertyName];
+            let clone, itemSchema;
+
+            switch (propertyName) {
+                case "$defs":
+                case "properties":
+                case "definitions":
+                case "patternProperties":
+                case "dependencies":
+                    itemSchema = {
+                        type: 'object',
+                        properties: propertyData
+                    }
+                    clone = toolFinder.findMatchingToolAndClone({}, itemSchema, uischema);
+                    clone.propertyName = propertyName;
+                    tools.push(clone);
+
+                    break;
+
+                case "allOf":
+                case "anyOf":
+                case "oneOf":
+                case "items":
+                    itemSchema = {
+                        type: 'array',
+                        items: propertyData
+                    }
+                    clone = toolFinder.findMatchingToolAndClone({}, itemSchema, uischema);
+                    clone.propertyName = propertyName;
+                    tools.push(clone);
+                    break;
+
+                default:
+                    break;
+            }
+        });
+
+        return tools;
     }
 }
 
