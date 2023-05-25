@@ -32,8 +32,10 @@ export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI, r
 
     const schemaOnly = props.schemaOnly;
     const schemaReadOnly = props.schemaReadOnly;
-    const schemaTool = props.schemaTool;
-    const schemaToolProps = props.schemaToolProps;
+    const baseSchemaToolName = props.schemaTool;
+    const baseSchemaToolProps = props.schemaToolProps;
+
+    const schema = createSchemaTool(rootSchema, baseSchemaToolName, baseSchemaToolProps);
 
     let uischema = undefined;
     if(!schemaOnly) {
@@ -45,12 +47,7 @@ export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI, r
         }
     }
 
-    return {
-        //schema: cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema),
-        schema: createSchemaTool(rootSchema, schemaTool, schemaToolProps),
-        //uischema: !schemaOnly ? createBaseTool(toolFinder, !schemaReadOnly ? rootSchema : undefined, !schemaReadOnly ? rootUischema : undefined) : {},
-        uischema: uischema,
-    }
+    return {schema, uischema};
 }
 
 export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema|undefined = undefined, uischema: UISchemaElement|undefined = undefined): ToolInterface => {
@@ -63,10 +60,10 @@ export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema|undefi
     return toolFinder.findBaseTool(schema, uischema);
 };
 
-export const createSchemaTool = (schema: JsonSchema, baseToolName: string | undefined = undefined, schemaToolProps:any): ToolInterface => {
+export const createSchemaTool = (schema: JsonSchema, toolName: string | undefined = undefined, schemaToolProps:any): ToolInterface => {
 
     let clone;
-    switch (baseToolName) {
+    switch (toolName) {
         case "schema":
             clone = cloneToolWithSchema(schemaTool, schema);
             break;
