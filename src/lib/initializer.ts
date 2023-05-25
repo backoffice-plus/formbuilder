@@ -4,7 +4,6 @@ import _ from "lodash";
 import {unknownTool} from "./tools/unknownTool";
 import {cloneToolWithSchema} from "./toolCreation";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
-import {CombinatorTool} from "./tools/combinatorTool";
 import type {ToolFinder} from "./ToolFinder";
 
 export const initElements = (toolFinder: ToolFinder, tool: ToolInterface): Array<ToolInterface> => {
@@ -45,38 +44,6 @@ export const initElements = (toolFinder: ToolFinder, tool: ToolInterface): Array
     //schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));
 
     return tools;
-};
-
-
-
-
-export const initCombinatorElements = (toolFinder: ToolFinder, tool: ToolInterface): Array<ToolInterface> => {
-    const ctools = [] as any;
-
-    //for moving existing tools to another list
-    if(tool.childs?.length) {
-        return tool.childs;
-    }
-
-    /** @ts-ignore */
-    const schemaOfKeyword = CombinatorTool.getKeywordSchemas(tool.schema)
-
-    schemaOfKeyword && schemaOfKeyword.forEach((itemSchema:JsonSchema) => {
-
-        const uischema = {type:'Control',scope:'#'} as UISchemaElement;
-        const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
-
-        //required
-        const required = getRequiredFromSchema(clone.propertyName, tool.schema);
-        if (required?.includes(getPlainProperty(clone.propertyName))) {
-            clone.isRequired = true;
-        }
-
-        //console.info("initArrayElements", 'push Array of Object', clone.propertyName)
-        ctools.push(clone);
-    });
-
-    return ctools;
 };
 
 export const initObjectElements = (toolFinder: ToolFinder, tool: ToolInterface): Array<ToolInterface> => {

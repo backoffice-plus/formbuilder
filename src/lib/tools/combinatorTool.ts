@@ -1,12 +1,14 @@
-import type {JsonSchema} from "@jsonforms/core";
+import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
+import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/combinator.component.vue";
 import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
 import {schema, uischema} from "./schema/combinator.form.json";
 import _ from "lodash";
+import {cloneToolWithSchema} from "../toolCreation";
+import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
 
 export class CombinatorTool extends AbstractTool implements ToolInterface {
 
@@ -130,6 +132,36 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         }
 
         return schema;
+    }
+
+
+    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+        const ctools = [] as any;
+
+        //for moving existing tools to another list
+        if(this.childs?.length) {
+            return this.childs;
+        }
+
+        /** @ts-ignore */
+        const schemaOfKeyword = CombinatorTool.getKeywordSchemas(this.schema)
+
+        schemaOfKeyword && schemaOfKeyword.forEach((itemSchema:JsonSchema) => {
+
+            const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+            const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
+
+            //required
+            const required = getRequiredFromSchema(clone.propertyName, this.schema);
+            if (required?.includes(getPlainProperty(clone.propertyName))) {
+                clone.isRequired = true;
+            }
+
+            //console.info("initArrayElements", 'push Array of Object', clone.propertyName)
+            ctools.push(clone);
+        });
+
+        return ctools;
     }
 }
 
