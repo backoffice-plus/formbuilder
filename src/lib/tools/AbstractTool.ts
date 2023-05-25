@@ -10,6 +10,8 @@ export abstract class AbstractTool implements ToolInterface {
 
     childs: ToolInterface[] = [];
     parentTool:ToolInterface|undefined = undefined;
+    scopeTool:ToolInterface|undefined = undefined;
+    uiTool:ToolInterface|undefined = undefined;
 
     //from props
     schema: JsonSchema = {};

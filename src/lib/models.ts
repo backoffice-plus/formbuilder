@@ -33,6 +33,8 @@ export interface ToolInterface {
 
     childs: ToolInterface[]
     parentTool: ToolInterface|undefined
+    scopeTool: ToolInterface|undefined  //from uiTool -> schemaTool
+    uiTool: ToolInterface|undefined     //from schemaTool -> uiTool
 
     generateJsonSchema: () => JsonSchema|undefined
     generateUiSchema: () => JsonFormsUISchema|undefined

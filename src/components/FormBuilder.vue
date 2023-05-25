@@ -101,7 +101,7 @@ nav {
 
 <script setup>
 import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount, nextTick, useSlots} from 'vue'
-import {createJsonUiSchema,} from "../index";
+import {generateJsonSchemaByUi} from "../index";
 import {cloneToolWithSchema, createBaseTool, initBaseTools} from "../lib/toolCreation";
 
 import Modal from "./Modal.vue";
@@ -281,14 +281,13 @@ const updateJsonForm = (e) => {
           rootSchema.value = baseSchemaTool.value.generateJsonSchema();
       }
       else {
+          if(!props.schemaReadOnly) {
+              rootSchema.value = generateJsonSchemaByUi(e, baseUiTool.value, baseSchemaTool.value, toolFinder );
+          }
+          rootUischema.value = baseUiTool.value.generateUiSchema();
 
-          //const {schema, uischema} = createJsonForms(baseUiTool.value, baseSchemaTool.value, rootSchema.value, props.schemaReadOnly);
-          //createJsonForms = (tool: ToolInterface, baseSchemaTool:ToolInterface, rootSchema: JsonSchema, schemaReadOnly: boolean = false)
-          const schema = props.schemaReadOnly ? rootSchema.value : baseSchemaTool.value.generateJsonSchema()
 
-          rootSchema.value = schema;
-          rootUischema.value = createJsonUiSchema(baseUiTool.value, schema, props.schemaReadOnly);
-
+          //this needed?
           baseSchemaTool.value.schema = rootSchema.value;
       }
   }
