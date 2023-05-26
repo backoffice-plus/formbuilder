@@ -4,6 +4,7 @@ import {denormalizePath, getAllSubpaths, getPlainProperty, getRequiredFromSchema
 import {CombinatorTool} from "./tools/combinatorTool";
 import type {JsonSchema} from "@jsonforms/core";
 import type {JsonFormsInterface, JsonFormsUISchema, ToolFinderInterface, ToolInterface} from "./models";
+import {findAllScopeTools} from "./formbuilder";
 
 /** @deprecated **/
 export const setRequiredToSchema = (propertyName: string, schema: JsonSchema, isRequired: boolean = false): void => {
@@ -82,62 +83,120 @@ export const createJsonUiSchema = (tool: ToolInterface, baseSchemaTool: ToolInte
     return clonedUischema;
 };
 
-export const generateJsonSchemaByUi = (e:any, baseUiTool: ToolInterface, baseSchemaTool: ToolInterface, toolFinder: ToolFinderInterface): JsonSchema => {
+export const handleEvent = (e:any, props:any, showBuilder:string, baseUiTool: ToolInterface, baseSchemaTool: ToolInterface, toolFinder: ToolFinderInterface): {schema:JsonSchema|undefined, uischema:JsonFormsUISchema|undefined} => {
 
-    let rootSchema;
+    let schema, uischema = undefined;
 
-    const schema = baseSchemaTool.generateJsonSchema();
+    switch (showBuilder) {
+        case 'schema':
+            schema = baseSchemaTool.generateJsonSchema();
+
+            if(!props.schemaOnly) {
+                const updated = handleEventAtSchemaBuilder(e, baseUiTool, baseSchemaTool, toolFinder)
+                updated && (uischema = baseUiTool.generateUiSchema());
+            }
+            break;
+
+        case 'uischema':
+            uischema = baseUiTool.generateUiSchema();
+
+            if(!props.schemaReadOnly) {
+                const updated = handleEventAtUiBuilder(e, baseUiTool, baseSchemaTool, toolFinder);
+                updated && (schema = baseSchemaTool.generateJsonSchema());
+            }
+            break;
+    }
+
+    return {schema, uischema}
+}
+
+export const handleEventAtSchemaBuilder = (e:any, baseUiTool: ToolInterface, baseSchemaTool: ToolInterface, toolFinder: ToolFinderInterface):boolean => {
+
+    if("removed" in e) {
+        const schemaTool = e.removed.element as ToolInterface;
+        const uischemaTool = schemaTool.uiTool;
+
+        if(uischemaTool) {
+            const parentTool = uischemaTool.parentTool ?? baseUiTool;
+            if(parentTool) {
+                parentTool.childs = parentTool.childs.filter(tool => tool.propertyName !== uischemaTool.propertyName);
+                return true;
+            }
+        }
+    }
+    else {
+        console.log("handleEventAtSchemaBuilder #:TODO for event:",e);
+    }
+
+    return false;
+}
+
+export const handleEventAtUiBuilder = (e:any, baseUiTool: ToolInterface, baseSchemaTool: ToolInterface, toolFinder: ToolFinderInterface): boolean => {
 
     if("added" in e) {
         const uischemaTool = e.added.element as ToolInterface;
         const newIndex = e.added.newIndex;
+        const isScoped = undefined !== uischemaTool.uischema.scope;
 
-        generateOnAdded(uischemaTool, baseUiTool, baseSchemaTool, toolFinder);
-
-        rootSchema = baseSchemaTool.generateJsonSchema();
+        return isScoped && generateOnAdded(uischemaTool, baseUiTool, baseSchemaTool, toolFinder);
     }
     else if("modal" in e) {
         const uischemaTool = e.modal.element;
+        const isScoped = undefined !== uischemaTool.uischema.scope;
 
-        generateOnModal(uischemaTool, baseUiTool, baseSchemaTool, toolFinder);
-
-        rootSchema = baseSchemaTool.generateJsonSchema();
+        return isScoped && generateOnModal(uischemaTool, baseUiTool, baseSchemaTool, toolFinder);
 
     }
     else if("removed" in e) {
         const uischemaTool = e.removed.element as ToolInterface;
+        const isScoped = undefined !== uischemaTool.uischema.scope;
+        if(!isScoped) {
+            return false;
+        }
 
         const parentTool = uischemaTool.parentTool?.scopeTool ?? baseSchemaTool;
         if(parentTool) {
             parentTool.childs = parentTool.childs.filter(tool => tool.propertyName !== uischemaTool.propertyName);
         }
 
-        rootSchema = baseSchemaTool.generateJsonSchema();
+        return true;
 
+    }
+    else if("mounted" in e) {
+        const uischemaTool = e.mounted.element as ToolInterface;
+        const isScoped = undefined !== uischemaTool.uischema.scope;
+        if(!isScoped) {
+            return false;
+        }
+
+        findAllScopeTools(uischemaTool).forEach(tool => {
+            generateOnAdded(tool, baseUiTool, baseSchemaTool, toolFinder);
+        })
+
+        return true;
     }
     else if("moved" in e) {
         const uischemaTool = e.moved.element as ToolInterface;
         const oldIndex = e.moved.oldIndex;
         const newIndex = e.moved.newIndex;
 
+        /**
+         * :TODO
+         * - move childs if parents is object and scoped to object (childs are not part of uischema)
+         * - DONT move childs if parents is layout and childs is scoped
+         */
         console.log("generateJsonSchemaByUi move #:TODO",e.moved);
-        rootSchema = schema;
     }
     else {
         console.log("generateJsonSchemaByUi #:TODO for event:",e);
-        rootSchema = schema;
-       // rootUischema.value = createJsonUiSchema(baseUiTool.value, baseSchemaTool.value, schema, props.schemaReadOnly, toolFinder);
     }
 
-    if(undefined === rootSchema) {
-        rootSchema = {};
-    }
 
-    return rootSchema
+    return false
 }
 
 
-export const generateOnAdded = (uiTool: ToolInterface, baseUiTool: ToolInterface, baseSchemaTool: ToolInterface, toolFinder:ToolFinderInterface) => {
+export const generateOnAdded = (uiTool: ToolInterface, baseUiTool: ToolInterface, baseSchemaTool: ToolInterface, toolFinder:ToolFinderInterface): boolean => {
 
     // if(uiTool.parentTool) {
     //     let set = uiTool.parentTool.generateJsonSchema();
@@ -158,16 +217,25 @@ export const generateOnAdded = (uiTool: ToolInterface, baseUiTool: ToolInterface
     //     return;
     // }
 
-
-    let set = uiTool.generateJsonSchema();
-    if(undefined === set) {
-        return
+    let parentTool = baseSchemaTool;
+    if(uiTool?.parentTool?.scopeTool) {
+        parentTool = uiTool.parentTool.scopeTool;
     }
 
-    set = JSON.parse(JSON.stringify(set));
+    const propertyNames = parentTool.childs.map(tool => tool.propertyName);
+    const toolExists = propertyNames.includes(uiTool.propertyName);
+
+    if(toolExists) {
+        return false
+    }
+    let set = uiTool.generateJsonSchema();
+    if(undefined === set) {
+        return false
+    }
 
     const schemaTool = toolFinder.findMatchingToolAndClone({}, set, {type: 'Control', scope: '#'});
     schemaTool.propertyName = uiTool.propertyName;
+    schemaTool.childs = schemaTool.initChilds(toolFinder);
 
     uiTool.scopeTool = schemaTool;
     schemaTool.uiTool = uiTool;
@@ -175,23 +243,17 @@ export const generateOnAdded = (uiTool: ToolInterface, baseUiTool: ToolInterface
     //:TODO for deep injection (eg: user.data.age)
     const path = '';
 
-
-    let parentTool = baseSchemaTool;
-    if(uiTool?.parentTool?.scopeTool) {
-        parentTool = uiTool.parentTool.scopeTool;
-    }
-
     parentTool.childs.push(schemaTool)
+
+    return true;
 }
 
-export const generateOnModal = (uiTool: ToolInterface, baseUiTool: ToolInterface, baseSchemaTool: ToolInterface, toolFinder:ToolFinderInterface) => {
+export const generateOnModal = (uiTool: ToolInterface, baseUiTool: ToolInterface, baseSchemaTool: ToolInterface, toolFinder:ToolFinderInterface): boolean => {
 
     let set = uiTool.generateJsonSchema();
     if(undefined === set) {
-        return
+        return false
     }
-
-    console.log("generateOnModal", set)
 
     //const schemaTool = toolFinder.findMatchingToolAndClone({}, set, {type: 'Control', scope: '#'});
     //schemaTool.propertyName = uiTool.propertyName;
@@ -200,4 +262,6 @@ export const generateOnModal = (uiTool: ToolInterface, baseUiTool: ToolInterface
         uiTool.scopeTool.schema = set;
         uiTool.scopeTool.propertyName = uiTool.propertyName;
     }
+
+    return true;
 };

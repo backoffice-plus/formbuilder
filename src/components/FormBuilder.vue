@@ -51,8 +51,8 @@
 
           <template v-slot:header  v-if="!schemaOnly && !schemaReadOnly">
             <div class="toolSwitcher">
-              <ToolIcon :tool="baseUiTool" :prefixLabel="'uischema: '" :class="{active:showBuilder==='uischema'}" @click="onChangeBuilderByTab('uischema')" />
-              <ToolIcon :tool="baseSchemaTool" :prefixLabel="'schema: '" :class="{active:showBuilder==='schema'}"  @click="onChangeBuilderByTab('schema')" />
+              <ToolIcon :tool="baseUiTool" :prefixLabel="'uischema: '" :class="{active:showBuilder==='uischema'}" @click="showBuilder='uischema'" />
+              <ToolIcon :tool="baseSchemaTool" :prefixLabel="'schema: '" :class="{active:showBuilder==='schema'}"  @click="showBuilder='schema'" />
             </div>
           </template>
 
@@ -101,7 +101,7 @@ nav {
 
 <script setup>
 import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount, nextTick, useSlots} from 'vue'
-import {generateJsonSchemaByUi} from "../index";
+import {handleEvent} from "../index";
 import {cloneToolWithSchema, createBaseTool, initBaseTools} from "../lib/toolCreation";
 
 import Modal from "./Modal.vue";
@@ -179,49 +179,7 @@ defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, bas
 //   console.log("FB.onRenderTriggered",e);
 // });
 
-const onChangeBuilderByTab = (builder) => {
-  showBuilder.value = builder;
-  onChangeBuilder({target:{value:builder}});
-}
-
 const currentBaseTool = computed(() => showBuilder.value === 'uischema' ? baseUiTool.value : baseSchemaTool.value)
-
-const onChangeBuilder = (e) => {
-
-  /**
-   * :INFO after changing builder -> baseTools must be recreated to create new childs based on the new schema
-   */
-  const {schema, uischema} = initBaseTools(toolFinder, props, rootSchema.value, rootUischema.value)
-  baseSchemaTool.value = schema;
-  baseUiTool.value = uischema;
-
-
-  // switch (e.target.value) {
-  //   case 'schema':
-  //     //showBar.value='schema';
-  //
-  //     //currentBaseTool.value = baseSchemaTool.value;
-  //     break;
-  //
-  //   case 'uischema':
-  //     //showBar.value='schema';
-  //
-  //     // //:TODO add property & scope changed check!
-  //     //
-  //
-  //     //currentBaseTool.value = baseUiTool.value;
-  //     break;
-  //
-  //   // case 'definitions':
-  //   //   showBar.value='schema';
-  //   //
-  //   //   baseDefinitionTool.value = createDefTool(rootSchema.value);
-  //   //   currentBaseTool.value = baseDefinitionTool.value
-  //   //   break;
-  // }
-}
-
-
 
 // const readonlyTools = computed(() => {
 //
@@ -272,60 +230,9 @@ const updateJsonForm = (e) => {
   const rootSchemaBefore = JSON.stringify(rootSchema.value);
   const rootUischemaBefore = JSON.stringify(rootUischema.value);
 
-  if(props.schemaOnly) {
-    rootSchema.value = baseSchemaTool.value.generateJsonSchema();
-    rootUischema.value = undefined;
-  }
-  else {
-      if('schema' === showBuilder.value) {
-          rootSchema.value = baseSchemaTool.value.generateJsonSchema();
-      }
-      else {
-          if(!props.schemaReadOnly) {
-              rootSchema.value = generateJsonSchemaByUi(e, baseUiTool.value, baseSchemaTool.value, toolFinder );
-          }
-          rootUischema.value = baseUiTool.value.generateUiSchema();
-
-
-          //this needed?
-          baseSchemaTool.value.schema = rootSchema.value;
-      }
-  }
-
-  // switch (showBuilder.value) {
-  //   case '---schema':
-  //     rootSchema.value = baseSchemaTool.value.generateJsonSchema()
-  //     //jsonFormsSchema.value = rootSchema.value; //:TODO why is jsonFormsSchema AND rootSchema? just use one?!
-  //     //updateSchemaBuilder();
-  //     if(baseUiTool.value) {
-  //       baseUiTool.value.schema = rootSchema.value;
-  //     }
-  //     //baseUiTool.value.uischema = rootUischema.value;
-  //     break;
-  //
-  //   // case 'definitions':
-  //   //   updateDefinitionBuilder();
-  //   //   break;
-  //
-  //   default:
-  //     //updateUischemaBuilder();
-  //
-  //
-  //       //:TODO is that needed?!?!
-  //     if (!rootSchema.value) {
-  //       rootSchema.value = Generate.jsonSchema({})
-  //       delete rootSchema.value.additionalProperties;
-  //     }
-  //
-  //
-  //     const {schema, uischema} = createJsonForms(baseUiTool.value, baseSchemaTool.value, rootSchema.value, props.schemaReadOnly);
-  //     rootSchema.value = schema;
-  //     rootUischema.value = uischema;
-  //
-  //     baseSchemaTool.value.schema = rootSchema.value;
-  //     break;
-  // }
-
+  const {schema, uischema} = handleEvent(e, props, showBuilder.value, baseUiTool.value, baseSchemaTool.value, toolFinder)
+  undefined !== schema && (rootSchema.value = schema);
+  undefined !== uischema && (rootUischema.value = uischema);
 
   //something changed?
   const rootSchemaAfter = JSON.stringify(rootSchema.value);
@@ -455,8 +362,10 @@ onBeforeMount(() => {
   showBuilder.value = props?.schemaOnly ? 'schema' : 'uischema';
   rootSchema.value = props?.schema ?? props?.jsonForms?.schema;
   rootUischema.value = props?.jsonForms?.uischema;
-  onChangeBuilder({target:{value:showBuilder.value}})
 
+  const {schema, uischema} = initBaseTools(toolFinder, props, rootSchema.value, rootUischema.value)
+  baseSchemaTool.value = schema;
+  baseUiTool.value = uischema;
 
   //trigger update if there are no elements (that would emit 'schemaUpdated')
   const hasElements = (rootSchema.value?.elements?.length ?? 0) > 0;

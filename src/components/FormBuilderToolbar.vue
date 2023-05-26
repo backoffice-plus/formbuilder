@@ -71,6 +71,12 @@ const emits = defineEmits(['drag']);
 const showBar = ref('control');
 
 const typedTools = props.toolFinder.getTypedTools();
+if(props.schemaReadOnly) {
+    const fb = getFormbuilder();
+    const baseSchemaTool= fb?.exposed?.baseSchemaTool?.value;
+    typedTools.control = baseSchemaTool.initChilds(props.toolFinder);
+}
+
 
 const availableTabs = computed(() => {
   const availableTabs = Object.keys(typedTools)

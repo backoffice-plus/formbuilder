@@ -124,6 +124,16 @@ export const findAllScopes = (uischema: ControlElement | Layout | UISchemaElemen
     return scopes;
 };
 
+export const findAllScopeTools = (uitool: ToolInterface, tools: ToolInterface[] = []): ToolInterface[] => {
+
+    const schemaTools = uitool.childs.map(childTool => childTool?.uischema?.scope ? [childTool] : findAllScopeTools(childTool, tools))
+
+    return [
+        ...tools,
+        ..._.flatten(schemaTools)
+    ];
+};
+
 type Callback = (ref:URI) => JsonSchema|undefined;
 export const resolveSchema = async (schema: any, callback:Callback|undefined = undefined): Promise<any> => {
 
