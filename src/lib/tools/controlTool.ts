@@ -100,9 +100,10 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         let setSchema = JSON.parse(JSON.stringify(schema)) as JsonSchema|any; //deepClone
         let setUischema = JSON.parse(JSON.stringify(uischema)) as Categorization; //deepClone
 
-        if(context.schemaReadOnly) {
-            setUischema = JSON.parse(JSON.stringify(uischemaReadOnly)) as JsonSchema|any; //deepClone
-        }
+        //:TODO find better solution to show different options for SCHEMA and UISCHEMA
+        // if(context.schemaReadOnly) {
+        //     setUischema = JSON.parse(JSON.stringify(uischemaReadOnly)) as JsonSchema|any; //deepClone
+        // }
 
         //hide rule in schema/definitions
         if('uischema' !== context.builder) {
