@@ -150,6 +150,8 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
                 clone.isRequired = true;
             }
 
+            clone.parentTool = this;
+            clone.childs = clone.initChilds(toolFinder);
             tools.push(clone);
         });
 

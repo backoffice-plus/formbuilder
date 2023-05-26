@@ -159,6 +159,8 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
             }
 
             //console.info("initArrayElements", 'push Array of Object', clone.propertyName)
+            clone.parentTool = this;
+            clone.childs = clone.initChilds(toolFinder);
             ctools.push(clone);
         });
 

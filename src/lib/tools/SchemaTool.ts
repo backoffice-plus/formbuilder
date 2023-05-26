@@ -204,6 +204,8 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
                     }
                     clone = toolFinder.findMatchingToolAndClone({}, itemSchema, uischema);
                     clone.propertyName = propertyName;
+                    clone.parentTool = this;
+                    clone.childs = clone.initChilds(toolFinder);
                     tools.push(clone);
 
                     break;
@@ -218,6 +220,8 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
                     }
                     clone = toolFinder.findMatchingToolAndClone({}, itemSchema, uischema);
                     clone.propertyName = propertyName;
+                    clone.parentTool = this;
+                    clone.childs = clone.initChilds(toolFinder);
                     tools.push(clone);
                     break;
 

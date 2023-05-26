@@ -275,6 +275,8 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         items.forEach((item:JsonSchema) => {
             const uischema = {type: 'Control', scope: '#'} as UISchemaElement;
             const clone = toolFinder.findMatchingToolAndClone({}, item, uischema);
+            clone.parentTool = this;
+            clone.childs = clone.initChilds(toolFinder);
             tools.push(clone);
         })
 

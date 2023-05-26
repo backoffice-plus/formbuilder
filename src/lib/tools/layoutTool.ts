@@ -97,6 +97,8 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
                 clone = cloneToolWithSchema(toolFinder.findLayoutToolByUiType(itemUischema.type) ?? unknownTool, this.schema, itemUischema);
             }
 
+            clone.parentTool = this;
+            clone.childs = clone.initChilds(toolFinder);
             tools.push(clone);
         });
 
