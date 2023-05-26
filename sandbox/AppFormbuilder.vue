@@ -30,7 +30,6 @@
           :schemaReadOnly="schemaReadOnly"
           :tools="tools"
           :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'') + (schemaBaseTool?'schema':'')"
-          :builders="builders"
           :schemaTool="schemaBaseTool ? 'schema' : ''"
           @schemaUpdated="onSchemaUpdated"
       />
@@ -103,7 +102,6 @@ const schemaBaseTool = ref("1" === getKeyFromUrl('schemaBaseTool'));
 const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
-const builders = ref(['uischema','schema']);
 
 const rootSchema = ref();
 const rootUiSchema = ref();
@@ -124,13 +122,13 @@ const jsonForms = computed(() => {
 
   if(example.value) {
     exampleData = getExamples().find(item => item.name===example.value) as any;
+    exampleData = JSON.parse(JSON.stringify(exampleData)); //clone
+
 
     if(exampleData) {
       if (!exampleData?.schema) {
         exampleData.schema = generateJsonSchema({});
       }
-
-      builders.value= schemaOnly.value ? ['schema'] : ['uischema','schema'];
 
       if(false === exampleData?.uischema) {
         if(!schemaOnly.value) {
@@ -138,9 +136,13 @@ const jsonForms = computed(() => {
         }
       }
       else {
+          //:TODO only clean uischema if option is set (or add "auto" option -> generateDefaultUISchema())
         if(exampleData?.uischema && schemaReadOnly.value) {
-          exampleData.uischema = {};
+          exampleData.uischema = {
+              type:'VerticalLayout'
+          };
         }
+
         if(!exampleData?.uischema && !schemaReadOnly.value) {
           console.log("sandbox app","UiSschema generated because example is empty");
           exampleData.uischema = generateDefaultUISchema(exampleData.schema)
@@ -166,9 +168,10 @@ const jsonForms = computed(() => {
     exampleData = {schema: schema, uischema: uischema};
   }
 
-  if(schemaReadOnly.value || schemaOnly.value) {
-    delete exampleData.uischema;
+  if(schemaOnly.value) {
+    //delete exampleData.uischema;
   }
+
 
   latestExampleData.value = unref(exampleData);
   latestSchemaAfterExampleData.value = null;

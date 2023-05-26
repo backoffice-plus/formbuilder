@@ -119,6 +119,7 @@ import {formbuilderProps, toolComponentProps} from "../lib/models";
 //const props = defineProps({...formbuilderProps()})
 const props = defineProps({
   schema:Object,
+  uischema:Object,
   jsonForms: Object,
   jsonFormsRenderers: Array,
   schemaOnly: Boolean,
@@ -136,8 +137,8 @@ const hideToolbar = 0 === slotToolbar?.length
 const hideDroparea = 0 === slotDroparea?.length
 
 const drag = ref(false);
-const jsonFormsUiSchema = ref(props?.jsonForms?.uischema);
-const jsonFormsSchema = ref(props?.schema ?? props?.jsonForms?.schema);
+// const jsonFormsUiSchema = ref(props?.uischema ?? props?.jsonForms?.uischema ?? {});
+// const jsonFormsSchema = ref(props?.schema ?? props?.jsonForms?.schema ?? {});
 const isModalOpen = ref(false);
 const toolEdit = ref(null);
 const showBuilder = ref('uischema');
@@ -360,8 +361,8 @@ const emitSchemaUpdated = (init=false) => {
 onBeforeMount(() => {
   //init baseTool
   showBuilder.value = props?.schemaOnly ? 'schema' : 'uischema';
-  rootSchema.value = props?.schema ?? props?.jsonForms?.schema;
-  rootUischema.value = props?.jsonForms?.uischema;
+  rootSchema.value = props?.schema ?? props?.jsonForms?.schema ?? {};
+  rootUischema.value = props?.uischema ?? props?.jsonForms?.uischema ?? {};
 
   const {schema, uischema} = initBaseTools(toolFinder, props, rootSchema.value, rootUischema.value)
   baseSchemaTool.value = schema;

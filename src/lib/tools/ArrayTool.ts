@@ -46,6 +46,8 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         const asSchema = undefined !== itemsType;
 
 
+        console.log("ArrayTool",this);
+
         /**
          * Array of Strings
          */
@@ -75,9 +77,9 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         //convert option.detail.elements
         const options = {...this.uischema?.options ?? {}}
-        if(options?.detail?.elements) {
-            options.detail.elements = JSON.stringify(options.detail.elements);
-        }
+        // if(options?.detail?.elements) {
+        //     options.detail.elements = JSON.stringify(options.detail.elements);
+        // }
 
         /**
          * :BUG https://github.com/eclipsesource/jsonforms/issues/1917
@@ -144,22 +146,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         //     console.log("arrayTOol optionDataUpdate",{isRef,childIsRef},firstChild)
         // }
 
-
-        const options = {...data.options ?? {}};
-
-        //convert option.detail.elements
-        if(options?.detail?.elements) {
-            let parsed =[];
-            try {
-                parsed = JSON.parse(options.detail.elements);
-            }
-            catch (e) {
-                parsed = [];
-            }
-            options.detail.elements = parsed;
-        }
-
-        this.uischema.options = options;
+        this.uischema.options = {...data.options ?? {}};
 
         subschemas.setOptionDataValidation(this.schema, this.uischema, data);
         subschemas.setOptionDataLabel(this.schema, this.uischema, data);
@@ -180,10 +167,10 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             currentJsonSchema = jsonFormsSchema;
         }
 
-        const parentTool = this.parentTool;
-        if(parentTool instanceof SchemaTool) {
-            currentJsonSchema = jsonFormsAsSchemaChild;
-        }
+        // const parentTool = this.parentTool;
+        // if(parentTool instanceof SchemaTool) {
+        //     currentJsonSchema = jsonFormsAsSchemaChild;
+        // }
 
         return {
             schema: await resolveSchema(currentJsonSchema.schema),
