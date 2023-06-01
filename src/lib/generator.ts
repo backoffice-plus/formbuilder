@@ -124,6 +124,27 @@ export const handleEventAtSchemaBuilder = (e:any, baseUiTool: ToolInterface, bas
             }
         }
     }
+    else if("modal" in e) {
+        const schemaTool = e.modal.element as ToolInterface;
+        const uischemaTool = schemaTool.uiTool;
+
+
+        if(uischemaTool) {
+
+            let set = schemaTool.generateJsonSchema();
+            if(undefined === set) {
+                return false
+            }
+
+            uischemaTool.schema = set;
+            if(uischemaTool.propertyName !== schemaTool.propertyName) {
+                uischemaTool.propertyName = schemaTool.propertyName ?? '';
+                uischemaTool.uischema.scope = '#/properties/'+ schemaTool.propertyName;
+            }
+
+            return true;
+        }
+    }
     else {
         console.log("handleEventAtSchemaBuilder #:TODO for event:",e);
     }

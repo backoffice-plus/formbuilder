@@ -344,7 +344,7 @@ const updateJsonFormDebounced = (e) => _.debounce(() => {
 const emitSchemaUpdated = (init=false) => {
     const args = {
         schema: JSON.parse(JSON.stringify(rootSchema.value)), //to remove undefined vars
-        uischema: rootUischema.value
+        uischema: JSON.parse(JSON.stringify(rootUischema.value))
     };
     if(init) {
         args.init = true;

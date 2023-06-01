@@ -120,18 +120,18 @@ export const uischema = {
                                 {
                                     scope: "#/properties/propertyName",
                                     type: "Control",
-                                    rule: {
-                                        effect: "DISABLE",
-                                        condition: {
-                                            scope: "#",
-                                            schema: {
-                                                properties: {
-                                                    _isUischema:{const:false},
-                                                    _isSchemaOnly:{const:false},
-                                                }
-                                            }
-                                        }
-                                    }
+                                    // rule: {
+                                    //     effect: "DISABLE",
+                                    //     condition: {
+                                    //         scope: "#",
+                                    //         schema: {
+                                    //             properties: {
+                                    //                 _isUischema:{const:false},
+                                    //                 _isSchemaOnly:{const:false},
+                                    //             }
+                                    //         }
+                                    //     }
+                                    // }
                                 },
                             ],
                             "rule": {
