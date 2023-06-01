@@ -135,9 +135,9 @@ export const uischema = {
                                 },
                             ],
                             "rule": {
-                                "effect": "HIDE",
+                                "effect": "SHOW",
                                 "condition": {
-                                    "scope": "#/properties/_asSchemaChild",
+                                    "scope": "#/properties/_isProperty",
                                     "schema": {"const": true}
                                 }
                             }

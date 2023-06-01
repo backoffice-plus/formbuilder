@@ -39,6 +39,7 @@
 
                        :tool="tool"
                        :isToolbar="false"
+                       :isInlineType="true"
 
                        @deleteByTool="onDeleteByTool"
 

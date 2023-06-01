@@ -40,6 +40,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
             _isUischema: 'uischema' === context.builder,
             _isSchemaOnly: context.schemaOnly,
             _isSchemaReadOnly: context.schemaReadOnly,
+            _isProperty: 'object' === this.parentTool?.schema?.type
         } as any;
 
         _.merge(
@@ -60,10 +61,9 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         //         prepareOptionDataRule(this.schema, this.uischema),
         //     )
         // }
-
-        if(this.parentTool instanceof SchemaTool) {
-            data._asSchemaChild = true;
-        }
+        // if(this.parentTool instanceof SchemaTool) {
+        //     data._asSchemaChild = true;
+        // }
 
         return data;
     }

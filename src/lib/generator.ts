@@ -257,6 +257,7 @@ export const generateOnAdded = (uiTool: ToolInterface, baseUiTool: ToolInterface
     const schemaTool = toolFinder.findMatchingToolAndClone({}, set, {type: 'Control', scope: '#'});
     schemaTool.propertyName = uiTool.propertyName;
     schemaTool.childs = schemaTool.initChilds(toolFinder);
+    schemaTool.parentTool = parentTool;
 
     uiTool.scopeTool = schemaTool;
     schemaTool.uiTool = uiTool;
