@@ -40,7 +40,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
             _isUischema: 'uischema' === context.builder,
             _isSchemaOnly: context.schemaOnly,
             _isSchemaReadOnly: context.schemaReadOnly,
-            _isProperty: 'object' === this.parentTool?.schema?.type
+            _isProperty: 'object' === this.edge.schemaParent?.schema?.type
         } as any;
 
         _.merge(

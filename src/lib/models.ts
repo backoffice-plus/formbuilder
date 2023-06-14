@@ -9,6 +9,7 @@ import type {
 } from "@jsonforms/core/src/models/uischema";
 import type {PropType} from "vue";
 import type {RankedTester} from "@jsonforms/core/src/testers/testers";
+import type {ToolEdge} from "./ToolEdge";
 
 export const scalarTypes = ['string', 'number', 'integer', 'boolean', 'null'];
 
@@ -31,10 +32,9 @@ export interface ToolInterface {
     clone: () => ToolInterface;
     toolbarOptions: () => Record<string, any>;
 
+    edge: ToolEdge;
+    /** @deprecated use edge.childs  **/
     childs: ToolInterface[]
-    parentTool: ToolInterface|undefined
-    scopeTool: ToolInterface|undefined  //from uiTool -> schemaTool
-    uiTool: ToolInterface|undefined     //from schemaTool -> uiTool
 
     generateJsonSchema: () => JsonSchema|undefined
     generateUiSchema: () => JsonFormsUISchema|undefined

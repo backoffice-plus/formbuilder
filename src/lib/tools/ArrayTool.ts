@@ -199,7 +199,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         const hasChilds = this.childs?.length > 0;
         const hasOneChild = this.childs?.length === 1;
-        const parentIsSchema = this.parentTool instanceof SchemaTool;
+        const parentIsSchema = false;
 
         // if(hasOneChild && isInlineType) {
         //     allowInlineType = true
@@ -262,8 +262,10 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         items.forEach((item:JsonSchema) => {
             const uischema = {type: 'Control', scope: '#'} as UISchemaElement;
             const clone = toolFinder.findMatchingToolAndClone({}, item, uischema);
-            clone.parentTool = this;
-            clone.childs = clone.initChilds(toolFinder);
+
+            clone.edge.schemaParent = this;
+            clone.edge.replaceChilds(clone.initChilds(toolFinder));
+
             tools.push(clone);
         })
 

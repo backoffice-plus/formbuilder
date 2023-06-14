@@ -115,6 +115,7 @@ import ToolIcon from "./tools/utils/ToolIcon.vue";
 import {ObjectTool} from "../lib/tools/ObjectTool";
 import FormBuilderToolbar from "./FormBuilderToolbar.vue";
 import {formbuilderProps, toolComponentProps} from "../lib/models";
+import {BuilderEvent} from "../lib/BuilderEvent";
 
 //const props = defineProps({...formbuilderProps()})
 const props = defineProps({
@@ -222,16 +223,20 @@ const onChangeModal = (data) => {
 }
 
 const updateJsonForm = (e) => {
+    const event = new BuilderEvent(e, props, showBuilder.value, toolFinder, baseUiTool.value, baseSchemaTool.value);
 
   //ignore "mounted" event for non-baseTools
-  if(e.mounted && e.mounted?.element !== ('schema' === showBuilder.value ? baseSchemaTool : baseUiTool).value) {
-      return;
+  if('mounted' === event.type) {
+    const baseTool = ('schema' === event.showBuilder ? baseSchemaTool : baseUiTool).value;
+    if(event.tool !== baseTool) {
+        return;
+    }
   }
 
   const rootSchemaBefore = JSON.stringify(rootSchema.value);
   const rootUischemaBefore = JSON.stringify(rootUischema.value);
 
-  const {schema, uischema} = handleEvent(e, props, showBuilder.value, baseUiTool.value, baseSchemaTool.value, toolFinder)
+  const {schema, uischema} = handleEvent(event)
   undefined !== schema && (rootSchema.value = schema);
   undefined !== uischema && (rootUischema.value = uischema);
 
