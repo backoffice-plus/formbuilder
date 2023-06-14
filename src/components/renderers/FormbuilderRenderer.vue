@@ -48,10 +48,10 @@ const formbuilderRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const control = useVanillaControl(useJsonFormsControl(props))
 
-   const jsonforms = inject('jsonforms')
+   const jsonforms = inject('jsonforms') as any
    const data = jsonforms?.core?.data;
 
-    const fb = getFormbuilder() as FormBuilder;
+    const fb = getFormbuilder() as any;
     const fbProps = fb?.props as formbuilderPropsI;
 
     let schema, uischema;
@@ -65,7 +65,8 @@ const formbuilderRenderer = defineComponent({
 
 
         const currentTool = baseSchemaTool?.childs?.find(tool => tool.propertyName === toolPropertyName); //ArrayTool
-        if('object' === currentTool?.schema?.items?.type) {
+        const items = currentTool?.schema?.items;
+        if(items && 'type' in items && 'object' === items?.type) {
             schema = currentTool?.schema?.items;
         }
         // if(currentTool) {

@@ -176,7 +176,7 @@ export const handelUiEvent = (event: BuilderEvent): boolean => {
     const uiParent = event.parentTool;
 
     const isScoped = undefined !== uiTool.uischema.scope;
-    const isControl = 'Control' === uiTool.uischema.type; //:TODO find better solution?!
+    const isControl = 'Control' === uiTool.uischema.type;
 
     switch (event.type) {
         case 'added':
@@ -196,7 +196,6 @@ export const handelUiEvent = (event: BuilderEvent): boolean => {
                 controlChilds.forEach(tool => {
                     handelUiEvent(event.createSubevent({added: {element: tool, parentTool:uiTool}}));
                 })
-
                 return true;
             }
             break;

@@ -4,7 +4,7 @@
         <summary><span>{{ layout.label }}</span></summary>
 
         <dispatch-renderer
-            v-for="(element, index) in layout.uischema.elements"
+            v-for="(element, index) in elements"
                 :schema="layout.schema"
                 :uischema="element"
                 :path="layout.path"
@@ -59,10 +59,11 @@ details[open] summary {
 
 <script lang="ts">
 import {defineComponent} from "vue";
-import type {JsonFormsRendererRegistryEntry, Layout} from '@jsonforms/core';
+import type {JsonFormsRendererRegistryEntry, Layout, UISchemaElement} from '@jsonforms/core';
 import {rankWith, uiTypeIs} from "@jsonforms/core";
 import type {RendererProps} from '@jsonforms/vue';
 import {DispatchRenderer, rendererProps, useJsonFormsLayout,} from '@jsonforms/vue';
+import {useControl} from "@jsonforms/vue/src/jsonFormsCompositions";
 
 const disclosureRenderer = defineComponent({
     name: 'disclosure-renderer',
@@ -73,8 +74,12 @@ const disclosureRenderer = defineComponent({
         ...rendererProps<Layout>(),
     },
     setup(props: RendererProps<Layout>) {
+        const useControl = useJsonFormsLayout(props);
+        const uischemaLayout = (useControl.layout as any)?.value?.uischema as Layout;
+
         return {
-            ...useJsonFormsLayout(props),
+            ...useControl,
+            elements: uischemaLayout?.elements as UISchemaElement[]
         };
     }
 });

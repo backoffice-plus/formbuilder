@@ -122,7 +122,7 @@ export const formbuilderProps = () => ({
     jsonFormsRenderers: Array,
     schemaOnly: Boolean,
     schemaReadOnly: Boolean,
-    tools: [],
+    tools: Array,
     schemaTool: String,
     schemaToolProps: Object,
 });
@@ -132,7 +132,7 @@ export interface formbuilderPropsI {
     jsonFormsRenderers: [],
     schemaOnly: boolean,
     schemaReadOnly: boolean,
-    tools: [],
+    tools: ToolInterface[],
     schemaTool: string,
     schemaToolProps: any,
 }
