@@ -60,6 +60,16 @@
       </template>
     </slot>
 
+<!--      <div class="flex gap-4 text-xs">-->
+<!--          <div>-->
+<!--              Schema:-->
+<!--              <IdList :tool="baseSchemaTool" v-if="baseSchemaTool" />-->
+<!--          </div>-->
+<!--          <div>UI:-->
+<!--              <IdList :tool="baseUiTool" v-if="baseUiTool" />-->
+<!--          </div>-->
+<!--      </div>-->
+
   </div>
 
 </template>
