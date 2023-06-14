@@ -49,6 +49,18 @@ export class ToolEdge {
         return this._schemaParent;
     }
 
+    setParent(tool: ToolInterface | undefined) {
+        const isControl = 'Control' === tool?.uischema?.type
+        if(tool) {
+            if(isControl) {
+                this._schemaParent = tool;
+            }
+            else {
+                this._uiParent = tool;
+            }
+        }
+    }
+
     set uiParent(value: ToolInterface | undefined) {
         const replace = this._uiParent && value !== this._uiParent;
         replace && (this.exUiParent = this._uiParent);

@@ -263,7 +263,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             const uischema = {type: 'Control', scope: '#'} as UISchemaElement;
             const clone = toolFinder.findMatchingToolAndClone({}, item, uischema);
 
-            clone.edge.schemaParent = this;
+            clone.edge.setParent(this);
             clone.edge.replaceChilds(clone.initChilds(toolFinder));
 
             tools.push(clone);

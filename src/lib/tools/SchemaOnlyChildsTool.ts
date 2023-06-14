@@ -181,7 +181,7 @@ export class SchemaOnlyChildsTool extends AbstractTool implements ToolInterface 
                 clone.isRequired = true;
             }
 
-            clone.edge.schemaParent = this;
+            clone.edge.setParent(this);
             clone.edge.replaceChilds(clone.initChilds(toolFinder));
 
             tools.push(clone);
