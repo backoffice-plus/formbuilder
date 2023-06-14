@@ -115,7 +115,7 @@
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {deleteToolInChilds} from "../../lib/formbuilder";
+import {deleteToolInChilds, prepareAndCallOnDropAreaChange} from "../../lib/formbuilder";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
@@ -175,20 +175,15 @@ const addTab = () => {
 };
 
 
-const onDropAreaChange = (e) => {
-  if(e.added?.element) {
-      e.added.element.parentTool = props.tool;
-  }
-
-  props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged(e);
-};
+const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
 const onDeleteByTool = async (e) => {
   e.tool && deleteToolInChilds(e.tool, childTools.value)
       .then(newChildTools => {
-        childTools.value = newChildTools;
-        onDropAreaChange({removed: {element:e.tool}});
+          if(false !== newChildTools) {
+              childTools.value = newChildTools;
+              onDropAreaChange({removed: {element:e.tool}});
+          }
       })
 };
 

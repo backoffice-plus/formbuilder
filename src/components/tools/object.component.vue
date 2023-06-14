@@ -82,7 +82,7 @@
 
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {deleteToolInChilds} from '../../lib/formbuilder'
+import {deleteToolInChilds, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
 import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import ToolIcon from "./utils/ToolIcon.vue";
@@ -111,13 +111,7 @@ onMounted(() => {
   }
 })
 
-const onDropAreaChange = (e) => {
-    if(e.added?.element) {
-        e.added.element.parentTool = props.tool;
-    }
-    props.tool.childs = childTools.value;
-    fb?.exposed?.onDropAreaChanged(e);
-};
+const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
 const addItem = (type) => {
   const schema = fb?.exposed?.rootSchema?.value;
@@ -148,8 +142,10 @@ const groupPut = (from, to, node, dragEvent) => {
 const onDeleteByTool = async (e) => {
   e.tool && deleteToolInChilds(e.tool, childTools.value)
       .then(newChildTools => {
-        childTools.value = newChildTools;
-        onDropAreaChange({removed: {element:e.tool}});
+          if(false !== newChildTools) {
+              childTools.value = newChildTools;
+              onDropAreaChange({removed: {element:e.tool}});
+          }
       })
 };
 

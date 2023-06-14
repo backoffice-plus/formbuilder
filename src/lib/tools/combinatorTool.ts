@@ -158,9 +158,11 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
                 clone.isRequired = true;
             }
 
-            //console.info("initArrayElements", 'push Array of Object', clone.propertyName)
-            clone.parentTool = this;
-            clone.childs = clone.initChilds(toolFinder);
+            clone.edge.schemaParent = this;//:TODO is that correct?
+            clone.edge.replaceChilds(clone.initChilds(toolFinder));
+            // clone.parentTool = this;
+            // clone.childs = clone.initChilds(toolFinder);
+
             ctools.push(clone);
         });
 

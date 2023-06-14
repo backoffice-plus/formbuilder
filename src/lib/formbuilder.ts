@@ -158,17 +158,37 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
         })
 }
 
-export const deleteToolInChilds = async (toolToDelete:ToolInterface, childTools:ToolInterface[]) : Promise<ToolInterface[]> => {
+export const deleteToolInChilds = async (toolToDelete:ToolInterface|undefined = undefined, childTools:ToolInterface[] = []) : Promise<ToolInterface[]|boolean> => {
 
     const confirmed = window?.confirm ? window.confirm("Wirklich löschen?") : true;
 
     return await Promise.resolve(confirmed)
         .then((confirmed) => {
             if(confirmed) {
-                childTools = childTools.filter(childTool => childTool.uuid !== toolToDelete.uuid)
+                return childTools.filter(childTool => childTool.uuid !== toolToDelete.uuid)
             }
-
-            return childTools;
+            else {
+                return false;
+            }
         });
 };
 
+export const prepareAndCallOnDropAreaChange = (e:any, tool:ToolInterface, childs:ToolInterface[], onDropAreaChanged:any) => {
+
+
+    //add currentTool as parrent
+    Object.keys(e).forEach(key => {
+        e[key].parentTool = tool;               //as part of the event
+        e[key].childs = childs;               //as part of the event
+
+        // if(e[key].element) {
+        //     e[key].element.parentTool = tool;       //attach to the current child
+        // }
+    });
+
+    //add current childs
+    //tool.childs = childs;
+
+    //from fb?.exposed?.onDropAreaChanged(e);
+    onDropAreaChanged(e);
+}

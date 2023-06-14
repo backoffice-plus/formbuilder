@@ -161,7 +161,7 @@ const onEditTool = (data) => {
   toolEdit.value = data.tool;
 }
 const onDropAreaChanged = (e) => {
-  updateJsonFormDebounced(e);
+  _.debounce(() => nextTick().then(() => updateJsonForm(e)),100,{leading:false, trailing:true})()
 };
 defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, baseSchemaTool, rootUischema, onEditTool, onDropAreaChanged})
 
@@ -336,10 +336,6 @@ const updateJsonForm = (e) => {
 // const setRootDefinitionForm = (e) => rootDefinitionForm.value = e
 // const setRootSchemaForm = (e) => rootSchemaForm.value = e
 
-const updateJsonFormDebounced = (e) => _.debounce(() => {
-  nextTick().then(() => updateJsonForm(e))
-  // window.setTimeout(updateJsonForm, 100);
-},100,{leading:false, trailing:true})()
 
 const emitSchemaUpdated = (init=false) => {
     const args = {

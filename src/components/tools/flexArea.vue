@@ -138,7 +138,7 @@
  */
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {deleteToolInChilds} from '../../lib/formbuilder'
+import {deleteToolInChilds, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {ref, computed, onMounted, unref, toRaw, nextTick} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
@@ -182,19 +182,14 @@ const addItem = (type) => {
 const onDeleteByTool = async (e) => {
   e.tool && deleteToolInChilds(e.tool, childTools.value)
       .then(newChildTools => {
-        childTools.value = newChildTools;
-        onDropAreaChange({removed: {element:e.tool}});
+          if(false !== newChildTools) {
+              childTools.value = newChildTools;
+              onDropAreaChange({removed: {element:e.tool}});
+          }
       })
 };
 
-const onDropAreaChange = (e) => {
-  if(e.added?.element) {
-      e.added.element.parentTool = props.tool;
-  }
-
-  props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged(e);
-};
+const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
 const onDelete = () => {
   emit("deleteByTool", { tool: props.tool });
