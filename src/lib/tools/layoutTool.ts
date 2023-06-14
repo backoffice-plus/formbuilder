@@ -70,8 +70,8 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
         const tools = [] as any;
 
         //for moving existing tools to another list
-        if(this.childs?.length) {
-            return this.childs;
+        if(this.edge.childs?.length || this.edge.childsInitialized) {
+            return this.edge.childs;
         }
 
         this.uischema?.elements?.forEach((itemUischema: any) => {

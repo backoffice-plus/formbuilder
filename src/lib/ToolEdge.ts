@@ -12,6 +12,7 @@ export class ToolEdge {
     exSchemaParent: ToolInterface | undefined = undefined;
 
     displaced: boolean | undefined = undefined;
+    childsInitialized: boolean | undefined = undefined; //to prevent that once initiated properties/elements (with tool.initChilds() are initiated again
 
     constructor(tool: ToolInterface) {
         this.tool = tool;
@@ -62,13 +63,13 @@ export class ToolEdge {
     }
 
     set uiParent(value: ToolInterface | undefined) {
-        const replace = this._uiParent && value !== this._uiParent;
+        const replace = value && this._uiParent && value?.uuid !== this._uiParent?.uuid;
         replace && (this.exUiParent = this._uiParent);
         this._uiParent = value;
     }
 
     set schemaParent(value: ToolInterface | undefined) {
-        const replace = this._schemaParent && value !== this._schemaParent;
+        const replace = value && this._schemaParent && value?.uuid !== this._schemaParent?.uuid;
         replace && (this.exSchemaParent = this._schemaParent);
         this._schemaParent = value;
     }

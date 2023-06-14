@@ -45,9 +45,6 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         const isRef = '$ref' in this.schema?.items;
         const asSchema = undefined !== itemsType;
 
-
-        console.log("ArrayTool",this);
-
         /**
          * Array of Strings
          */
@@ -245,8 +242,8 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         const tools = [] as ToolInterface[];
 
         //for moving existing tools to another list
-        if(this.childs?.length) {
-            return this.childs;
+        if(this.edge.childs?.length || this.edge.childsInitialized) {
+            return this.edge.childs;
         }
 
 

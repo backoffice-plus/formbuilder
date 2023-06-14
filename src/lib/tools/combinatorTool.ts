@@ -140,8 +140,8 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         const ctools = [] as any;
 
         //for moving existing tools to another list
-        if(this.childs?.length) {
-            return this.childs;
+        if(this.edge.childs?.length || this.edge.childsInitialized) {
+            return this.edge.childs;
         }
 
         /** @ts-ignore */

@@ -162,8 +162,8 @@ export class SchemaOnlyChildsTool extends AbstractTool implements ToolInterface 
         const tools = [] as Array<ToolInterface>;
 
         //for moving existing tools to another list
-        if(this.childs?.length) {
-            return this.childs;
+        if(this.edge.childs?.length || this.edge.childsInitialized) {
+            return this.edge.childs;
         }
 
 

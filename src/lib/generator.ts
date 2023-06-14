@@ -95,6 +95,10 @@ export const handleEvent = (event: BuilderEvent): JsonFormsInterface => {
         event.parentTool.edge.replaceChilds(event.childs);
     }
 
+    if('mounted' === event.type) {
+        event.tool.edge.childsInitialized = true;
+    }
+
     switch (event.showBuilder) {
         case 'schema':
             schema = event.baseSchemaTool?.generateJsonSchema();
@@ -187,11 +191,10 @@ export const handelUiEvent = (event: BuilderEvent): boolean => {
             return !displaced && handleUiEventOnRemoved(event);
 
         case 'mounted':
-            if (isScoped) {
-                findAllScopeTools(uiTool).forEach(tool => {
-                    const e = {added: {element: tool, parentTool: uiTool}};
-                    const subEvent = event.createSubevent(e);
-                    handelUiEvent(subEvent);
+            if (!isControl) {
+                const controlChilds = uiTool.edge.childs.filter(child => 'Control' === child.uischema.type)
+                controlChilds.forEach(tool => {
+                    handelUiEvent(event.createSubevent({added: {element: tool, parentTool:uiTool}}));
                 })
 
                 return true;
