@@ -161,10 +161,6 @@ const onEditTool = (data) => {
   isModalOpen.value = true;
   toolEdit.value = data.tool;
 }
-const onDropAreaChanged = (e) => {
-  _.debounce(() => nextTick().then(() => updateJsonForm(e)),100,{leading:false, trailing:true})()
-};
-defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, baseSchemaTool, rootUischema, onEditTool, onDropAreaChanged})
 
 
 // const filteredBuilders = computed(() => {
@@ -225,13 +221,13 @@ const onChangeModal = (data) => {
 const updateJsonForm = (e) => {
     const event = new BuilderEvent(e, props, showBuilder.value, toolFinder, baseUiTool.value, baseSchemaTool.value);
 
-  //ignore "mounted" event for non-baseTools
-  if('mounted' === event.type) {
-    const baseTool = ('schema' === event.showBuilder ? baseSchemaTool : baseUiTool).value;
-    if(event.tool !== baseTool) {
-        return;
-    }
-  }
+  // //ignore "mounted" event for non-baseTools
+  // if('mounted' === event.type) {
+  //   const baseTool = ('schema' === event.showBuilder ? baseSchemaTool : baseUiTool).value;
+  //   if(event.tool !== baseTool) {
+  //       return;
+  //   }
+  // }
 
   const rootSchemaBefore = JSON.stringify(rootSchema.value);
   const rootUischemaBefore = JSON.stringify(rootUischema.value);
@@ -245,12 +241,13 @@ const updateJsonForm = (e) => {
   const rootUischemaAfter = JSON.stringify(rootUischema.value);
   const schemaChanged = rootSchemaAfter!==rootSchemaBefore;
   const uischemaChanged = rootUischemaAfter!==rootUischemaBefore;
+  const isMounted = !!e.mounted;
+  const isModal = !!e.modal;
 
-  const emitUpdated = schemaChanged || uischemaChanged || e.mounted || e.modal;
+  const emitUpdated = schemaChanged || uischemaChanged || isMounted || isModal;
   if(emitUpdated) {
-    emitSchemaUpdated();
+      emitSchemaUpdatedDebounced();
   }
-
 
   // console.log("FB.updateJsonForm","rootschema",{
   //   rootSchema:rootSchema.value,
@@ -358,6 +355,7 @@ const emitSchemaUpdated = (init=false) => {
 
     emit('schemaUpdated', args)
 }
+const emitSchemaUpdatedDebounced = _.debounce(emitSchemaUpdated,50,{leading:false, trailing:true});
 
 onBeforeMount(() => {
   //init baseTool
@@ -391,6 +389,8 @@ onBeforeUnmount(() => {
   //emitter.off('formBuilderModal');
   //emitter.off('formBuilderUpdated');
 })
+
+defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, baseSchemaTool, rootUischema, onEditTool, onDropAreaChanged: updateJsonForm})
 
 </script>
 
