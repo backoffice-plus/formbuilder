@@ -50,14 +50,24 @@ export class ToolEdge {
         return this._schemaParent;
     }
 
-    setParent(tool: ToolInterface | undefined) {
+    setParent(tool: ToolInterface | undefined, createExParent:boolean = false) {
         const isControl = 'Control' === tool?.uischema?.type
         if(tool) {
             if(isControl) {
-                this._schemaParent = tool;
+                if(createExParent) {
+                    this.schemaParent = tool;
+                }
+                else {
+                    this._schemaParent = tool;
+                }
             }
             else {
-                this._uiParent = tool;
+                if(createExParent) {
+                    this.uiParent = tool;
+                }
+                else {
+                    this._uiParent = tool;
+                }
             }
         }
     }

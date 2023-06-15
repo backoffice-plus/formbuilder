@@ -180,7 +180,7 @@ export const handelUiEvent = (event: BuilderEvent): boolean => {
 
     switch (event.type) {
         case 'added':
-            uiTool.edge.uiParent = uiParent;
+            uiTool.edge.setParent(uiParent, true);
             return uiTool.edge.exUiParent ? handelUiEventOnDisplaced(event) : handelUiEventOnAdded(event);
 
         case 'removed':
@@ -285,12 +285,15 @@ export const handelUiEventOnAdded = (event: BuilderEvent): boolean => {
     // const pathSegments = scope && toDataPathSegments(scope)
     // const propertyName = pathSegments?.pop();
 
+    let added = false;
+
     let scenario, targetTool;
     if(!isControl) {
         scenario = 'add.Layout->Layout'
     }
     else if (isParentControlType) {
         scenario = 'add.Control->Object'
+        added = true; //is already child in a schema - so just return true to render schema
     }
     else {
         scenario = 'add.Control->Layout'
@@ -304,7 +307,6 @@ export const handelUiEventOnAdded = (event: BuilderEvent): boolean => {
     //     edge: uiTool.edge,
     // });
 
-    let added = false;
     if (targetTool) {
         targetTool?.edge.addChild(uiTool, event.newIndex);
         uiTool.edge.schemaParent = targetTool;
