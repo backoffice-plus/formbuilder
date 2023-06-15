@@ -101,7 +101,7 @@ nav {
 
 <script setup>
 import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount, nextTick, useSlots} from 'vue'
-import {handleEvent} from "../index";
+import {generateJsonForm} from "../index";
 import {cloneToolWithSchema, createBaseTool, initBaseTools} from "../lib/toolCreation";
 
 import Modal from "./Modal.vue";
@@ -232,7 +232,7 @@ const updateJsonForm = (e) => {
   const rootSchemaBefore = JSON.stringify(rootSchema.value);
   const rootUischemaBefore = JSON.stringify(rootUischema.value);
 
-  const {schema, uischema} = handleEvent(event)
+  const {schema, uischema} = generateJsonForm(event)
   undefined !== schema && (rootSchema.value = schema);
   undefined !== uischema && (rootUischema.value = uischema);
 

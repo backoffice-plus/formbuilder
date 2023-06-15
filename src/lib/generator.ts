@@ -1,90 +1,7 @@
-import _ from "lodash";
-import {Generate} from "@jsonforms/core";
-import {denormalizePath, getAllSubpaths, getPlainProperty, getRequiredFromSchema, getRequiredPath} from "./normalizer";
-import {CombinatorTool} from "./tools/combinatorTool";
-import type {JsonSchema} from "@jsonforms/core";
-import type {JsonFormsInterface, JsonFormsUISchema, ToolFinderInterface, ToolInterface} from "./models";
-import {findAllScopeTools} from "./formbuilder";
+import type {JsonFormsInterface, ToolInterface} from "./models";
 import type {BuilderEvent} from "./BuilderEvent";
 
-/** @deprecated **/
-export const setRequiredToSchema = (propertyName: string, schema: JsonSchema, isRequired: boolean = false): void => {
-    const plainProp = getPlainProperty(propertyName);
-    let required = getRequiredFromSchema(propertyName, schema);
-    if (isRequired) {
-        if (!required.includes(plainProp)) {
-            required.push(plainProp);
-        }
-    } else {
-        if (required.includes(plainProp)) {
-            required = required.filter((item: string) => item !== plainProp)
-        }
-    }
-    _.set(schema, getRequiredPath(propertyName), required.length ? required : undefined)
-}
-
-/** @deprecated **/
-export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchema): void => {
-
-    let set = tool.generateJsonSchema();
-    if(undefined === set) {
-        return
-    }
-
-    //console.log("setItemSchemaToSchema",tool,rootSchema);
-
-    const subpaths = getAllSubpaths(tool.propertyName, 0);
-
-    //create type=object in subpaths if not exists
-    subpaths.forEach((subProp: string) => {
-        const subPath = denormalizePath(subProp) + '.type'
-        if (!_.get(rootSchema, subPath)) {
-            _.set(rootSchema, subPath, 'object')
-        }
-    });
-
-    let path = denormalizePath(tool.propertyName);
-
-    // //array items :TODO find better implementation (its not working for multiple nested objects)
-    // const isRef = undefined !== tool?.schema?.items?.$ref;
-    // if('array' === tool?.schema?.type && undefined === tool?.schema?.items?.type && !isRef ) {
-    //     set.items = {type:'object'}
-    // }
-    // if('array' === parentTool?.schema?.type) {
-    //     path = path.replace(/^properties\./, 'items.properties.');
-    // }
-
-    _.set(rootSchema, path, set)
-
-    if (tool.isRequired) {
-        setRequiredToSchema(tool.propertyName, rootSchema, true);
-    }
-}
-
-/** @deprecated **/
-export const createJsonUiSchema = (tool: ToolInterface, baseSchemaTool: ToolInterface, rootSchema: JsonSchema, schemaReadOnly: boolean = false, toolFinder:ToolFinderInterface): JsonFormsUISchema => {
-    if (_.isEmpty(tool.uischema.options)) {
-        delete tool.uischema.options;
-    }
-
-    const uischema = tool.uischema;
-
-    const clonedUischema = uischema && "type" in uischema && _.cloneDeep(uischema) as JsonFormsUISchema | any;
-    const isScoped = clonedUischema && "scope" in clonedUischema;
-
-    if(!isScoped) {
-        if(tool.childs.length) {
-            clonedUischema.elements = tool.childs.map((t: ToolInterface) => createJsonUiSchema(t, baseSchemaTool, rootSchema, schemaReadOnly, toolFinder)) ?? [];
-        }
-    }
-    else if (!schemaReadOnly) {
-       setItemSchemaToSchema(tool, rootSchema);
-    }
-
-    return clonedUischema;
-};
-
-export const handleEvent = (event: BuilderEvent): JsonFormsInterface => {
+export const generateJsonForm = (event: BuilderEvent): JsonFormsInterface => {
 
     let schema, uischema = undefined;
 
@@ -104,7 +21,7 @@ export const handleEvent = (event: BuilderEvent): JsonFormsInterface => {
             schema = event.baseSchemaTool?.generateJsonSchema();
 
             if(!event.schemaOnly) {
-                const updated = handleSchemaEvent(event)
+                const updated = updateUiTree(event)
                 updated && (uischema = event.baseUiTool?.generateUiSchema());
             }
             break;
@@ -113,7 +30,7 @@ export const handleEvent = (event: BuilderEvent): JsonFormsInterface => {
             uischema = event.baseUiTool?.generateUiSchema();
 
             if(!event.schemaReadOnly) {
-                const updated = handelUiEvent(event);
+                const updated = updateSchemaTree(event);
                 updated && (schema = event.baseSchemaTool?.generateJsonSchema());
             }
             break;
@@ -122,7 +39,7 @@ export const handleEvent = (event: BuilderEvent): JsonFormsInterface => {
     return {schema, uischema} as JsonFormsInterface
 }
 
-export const handleSchemaEvent = (event: BuilderEvent): boolean => {
+const updateUiTree = (event: BuilderEvent): boolean => {
 
     const schemaTool = event.tool;
     const uiParent = event.parentTool;
@@ -169,8 +86,7 @@ export const handleSchemaEvent = (event: BuilderEvent): boolean => {
 
     return false;
 }
-
-export const handelUiEvent = (event: BuilderEvent): boolean => {
+const updateSchemaTree = (event: BuilderEvent): boolean => {
 
     const uiTool = event.tool;
     const uiParent = event.parentTool;
@@ -194,7 +110,7 @@ export const handelUiEvent = (event: BuilderEvent): boolean => {
             if (!isControl) {
                 const controlChilds = uiTool.edge.childs.filter(child => 'Control' === child.uischema.type)
                 controlChilds.forEach(tool => {
-                    handelUiEvent(event.createSubevent({added: {element: tool, parentTool:uiTool}}));
+                    updateSchemaTree(event.createSubevent({added: {element: tool, parentTool:uiTool}}));
                 })
                 return true;
             }
@@ -223,7 +139,7 @@ export const handelUiEvent = (event: BuilderEvent): boolean => {
     return false
 }
 
-export const handelSchemaEventOnAdded = (event: BuilderEvent): boolean => {
+const handelSchemaEventOnAdded = (event: BuilderEvent): boolean => {
 
     const schemaTool = event.tool;
     const schemaParent = event.parentTool;
@@ -255,7 +171,7 @@ export const handelSchemaEventOnAdded = (event: BuilderEvent): boolean => {
 
     return true;
 }
-export const handelSchemaEventOnRemoved = (event: BuilderEvent): boolean => {
+const handelSchemaEventOnRemoved = (event: BuilderEvent): boolean => {
 
     const schemaTool = event.tool;
     const uiParent = schemaTool.edge.uiParent;
@@ -272,7 +188,7 @@ export const handelSchemaEventOnRemoved = (event: BuilderEvent): boolean => {
     return removed;
 }
 
-export const handelUiEventOnAdded = (event: BuilderEvent): boolean => {
+const handelUiEventOnAdded = (event: BuilderEvent): boolean => {
 
     const uiTool = event.tool;
     const uiParent = event.parentTool;
@@ -316,7 +232,7 @@ export const handelUiEventOnAdded = (event: BuilderEvent): boolean => {
 
     return added;
 }
-export const handelUiEventOnDisplaced = (event: BuilderEvent): boolean => {
+const handelUiEventOnDisplaced = (event: BuilderEvent): boolean => {
 
     const uiTool = event.tool;
     const uiParent = event.parentTool;
@@ -381,7 +297,7 @@ export const handelUiEventOnDisplaced = (event: BuilderEvent): boolean => {
 
     return displaced;
 }
-export const handleUiEventOnModal = (event: BuilderEvent): boolean => {
+const handleUiEventOnModal = (event: BuilderEvent): boolean => {
 
     const uiTool = event.tool;
 
@@ -400,7 +316,7 @@ export const handleUiEventOnModal = (event: BuilderEvent): boolean => {
 
     return true;
 };
-export const handleUiEventOnRemoved = (event: BuilderEvent): boolean => {
+const handleUiEventOnRemoved = (event: BuilderEvent): boolean => {
     const uiTool = event.tool;
 
     const schemaParent = uiTool.edge.schemaParent;
