@@ -100,21 +100,16 @@ nav {
 
 
 <script setup>
-import {computed, ref, unref, onMounted, onBeforeUnmount, onBeforeMount, nextTick, useSlots} from 'vue'
+import {computed, ref, useSlots, watch} from 'vue'
 import {generateJsonForm} from "../index";
-import {cloneToolWithSchema, createBaseTool, initBaseTools} from "../lib/toolCreation";
+import {initBaseTools} from "../lib/toolCreation";
 
 import Modal from "./Modal.vue";
-import {normalizePath, normalizeScope} from "../lib/normalizer";
 import _ from "lodash";
-import {generateDefaultUISchema} from "@jsonforms/core/src/generators/uischema";
-import {generateJsonSchema} from "@jsonforms/core";
-import {getFormbuilder, onDragGetTool} from "../lib/vue";
+import {onDragGetTool} from "../lib/vue";
 import {ToolFinder} from "../lib/ToolFinder";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
-import {ObjectTool} from "../lib/tools/ObjectTool";
 import FormBuilderToolbar from "./FormBuilderToolbar.vue";
-import {formbuilderProps, toolComponentProps} from "../lib/models";
 import {BuilderEvent} from "../lib/BuilderEvent";
 
 //const props = defineProps({...formbuilderProps()})
@@ -130,214 +125,34 @@ const props = defineProps({
   schemaToolProps: Object,
 })
 
+const rootSchema = ref(props?.schema ?? props?.jsonForms?.schema ?? {});
+const rootUischema = ref(props?.uischema ?? props?.jsonForms?.uischema ?? {});
+const showBuilder = ref(props?.schemaOnly ? 'schema' : 'uischema');
+
 const emit = defineEmits(['schemaUpdated']);
+
 const slots = useSlots()
 const slotToolbar = slots?.toolbar && slots.toolbar();
 const slotDroparea = slots?.droparea && slots.droparea();
 const hideToolbar = 0 === slotToolbar?.length
 const hideDroparea = 0 === slotDroparea?.length
 
-const drag = ref(false);
-// const jsonFormsUiSchema = ref(props?.uischema ?? props?.jsonForms?.uischema ?? {});
-// const jsonFormsSchema = ref(props?.schema ?? props?.jsonForms?.schema ?? {});
-const isModalOpen = ref(false);
-const toolEdit = ref(null);
-const showBuilder = ref('uischema');
-
-const baseUiTool = ref(null);
-const baseSchemaTool = ref(null);
-//const baseDefinitionTool = ref(null);
-//const currentBaseTool = ref(null);
-
-const fb = getFormbuilder();
-
-//expose
 const toolFinder = new ToolFinder(props.tools);
-const toolDragging = ref();
-const onToolDrag = (e) => toolDragging.value = onDragGetTool(e);
-const rootSchema = ref();
-const rootUischema = ref();
-const onEditTool = (data) => {
-  isModalOpen.value = true;
-  toolEdit.value = data.tool;
-}
 
-
-// const filteredBuilders = computed(() => {
-//   const showBuilders = props.schemaOnly ? ['schema'] : ['schema','uischema'];
-//   const allowedBuilders = ['schema','uischema'];//,'definitions'
-//   return showBuilders ? showBuilders.filter(value => allowedBuilders.includes(value)) : allowedBuilders;
-// })
-
-//update(props.jsonForms?.schema, props.jsonForms?.uischema);
-
-
-//:TODO there is a lot of renderings - how to optimize?
-// onRenderTriggered((e) => {
-//   console.log("FB.onRenderTriggered",e);
-// });
-
+//base tools
+const {schema, uischema} = initBaseTools(toolFinder, props, rootSchema.value, rootUischema.value)
+const baseUiTool = ref(uischema);
+const baseSchemaTool = ref(schema);
 const currentBaseTool = computed(() => showBuilder.value === 'uischema' ? baseUiTool.value : baseSchemaTool.value)
 
-// const readonlyTools = computed(() => {
-//
-//   let all = [];
-//
-//
-//   //:TODO find better solution!! use toolStore
-//   if(props.schemaReadOnly) {
-//
-//     console.log("rootUischema",props.jsonForms.uischema);
-//
-//     const usedProps = findAllScopes(props.jsonForms.uischema).map(scope=>normalizePath(normalizeScope(scope)));
-//
-//     const allProps = findAllProperties(props.jsonForms.uischema);
-//     const readOnlyControlTools = Object.keys(allProps)?.map(name => {
-//
-//       const itemSchema = allProps[name];
-//       const itemUischema = {type:'Control',scope:'#'};
-//
-//       const clone = cloneToolWithSchema(toolFinder.findMatchingTool(rootSchema, itemSchema, itemUischema),  itemSchema, itemUischema)
-//       clone.propertyName = name;
-//
-//       return clone;
-//     }).filter(tool => !usedProps.includes(tool.propertyName))
-//
-//     all = [...readOnlyControlTools, ...all]
-//   }
-//
-//   return all;
-// });
-
-const onChangeModal = (data) => {
-  if (toolEdit.value) {
-    // if(data.propertyName) {
-    //   toolEdit.value.props.propertyName = data.propertyName;
-    // }
-    updateJsonForm({modal:{element:toolEdit.value}});
-  }
-}
+const onChangeModal = (data) => toolEdit.value && updateJsonForm({modal:{element:toolEdit.value}})
 
 const updateJsonForm = (e) => {
-    const event = new BuilderEvent(e, props, showBuilder.value, toolFinder, baseUiTool.value, baseSchemaTool.value);
-
-  // //ignore "mounted" event for non-baseTools
-  // if('mounted' === event.type) {
-  //   const baseTool = ('schema' === event.showBuilder ? baseSchemaTool : baseUiTool).value;
-  //   if(event.tool !== baseTool) {
-  //       return;
-  //   }
-  // }
-
-  const rootSchemaBefore = JSON.stringify(rootSchema.value);
-  const rootUischemaBefore = JSON.stringify(rootUischema.value);
-
+  const event = new BuilderEvent(e, props, showBuilder.value, toolFinder, baseUiTool.value, baseSchemaTool.value);
   const {schema, uischema} = generateJsonForm(event)
   undefined !== schema && (rootSchema.value = schema);
   undefined !== uischema && (rootUischema.value = uischema);
-
-  //something changed?
-  const rootSchemaAfter = JSON.stringify(rootSchema.value);
-  const rootUischemaAfter = JSON.stringify(rootUischema.value);
-  const schemaChanged = rootSchemaAfter!==rootSchemaBefore;
-  const uischemaChanged = rootUischemaAfter!==rootUischemaBefore;
-  const isMounted = !!e.mounted;
-  const isModal = !!e.modal;
-
-  const emitUpdated = schemaChanged || uischemaChanged || isMounted || isModal;
-  if(emitUpdated) {
-      emitSchemaUpdatedDebounced();
-  }
-
-  // console.log("FB.updateJsonForm","rootschema",{
-  //   rootSchema:rootSchema.value,
-  //   rootUischema:rootUischema.value
-  // })
-  // console.log("FB.updateJsonForm","baseToos",{
-  //   baseSchemaTool:baseSchemaTool.value,
-  //   baseUiTool:baseUiTool.value
-  // })
 }
-
-// const updateSchemaBuilder = () => {
-//   if (baseSchemaTool?.value) {
-//     let setSchema;
-//     if(baseSchemaTool.value instanceof SchemaTool) {
-//       const firstChild = baseSchemaTool.value.childs[0];
-//       setSchema = firstChild && generateSchemaByTool(firstChild);
-//     }
-//     else {
-//       setSchema = createTypeObjectSchema(baseSchemaTool.value).schema
-//
-//       // const createSchema = createTypeObjectSchema(baseSchemaTool.value).schema;
-//       // //setSchema = createSchema;//createTypeObjectSchema(baseSchemaTool.value).schema
-//       // setSchema = createSchema;//baseSchemaTool.value?.schema ?? {};
-//       // //console.log("FB.updateSchemaBuilder","setSchema",setSchema,"baseschemaTOol",baseSchemaTool.value)
-//       // console.log("FB.updateSchemaBuilder", {createSchema})
-//     }
-//
-//     rootSchema.value = setSchema
-//   }
-// }
-
-
-// const updateDefinitionBuilder = () => {
-//   if (baseDefinitionTool?.value) {
-//     const def = createTypeObjectSchema(baseDefinitionTool.value);
-//     console.log("def",def);
-//
-//     if (!_.isEmpty(def.definitions?.properties ?? {})) {
-//       const updatedSchema = rootSchema.value
-//       updatedSchema.definitions = def.definitions.properties;
-//
-//       rootSchema.value = updatedSchema
-//       emit('schemaUpdated', {schema:updatedSchema, uischema:rootUischema.value})
-//     }
-//   }
-// }
-
-// const updateUischemaBuilder = () => {
-//   let newJsonForms;
-//
-//   // if ('definition' === showBuilder.value) {
-//   //   const def = createTypeObjectSchema(baseDefinitionTool.value);
-//   //   newJsonForms = {
-//   //     schema: jsonFormsSchema.value,
-//   //     uischema: jsonFormsUiSchema.value,
-//   //   }
-//   //   if (!_.isEmpty(def.definitions?.properties ?? {})) {
-//   //     newJsonForms.schema.definitions = def.definitions.properties;
-//   //   }
-//   //   else {
-//   //     delete newJsonForms.schema.definitions;
-//   //   }
-//   // }
-//
-//   if ('uischema' === showBuilder.value) {
-//     //newJsonForms = createJsonForms(baseUiTool.value, jsonFormsSchema.value, props.schemaReadOnly);
-//     // jsonFormsSchema.value = newJsonForms.schema;
-//     // jsonFormsUiSchema.value = newJsonForms.uischema;
-//     newJsonForms = createJsonForms(baseUiTool.value, rootSchema.value, props.schemaReadOnly);
-//     rootSchema.value = newJsonForms.schema;
-//     rootUischema.value = newJsonForms.uischema;
-//   }
-//
-//   // if (newJsonForms) {
-//   //   rootSchema.value = jsonFormsSchema.value;
-//   //   rootUischema.value = jsonFormsUiSchema.value;
-//   //  // emit('schemaUpdated', newJsonForms)
-//   // }
-//
-//   //emitter.emit('formBuilderSchemaUpdated', newJsonForms)
-// }
-
-// const rootForm = ref(null);
-// const rootDefinitionForm = ref(null);
-// const rootSchemaForm = ref(null);
-// const setRootForm = (e) => rootForm.value = e
-// const setRootDefinitionForm = (e) => rootDefinitionForm.value = e
-// const setRootSchemaForm = (e) => rootSchemaForm.value = e
-
 
 const emitSchemaUpdated = (init=false) => {
     const args = {
@@ -356,40 +171,28 @@ const emitSchemaUpdated = (init=false) => {
     emit('schemaUpdated', args)
 }
 const emitSchemaUpdatedDebounced = _.debounce(emitSchemaUpdated,50,{leading:false, trailing:true});
+const emitSchemaUpdatedIfChanged = (a, b) => JSON.stringify(a) !== JSON.stringify(b) && emitSchemaUpdatedDebounced();
+watch(rootSchema, emitSchemaUpdatedIfChanged)
+watch(rootUischema, emitSchemaUpdatedIfChanged)
 
-onBeforeMount(() => {
-  //init baseTool
-  showBuilder.value = props?.schemaOnly ? 'schema' : 'uischema';
-  rootSchema.value = props?.schema ?? props?.jsonForms?.schema ?? {};
-  rootUischema.value = props?.uischema ?? props?.jsonForms?.uischema ?? {};
-
-  const {schema, uischema} = initBaseTools(toolFinder, props, rootSchema.value, rootUischema.value)
-  baseSchemaTool.value = schema;
-  baseUiTool.value = uischema;
-
-  //trigger update if there are no elements (that would emit 'schemaUpdated')
-  const hasElements = (rootSchema.value?.elements?.length ?? 0) > 0;
-  const hasUiElements = (rootUischema.value?.elements?.length ?? 0) > 0;
-  if(!hasUiElements && 'uischema' === showBuilder.value) {
-    const currentBaseTool = ('schema' === showBuilder.value ? baseSchemaTool : baseUiTool).value;
-    updateJsonForm({mounted:{element:currentBaseTool}});
+//initial emitSchemaUpdated if there are no elements
+const hasElements = (rootSchema.value?.elements?.length ?? 0) > 0;
+const hasUiElements = (rootUischema.value?.elements?.length ?? 0) > 0;
+if(!hasUiElements && 'uischema' === showBuilder.value) {
+    updateJsonForm({mounted:{element:currentBaseTool.value}});
     emitSchemaUpdated(true);
-  }
+}
 
-  // emitter.on('formBuilderModal', (data) => {
-  //   isModalOpen.value = true;
-  //   toolEdit.value = data.tool;
-  // })
-  // emitter.on('formBuilderUpdated', (data) => {
-  //   console.log("fb.formBuilderUpdated")
-  //   updateJsonFormDebounced();
-  // });
-});
-onBeforeUnmount(() => {
-  //emitter.off('formBuilderModal');
-  //emitter.off('formBuilderUpdated');
-})
-
+//expose
+const drag = ref(false);
+const isModalOpen = ref(false);
+const toolEdit = ref(null);
+const toolDragging = ref();
+const onToolDrag = (e) => toolDragging.value = onDragGetTool(e);
+const onEditTool = (data) => {
+    isModalOpen.value = true;
+    toolEdit.value = data.tool;
+}
 defineExpose({toolFinder, showBuilder, toolDragging, rootSchema, rootUischema, baseSchemaTool, baseUiTool, onToolDrag,  onEditTool, onDropAreaChanged: updateJsonForm})
 
 </script>
