@@ -32,8 +32,21 @@
           :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'') + (schemaBaseTool?'schema':'')"
           :schemaTool="schemaBaseTool ? 'schema' : ''"
           @schemaUpdated="onSchemaUpdated"
+          ref="fb"
       />
     <!--            -->
+      <details open="true">
+          <summary class="cursor-pointer">ToolTree</summary>
+          <div class="flex gap-4 text-xs">
+              <div>
+                  Schema:
+                  <IdList :tool="baseSchemaTool" v-if="baseSchemaTool" />
+              </div>
+              <div>UI:
+                  <IdList :tool="baseUiTool" v-if="baseUiTool" />
+              </div>
+          </div>
+      </details>
 
     <FormBuilderDetails :jsonForms="jsonFormsResolved" />
 
@@ -79,6 +92,8 @@ import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
 import _ from "lodash";
 import type {EventAfterOptionJsonforms} from "../src/lib/mitt";
 import {formbuilderRenderers} from "../src/components/renderers";
+import IdList from "./Dev/IdList.vue";
+import {getFormbuilder} from "../src/lib/vue";
 
 const tools = [
     ...defaultTools,
@@ -102,6 +117,14 @@ const schemaBaseTool = ref("1" === getKeyFromUrl('schemaBaseTool'));
 const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
+
+const fb = ref(null);
+const baseUiTool = ref();
+const baseSchemaTool = ref();
+onMounted(() => {
+    baseUiTool.value = fb.value?.baseUiTool;
+    baseSchemaTool.value = fb.value?.baseSchemaTool;
+})
 
 const rootSchema = ref();
 const rootUiSchema = ref();

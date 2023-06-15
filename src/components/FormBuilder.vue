@@ -60,16 +60,6 @@
       </template>
     </slot>
 
-<!--      <div class="flex gap-4 text-xs">-->
-<!--          <div>-->
-<!--              Schema:-->
-<!--              <IdList :tool="baseSchemaTool" v-if="baseSchemaTool" />-->
-<!--          </div>-->
-<!--          <div>UI:-->
-<!--              <IdList :tool="baseUiTool" v-if="baseUiTool" />-->
-<!--          </div>-->
-<!--      </div>-->
-
   </div>
 
 </template>
@@ -400,7 +390,7 @@ onBeforeUnmount(() => {
   //emitter.off('formBuilderUpdated');
 })
 
-defineExpose({toolFinder, showBuilder, toolDragging, onToolDrag, rootSchema, baseSchemaTool, rootUischema, onEditTool, onDropAreaChanged: updateJsonForm})
+defineExpose({toolFinder, showBuilder, toolDragging, rootSchema, rootUischema, baseSchemaTool, baseUiTool, onToolDrag,  onEditTool, onDropAreaChanged: updateJsonForm})
 
 </script>
 
