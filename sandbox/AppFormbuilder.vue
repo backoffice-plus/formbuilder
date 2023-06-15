@@ -119,12 +119,8 @@ const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
 
 const fb = ref(null);
-const baseUiTool = ref();
-const baseSchemaTool = ref();
-onMounted(() => {
-    baseUiTool.value = fb.value?.baseUiTool;
-    baseSchemaTool.value = fb.value?.baseSchemaTool;
-})
+const baseUiTool = computed(() => fb.value?.baseUiTool);
+const baseSchemaTool = computed(() => fb.value?.baseSchemaTool);
 
 const rootSchema = ref();
 const rootUiSchema = ref();

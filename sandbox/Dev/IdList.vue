@@ -1,9 +1,11 @@
 <template>
 
     <pre class="text-xs"><span :style="'background-color:#'+getId(tool.uuid)">{{ getId(tool.uuid) }}</span> {{ tool.constructor.name }}</pre>
-    <div v-for="(child,k,i) in childs" v-if="childs" class="ml-4 flex font-mono">
-        <IdList :tool="child" v-if="child.uuid"/>
-    </div>
+    <ul v-for="(child,k,i) in childs" v-if="childs" class="ml-4 font-mono">
+        <li class="list-disc">
+            <IdList :tool="child" v-if="child.uuid"/>
+        </li>
+    </ul>
 
 </template>
 
@@ -11,12 +13,6 @@
 pre span {
     color:white;;
     text-shadow: 1px 1px #000;
-}
-div:not(:last-child)::before {
-    content: '├─';
-}
-div:last-child::before {
-    content: '└─';
 }
 </style>
 
