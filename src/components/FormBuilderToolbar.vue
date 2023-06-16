@@ -5,9 +5,10 @@
         v-for="key in availableTabs"
         @click="showBar=key;"
         :class="{active:key===showBar}"
-        v-text="key"
-    />
-
+    >
+        {{ key }}
+        <span v-if="'unscoped' === key">({{ unscopedTools?.length }})</span>
+    </button>
     <!--    <button @click="showBar='schema';" :class="{active:'schema'===showBar}" v-if="!schemaReadOnly">Controls</button>-->
     <!--    <button @click="showBar='uischema';" :class="{active:'uischema'===showBar}" v-if="showBuilder==='uischema'">Layout</button>-->
     <!--    <button @click="showBar='properties';" :class="{active:'properties'===showBar}" v-if="schemaReadOnly">Properties</button>-->
@@ -47,6 +48,7 @@ section > button:hover {
 import {computed, onMounted, ref, watch} from 'vue';
 import {getFormbuilder, getToolDraggingRef} from "../lib/vue";
 import FormBuilderBar from "./FormBuilderBar.vue";
+import {findUnscopedTools} from "../lib/formbuilder";
 
 
 const props = defineProps(
@@ -71,6 +73,9 @@ const emits = defineEmits(['drag']);
 const showBar = ref('control');
 
 const typedTools = props.toolFinder.getTypedTools();
+const unscopedTools = ref([]);
+typedTools.unscoped = unscopedTools
+
 if(props.schemaReadOnly) {
     const fb = getFormbuilder();
     const baseSchemaTool= fb?.exposed?.baseSchemaTool?.value;
@@ -79,8 +84,13 @@ if(props.schemaReadOnly) {
 
 
 const availableTabs = computed(() => {
+  typedTools.unscoped.value = findUnscopedTools(fb?.exposed?.baseSchemaTool?.value);
+
   const availableTabs = Object.keys(typedTools)
-      .filter(key => typedTools[key].length > 0)
+      .filter(key => {
+          const tools = typedTools[key]?.value ?? typedTools[key] ?? [];
+          return tools.length > 0
+      })
       .filter(key => {
 
         //schema mode
@@ -109,7 +119,8 @@ const availableTabs = computed(() => {
 })
 
 const getFilteredTools = computed(() => {
-    return (typedTools[showBar.value] ?? []).filter(tool => {
+    const tools = typedTools[showBar.value]?.value ?? typedTools[showBar.value] ?? [];
+    return tools.filter(tool => {
       return !tool.toolbarOptions()?.hideToolAtBar
     })
 })

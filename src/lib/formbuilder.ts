@@ -192,3 +192,14 @@ export const prepareAndCallOnDropAreaChange = (e:any, tool:ToolInterface, childs
     //from fb?.exposed?.onDropAreaChanged(e);
     onDropAreaChanged(e);
 }
+
+
+export const findUnscopedTools = (baseSchemaTool:ToolInterface): ToolInterface[] => {
+    return baseSchemaTool.edge.childs.filter((child) => {
+
+        /**
+         * :TODO go deeper recursivly for objects
+         */
+        return !child.edge.uiParent
+    })
+}

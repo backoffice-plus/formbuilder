@@ -42,19 +42,21 @@ export const generateJsonForm = (event: BuilderEvent): JsonFormsInterface => {
 const updateUiTree = (event: BuilderEvent): boolean => {
 
     const schemaTool = event.tool;
-    const uiParent = event.parentTool;
+    const schemaParent = event.parentTool;
 
     const isScoped = undefined !== schemaTool.uischema.scope;
-    const isParentScoped = undefined !== uiParent?.uischema?.scope;
+    const isParentScoped = undefined !== schemaParent?.uischema?.scope;
     const isControl = 'Control' === schemaTool.uischema.type;
 
     //console.log("handleSchemaEvent", event.type, {scoped: isScoped, parentScoped: isParentScoped}, event);
 
     switch (event.type) {
 
-        // case 'added':
-        //     return (isScoped || isParentScoped) && handelSchemaEventOnAdded(event);
-        //
+        case 'added':
+            schemaTool.edge.setParent(schemaParent);
+            //return (isScoped || isParentScoped) && handelSchemaEventOnAdded(event);
+            break;
+
         case 'removed':
             return handelSchemaEventOnRemoved(event)
 
