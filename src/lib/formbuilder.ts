@@ -6,6 +6,8 @@ import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
 import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";
+import {useModal, useModalSlot, VueFinalModal} from "vue-final-modal";
+import ConfirmDelete from "../components/modals/ConfirmDelete.vue";
 
 
 /** @deprecated **/
@@ -157,6 +159,33 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
             return resolved.result
         })
 }
+
+export const onDeleteByToolGlobal = (parentTool:ToolInterface, toolToDelete:ToolInterface|undefined = undefined ) : Promise<ToolInterface[]> => {
+    return new Promise((resolve, reject) => {
+        toolToDelete && confirmToRemoveChild(parentTool, toolToDelete)
+            .then(deleted => {
+                    resolve(parentTool.edge.childs);
+                }
+            );
+    })
+};
+export const confirmToRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface) : Promise<boolean> => {
+    return new Promise((resolve, reject) => {
+        const { open, close} = useModal({
+            component: ConfirmDelete,
+            attrs: {
+                title: 'really delete?',
+                onConfirm() {
+                    parentTool.edge.removeChild(toolToDelete);
+                    resolve(true);
+                    close();
+                }
+            }
+        })
+        open();
+    });
+}
+
 
 export const deleteToolInChilds = async (toolToDelete:ToolInterface|undefined = undefined, childTools:ToolInterface[] = []) : Promise<ToolInterface[]|boolean> => {
 

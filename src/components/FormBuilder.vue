@@ -2,6 +2,7 @@
 
   <div class="formbuilder">
 
+    <ModalsContainer />
 
     <Modal
         :tool="toolEdit"
@@ -100,7 +101,7 @@ nav {
 
 
 <script setup>
-import {computed, ref, useSlots, watch} from 'vue'
+import {computed, getCurrentInstance, ref, useSlots, watch} from 'vue'
 import {generateJsonForm} from "../index";
 import {initBaseTools} from "../lib/toolCreation";
 
@@ -111,6 +112,7 @@ import {ToolFinder} from "../lib/ToolFinder";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
 import FormBuilderToolbar from "./FormBuilderToolbar.vue";
 import {BuilderEvent} from "../lib/BuilderEvent";
+import {createVfm, ModalsContainer} from "vue-final-modal";
 
 //const props = defineProps({...formbuilderProps()})
 const props = defineProps({
@@ -181,6 +183,11 @@ const hasUiElements = (rootUischema.value?.elements?.length ?? 0) > 0;
 if(!hasUiElements && 'uischema' === showBuilder.value) {
     updateJsonForm({mounted:{element:currentBaseTool.value}});
     emitSchemaUpdated(true);
+}
+
+const app = getCurrentInstance().appContext.app;
+if(!app.config.globalProperties['$vfm']) {
+    app.use(createVfm());
 }
 
 //expose

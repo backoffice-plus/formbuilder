@@ -26,3 +26,4 @@ export type {EventAfterOptionJsonforms} from './lib/mitt'
 export {default as Vuedraggable} from "../packages/_vuedraggable/src/vuedraggable.js";
 
 import './css/theme.css'
+import 'vue-final-modal/style.css'
