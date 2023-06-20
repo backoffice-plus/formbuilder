@@ -158,7 +158,7 @@ export class SchemaOnlyChildsTool extends AbstractTool implements ToolInterface 
 
 
     //:INFO copypast from objectTool
-    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+    initChilds(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
         const tools = [] as Array<ToolInterface>;
 
         //for moving existing tools to another list

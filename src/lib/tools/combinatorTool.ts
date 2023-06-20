@@ -136,7 +136,7 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
     }
 
 
-    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+    initChilds(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
         const ctools = [] as any;
 
         //for moving existing tools to another list

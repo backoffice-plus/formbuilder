@@ -38,7 +38,7 @@ export interface ToolInterface {
 
     generateJsonSchema: () => JsonSchema|undefined
     generateUiSchema: () => JsonFormsUISchema|undefined
-    initChilds: (toolFinder: ToolFinderInterface) => ToolInterface[]
+    initChilds: (toolFinder:ToolFinderInterface, baseSchemaTool?:ToolInterface|undefined) => ToolInterface[]
 }
 
 export interface ToolContext {

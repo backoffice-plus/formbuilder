@@ -63,7 +63,7 @@ export abstract class AbstractTool implements ToolInterface {
         }
         return uischema;
     }
-    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+    initChilds(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
         return []
     }
 }

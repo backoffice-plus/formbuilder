@@ -238,7 +238,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         } as JsonSchema;
     }
 
-    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+    initChilds(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
         const tools = [] as ToolInterface[];
 
         //for moving existing tools to another list

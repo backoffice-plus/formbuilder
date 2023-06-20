@@ -1,4 +1,4 @@
-import {rankWith} from "@jsonforms/core";
+import {rankWith, scopeEndIs} from "@jsonforms/core";
 import type {Layout} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
 import {AbstractTool} from "./AbstractTool";
@@ -11,6 +11,8 @@ import {getPlainProperty, getRequiredFromSchema, normalizePath, normalizeScope} 
 import _ from "lodash";
 import {cloneToolWithSchema} from "../toolCreation";
 import {unknownTool} from "./unknownTool";
+import {toDataPath} from "@jsonforms/core/src/util/path";
+import {ScopeTool} from "./ScopeTool";
 
 export class VerticalLayout extends AbstractTool implements ToolInterface {
 
@@ -66,7 +68,7 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
     }
 
 
-    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+    initChilds(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
         const tools = [] as any;
 
         //for moving existing tools to another list
@@ -81,25 +83,55 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
             const isScoped = itemUischema.scope;
 
             if(isScoped) {
-                const propertyPath = normalizeScope(itemUischema.scope);
-                const itemSchema = _.get(this.schema, propertyPath);
-
-                clone = cloneToolWithSchema(toolFinder.findMatchingTool(this.schema, itemSchema, itemUischema), itemSchema, itemUischema)
-                clone.propertyName = normalizePath(propertyPath);
-
-                //required
-                const required = getRequiredFromSchema(clone.propertyName, this.schema);
-                if (required?.includes(getPlainProperty(clone.propertyName))) {
-                    clone.isRequired = true;
+                if(!baseSchemaTool) {
+                    console.warn("LayoutTool.initChilds","NEED baseSchemaTool")
+                    return;
                 }
+
+                const path = toDataPath(itemUischema.scope);
+                const isDeepPath = path.includes('.');
+                const schemaChild = baseSchemaTool.edge.findChild(path);
+
+                if(schemaChild) {
+                    if(isDeepPath) {
+                        clone = new ScopeTool();
+                        clone.propertyName = path;
+                        clone.uischema = itemUischema;
+                    }
+                    else {
+                        schemaChild.uischema = itemUischema;
+                        clone = schemaChild;
+                    }
+                }
+                else {
+                    console.warn("LayoutTool.initChilds","child not find in schema for path",{path})
+                }
+                //baseSchemaTool.edge
+
+                // const propertyPath = normalizeScope(itemUischema.scope);
+                // const itemSchema = _.get(this.schema, propertyPath);
+                //
+                //
+                // console.log("LayoutTool","elements.forEach",propertyPath);
+                //
+                // clone = cloneToolWithSchema(toolFinder.findMatchingTool(this.schema, itemSchema, itemUischema), itemSchema, itemUischema)
+                // clone.propertyName = normalizePath(propertyPath);
+                //
+                // //required
+                // const required = getRequiredFromSchema(clone.propertyName, this.schema);
+                // if (required?.includes(getPlainProperty(clone.propertyName))) {
+                //     clone.isRequired = true;
+                // }
             }
             else {
                 clone = cloneToolWithSchema(toolFinder.findLayoutToolByUiType(itemUischema.type) ?? unknownTool, this.schema, itemUischema);
             }
 
-            clone.edge.setParent(this);
-            clone.edge.replaceChilds(clone.initChilds(toolFinder));
-            tools.push(clone);
+            if(clone) {
+                clone.edge.setParent(this);
+                clone.edge.replaceChilds(clone.initChilds(toolFinder,baseSchemaTool));
+                tools.push(clone);
+            }
         });
 
         //:TODO remove

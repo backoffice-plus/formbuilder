@@ -127,7 +127,7 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
     }
 
 
-    initChilds(toolFinder: ToolFinderInterface): ToolInterface[] {
+    initChilds(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
         const tools = [] as Array<ToolInterface>;
 
         //for moving existing tools to another list

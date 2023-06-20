@@ -39,6 +39,23 @@ export class ToolEdge {
         }
     }
 
+    findChild(path:string): ToolInterface|undefined {
+        const splits = path.split('.');
+        if(splits.length > 1) {
+            let currentEdge = this as ToolEdge;
+            return splits.map(subPath => {
+                const result = currentEdge._childs.find(tool => tool.propertyName === subPath);
+                if(result) {
+                    currentEdge = result.edge;
+                }
+                return result;
+            }).pop();
+        }
+        else {
+            return this._childs.find(tool => tool.propertyName === path);
+        }
+    }
+
     replaceChilds(childs: ToolInterface[]): void {
         this._childs = childs;
         const isControl = 'Control' === this.tool?.uischema.type;

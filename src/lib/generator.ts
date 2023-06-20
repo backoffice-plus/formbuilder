@@ -94,7 +94,6 @@ const updateSchemaTree = (event: BuilderEvent): boolean => {
             return !uiTool.edge.displaced ? handleUiEventOnRemoved(event) : false;
 
         case 'mounted':
-            console.log("updateSchemaTree.mounted",event);
             if (!isControl) {
                 // const controlChilds = uiTool.edge.childs.filter(child => 'Control' === child.uischema.type)
                 // controlChilds.forEach(tool => {
