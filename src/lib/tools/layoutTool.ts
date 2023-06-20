@@ -83,28 +83,31 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
             const isScoped = itemUischema.scope;
 
             if(isScoped) {
-                if(!baseSchemaTool) {
-                    console.warn("LayoutTool.initChilds","NEED baseSchemaTool")
-                    return;
-                }
+                if(baseSchemaTool) {
+                    const path = toDataPath(itemUischema.scope);
+                    const isDeepPath = path.includes('.');
+                    const schemaChild = baseSchemaTool.edge.findChild(path);
 
-                const path = toDataPath(itemUischema.scope);
-                const isDeepPath = path.includes('.');
-                const schemaChild = baseSchemaTool.edge.findChild(path);
-
-                if(schemaChild) {
-                    if(isDeepPath) {
+                    if(schemaChild) {
+                        if(isDeepPath) {
+                            clone = new ScopeTool();
+                            clone.propertyName = path;
+                            clone.uischema = itemUischema;
+                        }
+                        else {
+                            schemaChild.uischema = itemUischema;
+                            clone = schemaChild;
+                        }
+                    }
+                    else {
                         clone = new ScopeTool();
                         clone.propertyName = path;
                         clone.uischema = itemUischema;
-                    }
-                    else {
-                        schemaChild.uischema = itemUischema;
-                        clone = schemaChild;
+                        //console.warn("LayoutTool.initChilds","child not find in schema for path",{path})
                     }
                 }
                 else {
-                    console.warn("LayoutTool.initChilds","child not find in schema for path",{path})
+                    //console.warn("LayoutTool.initChilds","NEED baseSchemaTool")
                 }
                 //baseSchemaTool.edge
 
