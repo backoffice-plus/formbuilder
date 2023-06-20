@@ -11,6 +11,7 @@ export class BuilderEvent {
     readonly childs: ToolInterface[] = [];
     readonly newIndex: number | undefined;
     readonly oldIndex: number | undefined;
+    readonly unscope: boolean = false;
 
     readonly showBuilder: 'schema' | 'uischema';
 
@@ -41,6 +42,7 @@ export class BuilderEvent {
         this.childs = action?.childs;
         this.newIndex = action?.newIndex;
         this.oldIndex = action?.oldIndex;
+        this.unscope = action?.unscope;
 
         this.showBuilder = showBuilder;
 
@@ -56,7 +58,10 @@ export class BuilderEvent {
             schemaParent: this.tool.edge.schemaParent,
             uiParent: this.tool.edge.uiParent,
         }
-        this.displaceType = 'added' === this.type ? this.createUiDisplaceType() : undefined
+        const wasUnscoped = this.tool.edge.wasUnscoped;
+        this.tool.edge.wasUnscoped = undefined;
+
+        this.displaceType = 'added' === this.type && !wasUnscoped ? this.createUiDisplaceType() : undefined
 
         //update current childs to edge (must happend AFTER createUiDisplaceType());
         if (this.parentTool && this.childs) {

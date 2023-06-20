@@ -125,6 +125,9 @@ const onClone = (tool) => {
     };
     tool.optionDataUpdate(context, tool.optionDataPrepare(context));
 
+    if(isUnscoped) {
+        tool.edge.wasUnscoped = true;
+    }
     return tool;
   }
 

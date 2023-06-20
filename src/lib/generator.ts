@@ -91,7 +91,12 @@ const updateSchemaTree = (event: BuilderEvent): boolean => {
             return event.displaceType ? handelUiEventOnDisplaced(event) : handelUiEventOnAdded(event);
 
         case 'removed':
-            return !uiTool.edge.displaced ? handleUiEventOnRemoved(event) : false;
+            const wasDisplaced = !!uiTool.edge.displaced;
+            if(uiTool.edge.displaced) {
+                uiTool.edge.displaced = undefined;
+            }
+
+            return !wasDisplaced ? handleUiEventOnRemoved(event) : false;
 
         case 'mounted':
             if (!isControl) {
@@ -305,14 +310,11 @@ const handleUiEventOnRemoved = (event: BuilderEvent): boolean => {
     //const hasExParents = schemaParent?.uuid && schemaParent?.uuid === uiTool.edge.displaced?.uuid;
     const wasDisplaced = schemaParent?.uuid && schemaParent?.uuid === uiTool.edge.displaced?.uuid;
 
-    console.log("handleUiEventOnRemoved", event);
-
-        let removed = false;
-    // if(event.unscope) {
-    //     uiTool.edge.uiParent = undefined;
-    // }
-    // else
-        if (schemaParent) {
+    let removed = false;
+    if(event.unscope) {
+        uiTool.edge.uiParent = undefined;
+    }
+    else if (schemaParent) {
         schemaParent.edge.removeChild(uiTool);
         removed = true;
     }

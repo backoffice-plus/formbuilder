@@ -160,24 +160,20 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
         })
 }
 
-export const onDeleteByToolGlobal = (parentTool:ToolInterface, toolToDelete:ToolInterface|undefined = undefined ) : Promise<ToolInterface[]> => {
-    return new Promise((resolve, reject) => {
-        toolToDelete && confirmToRemoveChild(parentTool, toolToDelete)
-            .then(deleted => {
-                    resolve(parentTool.edge.childs);
-                }
-            );
-    })
-};
-export const confirmToRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface) : Promise<boolean> => {
+export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface) : Promise<{ removed:{element:ToolInterface,unscope?:boolean} }> => {
     return new Promise((resolve, reject) => {
         const { open, close} = useModal({
             component: ConfirmDelete,
             attrs: {
-                title: 'really delete?',
+                tool: toolToDelete,
                 onConfirm() {
                     parentTool.edge.removeChild(toolToDelete);
-                    resolve(true);
+                    resolve({removed:{element:toolToDelete}});
+                    close();
+                },
+                onUnscope() {
+                    parentTool.edge.removeChild(toolToDelete);
+                    resolve({removed:{element:toolToDelete, unscope:true}});
                     close();
                 }
             }

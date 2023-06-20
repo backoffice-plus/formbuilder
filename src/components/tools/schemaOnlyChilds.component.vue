@@ -68,7 +68,7 @@
 import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {Icon} from "@iconify/vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {deleteToolInChilds, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
 import {cloneEmptyTool, cloneToolWithSchema} from '../../lib/toolCreation'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
@@ -154,15 +154,10 @@ const groupPut = (from, to, node, dragEvent) => {
   return tool && allowChild(unref(tool));
 };
 
-const onDeleteByTool = async (e) => {
-  e.tool && deleteToolInChilds(e.tool, childTools.value)
-      .then(newChildTools => {
-          if(false !== newChildTools) {
-              childTools.value = newChildTools;
-              onDropAreaChange({removed: {element:e.tool}});
-          }
-      })
-};
+const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool).then(e => {
+    childTools.value = props.tool.edge.childs;
+    onDropAreaChange(e);
+});
 
 const onDelete = () => {
   emit("deleteByTool", {tool: props.tool});

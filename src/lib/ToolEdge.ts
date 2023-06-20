@@ -8,6 +8,7 @@ export class ToolEdge {
     private _uiParent: ToolInterface | undefined = undefined;
     private _schemaParent: ToolInterface | undefined = undefined;
 
+    wasUnscoped: boolean|undefined = undefined;
     displaced: ToolInterface | undefined = undefined; //to ignore the "removed" event after "added" event
     childsInitialized: boolean | undefined = undefined; //to prevent that once initiated properties/elements (with tool.initChilds() are initiated again
 
