@@ -1,47 +1,98 @@
 // @ts-ignore
 import _ from "lodash";
-import type {ToolContext, ToolInterface} from "./models";
-import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
+import type {formbuilderPropsI, ToolContext, ToolInterface} from "./models";
+import type {JsonSchema, UISchemaElement, Layout} from "@jsonforms/core";
 import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import {fromScopeToProperty} from './normalizer';
-import {ObjectTool} from "./tools/ObjectTool";
+import {objectTool, ObjectTool} from "./tools/ObjectTool";
 import type {ToolFinder} from "./ToolFinder";
 import {SchemaTool, schemaTool} from "./tools/SchemaTool";
+import {formbuilderProps} from "./models";
+import {arrayTool} from "./tools/ArrayTool";
 
-export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema, uischema: UISchemaElement): ToolInterface => {
+export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI) => {
+    // if(props.schemaOnly) {
+    //   //baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
+    //   baseSchemaTool.value = cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema.value)
+    //   baseSchemaTool.value.propertyName = 'schema'
+    // }
+    // else {
+    //   //baseSchemaTool.value = cloneToolWithSchema(new ObjectTool(), rootSchema.value)
+    //   baseSchemaTool.value = cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema.value)
+    //   baseSchemaTool.value.propertyName = 'schema'
+    // }
+    // if(true !== props.schemaOnly) {
+    //     if(props.schemaReadOnly) {
+    //         baseUiTool.value = createBaseTool(toolFinder);
+    //     }
+    //     else {
+    //         baseUiTool.value = createBaseTool(toolFinder, rootSchema.value, rootUischema.value);
+    //     }
+    // }
+
+    const schemaOnly = props.schemaOnly;
+    const schemaReadOnly = props.schemaReadOnly;
+    const baseSchemaToolName = props.schemaTool;
+    const baseSchemaToolProps = props.schemaToolProps;
+    const rootSchema = props?.schema ?? props?.jsonForms?.schema ?? {};
+    const rootUischema = props?.uischema ?? props?.jsonForms?.uischema ?? {};
+
+    const schema = createSchemaTool(rootSchema, baseSchemaToolName, baseSchemaToolProps);
+    schema.edge.replaceChilds(schema.initChilds(toolFinder));
+
+    let uischema = undefined;
+    if(!schemaOnly) {
+
+        uischema = createBaseTool(toolFinder, rootSchema, rootUischema);
+        uischema.edge.replaceChilds(uischema.initChilds(toolFinder, schema));
+
+        //:INFO schemaReadyOnly can also have a init uischema!!!
+        // if(schemaReadOnly) {
+        //     uischema = createBaseTool(toolFinder);
+        // }
+        // else {
+        //     uischema = createBaseTool(toolFinder, rootSchema, rootUischema);
+        // }
+    }
+
+    return {schema, uischema};
+}
+
+export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema|undefined = undefined, uischema: UISchemaElement|undefined = undefined): ToolInterface => {
     if (undefined === schema) {
         schema = generateJsonSchema({});
     }
     if (undefined === uischema) {
         uischema = generateDefaultUISchema(schema);
     }
-
     return toolFinder.findBaseTool(schema, uischema);
 };
 
-export const createSchemaTool = (schema: JsonSchema, baseToolName: string | undefined = undefined): ToolInterface => {
+export const createSchemaTool = (schema: JsonSchema, toolName: string | undefined = undefined, schemaToolProps:any): ToolInterface => {
 
     let clone;
-    switch (baseToolName) {
+    switch (toolName) {
         case "schema":
-        case "schema.not":
-        case "schema.if":
-        case "schema.else":
-        case "schema.then":
             clone = cloneToolWithSchema(schemaTool, schema);
-            // if (clone instanceof SchemaTool) {
-            //     clone.keyword = baseToolName?.match(/[^.]+$/)?.[0] ?? 'if';
-            //     //clone.propertyName = false;
-            // }
             break;
 
         default:
-            // clone = cloneToolWithSchema(new ObjectTool(), schema);
-            // clone.propertyName = 'schema';
-            schema.type ??= 'object';
-            clone = cloneToolWithSchema(schemaTool, schema);
-            //clone.propertyName = 'schema';
+
+            //:TODO do we need SchemaOnlyChildsTool????
+            //clone = cloneToolWithSchema(new SchemaOnlyChildsTool(), schema);
+
+            if('array' === schema?.type) {
+                clone = cloneToolWithSchema(arrayTool, schema);
+            }
+            else {
+                //:TODO are any other types relevant?!
+                clone = cloneToolWithSchema(objectTool, schema);
+            }
             break;
+    }
+
+    if(schemaToolProps?.propertyName) {
+        clone.propertyName = schemaToolProps.propertyName;
     }
 
     return clone;

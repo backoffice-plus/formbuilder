@@ -5,9 +5,10 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {schema, uischema,uischemaReadOnly} from "./schema/control.schema";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import _ from "lodash";
 import * as subschemas from "./subschemas";
+import {SchemaTool} from "./SchemaTool";
 
 
 export class ControlTool extends AbstractTool implements ToolInterface {
@@ -37,7 +38,9 @@ export class ControlTool extends AbstractTool implements ToolInterface {
             required: this.isRequired,
 
             _isUischema: 'uischema' === context.builder,
+            _isSchemaOnly: context.schemaOnly,
             _isSchemaReadOnly: context.schemaReadOnly,
+            _isProperty: 'object' === this.edge.schemaParent?.schema?.type
         } as any;
 
         _.merge(
@@ -58,16 +61,20 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         //         prepareOptionDataRule(this.schema, this.uischema),
         //     )
         // }
+        // if(this.parentTool instanceof SchemaTool) {
+        //     data._asSchemaChild = true;
+        // }
 
         return data;
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, this)
 
+        this.propertyName = data?.propertyName ?? '';
         this.schema.type = data.type;
         this.schema.format = data.format;
         this.uischema.options = data.options ?? {};
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
         /** @ts-ignore */
         this.schema.contentMediaType = data.contentMediaType;
@@ -81,6 +88,10 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         subschemas.setOptionDataconditional(this.schema, this.uischema, data);
 
         this.isRequired = data.required;
+
+        if(false === this.uischema?.options?.multi) {
+            delete this.uischema.options.multi;
+        }
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
@@ -89,9 +100,10 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         let setSchema = JSON.parse(JSON.stringify(schema)) as JsonSchema|any; //deepClone
         let setUischema = JSON.parse(JSON.stringify(uischema)) as Categorization; //deepClone
 
-        if(context.schemaReadOnly) {
-            setUischema = JSON.parse(JSON.stringify(uischemaReadOnly)) as JsonSchema|any; //deepClone
-        }
+        //:TODO find better solution to show different options for SCHEMA and UISCHEMA
+        // if(context.schemaReadOnly) {
+        //     setUischema = JSON.parse(JSON.stringify(uischemaReadOnly)) as JsonSchema|any; //deepClone
+        // }
 
         //hide rule in schema/definitions
         if('uischema' !== context.builder) {

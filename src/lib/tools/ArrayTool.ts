@@ -1,10 +1,11 @@
 import {rankWith} from '@jsonforms/core';
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
+import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
+import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import toolComponent from "../../components/tools/array.component.vue";
 import {schema, uischema} from "./schema/array.schema";
 import jsonFormsSchema from "./schema/array.schemaBuilder.form.json";
 import jsonFormsAsSchemaChild from "./schema/array.asSchemaChild.form.json";
-import {getItemsType, resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import _ from "lodash";
 import {AbstractTool} from "./AbstractTool";
 import * as subschemas from "./subschemas";
@@ -44,7 +45,6 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         const isRef = '$ref' in this.schema?.items;
         const asSchema = undefined !== itemsType;
 
-
         /**
          * Array of Strings
          */
@@ -74,9 +74,9 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         //convert option.detail.elements
         const options = {...this.uischema?.options ?? {}}
-        if(options?.detail?.elements) {
-            options.detail.elements = JSON.stringify(options.detail.elements);
-        }
+        // if(options?.detail?.elements) {
+        //     options.detail.elements = JSON.stringify(options.detail.elements);
+        // }
 
         /**
          * :BUG https://github.com/eclipsesource/jsonforms/issues/1917
@@ -114,7 +114,8 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, this)
+        this.propertyName = data?.propertyName ?? '';
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
         //this.isInlineType = data?.asInlineType;
 
@@ -142,22 +143,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         //     console.log("arrayTOol optionDataUpdate",{isRef,childIsRef},firstChild)
         // }
 
-
-        const options = {...data.options ?? {}};
-
-        //convert option.detail.elements
-        if(options?.detail?.elements) {
-            let parsed =[];
-            try {
-                parsed = JSON.parse(options.detail.elements);
-            }
-            catch (e) {
-                parsed = [];
-            }
-            options.detail.elements = parsed;
-        }
-
-        this.uischema.options = options;
+        this.uischema.options = {...data.options ?? {}};
 
         subschemas.setOptionDataValidation(this.schema, this.uischema, data);
         subschemas.setOptionDataLabel(this.schema, this.uischema, data);
@@ -178,10 +164,10 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             currentJsonSchema = jsonFormsSchema;
         }
 
-        const parentTool = this.parentTool;
-        if(parentTool instanceof SchemaTool) {
-            currentJsonSchema = jsonFormsAsSchemaChild;
-        }
+        // const parentTool = this.parentTool;
+        // if(parentTool instanceof SchemaTool) {
+        //     currentJsonSchema = jsonFormsAsSchemaChild;
+        // }
 
         return {
             schema: await resolveSchema(currentJsonSchema.schema),
@@ -199,6 +185,88 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             icon: 'mdi:code-array',
 
         }
+    }
+    generateJsonSchema(): JsonSchema|undefined {
+
+        let isInlineType;
+        let allowInlineType = false;
+        // if(tool instanceof ArrayTool) {
+        //     isInlineType = tool.isInlineType;
+        // }
+
+        const hasChilds = this.childs?.length > 0;
+        const hasOneChild = this.childs?.length === 1;
+        const parentIsSchema = false;
+
+        // if(hasOneChild && isInlineType) {
+        //     allowInlineType = true
+        // }
+
+        let items = {
+            type: 'null',
+        } as JsonSchema|JsonSchema[];
+
+
+        if (hasChilds) {
+            const schemas = this.childs
+                .map((childTool: ToolInterface) => childTool.generateJsonSchema())
+                .filter(schema => schema) as JsonSchema[];
+
+            if(parentIsSchema) {
+                items = schemas;
+            }
+            else {
+                //use only the first child (it that correct?!)
+                items = schemas[0];
+            }
+        }
+
+        const addToSchema = {} as any;
+        ['uniqueItems'].forEach((key:string) => {
+            /** @ts-ignore **/
+            if(undefined !== this.schema[key]) {
+                /** @ts-ignore **/
+                addToSchema[key] = this.schema[key];
+            }
+        })
+
+        return {
+            ...this.schema, //must be enabled to get all schema data from tool.optionDataUpdate
+            ...addToSchema,
+            type: 'array',
+            items: items,
+        } as JsonSchema;
+    }
+
+    initChilds(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
+        const tools = [] as ToolInterface[];
+
+        //for moving existing tools to another list
+        if(this.edge.childs?.length || this.edge.childsInitialized) {
+            return this.edge.childs;
+        }
+
+
+        //items can be schema instead of schemas[]
+        let items =  this.schema?.items as any[];
+        if(_.isEmpty(items)) {
+            items = []
+        }
+        else if(!_.isArray(items)) {
+            items = [items];
+        }
+
+        items.forEach((item:JsonSchema) => {
+            const uischema = {type: 'Control', scope: '#'} as UISchemaElement;
+            const clone = toolFinder.findMatchingToolAndClone({}, item, uischema);
+
+            clone.edge.setParent(this);
+            clone.edge.replaceChilds(clone.initChilds(toolFinder));
+
+            tools.push(clone);
+        })
+
+        return tools;
     }
 }
 

@@ -11,7 +11,12 @@
       <a :href="'#/jsonforms?example=' + example" v-if="example" class="ml-1 text-sm">[open Jsonforms]</a><br>
 
       <div>
-        Schema Only: <input type="checkbox" v-model="schemaOnly" /><br>
+        Schema Only: <input type="checkbox" v-model="schemaOnly" />
+        <template v-if="schemaOnly">
+          use schema Tool: <input type="checkbox" v-model="schemaBaseTool" />
+          Auto Uischema: <input type="checkbox" v-model="schemaOnlyAutoUischema" /><br>
+        </template>
+        <br>
         <template v-if="example">
           Schema ReadOnly: <input type="checkbox" v-model="schemaReadOnly" />
         </template>
@@ -24,11 +29,24 @@
           :schemaOnly="schemaOnly"
           :schemaReadOnly="schemaReadOnly"
           :tools="tools"
-          :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'')"
-          :builders="builders"
+          :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'') + (schemaBaseTool?'schema':'')"
+          :schemaTool="schemaBaseTool ? 'schema' : ''"
           @schemaUpdated="onSchemaUpdated"
+          ref="fb"
       />
     <!--            -->
+      <details open="true">
+          <summary class="cursor-pointer">ToolTree</summary>
+          <div class="flex gap-4 text-xs">
+              <div>
+                  Schema:
+                  <IdList :tool="baseSchemaTool" v-if="baseSchemaTool" />
+              </div>
+              <div>UI:
+                  <IdList :tool="baseUiTool" v-if="baseUiTool" />
+              </div>
+          </div>
+      </details>
 
     <FormBuilderDetails :jsonForms="jsonFormsResolved" />
 
@@ -64,7 +82,7 @@ import {computed, onMounted, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
 import {schema as vuetifySchema, uischema as vuetifyUischema} from "./jsonForms/vuetifyOptions";
 import {getExamples} from '@jsonforms/examples/src'
-import {generateDefaultUISchema, generateJsonSchema, JsonSchema} from "@jsonforms/core";
+import {Generate, generateDefaultUISchema, generateJsonSchema, JsonSchema} from "@jsonforms/core";
 import {resolveSchema} from "../src";
 import {getExampleFromUrl, getKeyFromUrl, getUrl} from "./lib";
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
@@ -74,6 +92,8 @@ import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
 import _ from "lodash";
 import type {EventAfterOptionJsonforms} from "../src/lib/mitt";
 import {formbuilderRenderers} from "../src/components/renderers";
+import IdList from "./Dev/IdList.vue";
+import {getFormbuilder} from "../src/lib/vue";
 
 const tools = [
     ...defaultTools,
@@ -92,16 +112,27 @@ const examples = computed(() => getExamples().sort((a,b)=>a.label.toLowerCase()>
 const example = ref(getExampleFromUrl());
 const schemaReadOnly = ref("1" === getKeyFromUrl('schemaReadOnly'));
 const schemaOnly = ref("1" === getKeyFromUrl('schemaOnly'));
+const schemaOnlyAutoUischema = ref("1" === getKeyFromUrl('schemaOnlyAutoUischema'));
+const schemaBaseTool = ref("1" === getKeyFromUrl('schemaBaseTool'));
 const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
-const builders = ref(['uischema','schema']);
+
+const fb = ref(null);
+const baseUiTool = computed(() => fb.value?.baseUiTool);
+const baseSchemaTool = computed(() => fb.value?.baseSchemaTool);
 
 const rootSchema = ref();
 const rootUiSchema = ref();
 const onSchemaUpdated = (jsonForms) => {
   rootSchema.value = jsonForms.schema;
   rootUiSchema.value = jsonForms.uischema;
+
+  if(schemaOnly.value && schemaOnlyAutoUischema.value) {
+    //jsonForms.uischema = {type:"Control",scope:"#"}
+    jsonForms.uischema = Generate.uiSchema(rootSchema.value);
+  }
+
   jsonFormsResolved.value = unref(jsonForms);
 }
 
@@ -110,13 +141,13 @@ const jsonForms = computed(() => {
 
   if(example.value) {
     exampleData = getExamples().find(item => item.name===example.value) as any;
+    exampleData = JSON.parse(JSON.stringify(exampleData)); //clone
+
 
     if(exampleData) {
       if (!exampleData?.schema) {
         exampleData.schema = generateJsonSchema({});
       }
-
-      builders.value= schemaOnly.value ? ['schema'] : ['uischema','schema'];
 
       if(false === exampleData?.uischema) {
         if(!schemaOnly.value) {
@@ -124,9 +155,13 @@ const jsonForms = computed(() => {
         }
       }
       else {
+          //:TODO only clean uischema if option is set (or add "auto" option -> generateDefaultUISchema())
         if(exampleData?.uischema && schemaReadOnly.value) {
-          exampleData.uischema = {};
+          exampleData.uischema = {
+              type:'VerticalLayout'
+          };
         }
+
         if(!exampleData?.uischema && !schemaReadOnly.value) {
           console.log("sandbox app","UiSschema generated because example is empty");
           exampleData.uischema = generateDefaultUISchema(exampleData.schema)
@@ -152,9 +187,10 @@ const jsonForms = computed(() => {
     exampleData = {schema: schema, uischema: uischema};
   }
 
-  if(schemaReadOnly.value || schemaOnly.value) {
-    delete exampleData.uischema;
+  if(schemaOnly.value) {
+    //delete exampleData.uischema;
   }
+
 
   latestExampleData.value = unref(exampleData);
   latestSchemaAfterExampleData.value = null;
@@ -179,7 +215,9 @@ const createUrl = () => {
   const params = {
     example: example.value ?? undefined,
     schemaOnly: schemaOnly.value ? "1" : undefined,
+    schemaOnlyAutoUischema: schemaOnlyAutoUischema.value ? "1" : undefined,
     schemaReadOnly: schemaReadOnly.value ? "1" : undefined,
+    schemaBaseTool: schemaBaseTool.value ? "1" : undefined,
   }
   return new URLSearchParams(_.omitBy(params, _.isEmpty));
 };
@@ -191,6 +229,13 @@ watch(() => schemaOnly.value, async () => {
   if(schemaOnly.value) {
     schemaReadOnly.value = false;
   }
+  else {
+      schemaBaseTool.value = false;
+  }
+  window.location.hash = "/?"+ createUrl()
+})
+watch(() => schemaOnlyAutoUischema.value, async () => {
+  onSchemaUpdated({schema:rootSchema.value,uischema:rootUiSchema.value})
   window.location.hash = "/?"+ createUrl()
 })
 watch(() => schemaReadOnly.value, async () => {
@@ -198,6 +243,9 @@ watch(() => schemaReadOnly.value, async () => {
     schemaOnly.value = false;
   }
   window.location.hash = "/?"+ createUrl()
+})
+watch(() => schemaBaseTool.value, async () => {
+    window.location.hash = "/?"+ createUrl()
 })
 
 // emitter.on('afterOptionJsonforms', (event: EventAfterOptionJsonforms) => {

@@ -4,7 +4,10 @@
     <slot name="header">
       <ToolIcon :tool="tool" :isToolbar="isToolbar">
         <template v-slot:droparea>
-          <b>{{ tool.propertyName }}:</b> Array
+            <template v-if="!props.isInlineType">
+                <b>{{ tool.propertyName }}:</b>
+            </template>
+            Array
           <span v-if="getFirstChildItemsType"> of {{ getFirstChildItemsType }}</span>
           <span v-else-if="isArrayOfRef"> of Ref</span>
           <span v-else-if="isArrayOfCombinator"> of {{ isArrayOfCombinator }}</span>
@@ -81,9 +84,8 @@
 import Actions from "./utils/Actions.vue";
 
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {deleteToolInChilds} from '../../lib/formbuilder'
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
 import {computed, nextTick, onMounted, ref} from "vue";
-import {initArrayElements} from "../../lib/initializer";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {scalarTypes, toolComponentProps, vuedraggableOptions} from "../../lib/models";
@@ -120,8 +122,7 @@ const onDrag = fb?.exposed.onToolDrag;
 onMounted(() => {
   if (!props.isToolbar) {
     if (['array'].includes(props?.tool?.schema?.type)) {
-
-      childTools.value.push(...initArrayElements(toolFinder, props.tool));
+      childTools.value.push(...props.tool.initChilds(toolFinder));
 
       if (childTools.value.length) {
         nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
@@ -136,14 +137,7 @@ onMounted(() => {
 })
 
 
-const onDropAreaChange = (e) => {
-  if(e.added?.element) {
-    e.added.element.parentTool = props.tool;
-  }
-
-  props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged(e);
-};
+const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
 const addItem = (initSchema = undefined) => {
   const schema = fb?.exposed?.rootSchema?.value;
@@ -223,13 +217,10 @@ const groupPut = (from, to, node, dragEvent) => {
 };
 
 
-const onDeleteByTool = async (e) => {
-  e.tool && deleteToolInChilds(e.tool, childTools.value)
-      .then(newChildTools => {
-        childTools.value = newChildTools;
-        onDropAreaChange(e);
-      })
-};
+const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool).then(e => {
+    childTools.value = props.tool.edge.childs;
+    onDropAreaChange(e);
+});
 
 const onDelete = () => {
   emit("deleteByTool", { tool: props.tool });

@@ -6,9 +6,11 @@ import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
 import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";
+import {useModal, useModalSlot, VueFinalModal} from "vue-final-modal";
+import ConfirmDelete from "../components/modals/ConfirmDelete.vue";
 
 
-
+/** @deprecated **/
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {
     //:INFO disabled bc baseSchemaTool has no propertyName
     // if (!propertyName) {
@@ -103,7 +105,6 @@ export const findAllProperties = (schema: JsonSchema, rootPath = ""): Record<str
     return all;
 }
 
-
 export const findAllScopes = (uischema: ControlElement | Layout | UISchemaElement): Array<string> => {
 
     const scopes = [] as Array<string>;
@@ -123,6 +124,16 @@ export const findAllScopes = (uischema: ControlElement | Layout | UISchemaElemen
     }
 
     return scopes;
+};
+
+export const findAllScopeTools = (uitool: ToolInterface, tools: ToolInterface[] = []): ToolInterface[] => {
+
+    const schemaTools = uitool.childs.map(childTool => childTool?.uischema?.scope ? [childTool] : findAllScopeTools(childTool, tools))
+
+    return [
+        ...tools,
+        ..._.flatten(schemaTools)
+    ];
 };
 
 type Callback = (ref:URI) => JsonSchema|undefined;
@@ -149,17 +160,81 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
         })
 }
 
-export const deleteToolInChilds = async (toolToDelete:ToolInterface, childTools:ToolInterface[]) : Promise<ToolInterface[]> => {
+export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface) : Promise<{ removed:{element:ToolInterface,unscope?:boolean} }> => {
+    return new Promise((resolve, reject) => {
+        const { open, close} = useModal({
+            component: ConfirmDelete,
+            attrs: {
+                tool: toolToDelete,
+                onConfirm() {
+                    parentTool.edge.removeChild(toolToDelete);
+
+                    const isControl = 'Control' === toolToDelete?.uischema?.type;
+                    if(!isControl) {
+                        toolToDelete.edge.findScopedChilds().forEach(child => child.edge.uiParent = undefined);
+                    }
+
+                    resolve({removed:{element:toolToDelete}});
+
+                    close();
+                },
+                onUnscope() {
+                    parentTool.edge.removeChild(toolToDelete);
+                    resolve({removed:{element:toolToDelete, unscope:true}});
+                    close();
+                }
+            }
+        })
+        open();
+    });
+}
+
+
+export const deleteToolInChilds = async (toolToDelete:ToolInterface|undefined = undefined, childTools:ToolInterface[] = []) : Promise<ToolInterface[]|boolean> => {
 
     const confirmed = window?.confirm ? window.confirm("Wirklich löschen?") : true;
 
     return await Promise.resolve(confirmed)
         .then((confirmed) => {
             if(confirmed) {
-                childTools = childTools.filter(childTool => childTool.uuid !== toolToDelete.uuid)
+                return childTools.filter(childTool => childTool.uuid !== toolToDelete.uuid)
             }
-
-            return childTools;
+            else {
+                return false;
+            }
         });
 };
 
+export const prepareAndCallOnDropAreaChange = (e:any, tool:ToolInterface, childs:ToolInterface[], onDropAreaChanged:any) => {
+
+    /**
+     * :INFO
+     * store current childs in event, its necessary because of type=displaced check (that need old childs)
+     */
+    //add currentTool as parrent
+    Object.keys(e).forEach(key => {
+        e[key].parentTool = tool;               //as part of the event
+        e[key].childs = childs;               //as part of the event
+
+        // if(e[key].element) {
+        //     e[key].element.parentTool = tool;       //attach to the current child
+        // }
+    });
+
+    //add current childs
+    //tool.childs = childs;
+
+    //from fb?.exposed?.onDropAreaChanged(e);
+    onDropAreaChanged(e);
+}
+
+
+export const findUnscopedTools = (baseSchemaTool:ToolInterface): ToolInterface[] => {
+    return baseSchemaTool.edge.childs.filter((child) => {
+
+        /**
+         * :TODO go deeper recursivly for objects
+         */
+        return !child.edge.uiParent
+    })
+}

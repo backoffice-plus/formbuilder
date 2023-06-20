@@ -1,6 +1,8 @@
 
-import {entry as FormbuilderEntry} from "./FormbuilderRenderer.vue";
+import {entry as FormbuilderRenderer} from "./FormbuilderRenderer.vue";
+import {entry as DisclosureRenderer} from "./DisclosureRenderer.vue";
 
 export const formbuilderRenderers = [
-    FormbuilderEntry,
+    FormbuilderRenderer,
+    DisclosureRenderer,
 ];

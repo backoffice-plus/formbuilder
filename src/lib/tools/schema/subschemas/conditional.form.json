@@ -24,39 +24,65 @@
     "elements": [
 
       {
-        "type": "VerticalLayout",
+        "scope": "#",
+        "type": "Formbuilder",
+        "options": {
+          "hideDroparea": true
+        }
+      },
+
+      {
+        "type": "Disclosure",
+        "label": "If",
         "elements": [
           {
             "type": "Formbuilder",
             "scope": "#/properties/conditional/properties/if",
             "options": {
-              "baseTool": "schema.if"
+              "hideToolbar": true,
+              "baseTool": "schema",
+              "baseToolProps": {
+                "hideActionbar": true,
+                "prefixLabel": "if:"
+              }
             }
           }
         ]
       },
 
       {
-        "type": "VerticalLayout",
+        "type": "Disclosure",
+        "label": "Then",
         "elements": [
           {
             "type": "Formbuilder",
             "scope": "#/properties/conditional/properties/then",
             "options": {
-              "baseTool": "schema.then"
+              "hideToolbar": true,
+              "baseTool": "schema",
+              "baseToolProps": {
+                "hideActionbar": true,
+                "prefixLabel": "then:"
+              }
             }
           }
         ]
       },
 
       {
-        "type": "VerticalLayout",
+        "type": "Disclosure",
+        "label": "Else",
         "elements": [
           {
             "type": "Formbuilder",
             "scope": "#/properties/conditional/properties/else",
             "options": {
-              "baseTool": "schema.else"
+              "hideToolbar": true,
+              "baseTool": "schema",
+              "baseToolProps": {
+                "hideActionbar": true,
+                "prefixLabel": "elsex:"
+              }
             }
           }
         ]

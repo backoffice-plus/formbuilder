@@ -1,8 +1,9 @@
-import {and, rankWith} from "@jsonforms/core";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
+import {rankWith} from "@jsonforms/core";
+import type { JsonSchema, UISchemaElement} from "@jsonforms/core";
+import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schema.component.vue";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/schema.form.json";
 import _ from "lodash";
 
@@ -11,6 +12,7 @@ import _ from "lodash";
 export class SchemaTool extends AbstractTool implements ToolInterface {
 
     importer = () => toolComponent;
+    // @ts-ignore
     tester = rankWith(-1, () => {return false});
     clone = (): ToolInterface => new SchemaTool();
 
@@ -25,23 +27,23 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
 
         const isBaseTool = context.baseSchemaTool === this;
 
+        let type = this.schema.type;
+
         const data = {
-            type: this.schema.type,
+            type: type,
             _isBaseTool: isBaseTool,
-            //...(this.schema ?? {})
         } as any;
 
         if(this.propertyName) {
             data.propertyName = this.propertyName;
         }
 
-        console.log("schematool","data", data)
-
         return data;
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, this)
+        this.propertyName = data?.propertyName ?? '';
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
         //
         // const keyword = data?.keyword;
         // const keywordOld = this.keyword;
@@ -58,9 +60,10 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         delete schema.propertyName;
         delete schema._isBaseTool;
 
-        console.log("schemaTool","set schema",this.schema)
-
-        this.schema = schema
+        this.schema = {
+            ...this.schema,
+            ...schema
+        }
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
@@ -74,11 +77,160 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
     toolbarOptions(): Record<string, any> {
         return {
             title: 'Schema',
-            icon: 'mdi:code-not-equal',
+            //icon: 'mdi:code-not-equal',
+            //icon: 'mdi:folder-pound',
+            //icon: 'mdi:code-block-braces',
+            icon: 'mdi:file-code',//-outline
             //  labelAtDropArea:this.keyword ?? 'anyOf',
-            //hideToolAtBar: true,
+            hideToolAtBar: true,
 
         }
+    }
+
+    generateJsonSchema(): JsonSchema|undefined {
+
+        let schema = this.schema;
+
+        const propertiesDefinedByChilds = [
+            // //schema
+            "if",
+            "then",
+            "else",
+            "not",
+            // "contains",
+            // "propertyNames",
+            // "additionalItems",
+            // "additionalProperties",
+            //
+            // //object
+            //"properties",
+            // "definitions",
+            // "patternProperties",
+            // "dependencies",
+            //
+            // //array
+            // "allOf",
+            // "anyOf",
+            // "oneOf",
+            // "items"
+        ];
+
+        const schemaByKeys = {} as any;
+        propertiesDefinedByChilds.forEach(key => schemaByKeys[key] = undefined)
+
+        this.childs.forEach((childTool: ToolInterface) => {
+            const propertyName = childTool.propertyName;
+            let childSchema = childTool.generateJsonSchema();
+
+            if(childSchema) {
+                if(propertyName && propertiesDefinedByChilds.includes(propertyName)) {
+                        let setSchema = childSchema as any;
+
+                        switch (propertyName) {
+                            case "properties":
+                            case "definitions":
+                            case "patternProperties":
+                            case "dependencies":
+                                if(childSchema.properties) {
+                                    setSchema = childSchema.properties
+                                }
+                                break;
+
+                            case "allOf":
+                            case "anyOf":
+                            case "oneOf":
+                            case "items":
+                                if(childSchema.items) {
+                                    setSchema = childSchema.items as JsonSchema
+                                    childTool.schema = childSchema;
+
+                                    if((childTool as any).isSchemaItem) {
+                                        setSchema = (childSchema.items as any)[0] as JsonSchema
+                                        childTool.schema.items = setSchema;
+                                    }
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                        schemaByKeys[propertyName] = setSchema;
+
+                }
+                else {
+                    schema = {
+                        ...schema,
+                        ...childSchema
+                    } as JsonSchema;
+                }
+            }
+        });
+
+
+        schema = {...schema, ...schemaByKeys} as JsonSchema;
+
+        return !_.isEmpty(schema) ? schema : undefined;
+    }
+
+
+    initChilds(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
+        const tools = [] as Array<ToolInterface>;
+
+        //for moving existing tools to another list
+        if(this.edge.childs?.length || this.edge.childsInitialized) {
+            return this.edge.childs;
+        }
+
+        const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+
+        const properties = this.schema
+        const propertyKeys = Object.keys(this.schema)
+
+        propertyKeys.forEach((propertyName:string) => {
+
+            const propertyData = (properties as any)[propertyName];
+            let clone, itemSchema;
+
+            switch (propertyName) {
+                case "$defs":
+                case "properties":
+                case "definitions":
+                case "patternProperties":
+                case "dependencies":
+                    itemSchema = {
+                        type: 'object',
+                        properties: propertyData
+                    }
+                    clone = toolFinder.findMatchingToolAndClone({}, itemSchema, uischema);
+                    clone.propertyName = propertyName;
+                    clone.edge.setParent(this);
+                    clone.edge.replaceChilds(clone.initChilds(toolFinder));
+                    tools.push(clone);
+
+                    break;
+
+                case "allOf":
+                case "anyOf":
+                case "oneOf":
+                case "items":
+                    itemSchema = {
+                        type: 'array',
+                        items: propertyData
+                    }
+                    clone = toolFinder.findMatchingToolAndClone({}, itemSchema, uischema);
+                    clone.propertyName = propertyName;
+                    clone.edge.setParent(this);
+                    clone.edge.replaceChilds(clone.initChilds(toolFinder));
+                    tools.push(clone);
+                    break;
+
+                default:
+                    break;
+            }
+        });
+
+        return tools;
     }
 }
 

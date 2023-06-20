@@ -9,6 +9,7 @@ import type {JsonSchema, UISchemaElement} from "@jsonforms/core/src/models";
 import {ControlTool} from "./controlTool";
 import _ from "lodash";
 import * as subschemas from "./subschemas";
+import {SchemaTool} from "./SchemaTool";
 
 export class ConstTool extends ControlTool {
 

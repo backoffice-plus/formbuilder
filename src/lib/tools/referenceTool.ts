@@ -5,7 +5,7 @@ import referenceComp from "../../components/tools/reference.vue";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import jsonForms from "./schema/reference.form.json";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 
 export class ReferenceTool extends AbstractTool implements ToolInterface {
     importer = () => referenceComp;
@@ -34,7 +34,8 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, this)
+        this.propertyName = data?.propertyName ?? '';
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
         if (undefined !== data._reference) {
             this.schema.$ref = data._reference;

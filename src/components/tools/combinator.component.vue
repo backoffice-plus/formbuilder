@@ -39,6 +39,7 @@
 
                        :tool="tool"
                        :isToolbar="false"
+                       :isInlineType="true"
 
                        @deleteByTool="onDeleteByTool"
 
@@ -73,10 +74,9 @@
 
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {deleteToolInChilds} from '../../lib/formbuilder'
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
 import {computed, nextTick, onMounted, ref} from "vue";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
-import {initCombinatorElements} from "../../lib/initializer";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
@@ -96,7 +96,7 @@ const onDrag = fb?.exposed.onToolDrag;
 
 onMounted(() => {
   if (!props.isToolbar) {
-      childTools.value.push(...initCombinatorElements(toolFinder, props.tool));
+      childTools.value.push(...props.tool.initChilds(toolFinder));
 
       if (childTools.value.length) {
         nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
@@ -107,10 +107,7 @@ const keyword = computed(() => {
   return CombinatorTool.getKeyword(props?.tool?.schema)
 });
 
-const onDropAreaChange = (e) => {
-  props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged(e);
-};
+const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
 const addItem = () => {
   const schema = fb?.exposed?.rootSchema?.value;
@@ -129,13 +126,10 @@ const groupPut = (from, to, node, dragEvent) => {
   return isControlTool;
 };
 
-const onDeleteByTool = async (e) => {
-  e.tool && deleteToolInChilds(e.tool, childTools.value)
-      .then(newChildTools => {
-        childTools.value = newChildTools;
-        onDropAreaChange(e);
-      })
-};
+const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool).then(e => {
+    childTools.value = props.tool.edge.childs;
+    onDropAreaChange(e);
+});
 
 const onDelete = () => {
   emit("deleteByTool", { tool: props.tool });

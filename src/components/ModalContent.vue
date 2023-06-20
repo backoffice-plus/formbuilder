@@ -78,6 +78,7 @@ onMounted(async () => {
 
   const context = {
     builder: fb?.exposed?.showBuilder.value,
+    schemaOnly: fb.props.schemaOnly,
     schemaReadOnly: fb.props.schemaReadOnly,
     rootSchema: fb?.exposed?.rootSchema?.value,
     baseSchemaTool: fb?.exposed?.baseSchemaTool?.value,

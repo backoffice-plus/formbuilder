@@ -115,9 +115,8 @@
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {deleteToolInChilds} from "../../lib/formbuilder";
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from "../../lib/formbuilder";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
-import {initElements} from "../../lib/initializer";
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
 import {ref, computed, onMounted, nextTick} from 'vue';
@@ -143,7 +142,7 @@ const onDrag = fb?.exposed.onToolDrag;
 onMounted(() => {
   if (!props.isToolbar) {
     if (props?.tool?.uischema?.elements?.length) {
-      childTools.value.push(...initElements(toolFinder, props.tool));
+      childTools.value.push(...props.tool.initChilds(toolFinder));
 
       if (childTools.value.length) {
         nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
@@ -176,18 +175,12 @@ const addTab = () => {
 };
 
 
-const onDropAreaChange = (e) => {
-  props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged(e);
-};
+const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
-const onDeleteByTool = async (e) => {
-  e.tool && deleteToolInChilds(e.tool, childTools.value)
-      .then(newChildTools => {
-        childTools.value = newChildTools;
-        onDropAreaChange(e);
-      })
-};
+const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool).then(e => {
+    childTools.value = props.tool.edge.childs;
+    onDropAreaChange(e);
+});
 
 const onDelete = () => {
   emit("deleteByTool", { tool: props.tool });

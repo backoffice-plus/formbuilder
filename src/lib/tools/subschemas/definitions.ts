@@ -28,7 +28,11 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
 }
 
 export const setOptionData = (schema: JsonSchema | any, uischema: UISchemaElement, data: Record<string, any>): void => {
-    const defProps = data?.definitions?.definitions?.properties;
+    let defProps = data?.definitions?.definitions?.properties;
+
+    if(_.isEmpty(defProps)) {
+        defProps = undefined;
+    }
 
     if(data?.definitions?._asDefs) {
         schema['$defs'] = defProps;

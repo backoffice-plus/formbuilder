@@ -1,5 +1,5 @@
 <template>
-  <div class="schemaTool" :class="['rootItem', {isRoot:isRoot}]">
+  <div class="schemaTool " :class="['rootItem', {isRoot:isRoot}]">
 
     <slot name="header">
       <ToolIcon :tool="tool" :isToolbar="isToolbar" :prefixLabel="prefixLabel" />
@@ -33,7 +33,6 @@
 
                        :tool="tool"
                        :isToolbar="false"
-                       :isInlineType="true"
 
                        @deleteByTool="onDeleteByTool"
 
@@ -89,11 +88,23 @@ const fb = getFormbuilder();
 const toolFinder = getToolfinder();
 const onDrag = fb?.exposed.onToolDrag;
 
+const prefixLabel = computed(() => {
+    let prefixLabel = '';
+    if(!props.isToolbar) {
+        prefixLabel = 'schema:';
+
+        if(props.prefixLabel) {
+            prefixLabel = props.prefixLabel;
+        }
+    }
+    return prefixLabel
+})
+
 onMounted(() => {
   if (!props.isToolbar) {
 
     //old behavior: schemaTool behaves like a normal child
-    childTools.value.push(...props.tool.initChilds(toolFinder));
+    childTools.value.push(...initObjectElements(toolFinder, props.tool));
 
     // const itemSchema = props.tool.schema;
     //
@@ -116,18 +127,6 @@ onMounted(() => {
   }
 })
 
-const prefixLabel = computed(() => {
-    let prefixLabel = '';
-    if(!props.isToolbar) {
-        prefixLabel = 'schema:';
-
-        if(props.prefixLabel) {
-            prefixLabel = props.prefixLabel;
-        }
-    }
-    return prefixLabel
-})
-
 const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
 // const addItem = () => {
@@ -142,15 +141,9 @@ const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, ch
 // };
 
 const allowChild = (tool) => {
+  const isControl = 'Control' === tool?.uischema?.type;
 
-    const hasOneItem = childTools.value.length > 0;
-
-    return !hasOneItem;
-
-  // const isArrayOrObject = ['array','object'].includes(tool?.schema?.type);
-  // const isSchemaTool = tool instanceof SchemaTool
-  //
-  // return isArrayOrObject || isSchemaTool;
+  return isControl;
 }
 const showDragClass = computed(() => {
   const tool = getToolDragging();

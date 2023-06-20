@@ -1,463 +1,322 @@
-import _ from "lodash";
-import {Generate} from "@jsonforms/core";
-import {denormalizePath, getAllSubpaths, getPlainProperty, getRequiredFromSchema, getRequiredPath} from "./normalizer";
-import {CombinatorTool} from "./tools/combinatorTool";
-import type {JsonSchema} from "@jsonforms/core";
-import type {JsonFormsInterface, JsonFormsUISchema, ToolInterface} from "./models";
-import {SchemaTool} from "./tools/SchemaTool";
+import type {JsonFormsInterface, ToolInterface} from "./models";
+import type {BuilderEvent} from "./BuilderEvent";
 
-export const generateSchemaByTool = (tool: ToolInterface): JsonSchema => {
+export const generateJsonForm = (event: BuilderEvent): JsonFormsInterface => {
 
-    if(tool instanceof SchemaTool) {
-        return createTypeSchemaOnly(tool);
-    }
-    else if ('object' === tool.schema?.type) {
-        return createTypeObjectSchemaOnly(tool);
+    let schema, uischema = undefined;
+
+    if('mounted' === event.type) {
+        event.tool.edge.childsInitialized = true;
     }
 
-    else if ('array' === tool.schema?.type && tool.childs?.length) {
-        return createTypeArraySchemaOnly(tool);
-    }
+    switch (event.showBuilder) {
+        case 'schema':
+            schema = event.baseSchemaTool?.generateJsonSchema();
 
-    else  {
-        const keyword = CombinatorTool.getKeyword(tool.schema);
-        if(keyword) {
-            return createCombinatorSchema(tool, keyword);
-        }
-    }
-
-    return tool.schema;
-}
-
-
-export const generateSchemaForUiSchema = (tool: ToolInterface, rootSchema: JsonSchema): void => {
-
-    const schema = tool?.schema;
-
-    if ('array' === schema?.type) {
-        const firstChild = tool.childs[0];
-        const isFirstChildLayout = firstChild && 'Control' !== firstChild.uischema.type; //:TODO add better check!
-
-        if (!isFirstChildLayout) {
-            setItemSchemaToSchema(tool, rootSchema);
-        }
-    }
-    // else if ('object' === schema?.type) {
-    //     //const schemasToPush = createTypeObjectSchema(tool);
-    //     const properties = {
-    //         [tool.propertyName]:  generateSchemaByTool(tool),
-    //     }
-    //     _.merge(rootSchema, {properties: properties, type: 'object'})
-    // }
-    // else if (undefined !== schema?.allOf || undefined !== schema?.anyOf || undefined !== schema?.oneOf) {
-    //     tool.schema = createCombinatorSchema(tool);
-    //     setItemSchemaToSchema(tool, rootSchema);
-    // }
-    else {
-        setItemSchemaToSchema(tool, rootSchema);
-    }
-
-}
-
-export const createJsonForms = (tool: ToolInterface, rootSchema: JsonSchema | undefined = undefined, schemaReadOnly: boolean = false): JsonFormsInterface => {
-
-    if (!rootSchema) {
-        rootSchema = Generate.jsonSchema({})
-        delete rootSchema.additionalProperties;
-    }
-
-    const schema = _.clone(rootSchema);
-    if (!schemaReadOnly) {
-        schema.properties = {}; //clear properties
-        schema.required = undefined;
-    }
-
-    return {
-        schema: schemaReadOnly ? rootSchema : schema,
-        uischema: createJsonUiSchema(tool, schema, schemaReadOnly)
-    } as JsonFormsInterface;
-}
-
-export const cleanSchema = (tool: ToolInterface) => {
-    if (_.isEmpty(tool.uischema.options)) {
-        delete tool.uischema.options;
-    }
-}
-export const createTypeArraySchemaOnly = (tool: ToolInterface): JsonSchema => {
-
-    let isInlineType;
-    let allowInlineType = false;
-    // if(tool instanceof ArrayTool) {
-    //     isInlineType = tool.isInlineType;
-    // }
-
-    const hasChilds = tool.childs?.length > 0;
-    const hasOneChild = tool.childs?.length === 1;
-    const parentIsSchema = tool.parentTool instanceof SchemaTool;
-
-    // if(hasOneChild && isInlineType) {
-    //     allowInlineType = true
-    // }
-
-    let items = {
-        type: 'null',
-    } as JsonSchema|JsonSchema[];
-
-
-    if (hasChilds) {
-        const schemas = tool.childs.map((childTool: ToolInterface) => {
-            return generateSchemaByTool(childTool);
-        });
-
-        if(parentIsSchema) {
-            items = schemas;
-        }
-        else {
-            //use only the first child (it that correct?!)
-            items = schemas[0];
-        }
-    }
-
-    const addToSchema = {} as any;
-    ['uniqueItems'].forEach((key:string) => {
-        /** @ts-ignore **/
-        if(undefined !== tool.schema[key]) {
-            /** @ts-ignore **/
-            addToSchema[key] = tool.schema[key];
-        }
-    })
-
-    return {
-        ...tool.schema, //must be enabled to get all schema data from tool.optionDataUpdate
-        ...addToSchema,
-        type: 'array',
-        items: items,
-    } as JsonSchema;
-};
-
-
-export const createTypeArraySchema = (tool: ToolInterface): Record<string, JsonSchema> => {
-    const schemas = {} as Record<string, JsonSchema>;
-
-    /** @ts-ignore */
-    if ('object' === tool?.schema?.items?.type) {
-        const properties = {} as Record<string, JsonSchema>;
-        const required = [] as Array<string>;
-
-        tool.childs.forEach((childTool: ToolInterface) => {
-            if ('array' === childTool?.schema?.type) {
-                const childSchema = createTypeArraySchema(childTool);
-                properties[childTool.propertyName] = childSchema[childTool.propertyName];
-
-            } else {
-                properties[childTool.propertyName] = childTool.schema;
+            if(!event.schemaOnly) {
+                const updated = updateUiTree(event)
+                updated && (uischema = event.baseUiTool?.generateUiSchema());
             }
+            break;
+            
+        case 'uischema':
+            uischema = event.baseUiTool?.generateUiSchema();
 
-            if (childTool.isRequired) {
-                required.push(childTool.propertyName);
+            if(!event.schemaReadOnly) {
+                const updated = updateSchemaTree(event);
+                updated && (schema = event.baseSchemaTool?.generateJsonSchema());
             }
-        });
-
-        schemas[tool.propertyName] = {
-            ...tool.schema,
-            type: 'array',
-            items: {
-                type: "object",
-                properties: properties,
-                required: required.length ? required : undefined,
-            }
-        } as JsonSchema;
-
-    } else {
-        schemas[tool.propertyName] = {
-            ...tool.schema,
-            type: 'array',
-            items: tool.childs?.length ? tool.childs[0].schema : {type: 'null'}
-        } as JsonSchema;
+            break;
     }
 
-    return schemas;
-};
+    return {schema, uischema} as JsonFormsInterface
+}
 
-export const createTypeObjectSchemaOnly = (tool: ToolInterface): JsonSchema => {
-    const properties = {} as Record<string, JsonSchema>;
-    const required = [] as Array<string>;
+const updateUiTree = (event: BuilderEvent): boolean => {
 
-    //const {childs, schemas} = splitChilds(tool.childs);
+    const schemaTool = event.tool;
+    const schemaParent = event.parentTool;
 
-    tool.childs.forEach((childTool: ToolInterface) => {
-        // if ('object' === childTool?.schema?.type) {
-        //     const childSchema = createTypeObjectSchema(childTool);
-        //     properties[childTool.propertyName] = childSchema[childTool.propertyName];
+    const isScoped = undefined !== schemaTool.uischema.scope;
+    const isParentScoped = undefined !== schemaParent?.uischema?.scope;
+    const isControl = 'Control' === schemaTool.uischema.type;
+
+    //console.log("handleSchemaEvent", event.type, {scoped: isScoped, parentScoped: isParentScoped}, event);
+
+    switch (event.type) {
+
+        case 'added':
+            schemaTool.edge.schemaParent = schemaParent;
+            //return (isScoped || isParentScoped) && handelSchemaEventOnAdded(event);
+            break;
+
+        case 'removed':
+            return handelSchemaEventOnRemoved(event)
+
+        case 'modal':
+                /**
+                 * :INFO must be true if propertyName has changed (creates a new scope)
+                 * but there is no propertyNameHasChangedcheck right now
+                 */
+                 return true;
+
+        case 'moved':
+            const oldIndex = event.oldIndex;
+            const newIndex = event.newIndex;
+
+            /**
+             * :TODO
+             * - move childs if parents is object and scoped to object (childs are not part of uischema)
+             * - update parentTool
+             * - DONT move childs if parents is layout and childs is scoped
+             */
+            console.log("handleSchemaEvent #:TODO for ", event.type, event);
+            break;
         //
-        // } else {
-        //     properties[childTool.propertyName] = childTool.schema;
-        // }
+        // default:
+        //     //console.log("handleSchemaEvent #:TODO for ",event.type, event);
+        //     break;
+    }
 
-        //probably uischema
-        if(_.isEmpty(childTool.schema)) {
-            return;
-        }
 
-        properties[childTool.propertyName] = generateSchemaByTool(childTool);
+    return false;
+}
+const updateSchemaTree = (event: BuilderEvent): boolean => {
 
-        if (childTool.isRequired) {
-            required.push(childTool.propertyName);
-        }
+    const uiTool = event.tool;
+    const isControl = 'Control' === uiTool.uischema.type;
+
+    switch (event.type) {
+        case 'added':
+            return event.displaceType ? handelUiEventOnDisplaced(event) : handelUiEventOnAdded(event);
+
+        case 'removed':
+            const wasDisplaced = !!uiTool.edge.displaced;
+            if(uiTool.edge.displaced) {
+                uiTool.edge.displaced = undefined;
+            }
+
+            return !wasDisplaced ? handleUiEventOnRemoved(event) : false;
+
+        case 'mounted':
+            if (!isControl) {
+                // const controlChilds = uiTool.edge.childs.filter(child => 'Control' === child.uischema.type)
+                // controlChilds.forEach(tool => {
+                //     updateSchemaTree(event.createSubevent({added: {element: tool, parentTool:uiTool}}));
+                // })
+                return true;
+            }
+            break;
+
+        case 'modal':
+            return isControl && handleUiEventOnModal(event);
+
+        case 'moved':
+            // const oldIndex = event.oldIndex;
+            // const newIndex = event.newIndex;
+
+            /**
+             * :TODO
+             * - move childs if parents is object and scoped to object (childs are not part of uischema)
+             * - DONT move childs if parents is layout and childs is scoped
+             */
+            console.log("handelUiEvent move #:TODO", uiTool);
+            break;
+
+        default:
+            console.log("handelUiEvent #:TODO for event:", event);
+            break;
+    }
+
+    return false
+}
+
+const handelSchemaEventOnAdded = (event: BuilderEvent): boolean => {
+
+    const schemaTool = event.tool;
+    const schemaParent = event.parentTool;
+
+    schemaTool.edge.schemaParent = schemaParent;
+
+    //:TODO for deep injection (eg: user.data.age)
+    const path = '';
+    const parentUiTool = null ?? event.baseUiTool;
+    // if (parentUiTool) {
+    //     schemaTool.parentUiTool = parentUiTool
+    //     parentUiTool?.childs.push(schemaTool)
+    // }
+
+    // const parentBiTool = event?.parentTool?.biTool
+    // if(!parentBiTool) {
+    //     throw "parent BiTool is empty";
+    // }
+
+    //const schemaTool = event.toolFinder.findMatchingToolAndClone({}, set, {type: 'Control', scope: '#'});
+    // const biTool = schemaTool.clone();
+    // biTool.uuid;
+    // biTool.propertyName = schemaTool.propertyName;
+    // biTool.childs = schemaTool.initChilds(event.toolFinder);
+    // biTool.parentTool = parentBiTool;
+    // //schemaTool.uischema = uiTool.uischema;
+    // biTool.setBiTool(schemaTool)
+
+
+    return true;
+}
+const handelSchemaEventOnRemoved = (event: BuilderEvent): boolean => {
+
+    const schemaTool = event.tool;
+    const uiParent = schemaTool.edge.uiParent;
+    const schemaParent = schemaTool.edge.schemaParent;
+
+    const hasSchemaParent = undefined !== schemaParent
+
+    let removed = false;
+    if (uiParent) { //hasSchemaParent &&
+        uiParent.edge.removeChild(schemaTool);
+        removed = true;
+    }
+
+    return removed;
+}
+
+const handelUiEventOnAdded = (event: BuilderEvent): boolean => {
+
+    const uiTool = event.tool;
+    const uiParent = event.parentTool;
+
+    const isControl = 'Control' === uiTool?.uischema.type;
+    const isParentControlType = 'Control' === uiParent?.uischema.type;
+
+    //:TODO for deep injection (eg: user.data.age)
+    // const scope = uiTool.uischema.scope;
+    // const pathSegments = scope && toDataPathSegments(scope)
+    // const propertyName = pathSegments?.pop();
+
+    let added = false;
+
+    let scenario, targetTool;
+    if(!isControl) {
+        scenario = 'add.Layout->Layout'
+    }
+    else if (isParentControlType) {
+        scenario = 'add.Control->Object'
+        added = true; //is already child in a schema - so just return true to render schema
+    }
+    else {
+        scenario = 'add.Control->Layout'
+        targetTool = event.baseSchemaTool;
+    }
+
+    console.log("handelUiEventOnAdded", {
+        event,
+        scenario,
+        targetTool,
+        edge: uiTool.edge,
     });
 
-    // const conditionalSchemas = {} as JsonSchema | any;
-    // schemas.forEach((schemaTool: ToolInterface|SchemaTool) => {
-    //     if(schemaTool instanceof  SchemaTool) {
-    //         const schemaToSet = generateSchemaByTool(schemaTool) as any;
-    //         conditionalSchemas[schemaTool.keyword] = schemaToSet[schemaTool.keyword];
-    //     }
+    if (targetTool) {
+        console.log("addChild from handelUiEventOnAdded");
+        targetTool?.edge.addChild(uiTool, event.newIndex);
+        //uiTool.edge.uiParent = uiParent;
+        //uiTool.edge.schemaParent = targetTool;
+
+        added = true;
+    }
+
+    return added;
+}
+const handelUiEventOnDisplaced = (event: BuilderEvent): boolean => {
+
+    const uiTool = event.tool;
+    const parentTool  = event.parentTool;
+    const exUiParent = event.exParents.uiParent;
+    const exSchemaParent = event.exParents.schemaParent;
+
+    //:TODO for deep injection (eg: user.data.age)
+
+    const targets = {
+        add:undefined as ToolInterface|undefined,
+        del:undefined as ToolInterface|undefined,
+        uiParent:undefined as ToolInterface|undefined|null,
+    };
+
+    switch (event.displaceType) {
+        case 'object->layout':
+            targets.add = event.baseSchemaTool;
+            targets.del = exSchemaParent;
+            targets.uiParent = parentTool;
+            break;
+        case 'object->object':
+            targets.add = parentTool;
+            targets.del = exSchemaParent;
+            break;
+
+        case 'layout->object':
+            targets.add = parentTool;
+            targets.del = event.baseSchemaTool;
+            targets.uiParent = null;
+            break;
+        case 'layout->layout':
+            uiTool.edge.displaced = parentTool;
+            break;
+    }
+
+    // console.log("handelUiEventOnDisplaced", {
+    //     event,
+    //     scenario: event.displaceType,
+    //     targets,
+    //     edge: uiTool.edge,
+    //     exUiParent: uiTool.edge.uiParent?.uuid,
+    //     exSchemaParent: uiTool.edge.schemaParent?.uuid,
     // });
 
-    //console.log("generator object",tool.schema)
+    let displaced = false;
+    if (targets.add || targets.del) {
+        targets.del && (targets.del.edge.removeChild(uiTool));
+        targets.add && (targets.add.edge.addChild(uiTool, event.newIndex));
 
+        undefined !== targets.uiParent && (uiTool.edge.uiParent = targets.uiParent??undefined);
 
-    return {
-        ...tool.schema,
-        type: 'object',
-        properties: properties,
-        required: required.length ? required : undefined,
-        //...conditionalSchemas
-    } as JsonSchema;
-};
-
-
-export const createTypeSchemaOnly = (tool: ToolInterface): JsonSchema => {
-
-    const schema = tool.schema;
-
-    const propertiesDefinedByChilds = [
-        //schema
-        "if",
-        "then",
-        "else",
-        "not",
-        "contains",
-        "propertyNames",
-        "additionalItems",
-        "additionalProperties",
-
-        //object
-        "properties",
-        "definitions",
-        "patternProperties",
-        "dependencies",
-
-        //array
-        "allOf",
-        "anyOf",
-        "oneOf",
-        "items"
-    ];
-
-    const schemaByKeys = {} as any;
-    propertiesDefinedByChilds.forEach(key => schemaByKeys[key] = undefined)
-
-    tool.childs.forEach((childTool: ToolInterface) => {
-        const propertyName = childTool.propertyName;
-        if(propertyName && propertiesDefinedByChilds.includes(propertyName)) {
-            let childSchema = generateSchemaByTool(childTool);
-            let setSchema = childSchema;
-
-            switch (propertyName) {
-               case "properties":
-               case "definitions":
-               case "patternProperties":
-               case "dependencies":
-                    if(childSchema.properties) {
-                        setSchema = childSchema.properties
-                    }
-                    break;
-
-                case "allOf":
-                case "anyOf":
-                case "oneOf":
-                case "items":
-                    if(childSchema.items) {
-                        setSchema = childSchema.items as JsonSchema
-                        childTool.schema = childSchema;
-
-                        if((childTool as any).isSchemaItem) {
-                            setSchema = (childSchema.items as any)[0] as JsonSchema
-                            childTool.schema.items = setSchema;
-                        }
-                    }
-                    break;
-
-                default:
-                    break;
-            }
-
-            schemaByKeys[propertyName] = setSchema;
-        }
-    });
-
-    return {...schema, ...schemaByKeys} as JsonSchema;
-};
-
-
-
-export const createTypeObjectSchema = (tool: ToolInterface): Record<string, JsonSchema> => {
-    const schemas = {} as Record<string, JsonSchema>;
-
-    if ('object' === tool?.schema?.type) {
-        schemas[tool.propertyName] = createTypeObjectSchemaOnly(tool);
+        displaced = true;
+        uiTool.edge.displaced = targets.add;
     }
 
-    return schemas;
-};
-export const createCombinatorSchema = (tool: ToolInterface, keyword: string): JsonSchema => {
-
-    let schema = [] as JsonSchema[];
-
-    if(tool.childs?.length) {
-        schema = tool.childs?.map((childTool: ToolInterface) => {
-            return generateSchemaByTool(childTool);
-        });
-    }
-    else {
-        //no empty combinators (otherwise jsonforms throws error)
-        /** @ts-ignore */
-        const schemas = tool.schema[keyword];
-        if(_.isEmpty(schemas)) {
-            schema = [{}];
-        }
-
-        //also for (@see https://jsonforms.io/docs/multiple-choice/#one-of)
-        else {
-            return tool.schema;
-        }
-    }
-
-    return {
-        ...tool.schema,
-        [keyword]: schema,
-    };
-};
-
-export const setRequiredToSchema = (propertyName: string, schema: JsonSchema, isRequired: boolean = false): void => {
-    const plainProp = getPlainProperty(propertyName);
-    let required = getRequiredFromSchema(propertyName, schema);
-    if (isRequired) {
-        if (!required.includes(plainProp)) {
-            required.push(plainProp);
-        }
-    } else {
-        if (required.includes(plainProp)) {
-            required = required.filter((item: string) => item !== plainProp)
-        }
-    }
-    _.set(schema, getRequiredPath(propertyName), required.length ? required : undefined)
+    return displaced;
 }
-export const setItemSchemaToSchema = (tool: ToolInterface, rootSchema: JsonSchema): void => {
+const handleUiEventOnModal = (event: BuilderEvent): boolean => {
 
-    console.log("setItemSchemaToSchema",tool,rootSchema);
+    const uiTool = event.tool;
 
-    const subpaths = getAllSubpaths(tool.propertyName, 0);
+    let set = uiTool.generateJsonSchema();
+    if (undefined === set) {
+        return false
+    }
 
-    //create type=object in subpaths if not exists
-    subpaths.forEach((subProp: string) => {
-        const subPath = denormalizePath(subProp) + '.type'
-        if (!_.get(rootSchema, subPath)) {
-            _.set(rootSchema, subPath, 'object')
-        }
-    });
+    //const schemaTool = toolFinder.findMatchingToolAndClone({}, set, {type: 'Control', scope: '#'});
+    //schemaTool.propertyName = uiTool.propertyName;
 
-    let path = denormalizePath(tool.propertyName);
-    let set = generateSchemaByTool(tool);
-
-    //console.log("setitem",set);
-
-    // //array items :TODO find better implementation (its not working for multiple nested objects)
-    // const isRef = undefined !== tool?.schema?.items?.$ref;
-    // if('array' === tool?.schema?.type && undefined === tool?.schema?.items?.type && !isRef ) {
-    //     set.items = {type:'object'}
-    // }
-    // if('array' === parentTool?.schema?.type) {
-    //     path = path.replace(/^properties\./, 'items.properties.');
+    // if(uiTool.biTool) {
+    //     uiTool.biTool.schema = set;
+    //     uiTool.biTool.propertyName = uiTool.propertyName;
     // }
 
-    _.set(rootSchema, path, set)
-
-    if (tool.isRequired) {
-        setRequiredToSchema(tool.propertyName, rootSchema, true);
-    }
-}
-
-
-export const createJsonUiSchema = (tool: ToolInterface, rootSchema: JsonSchema, schemaReadOnly: boolean = false): JsonFormsUISchema => {
-    cleanSchema(tool);
-
-    const uischema = tool.uischema;
-
-    const created = _.cloneDeep(uischema) as JsonFormsUISchema | any;
-
-    const isScoped = "scope" in created;
-    //const isLayout = "elements" in created;
-
-
-    if (isScoped) {
-        if ('array' === tool?.schema?.type) {
-
-            const firstChild = tool.childs[0];
-            const isFirstChildLayout = firstChild && 'Control' !== firstChild.uischema.type; //:TODO add better check!
-
-            if (isFirstChildLayout) {
-                const subSchema = {type: 'object'};
-                const detailSchema = createJsonUiSchema(firstChild, subSchema, schemaReadOnly);
-
-                tool.schema['items'] = subSchema;
-                !schemaReadOnly && setItemSchemaToSchema(tool, rootSchema);
-
-                created.options['detail'] = detailSchema
-            }
-        }
-
-        !schemaReadOnly && generateSchemaForUiSchema(tool, rootSchema);
-    } else {
-
-        //:INFO some tools dont have elements (LabelTool)
-        if(tool.childs.length) {
-
-            //const {childs,schemas} = splitChilds(tool.childs);
-
-            created.elements = tool.childs.map((t: ToolInterface) => {
-                    return createJsonUiSchema(t, rootSchema, schemaReadOnly)
-                }) ?? [];
-
-            // schemaKeywords.forEach(key => {
-            //     key in rootSchema && delete (rootSchema as any)[key]
-            // })
-            // schemas.forEach((t: ToolInterface)=> {
-            //     if(t instanceof SchemaTool) {
-            //         const schemaToSet = generateSchemaByTool(t);
-            //         (rootSchema as any)[t.keyword] = (schemaToSet as any)[t.keyword];
-            //     }
-            // });
-        }
-    }
-
-    return created;
+    return true;
 };
+const handleUiEventOnRemoved = (event: BuilderEvent): boolean => {
+    const uiTool = event.tool;
+    const schemaParent = event.exParents.schemaParent;
 
-// const splitChilds = (tools:ToolInterface[]) : {childs:ToolInterface[], schemas:ToolInterface[]}  => {
-//
-//     const childs = [] as ToolInterface[];
-//     const schemas = [] as ToolInterface[];
-//
-//     tools.forEach((t: ToolInterface) => {
-//         if(t instanceof SchemaTool) {
-//             schemas.push(t)
-//         }
-//         else {
-//             childs.push(t)
-//         }
-//     });
-//
-//     return {childs, schemas}
-// }
+    //const hasExParents = schemaParent?.uuid && schemaParent?.uuid === uiTool.edge.displaced?.uuid;
+    const wasDisplaced = schemaParent?.uuid && schemaParent?.uuid === uiTool.edge.displaced?.uuid;
+
+    let removed = false;
+    if(event.unscope) {
+        uiTool.edge.uiParent = undefined;
+    }
+    else if (schemaParent) {
+        schemaParent.edge.removeChild(uiTool);
+        removed = true;
+    }
+    return removed;
+};

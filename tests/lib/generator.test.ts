@@ -1,5 +1,5 @@
 import {expect, test} from 'vitest'
-import {cloneEmptyTool, ToolFinder, createJsonForms, generateSchemaByTool, defaultTools} from '../../src'
+import {cloneEmptyTool, ToolFinder, createJsonForms, defaultTools} from '../../src'
 import type {ToolInterface} from '../../src'
 import type {JsonSchema} from "@jsonforms/core";
 
@@ -10,6 +10,10 @@ const arrayControlTool = toolFinder.findMatchingTool({}, {type: 'array', items: 
 const objectControlTool = toolFinder.findMatchingTool({}, {type: 'object', properties: {}}, {type: 'Control', scope: '#'});
 const combinatorControlTool = toolFinder.findMatchingTool({}, {oneOf: []}, {type: 'Control', scope: '#'});
 const refControlTool = toolFinder.findMatchingTool({}, {'$ref':''}, {type: 'Control', scope: '#'});
+
+const generateSchemaByTool = (tool: ToolInterface): JsonSchema|undefined => {
+    return tool.generateJsonSchema();
+}
 
 const clone = (tool:ToolInterface, propName:string|undefined = undefined, schema:JsonSchema|undefined = undefined) => {
     const clone = cloneEmptyTool(tool, schema);

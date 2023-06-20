@@ -63,6 +63,7 @@
     "@backoffice-plus/jsonforms-vue-vanilla": "^0.0.5",
     "diff": "^5.1.0",
     "flat": "^5.0.2",
-    "sortablejs": "^1.15.0"
+    "sortablejs": "^1.15.0",
+    "vue-final-modal": "^4.4.2"
   }
 }

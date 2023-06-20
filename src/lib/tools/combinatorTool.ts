@@ -1,11 +1,14 @@
-import type {JsonSchema} from "@jsonforms/core";
+import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
+import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/combinator.component.vue";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/combinator.form.json";
+import _ from "lodash";
+import {cloneToolWithSchema} from "../toolCreation";
+import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
 
 export class CombinatorTool extends AbstractTool implements ToolInterface {
 
@@ -41,7 +44,8 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        updatePropertyNameAndScope(data?.propertyName, this)
+        this.propertyName = data?.propertyName ?? '';
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
         const keyword = data?.keyword;
         const keywordOld = CombinatorTool.getKeyword(this.schema);
@@ -92,10 +96,75 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
     toolbarOptions(): Record<string, any> {
         return {
             title: 'Combinator',
-            icon: 'mdi:folder-pound',
+            icon: 'mdi:arrow-decision',
+            //icon: 'mdi:folder-pound',
             //  labelAtDropArea:this.keyword ?? 'anyOf',
+            //hideToolAtBar: true,
 
         }
+    }
+
+    generateJsonSchema(): JsonSchema|undefined {
+        const keyword = CombinatorTool.getKeyword(this.schema) as string;
+
+        let schema = {
+            ...this.schema,
+        } as JsonSchema|any;
+
+        if(keyword) {
+            if(this.childs?.length) {
+                schema[keyword] = this.childs?.map((childTool: ToolInterface) => {
+                    return childTool.generateJsonSchema();
+                });
+            }
+            else {
+                //no empty combinators (otherwise jsonforms throws error)
+                /** @ts-ignore */
+                const schemas = this.schema[keyword];
+                if(_.isEmpty(schemas)) {
+                    schema[keyword] = [{}];
+                }
+
+                // //also for (@see https://jsonforms.io/docs/multiple-choice/#one-of)
+                // else {
+                //     return this.schema;
+                // }
+            }
+        }
+
+        return schema;
+    }
+
+
+    initChilds(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
+        const ctools = [] as any;
+
+        //for moving existing tools to another list
+        if(this.edge.childs?.length || this.edge.childsInitialized) {
+            return this.edge.childs;
+        }
+
+        /** @ts-ignore */
+        const schemaOfKeyword = CombinatorTool.getKeywordSchemas(this.schema)
+
+        schemaOfKeyword && schemaOfKeyword.forEach((itemSchema:JsonSchema) => {
+
+            const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+            const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
+
+            //required
+            const required = getRequiredFromSchema(clone.propertyName, this.schema);
+            if (required?.includes(getPlainProperty(clone.propertyName))) {
+                clone.isRequired = true;
+            }
+
+            clone.edge.setParent(this);
+            clone.edge.replaceChilds(clone.initChilds(toolFinder));
+
+            ctools.push(clone);
+        });
+
+        return ctools;
     }
 }
 

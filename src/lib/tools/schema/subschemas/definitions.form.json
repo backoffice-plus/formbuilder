@@ -21,7 +21,13 @@
         "elements": [
           {
             "type": "Formbuilder",
-            "scope": "#/properties/definitions/properties/definitions"
+            "scope": "#/properties/definitions/properties/definitions",
+            "options": {
+              "baseToolProps": {
+                "hideActionbar": true,
+                "prefixLabel": "definitions:"
+              }
+            }
           }
         ]
       }

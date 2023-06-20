@@ -119,9 +119,28 @@ export const uischema = {
                             elements: [
                                 {
                                     scope: "#/properties/propertyName",
-                                    type: "Control"
+                                    type: "Control",
+                                    // rule: {
+                                    //     effect: "DISABLE",
+                                    //     condition: {
+                                    //         scope: "#",
+                                    //         schema: {
+                                    //             properties: {
+                                    //                 _isUischema:{const:false},
+                                    //                 _isSchemaOnly:{const:false},
+                                    //             }
+                                    //         }
+                                    //     }
+                                    // }
                                 },
-                            ]
+                            ],
+                            "rule": {
+                                "effect": "SHOW",
+                                "condition": {
+                                    "scope": "#/properties/_isProperty",
+                                    "schema": {"const": true}
+                                }
+                            }
                         },
 
                         {
@@ -296,7 +315,14 @@ export const uischema = {
                             elements: [
                                 {
                                     scope: "#/properties/required",
-                                    type: "Control"
+                                    type: "Control",
+                                    "rule": {
+                                        "effect": "HIDE",
+                                        "condition": {
+                                            "scope": "#/properties/_asSchemaChild",
+                                            "schema": {"const": true}
+                                        }
+                                    }
                                 },
                                 {
                                     scope: "#/properties/options/properties/readonly",

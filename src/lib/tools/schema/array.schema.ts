@@ -54,10 +54,11 @@ export const schema = {
                     type: "string"
                 },
                 detail: {
-                    anyOf: [
-                        {$ref:'#/definitions/optionsDetailAsString'},
-                        {$ref:'#/definitions/optionsDetailAsObject'},
-                    ]
+                    type: "object"
+                    // anyOf: [
+                    //     {$ref:'#/definitions/optionsDetailAsString'},
+                    //     {$ref:'#/definitions/optionsDetailAsObject'},
+                    // ]
                 }
                 // detail: {
                 //     type: "string",
@@ -120,81 +121,19 @@ export const uischema = {
         /**
          * Tab - options.detail
          */
-        // {
-        //     type: "Category",
-        //     label: "Subschema",
-        //     elements: [
-        //
-        //         {
-        //             type: 'Label',
-        //             text: ':TODO'
-        //         },
-        //
-        //         {
-        //             scope: "#/properties/options/properties/detail",
-        //             type: "Control",
-        //             // options: {
-        //             //     detail: {
-        //             //         type: 'Label',
-        //             //         elements: []
-        //             //     }
-        //             // }
-        //         },
-        //
-        //
-        //         // /**
-        //         //  * Detail as String
-        //         //  */
-        //         // {
-        //         //     type: "GROUP",
-        //         //     label: "details as string AGAIN",
-        //         //     elements: [
-        //         //         {
-        //         //             scope: "#/properties/options/properties/detail",
-        //         //             label: 'Detail as String',
-        //         //             type: "Control"
-        //         //         },
-        //         //     ],
-        //         //     rule: {
-        //         //         effect: 'SHOW',
-        //         //         condition: {
-        //         //             scope: "#/properties/options/properties/detail",
-        //         //             schema: { type: 'string' }
-        //         //         }
-        //         //     }
-        //         // },
-        //         //
-        //         //
-        //         // /**
-        //         //  * Detail as Obj
-        //         //  */
-        //         // {
-        //         //     type: "VerticalLayout",
-        //         //     elements: [
-        //         //         {
-        //         //             scope: "#/properties/options/properties/detail/properties/type",
-        //         //             type: "Control",
-        //         //         },
-        //         //         {
-        //         //
-        //         //             scope: "#/properties/options/properties/detail/properties/elements",
-        //         //             type: "Control",
-        //         //             options: {
-        //         //                 "multi": true
-        //         //             }
-        //         //         }
-        //         //     ],
-        //         //     rule: {
-        //         //         effect: 'ENABLE',
-        //         //         condition: {
-        //         //             scope: "#/properties/options/properties/detail",
-        //         //             schema: { type: 'object' }
-        //         //         }
-        //         //     }
-        //         // },
-        //     ],
-        // },
-
+        {
+            type: "Category",
+            label: "Detail",
+            elements: [
+                {
+                    "scope": "#/properties/options/properties/detail",
+                    "type": "Formbuilder",
+                    "options": {
+                        "schemaReadOnly": true
+                    }
+                },
+            ]
+        },
 
         /**
          * Tab - Validation

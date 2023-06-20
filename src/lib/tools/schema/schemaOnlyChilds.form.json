@@ -27,19 +27,18 @@
       "propertyName": {
         "type": "string"
       },
+      "type": {
+        "type": "string",
+        "enum": ["object", "array"]
+      },
       "required": {
         "type": "boolean"
       },
-      "schema": {
-        "type":"object",
-        "properties": {
-          "additionalProperties": {
-            "oneOf": [
-              {"$ref":"#/definitions/additionalPropertiesFalse"},
-              {"$ref":"#/definitions/additionalProperties"}
-            ]
-          }
-        }
+      "additionalProperties": {
+        "oneOf": [
+          {"$ref":"#/definitions/additionalPropertiesFalse"},
+          {"$ref":"#/definitions/additionalProperties"}
+        ]
       },
 
       "rule": {
@@ -91,7 +90,11 @@
           },
 
           {
-            "scope": "#/properties/schema/properties/additionalProperties",
+            "scope": "#/properties/type",
+            "type": "Control"
+          },
+          {
+            "scope": "#/properties/additionalProperties",
             "type": "Control"
           }
         ]
@@ -106,6 +109,7 @@
           }
         ]
       },
+
       {
         "type": "Category",
         "label": "Rule",

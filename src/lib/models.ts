@@ -2,13 +2,14 @@ import type {JsonSchema} from "@jsonforms/core";
 import type {
     Categorization,
     Category,
-    ControlElement,
+    ControlElement, Internationalizable, Labelable, LabelDescription,
     LabelElement,
-    Layout,
+    Layout, Scoped,
     UISchemaElement,
 } from "@jsonforms/core/src/models/uischema";
 import type {PropType} from "vue";
 import type {RankedTester} from "@jsonforms/core/src/testers/testers";
+import type {ToolEdge} from "./ToolEdge";
 
 export const scalarTypes = ['string', 'number', 'integer', 'boolean', 'null'];
 
@@ -31,16 +32,28 @@ export interface ToolInterface {
     clone: () => ToolInterface;
     toolbarOptions: () => Record<string, any>;
 
+    edge: ToolEdge;
+    /** @deprecated use edge.childs  **/
     childs: ToolInterface[]
-    parentTool: ToolInterface|undefined
+
+    generateJsonSchema: () => JsonSchema|undefined
+    generateUiSchema: () => JsonFormsUISchema|undefined
+    initChilds: (toolFinder:ToolFinderInterface, baseSchemaTool?:ToolInterface|undefined) => ToolInterface[]
 }
 
 export interface ToolContext {
     fb?: any;
     builder?: string;
+    schemaOnly?: boolean;
     schemaReadOnly?: string;
     rootSchema?: JsonSchema,
     baseSchemaTool?: ToolInterface,
+}
+export interface ToolFinderInterface {
+    //:TODO add all methods from ToolFinder
+    findMatchingToolAndClone(schema: any, itemSchema: any, itemUischema: any): ToolInterface
+    findMatchingTool(schema: any, itemSchema: JsonSchema, itemUischema: any): ToolInterface
+    findLayoutToolByUiType(uiType: string): ToolInterface | undefined
 }
 
 // @ts-ignore
@@ -82,8 +95,48 @@ export const toolComponentProps = () => ({
         type: Boolean,
         default: false as false,
     },
+
+    //from FormbuilderRenderer
+    hideActionbar: {
+        required: false as false,
+        type: Boolean,
+        default: false as false,
+    },
+    prefixLabel: {
+        required: false as false,
+        type: String,
+        default: '' as String,
+    },
+    propertyName: {
+        required: false as false,
+        type: String,
+        default: '' as String,
+    },
+
 });
 
+
+export const formbuilderProps = () => ({
+    schema:Object,
+    jsonForms: Object,
+    jsonFormsRenderers: Array,
+    schemaOnly: Boolean,
+    schemaReadOnly: Boolean,
+    tools: Array,
+    schemaTool: String,
+    schemaToolProps: Object,
+});
+export interface formbuilderPropsI {
+    schema: JsonSchema,
+    uischema: Layout,
+    jsonForms: any,
+    jsonFormsRenderers: [],
+    schemaOnly: boolean,
+    schemaReadOnly: boolean,
+    tools: ToolInterface[],
+    schemaTool: string,
+    schemaToolProps: any,
+}
 
 /**
  *

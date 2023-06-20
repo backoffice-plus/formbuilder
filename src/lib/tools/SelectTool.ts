@@ -6,7 +6,7 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {schema, uischema} from "./schema/select.schema";
-import {resolveSchema, updatePropertyNameAndScope} from "../formbuilder";
+import {resolveSchema} from "../formbuilder";
 import _ from "lodash";
 import * as subschemas from "./subschemas";
 
@@ -93,7 +93,8 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         const schema = this.schema as JsonSchema | Record<string, any>;
         const uischema = this.uischema as ControlElement;
 
-        updatePropertyNameAndScope(data?.propertyName, this)
+        this.propertyName = data?.propertyName ?? '';
+        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
         const schemaType = data.type ?? 'string';
 

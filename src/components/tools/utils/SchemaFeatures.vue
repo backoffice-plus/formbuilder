@@ -3,6 +3,7 @@
   <span v-if="hasRules" class="f" title="has Rules">R</span>
   <span v-if="hasDefinitions" class="f" title="has Definitions">D</span>
   <span v-if="hasConditionals" class="f" title="has Conditionals">C</span>
+  <span v-if="hasDetail" class="f" title="has Detail Layout">L</span>
 
 
 </template>
@@ -34,6 +35,7 @@ const props = defineProps({
 const hasRules = computed(() => !_.isEmpty(props.tool.uischema?.rule));
 const hasDefinitions = computed(() => (!_.isEmpty(props.tool.schema?.definitions) || !_.isEmpty(props.tool.schema?.['$defs'])) && !couldBeLayoutTool.value);
 const hasConditionals = computed(() => !_.isEmpty(props.tool.schema?.if) && !couldBeLayoutTool.value);
+const hasDetail = computed(() => !_.isEmpty(props.tool.uischema?.options?.detail) && !couldBeLayoutTool.value);
 const couldBeLayoutTool = computed(() => props.tool?.uischema?.type && 'Control' !== props.tool?.uischema.type);
 
 </script>

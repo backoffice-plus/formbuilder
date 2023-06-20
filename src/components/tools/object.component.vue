@@ -2,9 +2,12 @@
   <div class="objectTool" :class="['rootItem', {isRoot:isRoot}]">
 
     <slot name="header">
-      <ToolIcon :tool="tool" :isToolbar="isToolbar">
+      <ToolIcon :tool="tool" :isToolbar="isToolbar" :prefixLabel="isRoot ? 'schema:' : ''">
         <template v-slot:droparea>
-          <template v-if="!isInlineType">
+            <template v-if="isRoot">
+                Object
+            </template>
+          <template v-else-if="!isInlineType && !isRoot">
             <b>{{ tool.propertyName }}</b>
           </template>
           <SchemaFeatures :tool="tool" />
@@ -79,10 +82,9 @@
 
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {deleteToolInChilds} from '../../lib/formbuilder'
-import {computed, nextTick, onMounted, ref} from "vue";
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
+import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
-import {initObjectElements} from "../../lib/initializer";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
@@ -101,7 +103,7 @@ const onDrag = fb?.exposed.onToolDrag;
 
 onMounted(() => {
   if (!props.isToolbar) {
-      childTools.value.push(...initObjectElements(toolFinder, props?.tool));
+      childTools.value.push(...props.tool.initChilds(toolFinder));
 
       if (childTools.value.length) {
         nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
@@ -109,13 +111,7 @@ onMounted(() => {
   }
 })
 
-const onDropAreaChange = (e) => {
-  if(e.added?.element?.parentTool) {
-    e.added.element.parentTool = props.tool;
-  }
-  props.tool.childs = childTools.value;
-  fb?.exposed?.onDropAreaChanged(e);
-};
+const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
 const addItem = (type) => {
   const schema = fb?.exposed?.rootSchema?.value;
@@ -135,19 +131,18 @@ const allowedChild = (tool) => {
 }
 
 const showDragClass = computed(() => {
-  return allowedChild(getToolDragging());
+    const tool = getToolDragging();
+    return tool && allowedChild(unref(tool));
 })
 const groupPut = (from, to, node, dragEvent) => {
-  return allowedChild(node._underlying_vm_);
+    const tool = node._underlying_vm_;
+    return tool && allowedChild(unref(tool));
 };
 
-const onDeleteByTool = async (e) => {
-  e.tool && deleteToolInChilds(e.tool, childTools.value)
-      .then(newChildTools => {
-        childTools.value = newChildTools;
-        onDropAreaChange(e);
-      })
-};
+const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool).then(e => {
+    childTools.value = props.tool.edge.childs;
+    onDropAreaChange(e);
+});
 
 const onDelete = () => {
   emit("deleteByTool", { tool: props.tool });

@@ -59,14 +59,14 @@ aside::-webkit-scrollbar-thumb {
 }
 
 aside .toolItem {
-  min-width: 80px;
 
   border-color: var(--toolItem-border);
 
   @apply
   cursor-move
 
-  h-10 w-20
+  h-10
+  px-4
 
   overflow-hidden
 
@@ -115,7 +115,8 @@ const onDrag = (drag) => {
 };
 
 const onClone = (tool) => {
-  if(fb.props.schemaReadOnly) {
+  const isUnscoped = !!tool.edge.schemaParent;
+  if(fb.props.schemaReadOnly || isUnscoped) {
     const context = {
       fb:fb,
       parentMethod:'formbuilderbar.onclone',
@@ -124,6 +125,9 @@ const onClone = (tool) => {
     };
     tool.optionDataUpdate(context, tool.optionDataPrepare(context));
 
+    if(isUnscoped) {
+        tool.edge.wasUnscoped = true;
+    }
     return tool;
   }
 
