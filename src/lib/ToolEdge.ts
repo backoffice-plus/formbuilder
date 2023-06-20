@@ -57,6 +57,18 @@ export class ToolEdge {
         }
     }
 
+    findScopedChilds(): ToolInterface[] {
+        const results: ToolInterface[] = [];
+
+        this._childs.forEach(child => {
+            if(child.edge.schemaParent) {
+                results.push(child)
+            }
+            results.push(...child.edge.findScopedChilds())
+        });
+        return results;
+    }
+
     replaceChilds(childs: ToolInterface[]): void {
         this._childs = childs;
         const isControl = 'Control' === this.tool?.uischema.type;
@@ -82,12 +94,7 @@ export class ToolEdge {
         //     {hasChild:!!hasChild});
 
 
-        if(child.edge.uiParent?.uuid === this.tool?.uuid) {
-            child.edge.uiParent = undefined;
-        }
-        if(child.edge.schemaParent?.uuid === this.tool?.uuid) {
-            child.edge.schemaParent = undefined;
-        }
+        child.edge.removeParent(this.tool);
     }
 
 
@@ -97,6 +104,20 @@ export class ToolEdge {
 
     get schemaParent(): ToolInterface | undefined {
         return this._schemaParent;
+    }
+
+    removeParent(parent:ToolInterface):void {
+        console.log("Edge.removeParent", {
+            parent:parent?.uuid,
+            uiParent:this.uiParent?.uuid,
+            schemaParent:this.schemaParent?.uuid,
+        })
+        if(this.uiParent?.uuid === parent?.uuid) {
+            this.uiParent = undefined;
+        }
+        if(this.schemaParent?.uuid === parent?.uuid) {
+            this.schemaParent = undefined;
+        }
     }
 
     setParent(tool: ToolInterface) {

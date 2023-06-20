@@ -168,7 +168,14 @@ export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:Too
                 tool: toolToDelete,
                 onConfirm() {
                     parentTool.edge.removeChild(toolToDelete);
+
+                    const isControl = 'Control' === toolToDelete?.uischema?.type;
+                    if(!isControl) {
+                        toolToDelete.edge.findScopedChilds().forEach(child => child.edge.uiParent = undefined);
+                    }
+
                     resolve({removed:{element:toolToDelete}});
+
                     close();
                 },
                 onUnscope() {
