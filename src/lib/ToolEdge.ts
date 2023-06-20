@@ -8,10 +8,7 @@ export class ToolEdge {
     private _uiParent: ToolInterface | undefined = undefined;
     private _schemaParent: ToolInterface | undefined = undefined;
 
-    exUiParent: ToolInterface | undefined = undefined;
-    exSchemaParent: ToolInterface | undefined = undefined;
-
-    displaced: boolean | undefined = undefined;
+    displaced: ToolInterface | undefined = undefined; //to ignore the "removed" event after "added" event
     childsInitialized: boolean | undefined = undefined; //to prevent that once initiated properties/elements (with tool.initChilds() are initiated again
 
     constructor(tool: ToolInterface) {
@@ -28,17 +25,51 @@ export class ToolEdge {
 
         //:TODO newIndex
 
-        //console.log("ADD CHILD", child.uuid.slice(-6) + " -+++-> " + this.tool.uuid.slice(-6));
+        // const idA = child.uuid.slice(-6);
+        // const idB = this.tool.uuid.slice(-6);
+        // console.log("%cADD CHILD"+ "%c"+idA +"%c -+++-> %c"+idB,
+        //     "background-color:green;color:white","color:white;background-color:#"+idA,'color:black',"color:white;background-color:#"+idB);
+
+        const isControl = 'Control' === this.tool?.uischema.type;
+        if(isControl) {
+            child.edge.schemaParent = this.tool;
+        }
+        else {
+            child.edge.uiParent = this.tool;
+        }
     }
 
     replaceChilds(childs: ToolInterface[]): void {
         this._childs = childs;
+        const isControl = 'Control' === this.tool?.uischema.type;
+        childs.forEach(child => {
+            if(isControl) {
+                child.edge._schemaParent = this.tool;
+            }
+            else {
+                child.edge._uiParent = this.tool;
+            }
+        })
+        //childs.forEach(child => this.addChild(child));
     }
 
     removeChild(child: ToolInterface): void {
+        const hasChild = this._childs.find(tool => tool.propertyName !== child.propertyName);
         this._childs = this._childs.filter(tool => tool.propertyName !== child.propertyName);
 
-        //console.log("DEL CHILD", child.uuid.slice(-6) + " -xxx-> " + this.tool.uuid.slice(-6));
+        const idA = child.uuid.slice(-6);
+        const idB = this.tool.uuid.slice(-6);
+        // console.log("%cDEL CHILD"+ "%c"+idA +"%c -xxx-> %c"+idB,
+        //     "background-color:red;color:white","color:white;background-color:#"+idA,'color:black',"color:white;background-color:#"+idB,
+        //     {hasChild:!!hasChild});
+
+
+        if(child.edge.uiParent?.uuid === this.tool?.uuid) {
+            child.edge.uiParent = undefined;
+        }
+        if(child.edge.schemaParent?.uuid === this.tool?.uuid) {
+            child.edge.schemaParent = undefined;
+        }
     }
 
 
@@ -50,37 +81,31 @@ export class ToolEdge {
         return this._schemaParent;
     }
 
-    setParent(tool: ToolInterface | undefined, createExParent:boolean = false) {
+    setParent(tool: ToolInterface) {
         const isControl = 'Control' === tool?.uischema?.type
-        if(tool) {
-            if(isControl) {
-                if(createExParent) {
-                    this.schemaParent = tool;
-                }
-                else {
-                    this._schemaParent = tool;
-                }
-            }
-            else {
-                if(createExParent) {
-                    this.uiParent = tool;
-                }
-                else {
-                    this._uiParent = tool;
-                }
-            }
+        if(isControl) {
+            this._schemaParent = tool;
+        }
+        else {
+            this._uiParent = tool;
         }
     }
 
     set uiParent(value: ToolInterface | undefined) {
-        const replace = value && this._uiParent && value?.uuid !== this._uiParent?.uuid;
-        replace && (this.exUiParent = this._uiParent);
         this._uiParent = value;
+
+        // const idA = this.tool.uuid.slice(-6);
+        // const idB = value?.uuid.slice(-6);
+        // console.log("%cSET UIPARENT "+ "%c"+idA +"%c.uiParent=%c"+(idB??"undefined"),
+        //     'background-color:gray',"color:white;background-color:#"+idA,'color:black', (idB?"color:white;background-color:#"+idB:''));
     }
 
     set schemaParent(value: ToolInterface | undefined) {
-        const replace = value && this._schemaParent && value?.uuid !== this._schemaParent?.uuid;
-        replace && (this.exSchemaParent = this._schemaParent);
         this._schemaParent = value;
+
+        // const idA = this.tool.uuid.slice(-6);
+        // const idB = value?.uuid.slice(-6) ?? "undefined";
+        // console.log("%cSET SCHEMAPARENT "+ "%c"+idA +"%c.schemaParent=%c"+(idB??"undefined"),
+        //     'background-color:gray',"color:white;background-color:#"+idA,'color:black',(idB?"color:white;background-color:#"+idB:''));
     }
 }

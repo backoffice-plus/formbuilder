@@ -204,7 +204,10 @@ export const deleteToolInChilds = async (toolToDelete:ToolInterface|undefined = 
 
 export const prepareAndCallOnDropAreaChange = (e:any, tool:ToolInterface, childs:ToolInterface[], onDropAreaChanged:any) => {
 
-
+    /**
+     * :INFO
+     * store current childs in event, its necessary because of type=displaced check (that need old childs)
+     */
     //add currentTool as parrent
     Object.keys(e).forEach(key => {
         e[key].parentTool = tool;               //as part of the event

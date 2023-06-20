@@ -5,13 +5,6 @@ export const generateJsonForm = (event: BuilderEvent): JsonFormsInterface => {
 
     let schema, uischema = undefined;
 
-    /**
-     * replace latest childs to the current parents (both comes from prepareAndCallOnDropAreaChange)
-     */
-    if (event.parentTool && event.childs) {
-        event.parentTool.edge.replaceChilds(event.childs);
-    }
-
     if('mounted' === event.type) {
         event.tool.edge.childsInitialized = true;
     }
@@ -53,7 +46,7 @@ const updateUiTree = (event: BuilderEvent): boolean => {
     switch (event.type) {
 
         case 'added':
-            schemaTool.edge.setParent(schemaParent);
+            schemaTool.edge.schemaParent = schemaParent;
             //return (isScoped || isParentScoped) && handelSchemaEventOnAdded(event);
             break;
 
@@ -91,29 +84,22 @@ const updateUiTree = (event: BuilderEvent): boolean => {
 const updateSchemaTree = (event: BuilderEvent): boolean => {
 
     const uiTool = event.tool;
-    const uiParent = event.parentTool;
-
-    const isScoped = undefined !== uiTool.uischema.scope;
     const isControl = 'Control' === uiTool.uischema.type;
 
     switch (event.type) {
         case 'added':
-            uiTool.edge.setParent(uiParent, true);
-            return uiTool.edge.exUiParent ? handelUiEventOnDisplaced(event) : handelUiEventOnAdded(event);
+            return event.displaceType ? handelUiEventOnDisplaced(event) : handelUiEventOnAdded(event);
 
         case 'removed':
-            const displaced = uiTool.edge.displaced
-            if(displaced) {
-                uiTool.edge.displaced = undefined;
-            }
-            return !displaced && handleUiEventOnRemoved(event);
+            return !uiTool.edge.displaced ? handleUiEventOnRemoved(event) : false;
 
         case 'mounted':
+            console.log("updateSchemaTree.mounted",event);
             if (!isControl) {
-                const controlChilds = uiTool.edge.childs.filter(child => 'Control' === child.uischema.type)
-                controlChilds.forEach(tool => {
-                    updateSchemaTree(event.createSubevent({added: {element: tool, parentTool:uiTool}}));
-                })
+                // const controlChilds = uiTool.edge.childs.filter(child => 'Control' === child.uischema.type)
+                // controlChilds.forEach(tool => {
+                //     updateSchemaTree(event.createSubevent({added: {element: tool, parentTool:uiTool}}));
+                // })
                 return true;
             }
             break;
@@ -218,16 +204,18 @@ const handelUiEventOnAdded = (event: BuilderEvent): boolean => {
         targetTool = event.baseSchemaTool;
     }
 
-    //console.log("handelUiEventOnAdded", {
-    //     event,
-    //     scenario,
-    //     targetTool,
-    //     edge: uiTool.edge,
-    // });
+    console.log("handelUiEventOnAdded", {
+        event,
+        scenario,
+        targetTool,
+        edge: uiTool.edge,
+    });
 
     if (targetTool) {
+        console.log("addChild from handelUiEventOnAdded");
         targetTool?.edge.addChild(uiTool, event.newIndex);
-        uiTool.edge.schemaParent = targetTool;
+        //uiTool.edge.uiParent = uiParent;
+        //uiTool.edge.schemaParent = targetTool;
 
         added = true;
     }
@@ -237,65 +225,58 @@ const handelUiEventOnAdded = (event: BuilderEvent): boolean => {
 const handelUiEventOnDisplaced = (event: BuilderEvent): boolean => {
 
     const uiTool = event.tool;
-    const uiParent = event.parentTool;
-
-    const exUiParent = uiTool.edge.exUiParent;
-    const exSchemaParent = uiTool.edge.exSchemaParent;
-    const isControl = 'Control' === uiTool?.uischema.type; //:TODO find better solution?!
-    const isParentControlType = 'Control' === uiParent?.uischema.type; //:TODO find better solution?!
-    const isScoped = undefined !== uiParent?.uischema?.scope;
-    const isExScoped = undefined !== exUiParent?.uischema?.scope
-    const isExControl = 'Control' === exUiParent?.uischema?.type
+    const parentTool  = event.parentTool;
+    const exUiParent = event.exParents.uiParent;
+    const exSchemaParent = event.exParents.schemaParent;
 
     //:TODO for deep injection (eg: user.data.age)
-    // const scope = uiTool.uischema.scope;
-    // const pathSegments = scope && toDataPathSegments(scope)
-    // const propertyName = pathSegments?.pop();
-    // const parentSchemaTool = undefined ?? event.baseSchemaTool;
 
-    let scenario;
-    const targets = {add:undefined, del:undefined} as {add:ToolInterface|undefined,del:ToolInterface|undefined};
+    const targets = {
+        add:undefined as ToolInterface|undefined,
+        del:undefined as ToolInterface|undefined,
+        uiParent:undefined as ToolInterface|undefined|null,
+    };
 
-    if(isExControl && !isScoped && isExScoped) {
-        scenario = 'Object->Layout'
-        targets.add = event.baseSchemaTool
-        targets.del = uiTool.edge.exUiParent;
-    }
-    else if(isExControl && isScoped && isExScoped) {
-        scenario = 'Object->Object'
-        targets.add = event.parentTool;
-        targets.del = uiTool.edge.exUiParent;
-    }
-    else if(!isExControl && isScoped && !isExScoped) {
-        scenario = 'Layout->Object'
-        targets.add = event.parentTool;
-        targets.del = uiTool.edge.schemaParent
-    }
-    else if(!isExControl && !isScoped && !isExScoped) {
-        scenario = 'Layout->Layout'
+    switch (event.displaceType) {
+        case 'object->layout':
+            targets.add = event.baseSchemaTool;
+            targets.del = exSchemaParent;
+            targets.uiParent = parentTool;
+            break;
+        case 'object->object':
+            targets.add = parentTool;
+            targets.del = exSchemaParent;
+            break;
+
+        case 'layout->object':
+            targets.add = parentTool;
+            targets.del = event.baseSchemaTool;
+            targets.uiParent = null;
+            break;
+        case 'layout->layout':
+            uiTool.edge.displaced = parentTool;
+            break;
     }
 
     // console.log("handelUiEventOnDisplaced", {
     //     event,
-    //     scenario,
+    //     scenario: event.displaceType,
     //     targets,
     //     edge: uiTool.edge,
+    //     exUiParent: uiTool.edge.uiParent?.uuid,
+    //     exSchemaParent: uiTool.edge.schemaParent?.uuid,
     // });
 
     let displaced = false;
-    if (targets.add && targets.del) {
-        targets.add.edge.addChild(uiTool, event.newIndex);
-        targets.del.edge.removeChild(uiTool);
+    if (targets.add || targets.del) {
+        targets.del && (targets.del.edge.removeChild(uiTool));
+        targets.add && (targets.add.edge.addChild(uiTool, event.newIndex));
 
-        uiTool.edge.schemaParent = targets.add;
-        uiTool.edge.exUiParent = undefined;
-        uiTool.edge.exSchemaParent = undefined;
+        undefined !== targets.uiParent && (uiTool.edge.uiParent = targets.uiParent??undefined);
 
         displaced = true;
+        uiTool.edge.displaced = targets.add;
     }
-
-    //must always be true to avoid handleUiEventOnRemoved()
-    uiTool.edge.displaced = true;
 
     return displaced;
 }
@@ -320,11 +301,19 @@ const handleUiEventOnModal = (event: BuilderEvent): boolean => {
 };
 const handleUiEventOnRemoved = (event: BuilderEvent): boolean => {
     const uiTool = event.tool;
+    const schemaParent = event.exParents.schemaParent;
 
-    const schemaParent = uiTool.edge.schemaParent;
+    //const hasExParents = schemaParent?.uuid && schemaParent?.uuid === uiTool.edge.displaced?.uuid;
+    const wasDisplaced = schemaParent?.uuid && schemaParent?.uuid === uiTool.edge.displaced?.uuid;
 
-    let removed = false;
-    if (schemaParent) {
+    console.log("handleUiEventOnRemoved", event);
+
+        let removed = false;
+    // if(event.unscope) {
+    //     uiTool.edge.uiParent = undefined;
+    // }
+    // else
+        if (schemaParent) {
         schemaParent.edge.removeChild(uiTool);
         removed = true;
     }
