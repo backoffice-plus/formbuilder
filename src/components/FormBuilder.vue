@@ -154,6 +154,11 @@ const updateJsonForm = (e) => {
   const {schema, uischema} = generateJsonForm(event)
   undefined !== schema && (rootSchema.value = schema);
   undefined !== uischema && (rootUischema.value = uischema);
+
+  //sometimes generated schema is initially empty
+  if(!rootSchema.value) {
+      rootSchema.value = event.baseSchemaTool?.generateJsonSchema();
+  }
 }
 
 const emitSchemaUpdated = (init=false) => {
