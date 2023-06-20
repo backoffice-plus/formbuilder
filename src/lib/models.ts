@@ -128,6 +128,7 @@ export const formbuilderProps = () => ({
 });
 export interface formbuilderPropsI {
     schema: JsonSchema,
+    uischema: Layout,
     jsonForms: any,
     jsonFormsRenderers: [],
     schemaOnly: boolean,

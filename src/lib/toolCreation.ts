@@ -10,7 +10,7 @@ import {SchemaTool, schemaTool} from "./tools/SchemaTool";
 import {formbuilderProps} from "./models";
 import {arrayTool} from "./tools/ArrayTool";
 
-export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI, rootSchema:JsonSchema, rootUischema: Layout) => {
+export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI) => {
     // if(props.schemaOnly) {
     //   //baseSchemaTool.value = createSchemaTool(rootSchema.value, props.schemaTool);
     //   baseSchemaTool.value = cloneToolWithSchema(new SchemaOnlyChildsTool(), rootSchema.value)
@@ -34,6 +34,8 @@ export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI, r
     const schemaReadOnly = props.schemaReadOnly;
     const baseSchemaToolName = props.schemaTool;
     const baseSchemaToolProps = props.schemaToolProps;
+    const rootSchema = props?.schema ?? props?.jsonForms?.schema ?? {};
+    const rootUischema = props?.uischema ?? props?.jsonForms?.uischema ?? {};
 
     const schema = createSchemaTool(rootSchema, baseSchemaToolName, baseSchemaToolProps);
     schema.edge.replaceChilds(schema.initChilds(toolFinder));

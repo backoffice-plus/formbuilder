@@ -127,8 +127,8 @@ const props = defineProps({
   schemaToolProps: Object,
 })
 
-const rootSchema = ref(props?.schema ?? props?.jsonForms?.schema ?? {});
-const rootUischema = ref(props?.uischema ?? props?.jsonForms?.uischema ?? {});
+const rootSchema = ref();//props?.schema ?? props?.jsonForms?.schema ?? {});
+const rootUischema = ref();//props?.uischema ?? props?.jsonForms?.uischema ?? {});
 const showBuilder = ref(props?.schemaOnly ? 'schema' : 'uischema');
 
 const emit = defineEmits(['schemaUpdated']);
@@ -142,7 +142,7 @@ const hideDroparea = 0 === slotDroparea?.length
 const toolFinder = new ToolFinder(props.tools);
 
 //base tools
-const {schema, uischema} = initBaseTools(toolFinder, props, rootSchema.value, rootUischema.value)
+const {schema, uischema} = initBaseTools(toolFinder, props)
 const baseUiTool = ref(uischema);
 const baseSchemaTool = ref(schema);
 const currentBaseTool = computed(() => showBuilder.value === 'uischema' ? baseUiTool.value : baseSchemaTool.value)
