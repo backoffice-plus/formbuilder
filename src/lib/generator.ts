@@ -172,7 +172,7 @@ const handelSchemaEventOnRemoved = (event: BuilderEvent): boolean => {
     const hasSchemaParent = undefined !== schemaParent
 
     let removed = false;
-    if (hasSchemaParent && uiParent) {
+    if (uiParent) { //hasSchemaParent &&
         uiParent.edge.removeChild(schemaTool);
         removed = true;
     }
