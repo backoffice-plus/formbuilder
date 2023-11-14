@@ -79,6 +79,7 @@ import SchemaCode from './SchemaCode.vue'
 import ResizeArea from "./ResizeArea.vue";
 import {translationsErrors as localeCatalogue} from "../src/translations/de";
 import {boplusVueVanillaRenderers} from "../src/index";
+//import {formbuilderRenderers} from "../src/components/renderers";
 
 const props = defineProps({
   jsonForms: Object, //read from store
@@ -94,6 +95,7 @@ const newKey = computed(() => JSON.stringify([jsonFormsSchema.value,jsonFormsUiS
 const jsonFormRenderesMore = Object.freeze([
   ...vanillaRenderers,
   ...boplusVueVanillaRenderers,
+  //...formbuilderRenderers,
 ]);
 
 watch(() => props.jsonForms, () => {
