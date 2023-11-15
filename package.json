@@ -20,7 +20,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "patch-package && vite build && npm run build:types",
+    "build": "vite build",
+    "buildLegacy": "patch-package && vite build && npm run build:types",
     "build:types": "vue-tsc --project tsconfig.types.json --declaration --emitDeclarationOnly --skipLibCheck --outDir dist/types ",
     "typecheck": "vue-tsc --project tsconfig.types.json --noEmit --skipLibCheck",
     "test": "vitest",
