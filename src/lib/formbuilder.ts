@@ -1,9 +1,9 @@
 // @ts-ignore
 import _ from "lodash";
 import {Resolver} from "@stoplight/json-ref-resolver";
-import type {ToolInterface} from "./models";
+import type {ToolInterface, JsonFormsInterface} from "./models";
 import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
-import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
+import type {JsonSchema, JsonSchema7, Scoped, UISchemaElement} from "@jsonforms/core";
 import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";
 import {useModal, useModalSlot, VueFinalModal} from "vue-final-modal";
@@ -149,7 +149,7 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
         }
     });
 
-    return await resolver.resolve(schema)
+    return resolver.resolve(schema)
         .then(resolved => {
             if (resolved.errors.length) {
                 throw resolved.errors.map(error => error.message);
@@ -158,6 +158,13 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
             }
             return resolved.result
         })
+}
+
+export const createResolvedJsonForms = (schemas:Promise<any>[]) : Promise<JsonFormsInterface> => {
+    return Promise.all(schemas)
+        .then((values): JsonFormsInterface => {
+            return {schema: values[0], uischema: values[1]}
+        });
 }
 
 export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface) : Promise<{ removed:{element:ToolInterface,unscope?:boolean} }> => {

@@ -5,7 +5,7 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {schema, uischema,uischemaReadOnly} from "./schema/control.schema";
-import {resolveSchema} from "../formbuilder";
+import {createResolvedJsonForms, resolveSchema} from "../formbuilder";
 import _ from "lodash";
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
@@ -115,10 +115,10 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         //     // setSchema.properties.type.readOnly=true;
         // }
 
-        return {
-            schema: await resolveSchema(setSchema),
-            uischema: await resolveSchema(setUischema),
-        } as JsonFormsInterface
+        return createResolvedJsonForms([
+            resolveSchema(setSchema),
+            resolveSchema(setUischema)
+        ]);
     }
 
     clone(): ToolInterface {
