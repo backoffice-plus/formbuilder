@@ -152,8 +152,9 @@ const onChangeModal = (data) => toolEdit.value && updateJsonForm({modal:{element
 const updateJsonForm = (e) => {
   const event = new BuilderEvent(e, props, showBuilder.value, toolFinder, baseUiTool.value, baseSchemaTool.value);
   const {schema, uischema} = generateJsonForm(event)
-  undefined !== schema && (rootSchema.value = schema);
-  undefined !== uischema && (rootUischema.value = uischema);
+
+  undefined !== schema && (rootSchema.value = JSON.parse(JSON.stringify(schema)));
+  undefined !== uischema && (rootUischema.value = JSON.parse(JSON.stringify(uischema)));
 
   //sometimes generated schema is initially empty
   if(!rootSchema.value) {
@@ -164,7 +165,7 @@ const updateJsonForm = (e) => {
 const emitSchemaUpdated = (init=false) => {
     const args = {
         schema: JSON.parse(JSON.stringify(rootSchema.value)), //to remove undefined vars
-        uischema: JSON.parse(JSON.stringify(rootUischema.value))
+        uischema: JSON.parse(JSON.stringify(rootUischema.value ?? null))
     };
     if(init) {
         args.init = true;
@@ -175,10 +176,16 @@ const emitSchemaUpdated = (init=false) => {
         args.schema = undefined;
     }
 
+    //console.log("FB.emitSchemaUpdated",{args})
+
     emit('schemaUpdated', args)
 }
 const emitSchemaUpdatedDebounced = _.debounce(emitSchemaUpdated,50,{leading:false, trailing:true});
-const emitSchemaUpdatedIfChanged = (a, b) => JSON.stringify(a) !== JSON.stringify(b) && emitSchemaUpdatedDebounced();
+const emitSchemaUpdatedIfChanged = (a, b) => {
+  const hasChanges = JSON.stringify(a) !== JSON.stringify(b);
+  //console.log("FB.emitSchemaUpdatedIfChanged", {hasChanges,a:JSON.stringify(a),b:JSON.stringify(b)});
+  hasChanges && emitSchemaUpdatedDebounced()
+};
 watch(rootSchema, emitSchemaUpdatedIfChanged)
 watch(rootUischema, emitSchemaUpdatedIfChanged)
 
