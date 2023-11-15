@@ -94,11 +94,7 @@
             ]
           },
 
-          {
-            "scope": "#/properties/validation/properties/patternProperties",
-            "type": "Control"
-          }
-        ,
+
           {
             "type": "HorizontalLayout",
             "elements": [
@@ -202,7 +198,7 @@
 
 
           {
-            "type": "Group",
+            "type": "VerticalLayout",
             "label": "patternProperties",
             "elements": [
               {
@@ -211,8 +207,11 @@
               }
             ],
             "rule": {
-              "effect": "HIDE",
-              "condition": {"scope": "#"}
+              "effect": "SHOW",
+              "condition": {
+                "scope": "#/properties/type",
+                "schema": {"const": "object"}
+              }
             }
           },
 

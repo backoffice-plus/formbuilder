@@ -6,7 +6,7 @@ import type {ToolContext} from "../../models";
 export const schemaKeysString = ['minLength', 'maxLength', 'pattern'] as Array<string>;
 export const schemaKeysNumber = ['minimum', 'maximum', 'multipleOf', 'exclusiveMinimum', 'exclusiveMaximum'] as Array<string>;
 export const schemaKeysArray = ['minItems', 'maxItems', 'uniqueItems'] as Array<string>;
-export const schemaKeysObject = ['minProperties', 'maxProperties', 'patternProperties', 'patternProperties', 'dependentRequired', 'propertyNames'] as Array<string>;
+export const schemaKeysObject = ['minProperties', 'maxProperties',  'dependentRequired', 'propertyNames'] as Array<string>; //'patternProperties',
 export const schemaKeys = [...schemaKeysString, ...schemaKeysNumber, ...schemaKeysArray, ...schemaKeysObject, 'not'] as Array<string>;
 
 export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uischema: UISchemaElement): Record<string, any> => {
