@@ -35,7 +35,7 @@
           ref="fb"
       />
     <!--            -->
-      <details open="true">
+      <details>
           <summary class="cursor-pointer">ToolTree</summary>
           <div class="flex gap-4 text-xs">
               <div>
@@ -48,7 +48,7 @@
           </div>
       </details>
 
-    <FormBuilderDetails :jsonForms="jsonFormsResolved" />
+    <FormBuilderDetails :jsonForms="jsonFormsResolved" :open="'true'" />
 
     <details v-if="example && !schemaReadOnly">
       <summary class="cursor-pointer">JSON Render Diff</summary>
