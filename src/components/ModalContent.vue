@@ -50,7 +50,6 @@
 
 import {JsonForms} from "@jsonforms/vue";
 import {createI18nTranslate} from "../lib/formbuilder";
-import {emitter} from "../lib/mitt";
 import {getCurrentInstance, onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
 import {formBuilderCatalogue} from "../translations/de";
@@ -93,7 +92,6 @@ onMounted(async () => {
           schema: JSON.parse(JSON.stringify(e.schema)),
           uischema: JSON.parse(JSON.stringify(e.uischema)),
         };
-        emitter.emit('afterOptionJsonforms', event)
 
         return {schema:event.schema, uischema:event.uischema};
     })
@@ -145,9 +143,6 @@ const onChange = (e) => {
     props.tool.optionDataUpdate(context, data)
 
     emit('change', data);
-
-    //:DEV global emit do not work with sub-formeditors
-    //emitter.emit('formBuilderUpdated');
   }
 }
 

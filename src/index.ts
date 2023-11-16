@@ -19,9 +19,6 @@ export { default as Actions } from './components/tools/utils/Actions.vue'
 import boplusJsonfromsVueVanilla from "@backoffice-plus/jsonforms-vue-vanilla";
 export const boplusVueVanillaRenderers = boplusJsonfromsVueVanilla;
 
-export {emitter} from './lib/mitt'
-export type {EventAfterOptionJsonforms} from './lib/mitt'
-
 /** @ts-ignore */
 export {default as Vuedraggable} from "../packages/_vuedraggable/src/vuedraggable.js";
 

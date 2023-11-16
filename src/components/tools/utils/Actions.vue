@@ -57,7 +57,6 @@
 
 <script setup>
 
-import {emitter} from "../../../lib/mitt";
 import {Icon} from "@iconify/vue";
 import {getFormbuilder} from "../../../lib/vue";
 

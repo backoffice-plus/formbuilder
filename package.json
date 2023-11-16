@@ -64,7 +64,6 @@
     "diff": "^5.1.0",
     "flat": "^5.0.2",
     "lodash": "^4.17.21",
-    "mitt": "^3.0.0",
     "sortablejs": "^1.15.0",
     "vue-final-modal": "^4.4.2"
   }
