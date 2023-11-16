@@ -44,7 +44,7 @@ export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI) =
     if(!schemaOnly) {
 
         uischema = createBaseTool(toolFinder, rootSchema, rootUischema);
-        uischema.edge.replaceChilds(uischema.initChilds(toolFinder, schema));
+        uischema && uischema.edge.replaceChilds(uischema.initChilds(toolFinder, schema));
 
         //:INFO schemaReadyOnly can also have a init uischema!!!
         // if(schemaReadOnly) {
@@ -59,10 +59,10 @@ export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI) =
 }
 
 export const createBaseTool = (toolFinder: ToolFinder, schema: JsonSchema|undefined = undefined, uischema: UISchemaElement|undefined = undefined): ToolInterface => {
-    if (undefined === schema) {
+    if (undefined === schema || null === schema || (schema && _.isEmpty(schema))) {
         schema = generateJsonSchema({});
     }
-    if (undefined === uischema) {
+    if (undefined === uischema || null === uischema || (uischema && _.isEmpty(uischema))) {
         uischema = generateDefaultUISchema(schema);
     }
     return toolFinder.findBaseTool(schema, uischema);
