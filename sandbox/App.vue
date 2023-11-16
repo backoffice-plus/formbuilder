@@ -6,7 +6,8 @@ import {getUrl} from "./lib";
 
 const routes = {
   '/': AppFormbuilder,
-  '/jsonforms': AppJsonforms
+  '/jsonforms': AppJsonforms,
+  '/formbuilder-renderer': AppFormbuilderRenderer
 }
 
 const currentPath = ref(getUrl().pathname)
@@ -17,6 +18,7 @@ window.addEventListener('hashchange', () => {
 })
 
 import { useDark, useToggle } from '@vueuse/core'
+import AppFormbuilderRenderer from "./AppFormbuilderRenderer.vue";
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)

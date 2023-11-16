@@ -1,0 +1,34 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "pattern": "^[a-z]"
+      },
+      "jsonforms": {
+        "type": "object"
+      },
+      "schema": {
+        "type": "string"
+      },
+      "uischema": {
+        "type": "string"
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/name"
+      },
+      {
+        "type": "Formbuilder",
+        "scope": "#/properties/jsonforms"
+      }
+    ]
+  }
+}
+
