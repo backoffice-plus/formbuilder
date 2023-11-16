@@ -95,10 +95,16 @@ const formbuilderRenderer = defineComponent({
     }
 
     //schema only mode
-    else {
+    else if(control.appliedOptions.value.schemaOnly) {
         schema = (control.control as any).value.data
         schemaOnly = true;
         schemaReadOnly = false;
+    }
+
+    //schema & layout mode
+    else {
+      schema = (control.control as any).value.data?.schema;
+      uischema = (control.control as any).value.data?.uischema;
     }
 
 
@@ -115,11 +121,19 @@ const formbuilderRenderer = defineComponent({
     onSchemaUpdated(e:any) {
       let value;
 
-      if(this.schemaOnly && "schema" in e && !e?.init) {
-          value = e.schema;
-      }
-      else if(this.schemaReadOnly && "uischema" in e && !e?.init) {
-          value = e.uischema;
+      if(!e?.init) {
+        if(this.schemaOnly) {
+            value = e?.schema;
+        }
+        else if(this.schemaReadOnly) {
+            value = e?.uischema;
+        }
+        else if(e?.schema && e?.uischema) {
+           value = {
+             schema: e.schema,
+             uischema: e.uischema,
+           };
+        }
       }
 
       if(value) {
