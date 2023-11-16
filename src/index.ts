@@ -9,12 +9,16 @@ export type {ToolInterface, ToolContext, JsonFormsInterface} from "./lib/models"
 export {defaultTools} from "./lib/tools";
 
 //components
-export { default as FormBuilder } from './components/FormBuilder.vue';
-export { default as FormBuilderBar } from './components/FormBuilderBar.vue';
-export { default as FlexArea } from './components/tools/flexArea.vue'
-export { default as ElementHeadOrToolIcon } from './components/tools/utils/ElementHeadOrToolIcon.vue'
-export { default as ToolIcon } from './components/tools/utils/ToolIcon.vue'
-export { default as Actions } from './components/tools/utils/Actions.vue'
+import FormBuilder from './components/FormBuilder.vue';
+import FormBuilderBar from './components/FormBuilderBar.vue';
+import FlexArea from './components/tools/flexArea.vue'
+import ElementHeadOrToolIcon from './components/tools/utils/ElementHeadOrToolIcon.vue'
+import ToolIcon from './components/tools/utils/ToolIcon.vue'
+import Actions from './components/tools/utils/Actions.vue'
+export { FormBuilder, FormBuilderBar, FlexArea, ElementHeadOrToolIcon, ToolIcon, Actions }
+
+import { formbuilderRenderers } from './components/renderers'
+export { formbuilderRenderers }
 
 import boplusJsonfromsVueVanilla from "@backoffice-plus/jsonforms-vue-vanilla";
 export const boplusVueVanillaRenderers = boplusJsonfromsVueVanilla;
