@@ -111,10 +111,10 @@ export class ToolFinder {
     findBaseTool(schema: JsonSchema, uischema: ControlElement | Layout | UISchemaElement | Scoped | any): ToolInterface {
 
         if (undefined === schema) {
-            throw "schema is undefined"
+            throw Error("schema is undefined")
         }
         if (undefined === uischema || null === uischema || false === uischema) {
-            throw "uischema is undefined"
+            throw Error("uischema is undefined")
         }
 
         const isLayout = "elements" in uischema
@@ -138,7 +138,7 @@ export class ToolFinder {
                     // const propKeys = Object.keys(props);
                     // itemSchema = propKeys[0] && props[propKeys[0]] as any
                 } else {
-                    throw ":TODO please explain whats that for?!?!"
+                    throw Error(":TODO please explain whats that for?!?!")
                     itemSchema = _.get(schema, normalizeScope(uischema.scope));
                 }
             }

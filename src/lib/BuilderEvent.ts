@@ -34,7 +34,7 @@ export class BuilderEvent {
         this.type = intersect[0];
         const action = this.type && e[this.type] as any;
         if(!action || !action?.element) {
-            throw "can not create BuilderEvent. Unknown action or element"
+            throw Error("can not create BuilderEvent. Unknown action or element")
         }
 
         this.tool = action?.element;
