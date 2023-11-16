@@ -51,8 +51,17 @@ const formbuilderRenderer = defineComponent({
    const jsonforms = inject('jsonforms') as any
    const data = jsonforms?.core?.data;
 
+    let renderers, tools;
     const fb = getFormbuilder() as any;
-    const fbProps = fb?.props as formbuilderPropsI;
+    if(fb) {
+      const fbProps = fb?.props as formbuilderPropsI;
+      tools = fbProps.tools as ToolInterface[]
+      renderers = fbProps.jsonFormsRenderers;
+    }
+    else {
+      tools = inject('formbuilder-tools');
+      renderers = jsonforms.renderers;
+    }
 
     let schema, uischema;
     let schemaOnly, schemaReadOnly;
@@ -95,8 +104,8 @@ const formbuilderRenderer = defineComponent({
 
     return {
       ...control,
-      tools: (fbProps.tools ?? []) as ToolInterface[],
-      jsonFormsRenderers: fbProps.jsonFormsRenderers ?? [],
+      tools: tools ?? [],
+      jsonFormsRenderers: renderers ?? [],
 
       schema, uischema,
       schemaOnly, schemaReadOnly
