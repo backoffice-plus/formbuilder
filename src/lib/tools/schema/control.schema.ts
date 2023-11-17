@@ -1,5 +1,5 @@
 import type {Categorization, JsonSchema} from "@jsonforms/core";
-import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
+import type {UISchemaElement} from "@jsonforms/core";
 
 export const schema = {
     type: "object",

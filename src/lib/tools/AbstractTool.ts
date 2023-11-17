@@ -1,5 +1,5 @@
 import type {JsonSchema} from "@jsonforms/core";
-import type {RankedTester} from "@jsonforms/core/src/testers/testers";
+import type {RankedTester} from "@jsonforms/core";
 import type {JsonFormsInterface, JsonFormsUISchema, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import _ from "lodash";
 import {ToolEdge} from "../ToolEdge";

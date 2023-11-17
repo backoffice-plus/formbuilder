@@ -2,7 +2,7 @@ import _ from "lodash";
 import type {ToolInterface} from "./models";
 import {unknownTool} from "./tools/unknownTool";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
-import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
+import type {ControlElement, Layout} from "@jsonforms/core";
 import {normalizeScope} from "./normalizer";
 import {cloneEmptyTool, cloneToolWithSchema} from "./toolCreation";
 import {findAllProperties} from "./formbuilder";

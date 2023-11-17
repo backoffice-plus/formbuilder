@@ -1,6 +1,6 @@
 import {rankWith, scopeEndIs} from "@jsonforms/core";
 import type {Layout} from "@jsonforms/core";
-import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
+import {uiTypeIs} from "@jsonforms/core";
 import {AbstractTool} from "./AbstractTool";
 import flexArea from "../../components/tools/flexArea.vue";
 import {resolveSchema} from "../formbuilder";
@@ -11,7 +11,7 @@ import {getPlainProperty, getRequiredFromSchema, normalizePath, normalizeScope} 
 import _ from "lodash";
 import {cloneToolWithSchema} from "../toolCreation";
 import {unknownTool} from "./unknownTool";
-import {toDataPath} from "@jsonforms/core/src/util/path";
+import {toDataPath} from "@jsonforms/core";
 import {ScopeTool} from "./ScopeTool";
 
 export class VerticalLayout extends AbstractTool implements ToolInterface {

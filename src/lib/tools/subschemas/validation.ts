@@ -1,5 +1,5 @@
 import type {JsonSchema} from "@jsonforms/core";
-import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
+import type {UISchemaElement} from "@jsonforms/core";
 import type {JsonFormsInterface} from "../../models";
 import type {ToolContext} from "../../models";
 

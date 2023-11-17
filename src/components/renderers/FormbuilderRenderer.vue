@@ -34,7 +34,7 @@ import {useVanillaControl} from "@jsonforms/vue-vanilla";
 import FormBuilder from "../FormBuilder.vue";
 import {getFormbuilder} from "../../lib/vue";
 import type {formbuilderPropsI, ToolInterface} from "../../lib/models";
-import {useJsonFormsControl} from "@jsonforms/vue/src/jsonFormsCompositions";
+import {useJsonFormsControl} from "@jsonforms/vue";
 
 /** @ts-ignore */
 const formbuilderRenderer = defineComponent({

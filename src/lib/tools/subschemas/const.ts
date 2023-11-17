@@ -1,5 +1,5 @@
 import type {JsonSchema} from "@jsonforms/core";
-import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
+import type {UISchemaElement} from "@jsonforms/core";
 import type {ToolContext} from "../../models";
 
 export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uischema: UISchemaElement): Record<string, any> => {

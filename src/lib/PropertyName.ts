@@ -7,8 +7,8 @@ import type {
     Layout,
     UISchemaElement,
 } from "@jsonforms/core/src/models/uischema";
-import {composeWithUi, toDataPath, toDataPathSegments} from "@jsonforms/core/src/util/path";
-import {Scopable} from "@jsonforms/core/src/models";
+import {composeWithUi, toDataPath, toDataPathSegments} from "@jsonforms/core";
+import type {Scopable} from "@jsonforms/core";
 
 
 export class PropertyName {

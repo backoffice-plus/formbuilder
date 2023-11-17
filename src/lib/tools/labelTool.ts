@@ -1,5 +1,5 @@
 import {rankWith} from "@jsonforms/core";
-import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
+import {uiTypeIs} from "@jsonforms/core";
 import {AbstractTool} from "./AbstractTool";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {resolveSchema} from "../../index";

@@ -1,5 +1,5 @@
 import type {JsonSchema} from "@jsonforms/core";
-import type {UISchemaElement} from "@jsonforms/core/src/models/uischema";
+import type {UISchemaElement} from "@jsonforms/core";
 import type {ToolContext} from "../../models";
 import _ from "lodash";
 /** @ts-ignore */
@@ -19,7 +19,7 @@ export const prepareOptionData = (context:ToolContext, schema:JsonSchema, uische
 export const setOptionData = (schema: JsonSchema, uischema: UISchemaElement, data: Record<string, any>): void => {
 
     const stylesAsArray = data?.styles?.stylesAsArray;
-    
+
     if(stylesAsArray) {
         const fl = {} as any;
         stylesAsArray.forEach((item:any) => {

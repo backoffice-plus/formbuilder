@@ -1,6 +1,6 @@
 import {ControlTool} from "./controlTool";
 import {rankWith} from "@jsonforms/core";
-import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
+import {uiTypeIs} from "@jsonforms/core";
 
 export class ListWithDetailTool extends ControlTool {
 

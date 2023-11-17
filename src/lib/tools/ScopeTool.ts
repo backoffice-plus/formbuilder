@@ -1,6 +1,6 @@
 import type {JsonSchema, Scoped} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
-import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
+import {uiTypeIs} from "@jsonforms/core";
 import scopeComp from "../../components/tools/scope.component.vue";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";

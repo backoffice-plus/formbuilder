@@ -8,7 +8,7 @@ import type {
     UISchemaElement,
 } from "@jsonforms/core/src/models/uischema";
 import type {PropType} from "vue";
-import type {RankedTester} from "@jsonforms/core/src/testers/testers";
+import type {RankedTester} from "@jsonforms/core";
 import type {ToolEdge} from "./ToolEdge";
 
 export const scalarTypes = ['string', 'number', 'integer', 'boolean', 'null'];

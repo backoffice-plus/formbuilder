@@ -1,6 +1,6 @@
 import type {JsonSchema} from "@jsonforms/core";
 import {and, isEnumControl, isOneOfControl, isStringControl, or, rankWith, schemaTypeIs, schemaMatches} from "@jsonforms/core";
-import type {ControlElement} from "@jsonforms/core/src/models/uischema";
+import type {ControlElement} from "@jsonforms/core";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 
 import {AbstractTool} from "./AbstractTool";

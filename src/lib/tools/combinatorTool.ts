@@ -1,6 +1,6 @@
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
-import {uiTypeIs} from "@jsonforms/core/src/testers/testers";
+import {uiTypeIs} from "@jsonforms/core";
 import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/combinator.component.vue";

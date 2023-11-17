@@ -2,7 +2,7 @@
 import _ from "lodash";
 import {Resolver} from "@stoplight/json-ref-resolver";
 import type {ToolInterface, JsonFormsInterface} from "./models";
-import type {ControlElement, Layout} from "@jsonforms/core/src/models/uischema";
+import type {ControlElement, Layout} from "@jsonforms/core";
 import type {JsonSchema, JsonSchema7, Scoped, UISchemaElement} from "@jsonforms/core";
 import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";

@@ -63,7 +63,7 @@ import type {JsonFormsRendererRegistryEntry, Layout, UISchemaElement} from '@jso
 import {rankWith, uiTypeIs} from "@jsonforms/core";
 import type {RendererProps} from '@jsonforms/vue';
 import {DispatchRenderer, rendererProps, useJsonFormsLayout,} from '@jsonforms/vue';
-import {useControl} from "@jsonforms/vue/src/jsonFormsCompositions";
+import {useControl} from "@jsonforms/vue";
 
 const disclosureRenderer = defineComponent({
     name: 'disclosure-renderer',
