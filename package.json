@@ -20,10 +20,12 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
-    "buildLegacy": "patch-package && vite build && npm run build:types",
-    "build:types": "vue-tsc --project tsconfig.types.json --declaration --emitDeclarationOnly --skipLibCheck --outDir dist/types ",
-    "typecheck": "vue-tsc --project tsconfig.types.json --noEmit --skipLibCheck",
+    "build": "npm run build:nopatch",
+    "build:withpatch": "patch-package npm run build:nopatch",
+    "build:nopatch": "npm run build:plain && npm run build:types",
+    "build:plain": "vite build",
+    "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types ",
+    "typecheck": "vue-tsc --noEmit",
     "test": "vitest",
     "publish": "npm run build && npm publish --public"
   },

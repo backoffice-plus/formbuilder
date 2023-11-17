@@ -11,7 +11,9 @@
     "esModuleInterop": true,
     "lib": ["ESNext", "DOM"],
     "skipLibCheck": true,
-    "noEmit": true
+    //"noEmit": true, //will add at package.json script -> "typecheck": "vue-tsc --noEmit"
+
+    "allowJs": true //to avoid TS6504 -> to fix this, add lang=ts to all <script setup> tags in all remaining components
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]
