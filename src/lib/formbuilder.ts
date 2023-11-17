@@ -8,6 +8,7 @@ import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normal
 import {subschemaMap} from "./tools/subschemas";
 import {useModal, useModalSlot, VueFinalModal} from "vue-final-modal";
 import ConfirmDelete from "../components/modals/ConfirmDelete.vue";
+import {JsonFormsRendererRegistryEntry, RankedTester} from "@jsonforms/core";
 
 
 /** @deprecated **/
@@ -244,4 +245,17 @@ export const findUnscopedTools = (baseSchemaTool:ToolInterface): ToolInterface[]
          */
         return !child.edge.uiParent
     })
+}
+
+export const createEntryByModule = (module:any):JsonFormsRendererRegistryEntry => {
+    if(undefined === module?.default) {
+        throw "Module must export \"default\"";
+    }
+    if(undefined === module?.tester) {
+        throw "Module must export \"tester\"";
+    }
+    return createEntry(module?.default, module?.tester)
+}
+export const createEntry = (renderer:any,tester:RankedTester):JsonFormsRendererRegistryEntry => {
+    return { renderer, tester }
 }
