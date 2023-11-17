@@ -142,6 +142,7 @@ export const denormalizeDefinitions = (definition:Array<any>) : JsonSchema => {
  * - path = properties.personalData.properties.age
 */
 export const normalizeScope = (scope:string) : string => {
+    // @ts-ignore
     return scope.replaceAll('#/', '').replaceAll('/', '.');
 }
 
@@ -150,6 +151,7 @@ export const normalizeScope = (scope:string) : string => {
  * - name = personalData.age
  */
 export const normalizePath = (scope:string) : string => {
+    // @ts-ignore
     return scope.replaceAll('properties.', '');
 }
 /**
@@ -157,6 +159,7 @@ export const normalizePath = (scope:string) : string => {
  * - path = properties.personalData.properties.age
  */
 export const denormalizePath = (prop:string) : string => {
+    // @ts-ignore
     return 'properties.' + prop.replaceAll('.', '.properties.');
 }
 /**
@@ -164,6 +167,7 @@ export const denormalizePath = (prop:string) : string => {
  * - scope = #/properties/personalData/properties/age
  */
 export const denormalizeScope = (path:string) : string => {
+    // @ts-ignore
     return '#/' + path.replaceAll('.', '/');
 }
 /**
