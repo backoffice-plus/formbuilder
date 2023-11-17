@@ -1,6 +1,6 @@
 {
   "name": "@backoffice-plus/formbuilder",
-  "version": "0.0.30",
+  "version": "0.0.31",
   "description": "",
   "files": [
     "dist"
@@ -25,7 +25,8 @@
     "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types ",
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest",
-    "publish": "npm run build && npm publish --public"
+    "publish": "npm run build && npm publish --public",
+    "publish:plain": "npm publish --public"
   },
   "keywords": [],
   "author": "David Wolter <david@dampfer.net>",
