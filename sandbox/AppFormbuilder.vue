@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 
-import {defaultTools, emitter, FormBuilder} from "../src/index.ts";
+import {defaultTools, FormBuilder} from "../src/index.ts";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
 import {computed, onMounted, ref, unref, watch} from "vue";
 import * as ownExamples from "./jsonForms/examples";
@@ -90,7 +90,6 @@ import {boplusVueVanillaRenderers} from "../src/index";
 import SchemaCode from "./SchemaCode.vue";
 import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
 import _ from "lodash";
-import type {EventAfterOptionJsonforms} from "../src/lib/mitt";
 import {formbuilderRenderers} from "../src/components/renderers";
 import IdList from "./Dev/IdList.vue";
 import {getFormbuilder} from "../src/lib/vue";
