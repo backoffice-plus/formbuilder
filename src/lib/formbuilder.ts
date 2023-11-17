@@ -203,7 +203,7 @@ export const deleteToolInChilds = async (toolToDelete:ToolInterface|undefined = 
 
     return await Promise.resolve(confirmed)
         .then((confirmed) => {
-            if(confirmed) {
+            if(confirmed && toolToDelete) {
                 return childTools.filter(childTool => childTool.uuid !== toolToDelete.uuid)
             }
             else {
