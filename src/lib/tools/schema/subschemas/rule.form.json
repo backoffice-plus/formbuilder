@@ -316,7 +316,8 @@
                   "XXbaseToolProps": {
                     "hideActionbar": true,
                     "prefixLabel": "if:"
-                  }
+                  },
+                  "schemaOnly": true
                 }
               }
             ],

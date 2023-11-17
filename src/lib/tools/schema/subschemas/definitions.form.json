@@ -25,7 +25,8 @@
             "options": {
               "baseToolProps": {
                 "hideActionbar": true,
-                "prefixLabel": "definitions:"
+                "prefixLabel": "definitions:",
+                "schemaOnly": true
               }
             }
           }

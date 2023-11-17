@@ -27,7 +27,8 @@
         "scope": "#",
         "type": "Formbuilder",
         "options": {
-          "hideDroparea": true
+          "hideDroparea": true,
+          "schemaOnly": true
         }
       },
 
@@ -44,7 +45,8 @@
               "baseToolProps": {
                 "hideActionbar": true,
                 "prefixLabel": "if:"
-              }
+              },
+              "schemaOnly": true
             }
           }
         ]
@@ -63,7 +65,8 @@
               "baseToolProps": {
                 "hideActionbar": true,
                 "prefixLabel": "then:"
-              }
+              },
+              "schemaOnly": true
             }
           }
         ]
@@ -82,7 +85,8 @@
               "baseToolProps": {
                 "hideActionbar": true,
                 "prefixLabel": "elsex:"
-              }
+              },
+              "schemaOnly": true
             }
           }
         ]
