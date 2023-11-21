@@ -1,5 +1,5 @@
 // @ts-ignore
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import type {formbuilderPropsI, ToolContext, ToolInterface} from "./models";
 import type {JsonSchema, UISchemaElement, Layout} from "@jsonforms/core";
 import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";

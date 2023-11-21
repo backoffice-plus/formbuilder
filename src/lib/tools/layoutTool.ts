@@ -8,7 +8,7 @@ import type {JsonFormsInterface, JsonFormsUISchema, ToolContext, ToolFinderInter
 import {schema, uischema} from "./schema/layout.form.json";
 import * as subschemas from "./subschemas";
 import {getPlainProperty, getRequiredFromSchema, normalizePath, normalizeScope} from "../normalizer";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import {cloneToolWithSchema} from "../toolCreation";
 import {unknownTool} from "./unknownTool";
 import {toDataPath} from "@jsonforms/core";

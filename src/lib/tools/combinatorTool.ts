@@ -6,7 +6,7 @@ import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/combinator.component.vue";
 import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/combinator.form.json";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import {cloneToolWithSchema} from "../toolCreation";
 import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
 

@@ -8,7 +8,7 @@ import {rankWith, setSchema} from "@jsonforms/core";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import {cloneToolWithSchema} from "../toolCreation";
 import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
 

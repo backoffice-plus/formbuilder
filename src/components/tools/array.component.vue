@@ -93,7 +93,7 @@ import {ReferenceTool} from "../../lib/tools/referenceTool";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import SchemaFeatures from "./utils/SchemaFeatures.vue";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 
 const props = defineProps({...toolComponentProps()})
 

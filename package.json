@@ -35,7 +35,6 @@
     "@babel/types": "^7.20.7",
     "@jsonforms/examples": "^3.1.0",
     "@types/flat": "^5.0.5",
-    "@types/lodash": "^4.14.201",
     "@types/node": "^18.18.9",
     "@vitejs/plugin-vue": "^4.5.0",
     "@vue/tsconfig": "^0.4.0",
@@ -58,9 +57,10 @@
     "@iconify/vue": "^4.1.1",
     "@jsonforms/vue-vanilla": "^3.1.0",
     "@stoplight/json-ref-resolver": "^3.1.6",
+    "@types/lodash-es": "^4.17.11",
     "@vueuse/core": "^9.13.0",
     "flat": "^6.0.1",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "sortablejs": "^1.15.0"
   }
 }

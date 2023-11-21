@@ -1,5 +1,5 @@
 // @ts-ignore
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import {ref, shallowRef} from "vue"
 import type {Ref} from "vue"
 import {Resolver} from "@stoplight/json-ref-resolver";

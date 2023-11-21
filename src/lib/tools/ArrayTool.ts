@@ -6,7 +6,7 @@ import {schema, uischema} from "./schema/array.schema";
 import jsonFormsSchema from "./schema/array.schemaBuilder.form.json";
 import jsonFormsAsSchemaChild from "./schema/array.asSchemaChild.form.json";
 import {resolveSchema} from "../formbuilder";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import {AbstractTool} from "./AbstractTool";
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";

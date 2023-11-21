@@ -89,7 +89,7 @@ import {vanillaRenderers} from "@jsonforms/vue-vanilla";
 import {boplusVueVanillaRenderers} from "../src/index";
 import SchemaCode from "./SchemaCode.vue";
 import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
-import _ from "lodash";
+import * as _ from 'lodash-es'
 import {formbuilderRenderers} from "../src/components/renderers";
 import IdList from "./Dev/IdList.vue";
 import {getFormbuilder} from "../src/lib/vue";

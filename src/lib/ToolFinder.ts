@@ -1,4 +1,4 @@
-import _ from "lodash";
+import * as _ from 'lodash-es'
 import type {ToolInterface} from "./models";
 import {unknownTool} from "./tools/unknownTool";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";

@@ -5,7 +5,7 @@ import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schema.component.vue";
 import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/schema.form.json";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 
 //export const schemaKeywords = ['if', 'then', 'else', 'not', 'contains'];
 

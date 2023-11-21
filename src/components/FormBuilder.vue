@@ -115,7 +115,7 @@ import {generateJsonForm, useDialog} from "../index";
 import {initBaseTools} from "../lib/toolCreation";
 
 import Modal from "./Modal.vue";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import {onDragGetTool} from "../lib/vue";
 import {ToolFinder} from "../lib/ToolFinder";
 import ToolIcon from "./tools/utils/ToolIcon.vue";

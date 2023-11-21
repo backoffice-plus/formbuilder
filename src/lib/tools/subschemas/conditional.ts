@@ -1,7 +1,7 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core";
 import type {ToolContext} from "../../models";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 
 export const schemaKeys = ['if', 'else', 'then'] as Array<string>;
 

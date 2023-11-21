@@ -25,7 +25,7 @@
 <script setup>
 import {computed} from 'vue'
 import {Icon} from "@iconify/vue";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 
 const props = defineProps({
   tool: Object,//ToolInterface

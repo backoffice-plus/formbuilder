@@ -7,7 +7,7 @@ import {rankWith} from "@jsonforms/core";
 import type {TesterContext} from "@jsonforms/core";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import {ControlTool} from "./controlTool";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
 

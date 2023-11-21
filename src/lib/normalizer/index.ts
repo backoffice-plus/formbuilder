@@ -1,5 +1,5 @@
 // @ts-ignore
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import type { SchemaBasedCondition} from "@jsonforms/core";
 import type {JsonSchema, Rule, UISchemaElement} from "@jsonforms/core";
 

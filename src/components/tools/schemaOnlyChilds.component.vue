@@ -74,7 +74,7 @@ import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import ToolIcon from "./utils/ToolIcon.vue";
 import Actions from "./utils/Actions.vue";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import {SchemaTool} from "../../lib/tools/SchemaTool";
 
 const props = defineProps({...toolComponentProps()})

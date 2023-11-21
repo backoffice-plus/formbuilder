@@ -5,7 +5,7 @@ import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schemaOnlyChilds.component.vue";
 import {resolveSchema} from "../formbuilder";
 import {schema, uischema} from "./schema/schemaOnlyChilds.form.json";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import {SchemaTool} from "./SchemaTool";
 import * as subschemas from "./subschemas";
 import {cloneToolWithSchema} from "../toolCreation";

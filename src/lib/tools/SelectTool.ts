@@ -7,7 +7,7 @@ import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
 import {schema, uischema} from "./schema/select.schema";
 import {resolveSchema} from "../formbuilder";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import * as subschemas from "./subschemas";
 
 

@@ -1,7 +1,7 @@
 import type {JsonSchema} from "@jsonforms/core";
 import type {RankedTester} from "@jsonforms/core";
 import type {JsonFormsInterface, JsonFormsUISchema, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import {ToolEdge} from "../ToolEdge";
 
 export abstract class AbstractTool implements ToolInterface {
