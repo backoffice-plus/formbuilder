@@ -1,12 +1,13 @@
 // @ts-ignore
 import _ from "lodash";
+import {ref, shallowRef} from "vue"
+import type {Ref} from "vue"
 import {Resolver} from "@stoplight/json-ref-resolver";
 import type {ToolInterface, JsonFormsInterface} from "./models";
 import type {ControlElement, Layout} from "@jsonforms/core";
 import type {JsonSchema, JsonSchema7, Scoped, UISchemaElement} from "@jsonforms/core";
 import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";
-import {useModal, useModalSlot, VueFinalModal} from "vue-final-modal";
 import ConfirmDelete from "../components/modals/ConfirmDelete.vue";
 import {JsonFormsRendererRegistryEntry, RankedTester} from "@jsonforms/core";
 
@@ -170,31 +171,68 @@ export const createResolvedJsonForms = (schemas:Promise<any>[]) : Promise<JsonFo
 
 export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface) : Promise<{ removed:{element:ToolInterface,unscope?:boolean} }> => {
     return new Promise((resolve, reject) => {
-        const { open, close} = useModal({
-            component: ConfirmDelete,
-            attrs: {
-                tool: toolToDelete,
-                onConfirm() {
-                    parentTool.edge.removeChild(toolToDelete);
+        const {showModal, close} = useDialog();
 
-                    const isControl = 'Control' === toolToDelete?.uischema?.type;
-                    if(!isControl) {
-                        toolToDelete.edge.findScopedChilds().forEach(child => child.edge.uiParent = undefined);
+        showModal({
+            component: {
+                is: shallowRef(ConfirmDelete),
+                bind: {
+                    tool: toolToDelete,
+                    onConfirm() {
+                        parentTool.edge.removeChild(toolToDelete);
+
+                        const isControl = 'Control' === toolToDelete?.uischema?.type;
+                        if(!isControl) {
+                            toolToDelete.edge.findScopedChilds().forEach(child => child.edge.uiParent = undefined);
+                        }
+
+                        resolve({removed:{element:toolToDelete}});
+
+                        close();
+                    },
+                    onUnscope() {
+                        parentTool.edge.removeChild(toolToDelete);
+                        resolve({removed:{element:toolToDelete, unscope:true}});
+                        close();
                     }
-
-                    resolve({removed:{element:toolToDelete}});
-
-                    close();
-                },
-                onUnscope() {
-                    parentTool.edge.removeChild(toolToDelete);
-                    resolve({removed:{element:toolToDelete, unscope:true}});
-                    close();
                 }
-            }
-        })
-        open();
+            },
+            // dialog: {
+            //     bind: {
+            //         class: "p-4 ring",
+            //         onClose: () => {
+            //             console.log("onClose")
+            //         },
+            //         onCancel: () => {
+            //             console.log("onCancel")
+            //         }
+            //     }
+            // }
+        });
     });
+}
+
+const dialogElm:Ref<HTMLDialogElement|undefined> = ref();
+const dialogData:any = ref({});
+export const useDialog = () => {
+    const initDialog = (elm:HTMLDialogElement) => {
+        dialogElm.value = elm;
+    }
+    const showModal = (data:any) => {
+        dialogData.value = data;
+        dialogElm.value?.showModal();
+    }
+    const close = () => {
+        dialogElm.value?.close();
+        dialogData.value = {}
+    }
+    return {
+        dialog: dialogElm.value,
+        dialogData,
+        initDialog,
+        showModal,
+        close,
+    }
 }
 
 

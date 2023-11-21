@@ -2,7 +2,12 @@
 
   <div class="formbuilder">
 
-    <ModalsContainer />
+    <dialog ref="dialog" v-bind="dialogData?.dialog?.bind">
+      <component :is="dialogData.component.is"
+                 v-bind="dialogData?.component?.bind"
+                 v-if="dialogData?.component?.is"
+      />
+    </dialog>
 
     <Modal
         :tool="toolEdit"
@@ -97,12 +102,16 @@ nav {
   @apply cursor-pointer
 }
 
+dialog::backdrop {
+  @apply
+  bg-gray-500/50
+}
 </style>
 
 
 <script setup>
-import {computed, getCurrentInstance, ref, useSlots, watch} from 'vue'
-import {generateJsonForm} from "../index";
+import {computed, getCurrentInstance, onMounted, ref, useSlots, watch} from 'vue'
+import {generateJsonForm, useDialog} from "../index";
 import {initBaseTools} from "../lib/toolCreation";
 
 import Modal from "./Modal.vue";
@@ -112,7 +121,6 @@ import {ToolFinder} from "../lib/ToolFinder";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
 import FormBuilderToolbar from "./FormBuilderToolbar.vue";
 import {BuilderEvent} from "../lib/BuilderEvent";
-import {createVfm, ModalsContainer} from "vue-final-modal";
 
 //const props = defineProps({...formbuilderProps()})
 const props = defineProps({
@@ -197,10 +205,13 @@ if(!hasUiElements && 'uischema' === showBuilder.value) {
     emitSchemaUpdated(true);
 }
 
-const app = getCurrentInstance().appContext.app;
-if(!app.config.globalProperties['$vfm']) {
-    app.use(createVfm());
-}
+//nativ dialog element
+const dialog = ref();
+const {dialogData, initDialog} = useDialog();
+
+onMounted(() => {
+  initDialog(dialog.value);
+})
 
 //expose
 const drag = ref(false);

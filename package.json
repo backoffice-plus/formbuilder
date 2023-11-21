@@ -61,7 +61,6 @@
     "@vueuse/core": "^9.13.0",
     "flat": "^6.0.1",
     "lodash": "^4.17.21",
-    "sortablejs": "^1.15.0",
-    "vue-final-modal": "^4.4.6"
+    "sortablejs": "^1.15.0"
   }
 }
