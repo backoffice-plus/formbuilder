@@ -215,8 +215,10 @@ export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:Too
 const dialogElm:Ref<HTMLDialogElement|undefined> = ref();
 const dialogData:any = ref({});
 export const useDialog = () => {
-    const initDialog = (elm:HTMLDialogElement) => {
-        dialogElm.value = elm;
+    const initDialog = (elm:HTMLDialogElement, overwrite:boolean = false) => {
+        if(overwrite || !dialogElm.value) {
+            dialogElm.value = elm;
+        }
     }
     const showModal = (data:any) => {
         dialogData.value = data;
