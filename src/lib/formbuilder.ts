@@ -194,7 +194,8 @@ export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:Too
                         parentTool.edge.removeChild(toolToDelete);
                         resolve({removed:{element:toolToDelete, unscope:true}});
                         close();
-                    }
+                    },
+                    key:Math.random(),
                 }
             },
             // dialog: {

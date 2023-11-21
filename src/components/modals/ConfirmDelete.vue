@@ -28,6 +28,7 @@ const scopedChilds = props.tool.edge.findScopedChilds();
     <h1 class="text-xl">
       Confirm deletion
     </h1>
+    <p>Delete {{ isControl ? props.tool?.propertyName : "???"}}</p>
     <slot />
     <div class="flex">
       <button class="mt-1 ml-auto px-2 border rounded-lg bg-yellow-500" @click="emit('unscope')" v-if="unscopable">
