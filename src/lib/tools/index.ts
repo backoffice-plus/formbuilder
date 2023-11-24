@@ -15,6 +15,7 @@ import {layoutRefTool} from "./LayoutRefTool";
 import {schemaTool} from "./SchemaTool";
 import {schemaOnlyChildsTool} from "./SchemaOnlyChildsTool";
 import {scopeTool} from "./ScopeTool";
+import {buttonTool} from "./ButtonTool";
 export type {JsonFormsInterface, JsonFormsUISchema} from "../models";
 
 export const defaultTools = [
@@ -40,5 +41,8 @@ export const defaultTools = [
     listWithDetailTool,
     layoutRefTool,
     scopeTool,
+
+    //DEV
+    buttonTool,
 ]
 

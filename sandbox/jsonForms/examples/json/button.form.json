@@ -1,0 +1,64 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "text": {
+        "type": "string"
+      },
+      "freigabe": {
+        "type": "boolean"
+      },
+      "submit": {
+        "type": "object",
+        "properties": {
+          "freigabe_true": {
+            "const": true
+          },
+          "freigabe_false": {
+            "const": false
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/text",
+        "options": {
+          "multi": true
+        }
+      },
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "Button",
+            "text": "Freigabe",
+            "scope_property": "#/properties/freigabe",
+            "scope_value": "#/properties/submit/properties/freigabe_true",
+            "options": {
+              "styles": {
+                "aa": "btn"
+              }
+            }
+          },
+          {
+            "type": "Button",
+            "text": "Ablehnen",
+            "scope_property": "#/properties/freigabe",
+            "scope_value": "#/properties/submit/properties/freigabe_false",
+            "options": {
+              "styles": {
+                "aa": "btn"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "data": {}
+}

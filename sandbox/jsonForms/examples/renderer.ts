@@ -8,6 +8,7 @@ import categorization from './json/renderer-categorization.form.json'
 import toggleSliderPasswordConst from './json/renderer-toggleSliderPasswordConst.form.json'
 import radioGroup from './json/renderer-radioGroup.form.json'
 import autocomplete from './json/renderer-autocomplete.form.json'
+import buttonRenderer from './json/button.form.json'
 
 const examples = [
     {name:"Array Controler", schema:arrayControler, prefix:''},
@@ -19,6 +20,7 @@ const examples = [
     {name:"Toggle, Slider, Password, Const", schema:toggleSliderPasswordConst, prefix:''},
     {name:"RadioGroup", schema:radioGroup, prefix:''},
     {name:"Autocomplete", schema:autocomplete, prefix:''},
+    {name:"Button", schema:buttonRenderer, prefix:''},
 ];
 
 examples.forEach(item => {
