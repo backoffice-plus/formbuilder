@@ -176,6 +176,7 @@ export class ToolFinder {
 
         this.tools.forEach(tool => {
 
+            const hasSchema = _.isObject(tool.schema);
             const hasUischema = _.isObject(tool.uischema);
             const hasUischemaType = hasUischema && tool.uischema.type;
             const hasElements = hasUischemaType && 'elements' in tool.uischema;
@@ -183,7 +184,7 @@ export class ToolFinder {
             const isAutoLayout = isScoped && tool.uischema.scope === '#'; //:TODO are there other scopes?
             const isLabel = tool.uischema.type === 'Label';
 
-            const isLayout = (hasElements) || isLabel || isAutoLayout;
+            const isLayout = !hasSchema || (hasElements) || isLabel || isAutoLayout;
 
             if(isLayout) {
                 typedTools.layout.push(tool)
