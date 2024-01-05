@@ -5,13 +5,14 @@ import {getFormbuilder} from "../../lib/vue";
 
 const props = defineProps<{
   tool: ToolInterface
+  fb?: any //Formbuilder
 }>()
 const emit = defineEmits<{
   (e: 'confirm'): void,
   (e: 'unscope'): void,
 }>()
 
-const fb = getFormbuilder();
+const fb = props?.fb ?? getFormbuilder();
 const hasSchemaParent = props.tool.edge.schemaParent;
 const hasUiParent = props.tool.edge.uiParent;
 const isUiBuilder = 'uischema' === fb?.exposed?.showBuilder?.value;

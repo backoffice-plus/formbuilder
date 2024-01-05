@@ -54,7 +54,7 @@
 import ModalContent from "./ModalContent.vue";
 import {onClickOutside, onKeyStroke} from "@vueuse/core";
 import {onMounted, onUnmounted, ref, watch} from "vue";
-import {useDialog} from "../lib/formbuilder";
+import {findDialogOpenElements} from "../lib/formbuilder";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
@@ -66,8 +66,9 @@ const emit = defineEmits(['close', 'change']);
 const modal = ref(null)
 onClickOutside(modal, (event) => {
   //ConfirmDeletion Dialog is open
-  const {dialog} = useDialog();
-  if(dialog.open) {
+
+  const openDialogs = findDialogOpenElements()
+  if(openDialogs?.length) {
     return
   }
 
@@ -75,8 +76,8 @@ onClickOutside(modal, (event) => {
 })
 onKeyStroke('Escape', (e) => {
   //ConfirmDeletion Dialog is open
-  const {dialog} = useDialog();
-  if(dialog.open) {
+  const openDialogs = findDialogOpenElements()
+  if(openDialogs?.length) {
     return
   }
 

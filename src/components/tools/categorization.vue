@@ -177,7 +177,7 @@ const addTab = () => {
 
 const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
-const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool).then(e => {
+const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool, fb).then(e => {
     childTools.value = props.tool.edge.childs;
     onDropAreaChange(e);
 });

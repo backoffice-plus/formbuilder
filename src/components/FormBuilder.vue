@@ -2,13 +2,6 @@
 
   <div class="formbuilder">
 
-    <dialog ref="dialog" v-bind="dialogData?.dialog?.bind">
-      <component :is="dialogData.component.is"
-                 v-bind="dialogData?.component?.bind"
-                 v-if="dialogData?.component?.is"
-      />
-    </dialog>
-
     <Modal
         :tool="toolEdit"
         :jsonFormsRenderers="jsonFormsRenderers"
@@ -111,7 +104,7 @@ dialog::backdrop {
 
 <script setup>
 import {computed, getCurrentInstance, onMounted, ref, useSlots, watch} from 'vue'
-import {generateJsonForm, useDialog} from "../index";
+import {generateJsonForm} from "../index";
 import {initBaseTools} from "../lib/toolCreation";
 
 import Modal from "./Modal.vue";
@@ -205,12 +198,8 @@ if(!hasUiElements && 'uischema' === showBuilder.value) {
     emitSchemaUpdated(true);
 }
 
-//nativ dialog element
-const dialog = ref();
-const {dialogData, initDialog} = useDialog();
-
 onMounted(() => {
-  initDialog(dialog.value);
+
 })
 
 //expose

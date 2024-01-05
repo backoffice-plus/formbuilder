@@ -1,6 +1,6 @@
 // @ts-ignore
 import * as _ from 'lodash-es';
-import {ref, shallowRef} from "vue"
+import {createVNode, h, ref, render, shallowRef} from "vue"
 import type {Ref} from "vue"
 import {Resolver} from "@stoplight/json-ref-resolver";
 import type {ToolInterface, JsonFormsInterface} from "./models";
@@ -10,6 +10,7 @@ import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normal
 import {subschemaMap} from "./tools/subschemas";
 import ConfirmDelete from "../components/modals/ConfirmDelete.vue";
 import {JsonFormsRendererRegistryEntry, RankedTester} from "@jsonforms/core";
+import {getFormbuilder} from "./vue";
 
 
 /** @deprecated **/
@@ -169,75 +170,60 @@ export const createResolvedJsonForms = (schemas:Promise<any>[]) : Promise<JsonFo
         });
 }
 
-export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface) : Promise<{ removed:{element:ToolInterface,unscope?:boolean} }> => {
+export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface, fb?:any) : Promise<{ removed:{element:ToolInterface,unscope?:boolean} }> => {
     return new Promise((resolve, reject) => {
-        const {showModal, close} = useDialog();
 
-        showModal({
-            component: {
-                is: shallowRef(ConfirmDelete),
+        showDialog((dialog:HTMLDialogElement) => {
+            return {
+                component: ConfirmDelete,
                 bind: {
                     tool: toolToDelete,
+                    fb,
                     onConfirm() {
                         parentTool.edge.removeChild(toolToDelete);
 
                         const isControl = 'Control' === toolToDelete?.uischema?.type;
-                        if(!isControl) {
+                        if (!isControl) {
                             toolToDelete.edge.findScopedChilds().forEach(child => child.edge.uiParent = undefined);
                         }
 
-                        resolve({removed:{element:toolToDelete}});
+                        resolve({removed: {element: toolToDelete}});
 
-                        close();
+                        dialog.close();
                     },
                     onUnscope() {
                         parentTool.edge.removeChild(toolToDelete);
-                        resolve({removed:{element:toolToDelete, unscope:true}});
-                        close();
+                        resolve({removed: {element: toolToDelete, unscope: true}});
+
+                        dialog.close();
                     },
-                    key:Math.random(),
+                    key: Math.random(),
                 }
-            },
-            // dialog: {
-            //     bind: {
-            //         class: "p-4 ring",
-            //         onClose: () => {
-            //             console.log("onClose")
-            //         },
-            //         onCancel: () => {
-            //             console.log("onCancel")
-            //         }
-            //     }
-            // }
-        });
+            }
+        })
     });
 }
 
-const dialogElm:Ref<HTMLDialogElement|undefined> = ref();
-const dialogData:any = ref({});
-export const useDialog = () => {
-    const initDialog = (elm:HTMLDialogElement, overwrite:boolean = false) => {
-        if(overwrite || !dialogElm.value) {
-            dialogElm.value = elm;
-        }
-    }
-    const showModal = (data:any) => {
-        dialogData.value = data;
-        dialogElm.value?.showModal();
-    }
-    const close = () => {
-        dialogElm.value?.close();
-        dialogData.value = {}
-    }
-    return {
-        dialog: dialogElm.value,
-        dialogData,
-        initDialog,
-        showModal,
-        close,
-    }
+export const createDialog = ():HTMLDialogElement => {
+    const dialog = document.createElement('dialog')
+    document.body.prepend(dialog)
+    dialog.onclose = () => {
+        document.body.removeChild(dialog)
+    };
+    return dialog;
 }
-
+export const showDialog = (callback:any) => {
+    const dialog = createDialog();
+    const {component, bind} = callback(dialog)
+    bindDialogComponent(dialog, component, bind);
+}
+export const bindDialogComponent = (dialog:HTMLDialogElement,component:any, args:any) => {
+    render(h(component, args), dialog)
+    dialog.showModal();
+}
+export const findDialogOpenElements = (): HTMLDialogElement[] => {
+    return Array.from(document.querySelectorAll('dialog')).filter(dialog=>dialog.open)
+}
 
 export const deleteToolInChilds = async (toolToDelete:ToolInterface|undefined = undefined, childTools:ToolInterface[] = []) : Promise<ToolInterface[]|boolean> => {
 

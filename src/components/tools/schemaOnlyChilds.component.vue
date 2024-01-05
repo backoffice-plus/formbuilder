@@ -154,7 +154,7 @@ const groupPut = (from, to, node, dragEvent) => {
   return tool && allowChild(unref(tool));
 };
 
-const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool).then(e => {
+const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool, fb).then(e => {
     childTools.value = props.tool.edge.childs;
     onDropAreaChange(e);
 });
