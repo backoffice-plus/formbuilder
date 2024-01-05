@@ -23,6 +23,7 @@
             "type": "Formbuilder",
             "scope": "#/properties/definitions/properties/definitions",
             "options": {
+              "schemaOnly": true,
               "baseToolProps": {
                 "hideActionbar": true,
                 "prefixLabel": "definitions:",
