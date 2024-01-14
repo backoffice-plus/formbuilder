@@ -37,6 +37,7 @@ import type {formbuilderPropsI, ToolInterface} from "../../lib/models";
 import {useJsonFormsControl} from "@jsonforms/vue";
 
 /** @ts-ignore */
+/** @deprecated -> FormbuilkderRendererSetup */
 const formbuilderRenderer = defineComponent({
   name: 'formbuilder-renderer',
   components: {

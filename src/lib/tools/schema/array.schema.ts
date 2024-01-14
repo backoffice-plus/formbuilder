@@ -66,6 +66,9 @@ export const schema = {
                 // },
             }
         },
+        "_readOnlySchema": {
+            "type": "object",
+        },
         foo: {
             const: "foo"
         },
@@ -129,7 +132,8 @@ export const uischema = {
                     "scope": "#/properties/options/properties/detail",
                     "type": "Formbuilder",
                     "options": {
-                        "schemaReadOnly": true
+                        "schemaReadOnly": true,
+                        "schemaScope": "#/properties/_readOnlySchema"
                     }
                 },
             ]

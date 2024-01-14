@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import {inject} from "vue";
+import {resolveData, toDataPath} from '@jsonforms/core';
 import type {ControlElement, JsonFormsRendererRegistryEntry, JsonSchema, UISchemaElement} from '@jsonforms/core';
 import {rendererProps, useJsonFormsControl} from '@jsonforms/vue';
 import {useVanillaControl} from "@jsonforms/vue-vanilla";
@@ -62,21 +63,12 @@ const props = defineProps(rendererProps<ControlElement>())
 
     //ui only mode
     if(control.appliedOptions.value.schemaReadOnly) {
-        const baseSchemaTool = fb?.exposed?.baseSchemaTool?.value as ToolInterface;
-        const toolPropertyName = data?.propertyName;
 
-
-        const currentTool:ToolInterface|undefined = baseSchemaTool?.edge.childs?.find(tool => tool.propertyName === toolPropertyName); //ArrayTool
-        const items = currentTool?.schema?.items;
-        if(items && 'type' in items && 'object' === items?.type) {
-            schema = currentTool?.schema?.items as JsonSchema;
+        if(control.appliedOptions.value.schemaScope) {
+          const schemaScope = control.appliedOptions.value.schemaScope;
+          const path = toDataPath(schemaScope);
+          schema = resolveData(data, path);
         }
-        // if(currentTool) {
-        //     const firstChild = currentTool.childs[0]; //ObjectTool
-        //     if('object' === firstChild?.schema?.type) {
-        //         schema = firstChild.schema;
-        //     }
-        // }
 
         uischema = (control.control as any).value.data
         schemaOnly = false;

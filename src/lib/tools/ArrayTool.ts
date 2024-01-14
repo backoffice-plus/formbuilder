@@ -87,7 +87,15 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             options.elementLabelProp = options.childLabelProp;
         }
 
-        //:TODO: disable asInlineType if tool has no childs!
+        /**
+         * add readOnly Schema for "options.detail"
+         */
+        let readOnlySchema;
+        const firstChild = this.edge.childs[0];
+        if('object' === firstChild?.schema?.type) {
+            readOnlySchema = firstChild.generateJsonSchema();
+        }
+            //:TODO: disable asInlineType if tool has no childs!
 
         const data = {
             propertyName: this.propertyName,
@@ -99,6 +107,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
             _isUischema: 'uischema' === context.builder,
             _isSchemaReadOnly: context.schemaReadOnly,
+            _readOnlySchema: readOnlySchema,
         } as any;
 
 
@@ -169,10 +178,15 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         //     currentJsonSchema = jsonFormsAsSchemaChild;
         // }
 
-        return {
+        const jf:JsonFormsInterface = {
             schema: await resolveSchema(currentJsonSchema.schema),
             uischema: await resolveSchema(currentJsonSchema.uischema),
-        } as JsonFormsInterface
+        };
+
+
+        console.log("ArrayTool.jsonform", {jf});
+
+        return jf
     }
 
     clone(): ToolInterface {
