@@ -115,8 +115,11 @@ const onDrag = (drag) => {
 };
 
 const onClone = (tool) => {
-  const isUnscoped = !!tool.edge.schemaParent;
-  if(fb.props.schemaReadOnly || isUnscoped) {
+
+  const isControl = 'Control' === tool.uischema.type;
+  const isUnscoped = !!tool.edge.schemaParent;  //unscoped tools from existing scheme
+  const isSchemaReadOnly = fb.props.schemaReadOnly;
+  if(isControl && (isSchemaReadOnly || isUnscoped)) {
     const context = {
       fb:fb,
       parentMethod:'formbuilderbar.onclone',
