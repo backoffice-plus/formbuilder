@@ -13,13 +13,15 @@ const emit = defineEmits<{
 }>()
 
 const fb = props?.fb ?? getFormbuilder();
-const hasSchemaParent = props.tool.edge.schemaParent;
-const hasUiParent = props.tool.edge.uiParent;
+const hasSchemaParent = !!props.tool.edge.schemaParent;
+const hasUiParent = !!props.tool.edge.uiParent;
 const isUiBuilder = 'uischema' === fb?.exposed?.showBuilder?.value;
+const isSchemaReadyOnly = fb.props.schemaReadOnly
+const isControl = 'Control' === props.tool?.uischema?.type;
 
 const unscopable = hasUiParent && hasSchemaParent && isUiBuilder;
+const isDeletable = !(isControl && isSchemaReadyOnly)
 
-const isControl = 'Control' === props.tool?.uischema?.type;
 const scopedChilds = props.tool.edge.findScopedChilds();
 
 </script>
@@ -33,9 +35,9 @@ const scopedChilds = props.tool.edge.findScopedChilds();
     <slot />
     <div class="flex">
       <button class="mt-1 ml-auto px-2 border rounded-lg bg-yellow-500" @click="emit('unscope')" v-if="unscopable">
-        just unscope
+        <template v-if="isDeletable">just</template> unscope
       </button>
-      <button class="mt-1 ml-auto px-2 border rounded-lg bg-red-500" @click="emit('confirm')">
+      <button class="mt-1 ml-auto px-2 border rounded-lg bg-red-500" @click="emit('confirm')" v-if="isDeletable">
         Confirm
       </button>
     </div>
@@ -45,7 +47,7 @@ const scopedChilds = props.tool.edge.findScopedChilds();
         {{ child.propertyName }}
       </div>
     </div>
-    <div v-if="tool.edge.childs.length && isControl">
+    <div v-if="tool.edge.childs.length && isControl && isDeletable">
       {{ tool.edge.childs.length }} Childs are deleted as well
     </div>
   </div>
