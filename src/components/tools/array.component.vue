@@ -34,7 +34,7 @@
 
           :class="['dropArea nestedFlexArea flex-col', {drag:showDragClass}]"
           :list="childTools"
-          :group="{name:'formBuilder', pull: true, put: groupPut}"
+          :group="{name:'formBuilder', pull: groupPull, put: groupPut}"
           @start="onDrag"
           @end="onDrag"
           @change="onDropAreaChange"
@@ -157,6 +157,7 @@ const addItem = (initSchema = undefined) => {
 const allowChild = (tool) => {
   const isControl = 'Control' === tool?.uischema?.type;
   const isRefTool = tool instanceof ReferenceTool;
+  const isSchemaReadOnly = !!fb?.props?.schemaReadOnly;
   //const isRefTool = '$ref' in tool.schema;//not working!!!
   //const isRefTool = tool instanceof ReferenceTool;//not working!!!
   //const isRefTool = 'ReferenceTool' === tool.constructor.name;
@@ -164,6 +165,10 @@ const allowChild = (tool) => {
   // if(isArrayOfRef.value && isRefTool) {
   //   return true;
   // }
+
+  if(isSchemaReadOnly) {
+    return false;
+  }
 
   if(!isControl) {
     return false;
@@ -212,9 +217,14 @@ const showDragClass = computed(() => {
 
 const groupPut = (from, to, node, dragEvent) => {
   const tool = node._underlying_vm_;
+  const isSchemaReadOnly = !!fb?.props?.schemaReadOnly;
 
-  return allowChild(tool);
+  return allowChild(tool) && !isSchemaReadOnly;
 };
+const groupPull = (from, to, node, dragEvent) => {
+  const isSchemaReadOnly = !!fb?.props?.schemaReadOnly;
+  return !isSchemaReadOnly;
+}
 
 
 const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool, fb).then(e => {

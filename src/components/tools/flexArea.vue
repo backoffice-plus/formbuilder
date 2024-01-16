@@ -9,7 +9,7 @@
     <div v-if="!isToolbar" :class="['flex',{'mr-5':!isRoot}]">
 
       <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
-        <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>
+        <button type="button" @click="addItem" v-if="showAddItem"><Icon icon="mdi:plus" /></button>
         <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
       </Actions>
 
@@ -178,6 +178,10 @@ const addItem = (type) => {
   childTools.value.push(tool);
   onDropAreaChange({added: {element:tool}});
 };
+const showAddItem = computed(() => {
+  const isSchemaReadOnly = !!fb?.props?.schemaReadOnly;
+  return !isSchemaReadOnly;
+});
 
 const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool, fb).then(e => {
   childTools.value = props.tool.edge.childs;

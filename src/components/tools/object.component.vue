@@ -18,7 +18,7 @@
     <div v-if="!isToolbar" :class="[isRoot?'mr-9':'mr-5']">
 
       <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot">
-        <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>
+        <button type="button" @click="addItem" v-if="showAddItem"><Icon icon="mdi:plus" /></button>
         <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
       </Actions>
 
@@ -35,7 +35,7 @@
 
             :class="['dropArea nestedFlexArea flex-col', {drag:showDragClass}]"
             :list="childTools"
-            :group="{name:'formBuilder', pull: true, put: groupPut}"
+            :group="{name:'formBuilder', pull: groupPull, put: groupPut}"
             @start="onDrag"
             @end="onDrag"
             @change="onDropAreaChange"
@@ -123,11 +123,16 @@ const addItem = (type) => {
   onDropAreaChange({added: {element:tool}});
 };
 
+const showAddItem = computed(() => {
+  return allowedChild({uischema:{type:'Control'}})
+});
+
 const allowedChild = (tool) => {
   const isControl = 'Control' === tool?.uischema?.type;
   const hasSchemaType = undefined !== tool?.schema?.type;
+  const isSchemaReadOnly = !!fb?.props?.schemaReadOnly;
 
-  return (hasSchemaType || isControl)
+  return !isSchemaReadOnly && (hasSchemaType || isControl)
 }
 
 const showDragClass = computed(() => {
@@ -135,9 +140,14 @@ const showDragClass = computed(() => {
     return tool && allowedChild(unref(tool));
 })
 const groupPut = (from, to, node, dragEvent) => {
+    const isSchemaReadOnly = !!fb?.props?.schemaReadOnly;
     const tool = node._underlying_vm_;
-    return tool && allowedChild(unref(tool));
+    return tool && allowedChild(unref(tool)) && !isSchemaReadOnly;
 };
+const groupPull = (from, to, node, dragEvent) => {
+  const isSchemaReadOnly = !!fb?.props?.schemaReadOnly;
+  return !isSchemaReadOnly;
+}
 
 const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool, fb).then(e => {
     childTools.value = props.tool.edge.childs;
