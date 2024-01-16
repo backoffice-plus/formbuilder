@@ -48,7 +48,7 @@ export class BuilderEvent {
 
         this.props = props;
         this.schemaOnly = !!props.schemaOnly;
-        this.schemaReadOnly = !!props.schemaOnly;
+        this.schemaReadOnly = !!props.schemaReadOnly;
 
         this.baseUiTool = baseUiTool;
         this.baseSchemaTool = baseSchemaTool;
