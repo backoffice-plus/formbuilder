@@ -19,8 +19,16 @@ const isUiBuilder = 'uischema' === fb?.exposed?.showBuilder?.value;
 const isSchemaReadyOnly = fb.props.schemaReadOnly
 const isControl = 'Control' === props.tool?.uischema?.type;
 
-const unscopable = hasUiParent && hasSchemaParent && isUiBuilder;
-const isDeletable = !(isControl && isSchemaReadyOnly)
+let unscopable = hasUiParent && hasSchemaParent && isUiBuilder;
+let isDeletable = !(isControl && isSchemaReadyOnly)
+
+//ScopeTool
+if(isSchemaReadyOnly && !hasSchemaParent) {
+  isDeletable = true;
+}
+
+console.log("ConfirmDel", {tool:props.tool});
+
 
 const scopedChilds = props.tool.edge.findScopedChilds();
 
