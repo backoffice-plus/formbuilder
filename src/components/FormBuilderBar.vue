@@ -119,13 +119,27 @@ const onClone = (tool) => {
   const isControl = 'Control' === tool.uischema.type;
   const isUnscoped = !!tool.edge.schemaParent;  //unscoped tools from existing scheme
   const isSchemaReadOnly = fb.props.schemaReadOnly;
-  if(isControl && (isSchemaReadOnly || isUnscoped)) {
-    const context = {
-      fb:fb,
-      parentMethod:'formbuilderbar.onclone',
-      builder: fb?.exposed?.showBuilder?.value,
-      schemaReadOnly: fb.props.schemaReadOnly,
-    };
+
+  const context = {
+    fb:fb,
+    parentMethod:'formbuilderbar.onclone',
+    builder: fb?.exposed?.showBuilder?.value,
+    schemaReadOnly: fb.props.schemaReadOnly,
+  };
+
+  let isCloneable = !(isControl && (isSchemaReadOnly || isUnscoped))
+
+  /**
+   * Eventhandler per Tool
+   * :TODO finalize it -> move logic from here to each tool (or abstract tool)
+   */
+  if(tool.handelOnClone) {
+    const e = {isCloneable, context}
+    tool.handelOnClone(e);
+    "isCloneable" in e && (isCloneable = e.isCloneable);
+  }
+
+  if(!isCloneable) {
     tool.optionDataUpdate(context, tool.optionDataPrepare(context));
 
     if(isUnscoped) {

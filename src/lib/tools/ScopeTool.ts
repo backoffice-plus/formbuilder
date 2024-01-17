@@ -77,6 +77,9 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
     handelUiEventOnAdded(e:any):void {
         "targetTool" in e && (e.targetTool = undefined);
     }
+    handelOnClone(e:any):void {
+        "isCloneable" in e && (e.isCloneable = true);
+    }
 
     generateJsonSchema(): JsonSchema|undefined {
         return undefined
