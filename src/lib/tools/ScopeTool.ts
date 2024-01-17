@@ -2,7 +2,7 @@ import type {JsonSchema, Scoped} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core";
 import scopeComp from "../../components/tools/scope.component.vue";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
+import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import jsonForms from "./schema/scope.form.json";
 import {resolveSchema} from "../formbuilder";
@@ -66,6 +66,10 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
             title: 'Control',
             icon: 'mdi:pound-box',
         }
+    }
+
+    handelUiEventOnAdded(e:any):void {
+        "targetTool" in e && (e.targetTool = undefined);
     }
 
     generateJsonSchema(): JsonSchema|undefined {

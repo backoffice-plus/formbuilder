@@ -18,7 +18,7 @@ export const generateJsonForm = (event: BuilderEvent): JsonFormsInterface => {
                 updated && (uischema = event.baseUiTool?.generateUiSchema());
             }
             break;
-            
+
         case 'uischema':
             uischema = event.baseUiTool?.generateUiSchema();
 
@@ -208,15 +208,17 @@ const handelUiEventOnAdded = (event: BuilderEvent): boolean => {
         targetTool = event.baseSchemaTool;
     }
 
-    console.log("handelUiEventOnAdded", {
-        event,
-        scenario,
-        targetTool,
-        edge: uiTool.edge,
-    });
+    /**
+     * Eventhandler per Tool
+     * :TODO finalize it -> move logic from here to each tool (or abstract tool)
+     */
+    if(event.tool.handelUiEventOnAdded) {
+        const e = {event, targetTool}
+        event.tool.handelUiEventOnAdded(e);
+        "targetTool" in e && (targetTool = e.targetTool);
+    }
 
     if (targetTool) {
-        console.log("addChild from handelUiEventOnAdded");
         targetTool?.edge.addChild(uiTool, event.newIndex);
         //uiTool.edge.uiParent = uiParent;
         //uiTool.edge.schemaParent = targetTool;
