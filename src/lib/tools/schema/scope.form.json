@@ -1,9 +1,22 @@
 {
   "schema": {
     "type": "object",
+    "definitions": {
+      "scopeString": {
+        "type": "string",
+        "title": "Scope Path",
+        "description": "#/properties/NAME"
+      }
+    },
     "properties": {
       "scope": {
         "type": "string"
+      },
+      "_scope": {
+        "anyOf": [
+          {"$ref":"scopeTool.scopes","title":"asdasd"},
+          {"$ref":"#/definitions/scopeString"}
+        ]
       }
     }
   },
@@ -20,7 +33,8 @@
             "elements": [
               {
                 "type": "Control",
-                "scope": "#/properties/scope"
+                "scope": "#/properties/_scope",
+                "label": "Scopes"
               }
             ]
           }

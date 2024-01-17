@@ -7,6 +7,7 @@ import {AbstractTool} from "./AbstractTool";
 import jsonForms from "./schema/scope.form.json";
 import {resolveSchema} from "../formbuilder";
 import {fromPropertyToScope} from "../normalizer";
+import {findAllScopablePaths} from "../schemaUtil";
 
 export class ScopeTool extends AbstractTool implements ToolInterface {
     importer = () => scopeComp;
@@ -26,33 +27,38 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
         const data = {} as any;
 
         data.scope = this.uischema.scope;
+        if (undefined !== this.uischema.scope) {
+            data._scope = this.uischema.scope
+        }
 
         return data;
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         this.uischema.scope = data.scope
+
+        if (undefined !== data._scope) {
+            this.uischema.scope = data._scope;
+        }
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
 
-        //:TODO find all scopes
-        // const definitionResolver = (ref: URI) => {
-        //     if ('referenceTool.definitions' === String(ref)) {
-        //         const s = context.rootSchema;
-        //         const definitionPaths = s?.definitions && Object.keys(s?.definitions).map(key => '#/definitions/' + key);
-        //
-        //         return {
-        //             type: 'string',
-        //             title: 'Select',
-        //             enum: definitionPaths ?? ['']
-        //         } as JsonSchema
-        //     }
-        //     return undefined;
-        // }
+        const scopeResolver = (ref: URI) => {
+            if ('scopeTool.scopes' === String(ref)) {
+                const allScopes = findAllScopablePaths(context.baseSchemaTool, '#');
+
+                return {
+                    type: 'string',
+                    title: 'Select',
+                    enum: allScopes ?? ['']
+                } as JsonSchema
+            }
+            return undefined;
+        }
 
         return {
-            schema: await resolveSchema(jsonForms.schema), //definitionResolver
+            schema: await resolveSchema(jsonForms.schema, scopeResolver),
             uischema: await resolveSchema(jsonForms.uischema),
         } as JsonFormsInterface
     }
