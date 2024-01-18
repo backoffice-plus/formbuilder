@@ -110,7 +110,7 @@ const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
 const changeKey = ref(null);
-const jsonFormsExternalChanges = ref({});
+const jsonFormsExternalChanges = ref();
 
 const fb = ref(null);
 const baseUiTool = computed(() => fb.value?.baseUiTool);
