@@ -4,17 +4,14 @@
     "definitions": {
       "scopeString": {
         "type": "string",
-        "title": "Scope Path",
+        "title": "Manual path",
         "description": "#/properties/NAME"
       }
     },
     "properties": {
       "scope": {
-        "type": "string"
-      },
-      "_scope": {
         "anyOf": [
-          {"$ref":"scopeTool.scopes","title":"asdasd"},
+          {"$ref":"scopeTool.scopes","title":"asdasd","label": "aaa","lable": "111"},
           {"$ref":"#/definitions/scopeString"}
         ]
       }
@@ -33,7 +30,7 @@
             "elements": [
               {
                 "type": "Control",
-                "scope": "#/properties/_scope",
+                "scope": "#/properties/scope",
                 "label": "Scopes"
               }
             ]

@@ -6,8 +6,7 @@ import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface
 import {AbstractTool} from "./AbstractTool";
 import jsonForms from "./schema/scope.form.json";
 import {resolveSchema} from "../formbuilder";
-import {fromPropertyToScope} from "../normalizer";
-import {findAllScopablePaths} from "../schemaUtil";
+import {findAllScopablePaths, findAllScopablePathsBySchema} from "../schemaUtil";
 
 export class ScopeTool extends AbstractTool implements ToolInterface {
     importer = () => scopeComp;
@@ -27,30 +26,29 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
         const data = {} as any;
 
         data.scope = this.uischema.scope;
-        if (undefined !== this.uischema.scope) {
-            data._scope = this.uischema.scope
-        }
 
         return data;
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         this.uischema.scope = data.scope
-
-        if (undefined !== data._scope) {
-            this.uischema.scope = data._scope;
-        }
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
 
+        const resolvedSchema = await resolveSchema(JSON.parse(JSON.stringify(context.baseSchemaTool?.schema)));
+
         const scopeResolver = (ref: URI) => {
             if ('scopeTool.scopes' === String(ref)) {
-                const allScopes = findAllScopablePaths(context.baseSchemaTool, '#');
+                //const allScopes = findAllScopablePaths(context.baseSchemaTool, '#');
+                const allScopes = [
+                    '#',
+                    ...findAllScopablePathsBySchema(resolvedSchema, '#'),
+                ]
 
                 return {
                     type: 'string',
-                    title: 'Select',
+                    title: 'Select scope',
                     enum: allScopes ?? ['']
                 } as JsonSchema
             }
