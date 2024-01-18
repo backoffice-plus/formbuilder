@@ -75,24 +75,17 @@
 </style>
 
 <script setup lang="ts">
-
-import {defaultTools, FormBuilder} from "../src/index.ts";
-import FormBuilderDetails from "./FormBuilderDetails.vue";
-import {computed, onMounted, ref, unref, watch} from "vue";
-import * as ownExamples from "./jsonForms/examples";
-import {schema as vuetifySchema, uischema as vuetifyUischema} from "./jsonForms/vuetifyOptions";
-import {getExamples} from '@jsonforms/examples/src'
-import {Generate, generateDefaultUISchema, generateJsonSchema, JsonSchema} from "@jsonforms/core";
-import {resolveSchema} from "../src";
-import {getExampleFromUrl, getKeyFromUrl, getUrl} from "./lib";
-import {vanillaRenderers} from "@jsonforms/vue-vanilla";
-import {boplusVueVanillaRenderers} from "../src/index";
-import SchemaCode from "./SchemaCode.vue";
-import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
 import * as _ from 'lodash-es'
-import {formbuilderRenderers} from "../src/components/renderers";
+import {computed,  ref, unref, watch} from "vue";
+import {Generate, generateDefaultUISchema, generateJsonSchema, type JsonSchema} from "@jsonforms/core";
+import {vanillaRenderers} from "@jsonforms/vue-vanilla";
+import {getExamples} from '@jsonforms/examples/src'
+import * as ownExamples from "./jsonForms/examples";
+import {getExampleFromUrl, getKeyFromUrl, getUrl} from "./lib";
+import {boplusVueVanillaRenderers, defaultTools, FormBuilder, formbuilderRenderers} from "../src/index.ts";
 import IdList from "./Dev/IdList.vue";
-import {getFormbuilder} from "../src/lib/vue";
+import FormBuilderDetails from "./FormBuilderDetails.vue";
+import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
 
 const tools = [
     ...defaultTools,
