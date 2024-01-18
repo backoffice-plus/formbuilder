@@ -27,7 +27,7 @@
             v-text="'All'"
             v-if="currentTab>=0 && childTools.length>1"
           />
-          <button type="button" class="add" @click="addTab"><Icon icon="mdi:plus" /></button>
+          <button type="button" class="add" @click="() => createNewTab()"><Icon icon="mdi:plus" /></button>
         </div>
       </div>
 
@@ -141,44 +141,43 @@ const onDrag = fb?.exposed.onToolDrag;
 
 onMounted(() => {
   if (!props.isToolbar) {
-    if (props?.tool?.uischema?.elements?.length) {
-      childTools.value.push(...props.tool.initChilds(toolFinder));
-
-      if (childTools.value.length) {
-        nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
-      }
-    }
-    else {
-      addTab();
-    }
+    init();
   }
 })
 
+const init = () => {
+  childTools.value = [];
+  childTools.value.push(...props.tool.initChilds(toolFinder))
 
-// const init = () => {
-//   childTools.value = [];
-//   childTools.value.push(...initElements(props.tool))
-//
-//   if (childTools.value.length) {
-//     //wait to render dom (:TODO use nextTick)
-//     setTimeout(onDropAreaChange, 50);
-//   }
-// };
+  if (childTools.value.length) {
+    nextTick().then(() => onDropAreaChange({mounted:{element:props.tool}}))
+  }
+  else {
+    createNewTab('Tab')
+  }
+};
 
-
-const addTab = () => {
+const createNewTab = (name=undefined) => {
   const findTool = (name) => {
     const tabTool = cloneEmptyTool(toolFinder.findLayoutToolByUiType('Category') ?? unknownTool);
     tabTool.uischema.label = name;
     return tabTool;
   }
-  showNewPropertyDialogAndGetTool(findTool)
-      .then(tools => {
-        tools.forEach(tool => {
-          childTools.value.push(tool);
-          onDropAreaChange({added: {element:tool}});
+
+  if(name) {
+    const tabTool = findTool(name);
+    childTools.value.push(tabTool);
+    onDropAreaChange({added: {element: tabTool}});
+  }
+  else {
+    showNewPropertyDialogAndGetTool(findTool)
+        .then(tools => {
+          tools.forEach(tool => {
+            childTools.value.push(tool);
+            onDropAreaChange({added: {element: tool}});
+          })
         })
-      })
+  }
 };
 
 
