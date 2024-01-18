@@ -76,6 +76,7 @@ const fb = getFormbuilder();
 onMounted(async () => {
 
   const context = {
+    fb: fb,
     builder: fb?.exposed?.showBuilder.value,
     schemaOnly: fb.props.schemaOnly,
     schemaReadOnly: fb.props.schemaReadOnly,

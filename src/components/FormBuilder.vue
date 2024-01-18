@@ -7,7 +7,7 @@
         :jsonFormsRenderers="jsonFormsRenderers"
 
         @change="onChangeModal"
-        @close="isModalOpen=false;toolEdit=null"
+        @close="onModalClose"
 
         v-if="isModalOpen && toolEdit"
     />
@@ -149,6 +149,10 @@ const baseSchemaTool = ref(schema);
 const currentBaseTool = computed(() => showBuilder.value === 'uischema' ? baseUiTool.value : baseSchemaTool.value)
 
 const onChangeModal = (data) => toolEdit.value && updateJsonForm({modal:{element:toolEdit.value}})
+const onModalClose = () => {
+  isModalOpen.value = false;
+  toolEdit.value = null
+}
 
 const updateJsonForm = (e) => {
   const event = new BuilderEvent(e, props, showBuilder.value, toolFinder, baseUiTool.value, baseSchemaTool.value);
@@ -212,7 +216,7 @@ const onEditTool = (data) => {
     isModalOpen.value = true;
     toolEdit.value = data.tool;
 }
-defineExpose({toolFinder, showBuilder, toolDragging, rootSchema, rootUischema, baseSchemaTool, baseUiTool, onToolDrag,  onEditTool, onDropAreaChanged: updateJsonForm})
+defineExpose({toolFinder, showBuilder, toolDragging, rootSchema, rootUischema, baseSchemaTool, baseUiTool, onToolDrag,  onEditTool, onModalClose, onDropAreaChanged: updateJsonForm})
 
 </script>
 
