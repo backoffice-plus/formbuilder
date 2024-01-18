@@ -4,21 +4,22 @@ const schema = {
   type: "object",
 
   properties: {
-    //nameA: { type: "string" },
 
+    /**
+     * its NOT working for nested object
+     */
     //nested addProps
-    types: {
-      type: "object",
-      properties: {
-        //nameB: {type: "string"},
-      },
-      additionalProperties: {
-        type: "string"
-      },
-      //patternProperties: {},
-    }
+    // moreParams: {
+    //   type: "object",
+    //   additionalProperties: {
+    //     type: "string",
+    //   },
+    // }
   },
 
+  /**
+   * its working for "root" object
+   */
   additionalProperties: {
     type: "string"
   },
@@ -33,21 +34,22 @@ const uischema = {
     {
       type: "Control",
       scope: "#",
-      // options: {
-      //   restrict: true
-      // }
     },
   ]
 }
 
 
 export const data = {
-  fooA: "foobarA",
-  //nameA: "nameA",
-  types: {
-    fooB:'foobarB',
-    //nameB:'nameB',
-  }
+  // moreParams: {
+  //   "myFooBar": "Hello",
+  // },
+ // a:1,
+  // fooA: "foobarA",
+  // //nameA: "nameA",
+  // types: {
+  //   fooB:'foobarB',
+  //   //nameB:'nameB',
+  // }
 };
 
 registerExamples([

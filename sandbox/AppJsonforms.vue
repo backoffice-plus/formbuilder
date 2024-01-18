@@ -24,6 +24,7 @@
             :config="{restrict:true}"
             :ajv="ajv"
             @change="r => jsonFormsUpdated=r"
+            v-if="jsonForms?.schema"
         />
       </div>
     </details>
@@ -63,7 +64,7 @@ import SchemaCode from './SchemaCode.vue'
 import {getExamples} from "@jsonforms/examples/src";
 import {getExampleFromUrl, getUrl} from "./lib";
 import {vanillaRenderers} from "@jsonforms/vue-vanilla";
-import {boplusVueVanillaRenderers} from "../src/index";
+import {boplusVueVanillaRenderers, formbuilderRenderers} from "../src/index";
 
 const url = computed(() => getUrl());
 const examples = computed(() => getExamples().sort((a, b) => a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1));
@@ -79,6 +80,7 @@ const jsonFormsUpdated = ref({});
 const jsonFormRenderes = Object.freeze([
   ...vanillaRenderers,
   ...boplusVueVanillaRenderers,
+  ...formbuilderRenderers,
 ]);
 
 const onChangeExample = async (e) => {
