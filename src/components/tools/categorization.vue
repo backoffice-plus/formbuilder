@@ -45,7 +45,8 @@
           v-show="!collapsed"
       >
         <template #item="{ element: tool, index }">
-          <div> <!-- div needed for edit mode?!?! -->
+          <div v-show="currentTab===-1 || index===currentTab">
+
             <component :is="tool.importer()"
 
                        :tool="tool"
@@ -54,9 +55,8 @@
                        @deleteByTool="onDeleteByTool"
 
                        class="dropItem"
-
-                       v-show="currentTab===-1 || index===currentTab"
             />
+
           </div>
         </template>
       </Vuedraggable>
