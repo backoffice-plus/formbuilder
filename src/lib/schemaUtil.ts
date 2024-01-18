@@ -3,7 +3,7 @@ import {JsonSchema} from "@jsonforms/core";
 
 export const findAllScopablePaths = (baseTool:ToolInterface, parentPath='#') => {
 
-    const currentProperties = baseTool?.edge.childs.map(item => {
+    const currentProperties = baseTool?.edge.childs.map((item):string[] => {
         //const currentPath = (parentPath ? parentPath+'.' : '')+ item.propertyName;
         const currentPath = (parentPath ? parentPath+'/properties/' : '')+ item.propertyName;
 

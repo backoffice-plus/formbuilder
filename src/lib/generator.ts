@@ -212,9 +212,10 @@ const handelUiEventOnAdded = (event: BuilderEvent): boolean => {
      * Eventhandler per Tool
      * :TODO finalize it -> move logic from here to each tool (or abstract tool)
      */
-    if(event.tool.handelUiEventOnAdded) {
+    if("handelUiEventOnAdded" in event.tool) {
         const e = {event, targetTool}
-        event.tool.handelUiEventOnAdded(e);
+        //@ts-ignore
+        event.tool?.handelUiEventOnAdded(e);
         "targetTool" in e && (targetTool = e.targetTool);
     }
 
