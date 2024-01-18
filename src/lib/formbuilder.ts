@@ -221,6 +221,9 @@ export const showNewPropertyDialogAndGetTool = (toolFinder:ToolFinder|((name:str
          * :TODO create real dialog!
          */
         const input = prompt('Name of property or coma seperated name list');
+        if(null === input) {
+            return reject("aborted");
+        }
         const names = input?.split(',').map(item => item.trim()).filter(i => i);
 
         const tools = names?.map(name => {
