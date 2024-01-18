@@ -90,7 +90,7 @@ const createhtml = (part) => {
   return bg ? `<span class='${bg}'>${part.value}</span>` : part.value;
 }
 
-const diffsSchema = diffChars(exampleSchemaString,schemaString);
+const diffsSchema = diffChars(exampleSchemaString ?? '',schemaString ?? '');
 const htmlTxtSchema = diffsSchema.map(part => createhtml(part)).join('');
 
 const diffsUischema = diffChars(exampleUischemaString ?? '',uischemaString ?? '');
