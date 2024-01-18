@@ -40,8 +40,8 @@ export class ToolFinder {
         return this.getTypedTools().layout.find((tool: ToolInterface) => tool?.uischema?.type === uiType)
     }
 
-    findMatchingToolAndClone = (schema: any, itemSchema: any, itemUischema: any): ToolInterface => {
-        return cloneEmptyTool(this.findMatchingTool(schema, itemSchema, itemUischema), itemSchema);
+    findMatchingToolAndClone = (schema: any, itemSchema: any, itemUischema: any, propertyName?:string): ToolInterface => {
+        return cloneEmptyTool(this.findMatchingTool(schema, itemSchema, itemUischema), itemSchema, propertyName);
     }
 
     findMatchingTool = (schema: any, itemSchema: JsonSchema, itemUischema: any): ToolInterface => {

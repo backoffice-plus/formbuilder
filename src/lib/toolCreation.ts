@@ -112,11 +112,11 @@ export const createSchemaTool = (schema: JsonSchema, toolName: string | undefine
 
 
 let cloneCounter = 0;
-export const cloneEmptyTool = (tool: ToolInterface, schema: JsonSchema | undefined = undefined) => {
+export const cloneEmptyTool = (tool: ToolInterface, schema: JsonSchema | undefined = undefined, propertyName?:string) => {
 
     const clone = tool.clone();
     if (tool.uischema.type) {
-        clone.propertyName = (tool.uischema.type + ++cloneCounter).toLowerCase();
+        clone.propertyName = propertyName ?? (tool.uischema.type + ++cloneCounter).toLowerCase();
     }
 
     if (schema) {

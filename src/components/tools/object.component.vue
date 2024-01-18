@@ -82,7 +82,7 @@
 
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange, showNewPropertyDialogAndGetTool} from '../../lib/formbuilder'
 import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import ToolIcon from "./utils/ToolIcon.vue";
@@ -113,14 +113,14 @@ onMounted(() => {
 
 const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
-const addItem = (type) => {
-  const schema = fb?.exposed?.rootSchema?.value;
-
-  const initSchema = {type:'string'}
-  const tool = toolFinder.findMatchingToolAndClone(schema, initSchema, {type: 'Control', scope: '#'});
-
-  childTools.value.push(tool);
-  onDropAreaChange({added: {element:tool}});
+const addItem = () => {
+  showNewPropertyDialogAndGetTool(fb?.exposed?.toolFinder)
+      .then(tools => {
+        tools.forEach(tool => {
+          childTools.value.push(tool);
+          onDropAreaChange({added: {element:tool}});
+        })
+      })
 };
 
 const showAddItem = computed(() => {

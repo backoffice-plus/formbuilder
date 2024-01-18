@@ -11,6 +11,7 @@ import {subschemaMap} from "./tools/subschemas";
 import ConfirmDelete from "../components/modals/ConfirmDelete.vue";
 import {JsonFormsRendererRegistryEntry, RankedTester} from "@jsonforms/core";
 import {getFormbuilder} from "./vue";
+import {ToolFinder} from "./ToolFinder";
 
 
 /** @deprecated **/
@@ -203,6 +204,34 @@ export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:Too
         })
     });
 }
+
+export const showNewPropertyDialogAndGetTool = (toolFinder:ToolFinder|((name:string)=>ToolInterface)) : Promise<ToolInterface[]> => {
+
+    const isToolFinder = toolFinder instanceof ToolFinder;
+
+    const defaultFindToolCallback = (toolFinder:ToolFinder) => (name:string):ToolInterface => {
+        const initSchema = {type:'string'}
+        const initUischema = {type: 'Control', scope: '#'}
+        return toolFinder.findMatchingToolAndClone({}, initSchema, initUischema, name);
+    }
+
+    return new Promise((resolve, reject) => {
+
+        /**
+         * :TODO create real dialog!
+         */
+        const input = prompt('Name of property or coma seperated name list');
+        const names = input?.split(',').map(item => item.trim()).filter(i => i);
+
+        const tools = names?.map(name => {
+            if(isToolFinder) return defaultFindToolCallback(toolFinder as ToolFinder)(name)
+            return toolFinder?.(name)
+        }).filter(i=>i);
+
+        resolve(tools ?? []);
+    });
+}
+
 
 export const createDialog = ():HTMLDialogElement => {
     const dialog = document.createElement('dialog')

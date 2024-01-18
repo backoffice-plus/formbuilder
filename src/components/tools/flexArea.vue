@@ -138,7 +138,7 @@
  */
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange, showNewPropertyDialogAndGetTool} from '../../lib/formbuilder'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {ref, computed, onMounted, nextTick} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
@@ -172,11 +172,13 @@ const init = () => {
 };
 
 const addItem = (type) => {
-  const initSchema = {type:'string'}
-  const tool = toolFinder.findMatchingToolAndClone({}, initSchema, {type: 'Control', scope: '#'});
-
-  childTools.value.push(tool);
-  onDropAreaChange({added: {element:tool}});
+  showNewPropertyDialogAndGetTool(fb?.exposed?.toolFinder)
+      .then(tools => {
+        tools.forEach(tool => {
+          childTools.value.push(tool);
+          onDropAreaChange({added: {element:tool}});
+        })
+      })
 };
 const showAddItem = computed(() => {
   const isSchemaReadOnly = !!fb?.props?.schemaReadOnly;

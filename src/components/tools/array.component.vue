@@ -84,7 +84,7 @@
 import Actions from "./utils/Actions.vue";
 
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange, showNewPropertyDialogAndGetTool} from '../../lib/formbuilder'
 import {computed, nextTick, onMounted, ref} from "vue";
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
@@ -140,17 +140,25 @@ onMounted(() => {
 const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
 const addItem = (initSchema = undefined) => {
-  const schema = fb?.exposed?.rootSchema?.value;
 
+  const addTools = (tools => {
+    tools.forEach(tool => {
+      childTools.value.push(tool);
+      onDropAreaChange({added: {element:tool}});
+    })
+  });
+
+
+  const schema = fb?.exposed?.rootSchema?.value;
   initSchema = initSchema ?? {type:'string'};
   // if(isArrayOfRef.value) {
   //   initSchema = {$ref:'#'}
   // }
+  const tools = [toolFinder.findMatchingToolAndClone(schema, initSchema, {type: 'Control', scope: '#'})];
 
-  const tool = toolFinder.findMatchingToolAndClone(schema, initSchema, {type: 'Control', scope: '#'});
-
-  childTools.value.push(tool);
-  onDropAreaChange({added: {element:tool}});
+  //no name needed for "Array of Strings", also only one child
+  //showNewPropertyDialogAndGetTool(fb?.exposed?.toolFinder).then(tools => addTools(tools))
+  addTools(tools);
 };
 
 

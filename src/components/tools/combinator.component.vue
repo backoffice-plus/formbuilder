@@ -74,7 +74,7 @@
 
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange, showNewPropertyDialogAndGetTool} from '../../lib/formbuilder'
 import {computed, nextTick, onMounted, ref} from "vue";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {CombinatorTool} from "../../lib/tools/combinatorTool";

@@ -115,7 +115,7 @@
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from "../../lib/formbuilder";
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange, showNewPropertyDialogAndGetTool} from "../../lib/formbuilder";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
@@ -167,11 +167,18 @@ onMounted(() => {
 
 
 const addTab = () => {
-  const tabTool = cloneEmptyTool(toolFinder.findLayoutToolByUiType('Category') ?? unknownTool);
-  tabTool.uischema.label = 'Tab';
-
-  childTools.value.push(tabTool);
-  onDropAreaChange({added: {element:tabTool}});
+  const findTool = (name) => {
+    const tabTool = cloneEmptyTool(toolFinder.findLayoutToolByUiType('Category') ?? unknownTool);
+    tabTool.uischema.label = name;
+    return tabTool;
+  }
+  showNewPropertyDialogAndGetTool(findTool)
+      .then(tools => {
+        tools.forEach(tool => {
+          childTools.value.push(tool);
+          onDropAreaChange({added: {element:tool}});
+        })
+      })
 };
 
 
