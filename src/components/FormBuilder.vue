@@ -20,7 +20,7 @@
 <!--    </div>-->
 
     <slot name="toolbar" v-if="!hideToolbar">
-      <nav>
+      <nav class="toolbar">
 
   <!--      <div class="tabs">-->
   <!--        <button @click="showBar='schema';" :class="{active:'schema'===showBar}" v-if="!schemaReadOnly">Controls</button>-->

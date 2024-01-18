@@ -14,7 +14,7 @@
       </Actions>
 
       <div class="flex items-center" v-show="!collapsed">
-        <div class="tabs">
+        <nav class="tabs">
           <button
               v-for="(element,index) in childTools"
               :class="{selected:currentTab===index}"
@@ -28,7 +28,7 @@
             v-if="currentTab>=0 && childTools.length>1"
           />
           <button type="button" class="add" @click="() => createNewTab()"><Icon icon="mdi:plus" /></button>
-        </div>
+        </nav>
       </div>
 
       <Vuedraggable
@@ -77,12 +77,12 @@
   relative
 }
 
-.tabs {
+.categorizationTool nav.tabs {
   @apply
   flex gap-2
   my-0 mt-2
 }
-.tabs button:not(.add) {
+.categorizationTool nav.tabs button:not(.add) {
   min-width: 100px;
   @apply
   py-1
@@ -94,18 +94,18 @@
   rounded-t-lg
 }
 
-.tabs button:not(.add):hover {
+.categorizationTool nav.tabs button:not(.add):hover {
   background-color: var(--tool-categorization-tab-hover);
 }
 
-.tabs button.add {
+.categorizationTool nav.tabs button.add {
   @apply
   w-8 aspect-square
   rounded-full
 
   flex items-center justify-center
 }
-.tabs button.add:hover {
+.categorizationTool nav.tabs button.add:hover {
   background-color: var(--tool-categorization-tab-hover);
 }
 </style>

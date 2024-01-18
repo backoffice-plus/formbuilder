@@ -13,11 +13,11 @@
 
 
     <template v-if="isToolbar">
-        <label class="labelAtBar select-none cursor-move">
+        <span class="labelAtBar select-none cursor-move">
             <slot name="toolbarLabel">
                 <span v-if="tool.edge.schemaParent">{{ tool.propertyName }}</span>
             </slot>
-        </label>
+        </span>
         <label class="labelAtDropArea">{{ toolOptions?.labelAtDropArea }}</label>
     </template>
 
@@ -26,7 +26,7 @@
 
       <slot name="droparea" :title="toolOptions.title">
         <div class="flex gap-2 items-center">
-          <label>{{ toolOptions.title }}</label>
+          <span>{{ toolOptions.title }}</span>
           <SchemaFeatures :tool="tool" />
         </div>
       </slot>

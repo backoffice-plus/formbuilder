@@ -65,7 +65,7 @@
 </template>
 
 <style>
-.formbuilder nav {
+.formbuilder > nav.toolbar {
  box-shadow: 0px 8px 8px -8px rgb(30, 30, 30, 30%);
   z-index:9;
  @apply
