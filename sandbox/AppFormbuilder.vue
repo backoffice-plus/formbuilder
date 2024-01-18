@@ -29,7 +29,7 @@
           :schemaOnly="schemaOnly"
           :schemaReadOnly="schemaReadOnly"
           :tools="tools"
-          :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'') + (schemaBaseTool?'schema':'')"
+          :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'') + (schemaBaseTool?'schema':'') + changeKey"
           :schemaTool="schemaBaseTool ? 'schema' : ''"
           @schemaUpdated="onSchemaUpdated"
           ref="fb"
@@ -116,6 +116,8 @@ const schemaBaseTool = ref("1" === getKeyFromUrl('schemaBaseTool'));
 const jsonFormsResolved = ref({});
 const latestExampleData = ref({});
 const latestSchemaAfterExampleData = ref(null);
+const changeKey = ref(null);
+const jsonFormsExternalChanges = ref({});
 
 const fb = ref(null);
 const baseUiTool = computed(() => fb.value?.baseUiTool);
@@ -138,7 +140,10 @@ const onSchemaUpdated = (jsonForms) => {
 const jsonForms = computed(() => {
   let exampleData = {schema:undefined, uischema:undefined} as any;
 
-  if(example.value) {
+  if(jsonFormsExternalChanges.value) {
+    return jsonFormsExternalChanges.value;
+  }
+  else if(example.value) {
     exampleData = getExamples().find(item => item.name===example.value) as any;
     exampleData = JSON.parse(JSON.stringify(exampleData)); //clone
 
@@ -175,6 +180,8 @@ const jsonForms = computed(() => {
       // })
       // console.table(output)
     }
+
+    jsonFormsExternalChanges.value = undefined;
   }
   else {
     const schema = schemaOnly.value ? {} : generateJsonSchema({}) as JsonSchema|any;
