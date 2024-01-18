@@ -13,6 +13,8 @@ import {cloneToolWithSchema} from "../toolCreation";
 import {unknownTool} from "./unknownTool";
 import {toDataPath} from "@jsonforms/core";
 import {ScopeTool} from "./ScopeTool";
+import {buttonRegistry} from "../../composables/buttonRegistry";
+import type {Ref} from "vue";
 
 export class VerticalLayout extends AbstractTool implements ToolInterface {
 
@@ -29,11 +31,35 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
+        const baseUiTool:Ref<ToolInterface|undefined> = context?.fb?.exposed?.baseUiTool;
+        const isBaseUiTool = baseUiTool?.value?.uuid === this.uuid;
+        // const oldChilds = this.edge.childs
+        // const oldElements = this.generateUiSchema()?.elements;
+
+        buttonRegistry.value.set('layoutTool.changeToCategorization', ()=> {
+            if(isBaseUiTool && baseUiTool) {
+               const toolFinder = context?.fb?.exposed?.toolFinder;
+               const tabTool = toolFinder.findLayoutToolByUiType("Categorization");
+               // const uischema = { elements: [{"type": "Category","elements": oldElements ?? [],  }] }
+
+                /**
+                 * :TODO init old elements/childs to first tab (currently control elements are not initialized)
+                 */
+                baseUiTool.value = cloneToolWithSchema(tabTool, {});//uischema);
+                //baseUiTool.value?.initChilds(toolFinder);
+               //oldChilds.forEach(child => baseUiTool.value.edge?.addChild(child));
+
+                context.fb?.exposed?.onModalClose();
+            }
+        });
+
         return {
             options: this.uischema?.options,
             uischemaType: this.uischema.type,
             ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
+            _isBaseUiTool: isBaseUiTool,
+            changeToCategorization: 'layoutTool.changeToCategorization',
         } as any;
     }
 
