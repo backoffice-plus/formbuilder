@@ -91,6 +91,9 @@ export const schema = {
                     type: "boolean",
                 },
             },
+            "additionalProperties": {
+                "type": "string"
+            }
         },
     },
     "required": [
@@ -405,6 +408,17 @@ export const uischema = {
                 {
                     $ref:'rule.uischema'
                 },
+            ]
+        },
+
+        {
+            "type": "Category",
+            "label": "Options",
+            "elements": [
+                {
+                    "scope": "#/properties/options",
+                    "type": "Control"
+                }
             ]
         },
     ]

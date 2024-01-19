@@ -15,6 +15,12 @@
       "changeToCategorization": {
         "type":"string"
       },
+      "options": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      },
       "_isBaseUiTool": {
         "type":"boolean"
       }
@@ -31,6 +37,17 @@
         "elements": [
           {
             "scope": "#/properties/uischemaType",
+            "type": "Control"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Options",
+        "elements": [
+          {
+            "scope": "#/properties/options",
             "type": "Control"
           }
         ]
