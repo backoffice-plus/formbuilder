@@ -334,18 +334,6 @@ export default defineComponent({
     reservedPropertyNames(): string[] {
       return Object.keys(this.control.schema.properties || {});
     },
-    additionalPropertiesTitle(): string | undefined {
-      const additionalProperties = this.control.schema.additionalProperties;
-
-      const label =
-          additionalProperties &&
-          typeof additionalProperties === 'object' &&
-          additionalProperties.title
-              ? additionalProperties.title
-              : 'Additional Properties';
-
-      return this.t(this.i18nKey('title'), label);
-    },
     addToLabel(): string {
       return this.t(
           this.i18nKey('btn.add'),
@@ -434,15 +422,7 @@ export default defineComponent({
 
 
 
-    removeProperty(propName: string): void {
-      this.additionalPropertyItems = this.additionalPropertyItems.filter(
-          (d: any) => d.propertyName !== propName
-      );
-      if (this.control.data && typeof this.control.data === 'object') {
-        delete this.control.data[propName];
-        this.input.handleChange(this.control.path, this.control.data);
-      }
-    },
+
   },
 });
 </script>

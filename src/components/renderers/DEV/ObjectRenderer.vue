@@ -11,10 +11,10 @@
         :cells="control.cells"
     />
 
-    <additional-properties
+    <AdditionalProperties2
         v-if="hasAdditionalProperties && showAdditionalProperties"
         :input="input"
-    ></additional-properties>
+    ></AdditionalProperties2>
   </div>
 </template>
 
@@ -26,15 +26,15 @@ import {useVanillaControl} from '@jsonforms/vue-vanilla';
 import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
 import isObject from 'lodash/isObject';
-import AdditionalProperties from './AdditionalProperties.vue';
 import {useNested} from "./composition";
 import type {ControlElement, GroupLayout, JsonFormsRendererRegistryEntry, UISchemaElement,} from '@jsonforms/core';
+import AdditionalProperties2 from "./AdditionalProperties2.vue";
 
 const controlRenderer = defineComponent({
   name: 'ObjectRenderer',
   components: {
+    AdditionalProperties2,
     DispatchRenderer,
-    AdditionalProperties,
   },
   props: {
     ...rendererProps<ControlElement>(),

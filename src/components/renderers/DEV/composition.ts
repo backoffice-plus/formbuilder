@@ -1,6 +1,6 @@
 import merge from 'lodash/merge';
 import { computed, inject, provide } from 'vue';
-import type {JsonFormsSubStates, UISchemaElement} from '@jsonforms/core';
+import type {JsonFormsSubStates, JsonSchema, UISchemaElement} from '@jsonforms/core';
 import type Ajv from 'ajv';
 import {defaultStyles, Styles} from "@jsonforms/vue-vanilla";
 export interface NestedInfo {
@@ -8,6 +8,15 @@ export interface NestedInfo {
   parentElement?: 'array' | 'object';
 }
 
+export const reuseAjvForSchema = (ajv: Ajv, schema: JsonSchema): Ajv => {
+  if (
+      Object.prototype.hasOwnProperty.call(schema, 'id') ||
+      Object.prototype.hasOwnProperty.call(schema, '$id')
+  ) {
+    ajv.removeSchema(schema);
+  }
+  return ajv;
+};
 
 export const useControlAppliedOptions = <I extends { control: any }>(
   input: I
@@ -80,7 +89,7 @@ const createEmptyStyles = (): Styles => ({
   categorization: {},
 });
 
-export const useStyles = (element?: UISchemaElement): Styles => {
+export const useStyles = (element?: UISchemaElement, moreStyles?:Styles): Styles => {
   const userStyles = inject('styles', defaultStyles);
   if (!element?.options?.styles) {
     return userStyles;
@@ -94,6 +103,9 @@ export const useStyles = (element?: UISchemaElement): Styles => {
   if (element?.options?.styles) {
     merge(styles, element.options.styles);
   }
+
+  moreStyles && merge(styles, moreStyles);
+
   return styles;
 };
 
@@ -133,7 +145,7 @@ export const defaultStyles: BopStyles = {
   },
 };
 
-export interface BopStyles {
+export interface BopStyles extends Styles {
   categorization: {
     root?: string;
     category?: string;

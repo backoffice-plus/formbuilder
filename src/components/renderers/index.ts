@@ -14,9 +14,6 @@ export const formbuilderRenderers = [
     createEntryByModule(ButtonRenderer),
     createEntryByModule(TextRenderer),
 
-    /**
-     * HIER WEITER!!!!
-     */
     //DEV
-    //ObjectRenderer.entry,
+    ObjectRenderer.entry,
 ];
