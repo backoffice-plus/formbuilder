@@ -11,11 +11,10 @@
 
 <script setup lang="ts">
 import type {Ref} from "vue";
-import {computed, inject, ref, watch} from "vue";
-import {createDefaultValue} from '@jsonforms/core';
+import {inject, watch} from "vue";
 import {useJsonFormsControlWithDetail} from "@jsonforms/vue";
-import {AdditionalPropertyType, createAdditionalProperty, isAdditionalPropertyExists, setNewData} from "./utils/additionalProperties";
-import {type BopStyles, defaultStyles, useStyles} from "../composition";
+import type {AdditionalPropertyType} from "./utils/additionalProperties";
+import {createAdditionalProperty, isAdditionalPropertyExists, setNewData, createAdvancedDefaultValue} from "./utils/additionalProperties";
 
 const props = defineProps<{
   input: ReturnType<typeof useJsonFormsControlWithDetail>
@@ -23,7 +22,7 @@ const props = defineProps<{
 
 const control = props.input.control;
 
-const additionalPropertyItems = inject<Ref<AdditionalPropertyType[] | undefined>>("additionalPropertyItems", undefined) ?? (() => {throw "injection 'additionalPropertyItems' not found"})()
+const additionalPropertyItems = inject<Ref<AdditionalPropertyType[]>|undefined>("additionalPropertyItems", undefined) ?? (() => {throw "injection 'additionalPropertyItems' not found"})()
 
 
 const addPropertyDialog = () => {
@@ -34,7 +33,6 @@ const addPropertyDialog = () => {
 }
 
 const addProperty = (newPropertyName:string) => {
-
   const additionalProperty = createAdditionalProperty(newPropertyName, undefined, control.value.schema, control.value.path);
 
   //FIX - create empty object if data is undefined
@@ -51,7 +49,7 @@ const addProperty = (newPropertyName:string) => {
   additionalPropertyItems.value.push(additionalProperty)
 
   if ('object' === typeof control.value?.data && additionalProperty.schema) {
-    control.value.data[newPropertyName] = createDefaultValue(additionalProperty.schema);
+    control.value.data[newPropertyName] = createAdvancedDefaultValue(additionalProperty.schema);
     props.input.handleChange(control.value.path, control.value.data);    // we need always to preserve the key even when the value is "empty"
   }
 }

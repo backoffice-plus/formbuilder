@@ -28,17 +28,21 @@ export const getReservedPropertyNames = (properties: Record<any, any>): string[]
     return Object.keys(properties);
 }
 
-export const getPropSchemaByPattern = (propName: string, patternProperties?: Record<string, any>): JsonSchema | undefined => {
-    const keys = (typeof patternProperties === 'object' && Object.keys(patternProperties)) ?? [];
-    const matchedPattern = Object.keys(keys).find((pattern) => new RegExp(pattern).test(propName));
-
-    return matchedPattern && patternProperties[matchedPattern]
+/**
+ *
+ * "patternProperties": {
+ *     "^S_": { "type": "string" },
+ *     "^I_": { "type": "integer" }
+ *   }
+ */
+export const getPropSchemaByPattern = (propName: string, patternProperties: Record<string, any>): JsonSchema | undefined => {
+    return Object.entries(patternProperties).find(([pattern]) => new RegExp(pattern).test(propName))?.[1];
 }
 
-export const getPropSchema = (propName: string, propValue: any, schema?: JsonSchema) => {
-    let propSchema = getPropSchemaByPattern(propName, schema?.patternProperties)
+export const getPropSchema = (propName: string, propValue: any, schema?: JsonSchema): JsonSchema | undefined => {
+    let propSchema = schema?.patternProperties && getPropSchemaByPattern(propName, schema.patternProperties)
 
-    if (!propSchema && typeof schema?.additionalProperties === 'object') {
+    if (!propSchema && 'object' === typeof schema?.additionalProperties) {
         propSchema = schema.additionalProperties;
     }
 
@@ -58,7 +62,6 @@ export const getPropSchema = (propName: string, propValue: any, schema?: JsonSch
 }
 
 export const getPropUiSchema = (propName: string, propSchema: JsonSchema, path?: string): UISchemaElement | undefined => {
-
     let propUiSchema: UISchemaElement | undefined;
 
     if (['object', 'array'].includes(deriveTypes(propSchema)?.[0])) {
@@ -67,7 +70,9 @@ export const getPropUiSchema = (propName: string, propSchema: JsonSchema, path?:
     } else {
         //FIX
         //propUiSchema = createControlElement(path + '/' + encode(propName)); //NOT WORKING WITH PATH
-        propUiSchema = createControlElement(encode(propName));
+        //propUiSchema = createControlElement(encode(propName)); //ok
+        //propUiSchema = createControlElement('#/properties/'+ encode(propName)); //ok
+        propUiSchema = createControlElement('#'); //ok
     }
 
     return propUiSchema;
@@ -80,7 +85,7 @@ export const createAdditionalProperty = (propName: string, propValue: any, schem
 
     return {
         propertyName: propName,
-        path: composePaths(path, propName),
+        path: composePaths(path ?? '', propName),
         schema: propSchema,
         uischema: propUiSchema,
     };
@@ -145,4 +150,24 @@ export const isAdditionalPropertyExists = (additionalProperty: AdditionalPropert
     ]
 
     return existingPropertyNames.includes(additionalProperty.propertyName);
+}
+
+/**
+ * {type: "string"} //default
+ * {type: ["string","boolean"]} //as array
+ * {oneOf: [{type: "string"}, {type: "boolean"}] } //as oneOf
+ */
+export const createAdvancedDefaultValue = (schema:JsonSchema) => {
+    let checkWithSchema = {...schema};
+
+    if(undefined !== schema.type) {
+        if(Array.isArray(schema.type)) {
+            checkWithSchema.type = schema?.type[0];
+        }
+    }
+    else if(undefined !== schema.oneOf) {
+        checkWithSchema.type = schema.oneOf.find(item => item.type)?.type;
+    }
+
+    return createDefaultValue(checkWithSchema)
 }
