@@ -18,20 +18,20 @@ const schema = {
 
 
             properties: {
-                //  first: {type:"string"},
-                muchMore: {
-                    type: "object",
-                    additionalProperties: {
-                        type: "string",
-                        title: "Additional Properties - much More"
-                    },
-                }
+                 // first: {type:"string"},
+                // muchMore: {
+                //     type: "object",
+                //     additionalProperties: {
+                //         type: "string",
+                //         title: "Additional Properties - much More"
+                //     },
+                // }
             },
 
-            // additionalProperties: {
-            //   type: "string",
-            //   title: "Additional Properties - More"
-            // },
+            additionalProperties: {
+              type: "string",
+              title: "Additional Properties - More"
+            },
         }
     },
 
@@ -61,9 +61,14 @@ const uischema = {
 
 
 export const data = {
-    // more: {
-    //   "second": "111",
-    // },
+    more: {
+      //"fromData": "yes",
+
+        /**
+         * HIER WEITER!!! how to handle boolean & string?!=!=
+         */
+        "boolean": true,
+    },
     // a:1,
     // fooA: "foobarA",
     // //nameA: "nameA",
