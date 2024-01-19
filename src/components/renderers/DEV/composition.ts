@@ -1,12 +1,26 @@
 import merge from 'lodash/merge';
-import { computed, inject, provide } from 'vue';
+import { computed, inject, provide, type ComputedRef } from 'vue';
 import type {JsonFormsSubStates, JsonSchema, UISchemaElement} from '@jsonforms/core';
 import type Ajv from 'ajv';
 import {defaultStyles, Styles} from "@jsonforms/vue-vanilla";
+import {composePaths, Resolve, getFirstPrimitiveProp, computeLabel} from "@jsonforms/core";
 export interface NestedInfo {
   level: number;
   parentElement?: 'array' | 'object';
 }
+
+export const useComputedLabel = <I extends { control: any }>(
+    input: I,
+    appliedOptions: ComputedRef<any>
+) => {
+  return computed((): string => {
+    return computeLabel(
+        input.control.value.label,
+        input.control.value.required,
+        !!appliedOptions.value?.hideRequiredAsterisk
+    );
+  });
+};
 
 export const reuseAjvForSchema = (ajv: Ajv, schema: JsonSchema): Ajv => {
   if (
@@ -77,6 +91,64 @@ export const useTranslator = () => {
   });
 
   return translate;
+};
+export const i18nDefaultMessages = {
+  arraylayout: {
+    add: 'Add',
+    delete: 'Delete',
+    moveUp: 'Move Up',
+    moveDown: 'Move Down',
+    dialogTitle: 'Delete {{ element }}?',
+    dialogText: 'The element will be deleted.',
+    dialogConfirm: 'Delete',
+    dialogCancel: 'Cancel',
+  },
+};
+
+
+/**
+ * Adds styles, appliedOptions and childUiSchema
+ */
+export const useBoPlusArrayControl = <I extends { control: any }>(input: I) => {
+  const appliedOptions = useControlAppliedOptions(input);
+
+  const computedLabel = useComputedLabel(input, appliedOptions);
+
+  const childLabelForIndex = (index: number | null) =>
+      childLabelForIndexWithInput(input, index);
+
+  return {
+    ...input,
+    styles: useStyles(input.control.value.uischema),
+    appliedOptions,
+    childLabelForIndex,
+    computedLabel,
+  };
+};
+
+export const childLabelForIndexWithInput = (input: any, index: number | null) => {
+  if (index === null) {
+    return '';
+  }
+  const childLabelProp =
+      input.control.value.uischema.options?.childLabelProp ??
+      getFirstPrimitiveProp(input.control.value.schema);
+
+  if (!childLabelProp) {
+    return `${index}`;
+  }
+  const labelValue = Resolve.data(
+      input.control.value.data,
+      composePaths(`${index}`, childLabelProp)
+  );
+  if (
+      labelValue === undefined ||
+      labelValue === null ||
+      Number.isNaN(labelValue)
+  ) {
+    return '';
+  }
+  return `${labelValue}`;
 };
 
 const createEmptyStyles = (): Styles => ({

@@ -1,5 +1,6 @@
 <template>
 
+
   <header :class="styles.objectAddProps.toolbar">
     <label>{{ additionalPropertiesTitle }}</label>
 
@@ -47,7 +48,8 @@ const control = props.input.control;
 
 //const t = useTranslator();
 //const appliedOptions = useControlAppliedOptions(props.input);
-const additionalPropertyItems = inject<Ref<AdditionalPropertyType[] | undefined>>("additionalPropertyItems", undefined);//?? (() => {throw "injection 'additionalPropertyItems' not found"})()
+const additionalPropertyItems = inject<Ref<AdditionalPropertyType[] | undefined>>("additionalPropertyItems", undefined) ?? (() => {throw "injection 'additionalPropertyItems' not found"})()
+
 
 const styles = useStyles(control.value.uischema, defaultStyles) as BopStyles;
 

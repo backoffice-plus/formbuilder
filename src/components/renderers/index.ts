@@ -6,7 +6,8 @@ import * as ButtonRenderer from "./ButtonRenderer.vue";
 import * as TextRenderer from "./TextRenderer.vue";
 
 //DEV
-import * as ObjectRenderer from "./DEV/ObjectRenderer.vue";
+import * as ObjectRenderer from "./DEV/ObjectRendererWithAdditionalProperties.vue";
+import * as GroupRendererSloted from "./DEV/GroupRendererSloted.vue";
 
 export const formbuilderRenderers = [
     createEntryByModule(DisclosureRenderer),
@@ -16,4 +17,5 @@ export const formbuilderRenderers = [
 
     //DEV
     ObjectRenderer.entry,
+    GroupRendererSloted.entry,
 ];

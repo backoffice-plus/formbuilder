@@ -1,7 +1,7 @@
 <template>
   <div v-if="control.visible">
 
-    <dispatch-renderer
+    <DispatchRendererSloted
         :visible="control.visible"
         :enabled="control.enabled"
         :schema="control.schema"
@@ -9,19 +9,30 @@
         :path="control.path"
         :renderers="control.renderers"
         :cells="control.cells"
-    />
+    >
 
-    <AdditionalProperties2
-        v-if="hasAdditionalProperties && showAdditionalProperties"
-        :input="input"
-    ></AdditionalProperties2>
+      <template #header="{label}">
+        <div class="flex justify-between">
+          {{ label }}
+          <ButtonWithDialog :input="input"/>
+        </div>
+      </template>
+
+      <ItemList
+          v-if="showAdditionalProperties"
+          :input="input"
+      />
+
+    </DispatchRendererSloted>
+
+
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from 'vue';
-import {Generate, findUISchema, isObjectControl, rankWith,} from '@jsonforms/core';
-import {DispatchRenderer, rendererProps, useJsonFormsControlWithDetail, type RendererProps} from '@jsonforms/vue';
+import {defineComponent, provide, ref, Ref} from 'vue';
+import {Generate, findUISchema, isObjectControl, rankWith, and, schemaMatches} from '@jsonforms/core';
+import {rendererProps, useJsonFormsControlWithDetail, type RendererProps} from '@jsonforms/vue';
 import {useVanillaControl} from '@jsonforms/vue-vanilla';
 import cloneDeep from 'lodash/cloneDeep';
 import isEmpty from 'lodash/isEmpty';
@@ -29,12 +40,20 @@ import isObject from 'lodash/isObject';
 import {useNested} from "./composition";
 import type {ControlElement, GroupLayout, JsonFormsRendererRegistryEntry, UISchemaElement,} from '@jsonforms/core';
 import AdditionalProperties2 from "./AdditionalProperties2.vue";
+import HeaderLine from "./AdditionalProperties/HeaderLine.vue";
+import {AdditionalPropertyType, createAdditionProperties} from "./AdditionalProperties/utils/additionalProperties";
+import ItemList from "./AdditionalProperties/ItemList.vue";
+import ButtonWithDialog from "./AdditionalProperties/ButtonWithDialog.vue";
+import DispatchRendererSloted from "./DispatchRendererSloted.vue";
 
 const controlRenderer = defineComponent({
   name: 'ObjectRenderer',
   components: {
+    DispatchRendererSloted,
+    ButtonWithDialog,
+    ItemList,
+    HeaderLine,
     AdditionalProperties2,
-    DispatchRenderer,
   },
   props: {
     ...rendererProps<ControlElement>(),
@@ -42,6 +61,12 @@ const controlRenderer = defineComponent({
   setup(props: RendererProps<ControlElement>) {
     const control = useVanillaControl(useJsonFormsControlWithDetail(props));
     const nested = useNested('object');
+
+    const additionalPropertyItems: Ref<AdditionalPropertyType[]> = ref(createAdditionProperties(control.control.value.schema, control.control.value?.data, control.control.value.path));
+    provide("additionalPropertyItems", additionalPropertyItems)
+
+    console.log("additionalPropertyItems", {schema:control.control.value.schema, data:control.control.value?.data, additionalPropertyItems:additionalPropertyItems.value})
+
     return {
       ...control,
       input: control,
@@ -49,16 +74,8 @@ const controlRenderer = defineComponent({
     };
   },
   computed: {
-    hasAdditionalProperties(): boolean {
-      return (
-          !isEmpty(this.control.schema.patternProperties) ||
-          isObject(this.control.schema.additionalProperties)
-          // do not support - additionalProperties === true - since then the type should be any and we won't know what kind of renderer we should use for new properties
-      );
-    },
     showAdditionalProperties(): boolean {
-      const showAdditionalProperties =
-          this.control.uischema.options?.showAdditionalProperties;
+      const showAdditionalProperties =  this.control.uischema.options?.showAdditionalProperties;
       return (
           showAdditionalProperties === undefined ||
           showAdditionalProperties === true
@@ -66,7 +83,7 @@ const controlRenderer = defineComponent({
     },
     detailUiSchema(): UISchemaElement {
       const uiSchemaGenerator = () => {
-        const uiSchema = Generate.uiSchema(this.control.schema, 'Group');
+        const uiSchema = Generate.uiSchema(this.control.schema, 'GroupSloted');
         if (isEmpty(this.control.path)) {
           uiSchema.type = 'VerticalLayout';
         } else {
@@ -103,6 +120,9 @@ const controlRenderer = defineComponent({
 export default controlRenderer;
 export const entry: JsonFormsRendererRegistryEntry = {
   renderer: controlRenderer,
-  tester: rankWith(3, isObjectControl),
+  tester: rankWith(4, and(isObjectControl, schemaMatches((schema)=> {
+    // do not support - additionalProperties === true - since then the type should be any and we won't know what kind of renderer we should use for new properties
+    return !isEmpty(schema.patternProperties) || isObject(schema.additionalProperties)
+  }))),
 };
 </script>

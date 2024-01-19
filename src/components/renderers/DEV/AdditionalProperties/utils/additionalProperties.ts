@@ -20,7 +20,7 @@ export const createAdditionProperties = (schema: JsonSchema, data: any, path?: s
 export const getAdditionalKeys = (data: any, schema: JsonSchema): string[] => {
     const reservedPropertyNames = getReservedPropertyNames(schema?.properties ?? {});
 
-    return Object.keys(isPlainObject(data) ?? {})
+    return Object.keys(isPlainObject(data) ? data : {})
         .filter(k => !reservedPropertyNames.includes(k))
 }
 
