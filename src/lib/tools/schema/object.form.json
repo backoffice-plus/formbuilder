@@ -7,16 +7,13 @@
         "type":"boolean",
         "title":"by boolean"
       },
-      "additionalProperties--VeryLimited": {
+      "additionalPropertiesSingleType": {
         "type": "object",
         "title":"by type",
         "properties": {
           "type": {
             "type": "string",
             "enum": ["string","number","integer","boolean","array"]
-          },
-          "title": {
-            "type": "string"
           }
         },
         "required": ["type"]
@@ -34,7 +31,11 @@
         "type":"object",
         "properties": {
           "additionalProperties": {
-            "type":"object"
+            "anyOf": [
+              {"$ref":"#/definitions/additionalPropertiesFalse"},
+              {"$ref":"#/definitions/additionalPropertiesSingleType"},
+              {}
+            ]
           }
         }
       },
@@ -92,15 +93,36 @@
             "label": "Additional Properties",
             "elements": [
               {
-                "scope": "#/properties/schema/properties/additionalProperties",
-                "type": "Formbuilder",
-                "options": {
-                  "schemaOnly": true,
-                  "baseTool": "schema",
-                  "baseToolProps": {
-                    "prefixLabel": "Additional Properties"
+                "type": "Categorization",
+                "elements": [
+                  {
+                    "type": "Category",
+                    "label": "use Select",
+                    "elements": [
+                      {
+                        "scope": "#/properties/schema/properties/additionalProperties",
+                        "type": "Control"
+                      }
+                    ]
+                  },
+                  {
+                    "type": "Category",
+                    "label": "use Formbuilder",
+                    "elements": [
+                      {
+                        "scope": "#/properties/schema/properties/additionalProperties",
+                        "type": "Formbuilder",
+                        "options": {
+                          "schemaOnly": true,
+                          "baseTool": "schema",
+                          "baseToolProps": {
+                            "prefixLabel": "Additional Properties"
+                          }
+                        }
+                      }
+                    ]
                   }
-                }
+                ]
               }
             ]
           }
