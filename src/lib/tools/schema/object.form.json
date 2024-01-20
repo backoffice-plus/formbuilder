@@ -7,7 +7,7 @@
         "type":"boolean",
         "title":"by boolean"
       },
-      "additionalProperties": {
+      "additionalProperties--VeryLimited": {
         "type": "object",
         "title":"by type",
         "properties": {
@@ -34,10 +34,7 @@
         "type":"object",
         "properties": {
           "additionalProperties": {
-            "oneOf": [
-              {"$ref":"#/definitions/additionalPropertiesFalse"},
-              {"$ref":"#/definitions/additionalProperties"}
-            ]
+            "type":"object"
           }
         }
       },
@@ -91,8 +88,21 @@
           },
 
           {
-            "scope": "#/properties/schema/properties/additionalProperties",
-            "type": "Control"
+            "type": "Group",
+            "label": "Additional Properties",
+            "elements": [
+              {
+                "scope": "#/properties/schema/properties/additionalProperties",
+                "type": "Formbuilder",
+                "options": {
+                  "schemaOnly": true,
+                  "baseTool": "schema",
+                  "baseToolProps": {
+                    "prefixLabel": "Additional Properties"
+                  }
+                }
+              }
+            ]
           }
         ]
       },
