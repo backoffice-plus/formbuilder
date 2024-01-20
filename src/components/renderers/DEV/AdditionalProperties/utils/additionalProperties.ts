@@ -71,9 +71,11 @@ export const getPropUiSchema = (propName: string, propSchema: JsonSchema, path?:
         //FIX
         //propUiSchema = createControlElement(path + '/' + encode(propName)); //NOT WORKING WITH PATH
         //propUiSchema = createControlElement(encode(propName)); //ok
-        //propUiSchema = createControlElement('#/properties/'+ encode(propName)); //ok
-        propUiSchema = createControlElement('#'); //ok
+        //propUiSchema = createControlElement('#/properties/'+ encode(propName)); //ok, but no value
+        propUiSchema = createControlElement('#'); //ok - but label is empty
     }
+
+    propUiSchema.label =  startCase(propName);
 
     return propUiSchema;
 }
