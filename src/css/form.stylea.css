@@ -472,8 +472,8 @@ fieldset.styleA.group .group-item {
 .styleA .object-addprops-items > div {
     @apply flex
 }
-.styleA .object-addprops-items > div *:first-child {
-    @apply w-full
+.styleA .object-addprops-items > div > *:first-child {
+  @apply flex-grow
 }
 .styleA .object-addprops-items > div > button {
     color:var(--text-color-error);
