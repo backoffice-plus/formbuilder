@@ -2,7 +2,7 @@ import merge from 'lodash/merge';
 import { computed, inject, provide, type ComputedRef } from 'vue';
 import type {JsonFormsSubStates, JsonSchema, UISchemaElement} from '@jsonforms/core';
 import type Ajv from 'ajv';
-import {defaultStyles, Styles} from "@jsonforms/vue-vanilla";
+import {defaultStyles as JfDefaultStyles, Styles} from "@jsonforms/vue-vanilla";
 import {composePaths, Resolve, getFirstPrimitiveProp, computeLabel} from "@jsonforms/core";
 export interface NestedInfo {
   level: number;
@@ -151,7 +151,7 @@ export const childLabelForIndexWithInput = (input: any, index: number | null) =>
   return `${labelValue}`;
 };
 
-const createEmptyStyles = (): Styles => ({
+const createEmptyStyles = (): Styles|any => ({
   control: {},
   verticalLayout: {},
   horizontalLayout: {},
@@ -162,7 +162,7 @@ const createEmptyStyles = (): Styles => ({
 });
 
 export const useStyles = (element?: UISchemaElement, moreStyles?:Styles): Styles => {
-  const userStyles = inject('styles', defaultStyles);
+  const userStyles = inject('styles', JfDefaultStyles);
   if (!element?.options?.styles) {
     return userStyles;
   }
@@ -170,7 +170,7 @@ export const useStyles = (element?: UISchemaElement, moreStyles?:Styles): Styles
   if (userStyles) {
     merge(styles, userStyles);
   } else {
-    merge(styles, defaultStyles);
+    merge(styles, JfDefaultStyles);
   }
   if (element?.options?.styles) {
     merge(styles, element.options.styles);
@@ -182,7 +182,7 @@ export const useStyles = (element?: UISchemaElement, moreStyles?:Styles): Styles
 };
 
 
-export const defaultStyles: BopStyles = {
+export const defaultStyles: BopStyles|any = {
   categorization: {
     root: 'categorization',
     category: 'tabs',

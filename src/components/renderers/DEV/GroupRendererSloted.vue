@@ -13,7 +13,7 @@
     <slot />
 
     <div
-        v-for="(element, index) in layout.uischema.elements"
+        v-for="(element, index) in elements"
         :key="`${layout.path}-${index}`"
         :class="styles.group.item"
     >
@@ -33,6 +33,7 @@
 import {
   type JsonFormsRendererRegistryEntry,
   type Layout,
+  type GroupLayout,
   rankWith,
   and,
   isLayout,
@@ -51,7 +52,9 @@ const layoutRenderer = defineComponent({
     ...rendererProps<Layout>(),
   },
   setup(props: RendererProps<Layout>) {
-    return useVanillaLayout(useJsonFormsLayout(props));
+    const c = useVanillaLayout(useJsonFormsLayout(props));
+    const elements = (c.layout.value.uischema as GroupLayout).elements
+    return {...c, elements}
   },
 });
 

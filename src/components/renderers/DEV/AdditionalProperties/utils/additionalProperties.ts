@@ -2,6 +2,7 @@ import type {GroupLayout, JsonSchema, JsonSchema7, UISchemaElement} from "@jsonf
 import {composePaths, createControlElement, createDefaultValue, deriveTypes, encode, Generate} from "@jsonforms/core";
 import startCase from "lodash/startCase";
 import isPlainObject from "lodash/isPlainObject";
+import {ControlElement} from "@jsonforms/core/src/models/uischema";
 
 export type AdditionalPropertyType = {
     propertyName: string
@@ -75,7 +76,7 @@ export const getPropUiSchema = (propName: string, propSchema: JsonSchema, path?:
         propUiSchema = createControlElement('#'); //ok - but label is empty
     }
 
-    propUiSchema.label =  startCase(propName);
+    (propUiSchema as ControlElement).label =  startCase(propName);
 
     return propUiSchema;
 }

@@ -41,7 +41,7 @@ const control = props.input.control;
 
 const styles = useStyles(control.value.uischema, defaultStyles) as BopStyles;
 
-const additionalPropertyItems = inject<Ref<AdditionalPropertyType[] | undefined>>("additionalPropertyItems", undefined) ?? (() => {throw "injection 'additionalPropertyItems' not found"})()
+const additionalPropertyItems = inject<Ref<AdditionalPropertyType[]> | undefined>("additionalPropertyItems", undefined) ?? (() => {throw "injection 'additionalPropertyItems' not found"})()
 
 const removeProperty = (propName: string) => {
   additionalPropertyItems.value = additionalPropertyItems.value.filter((d: any) => d.propertyName !== propName);
