@@ -481,6 +481,35 @@ fieldset.styleA.group .group-item {
 }
 
 
+.styleA .object-addprops-items .oneof {
+    @apply flex-grow
+}
+.styleA .object-addprops-items .oneof > .control > .wrapper {
+    display: grid;
+    grid-template-columns:1fr minmax(100px,200px);
+    grid-template-areas:"input select";
+}
+.styleA .object-addprops-items .oneof > .control > .wrapper > .oneof-select {
+    grid-area: select;
+    width:200px
+}
+.styleA .object-addprops-items .oneof > .control > .wrapper > .vertical-layout {
+    grid-area: input;
+    @apply flex-grow
+}
+
+.styleA .object-addprops-items .oneof > .control > .wrapper .vertical-layout-item > .control > label {
+    @apply hidden
+}
+.styleA .object-addprops-items .oneof > .control > .wrapper select.oneof-select {
+    height: min-content;
+}
+.styleA .object-addprops-items .oneof > .control > .wrapper .oneof-select + div {
+    @apply pl-0
+}
+
+
+
 .styleA .enum-array {
     @apply flex flex-col items-start
 }
