@@ -96,7 +96,7 @@ export const schema = {
                 oneOf: [
                     {type:"string","title":"string"},
                     {type:"boolean","title":"boolean"},
-                    // {type:"number","title":"number"},
+                    {type:"number","title":"number"},
                     // {type:"array",items:{type:"string"},"title":"array of strings"},
                     // {type:"array",items:{type:"number"},"title":"array of number"},
                 ],
