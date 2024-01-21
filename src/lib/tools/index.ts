@@ -13,7 +13,7 @@ import {constTool} from "./constTool";
 import {listWithDetailTool} from "./ListWithDetailTool";
 import {layoutRefTool} from "./LayoutRefTool";
 import {schemaTool} from "./SchemaTool";
-import {schemaOnlyChildsTool} from "./SchemaOnlyChildsTool";
+//import {schemaOnlyChildsTool} from "./SchemaOnlyChildsTool";
 import {scopeTool} from "./ScopeTool";
 export type {JsonFormsInterface, JsonFormsUISchema} from "../models";
 
@@ -27,7 +27,7 @@ export const defaultTools = [
     objectTool,
     arrayTool,
     schemaTool,
-    schemaOnlyChildsTool,
+    //schemaOnlyChildsTool,
     combinatorTool,
 
     //layout

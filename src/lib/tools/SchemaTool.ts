@@ -30,9 +30,12 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         let type = this.schema.type;
 
         const data = {
-            type: type,
             _isBaseTool: isBaseTool,
         } as any;
+
+        if(this.schema.type) {
+            data.type = this.schema.type;
+        }
 
         if(this.propertyName) {
             data.propertyName = this.propertyName;
@@ -56,13 +59,12 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         //     this.keyword = keyword;
         // }
 
-        const schema = {...data}
-        delete schema.propertyName;
-        delete schema._isBaseTool;
+        delete data._isBaseTool;
+        delete data.propertyName;
 
         this.schema = {
             ...this.schema,
-            ...schema
+            ...data
         }
     }
 
@@ -91,90 +93,133 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
 
         let schema = this.schema;
 
-        const propertiesDefinedByChilds = [
-            // //schema
-            "if",
-            "then",
-            "else",
-            "not",
-            // "contains",
-            // "propertyNames",
-            // "additionalItems",
-            // "additionalProperties",
-            //
-            // //object
-            //"properties",
-            // "definitions",
-            // "patternProperties",
-            // "dependencies",
-            //
-            // //array
-            // "allOf",
-            // "anyOf",
-            // "oneOf",
-            // "items"
-        ];
+        // const propertiesDefinedByChilds = [
+        //     // //schema
+        //     "if",
+        //     "then",
+        //     "else",
+        //     "not",
+        //     // "contains",
+        //     // "propertyNames",
+        //     // "additionalItems",
+        //      "additionalProperties",
+        //     //
+        //     // //object
+        //     //"properties",
+        //     // "definitions",
+        //     // "patternProperties",
+        //     // "dependencies",
+        //     //
+        //     // //array
+        //     // "allOf",
+        //     // "anyOf",
+        //     // "oneOf",
+        //     // "items"
+        // ];
+        //
+        // const schemaByKeys = {} as any;
+        // propertiesDefinedByChilds.forEach(key => schemaByKeys[key] = undefined)
+        //
+        // this.edge.childs.forEach((childTool: ToolInterface) => {
+        //     const propertyName = childTool.propertyName;
+        //     let childSchema = childTool.generateJsonSchema();
+        //
+        //     if(childSchema) {
+        //         if(propertyName && propertiesDefinedByChilds.includes(propertyName)) {
+        //                 let setSchema = childSchema as any;
+        //
+        //                 switch (propertyName) {
+        //                     case "properties":
+        //                     case "definitions":
+        //                     case "patternProperties":
+        //                     case "dependencies":
+        //                         if(childSchema.properties) {
+        //                             setSchema = childSchema.properties
+        //                         }
+        //                         break;
+        //
+        //                     case "allOf":
+        //                     case "anyOf":
+        //                     case "oneOf":
+        //                     case "items":
+        //                         if(childSchema.items) {
+        //                             setSchema = childSchema.items as JsonSchema
+        //                             childTool.schema = childSchema;
+        //
+        //                             if((childTool as any).isSchemaItem) {
+        //                                 setSchema = (childSchema.items as any)[0] as JsonSchema
+        //                                 childTool.schema.items = setSchema;
+        //                             }
+        //                         }
+        //                         break;
+        //
+        //                     default:
+        //                         break;
+        //                 }
+        //
+        //                 schemaByKeys[propertyName] = setSchema;
+        //
+        //         }
+        //         else {
+        //             schema = {
+        //                 ...schema,
+        //                 ...childSchema
+        //             } as JsonSchema;
+        //         }
+        //     }
+        // });
 
-        const schemaByKeys = {} as any;
-        propertiesDefinedByChilds.forEach(key => schemaByKeys[key] = undefined)
 
-        this.childs.forEach((childTool: ToolInterface) => {
-            const propertyName = childTool.propertyName;
-            let childSchema = childTool.generateJsonSchema();
+        const firstChild = this.edge.childs[0]; //SchemaTool MUST have only one child!
+        const newSchema = firstChild?.generateJsonSchema();
 
-            if(childSchema) {
-                if(propertyName && propertiesDefinedByChilds.includes(propertyName)) {
-                        let setSchema = childSchema as any;
+        console.log("SchemaTool.generateJsonSchema", {thiss:this,newSchema})
 
-                        switch (propertyName) {
-                            case "properties":
-                            case "definitions":
-                            case "patternProperties":
-                            case "dependencies":
-                                if(childSchema.properties) {
-                                    setSchema = childSchema.properties
-                                }
-                                break;
-
-                            case "allOf":
-                            case "anyOf":
-                            case "oneOf":
-                            case "items":
-                                if(childSchema.items) {
-                                    setSchema = childSchema.items as JsonSchema
-                                    childTool.schema = childSchema;
-
-                                    if((childTool as any).isSchemaItem) {
-                                        setSchema = (childSchema.items as any)[0] as JsonSchema
-                                        childTool.schema.items = setSchema;
-                                    }
-                                }
-                                break;
-
-                            default:
-                                break;
-                        }
-
-                        schemaByKeys[propertyName] = setSchema;
-
-                }
-                else {
-                    schema = {
-                        ...schema,
-                        ...childSchema
-                    } as JsonSchema;
-                }
-            }
-        });
-
-
-        schema = {...schema, ...schemaByKeys} as JsonSchema;
-
-        return !_.isEmpty(schema) ? schema : undefined;
+        return !_.isEmpty(newSchema) ? newSchema : undefined;
     }
 
 
     initChilds(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
+        const tools = [] as Array<ToolInterface>;
+
+        //for moving existing tools to another list
+        if(this.edge.childs?.length || this.edge.childsInitialized) {
+            return this.edge.childs;
+        }
+
+        if(_.isEmpty(this.schema)) {
+            return [];
+        }
+
+        const schema = {...this.schema}
+        const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+
+        console.log("SchemaTool.initChilds", {thiss:this,schema:this.schema})
+
+        if(!schema.type) {
+            if("properties" in schema) {
+                schema.type = 'object';
+            }
+            else if("required" in schema) {
+                schema.type = 'object';
+            }
+            // else {
+            //     console.warn("schema has no type: "+ schema)
+            // }
+        }
+
+        const clone = toolFinder.findMatchingToolAndClone({}, schema, uischema);
+
+        clone.edge.setParent(this);
+        clone.edge.replaceChilds(clone.initChilds(toolFinder));
+        tools.push(clone);
+
+        console.log("SchemaTool.initChilds findMatchingToolAndClone", {schema, clone})
+
+        return tools;
+    }
+
+    initChildsOld(toolFinder: ToolFinderInterface, baseSchemaTool: ToolInterface | undefined = undefined): ToolInterface[] {
         const tools = [] as Array<ToolInterface>;
 
         //for moving existing tools to another list

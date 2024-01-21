@@ -103,7 +103,13 @@
                         "scope": "#/properties/schema/properties/additionalProperties",
                         "type": "Control"
                       }
-                    ]
+                    ],
+                    "rule": {
+                      "effect": "HIDE",
+                      "condition": {
+                        "scope": "#"
+                      }
+                    }
                   },
                   {
                     "type": "Category",
