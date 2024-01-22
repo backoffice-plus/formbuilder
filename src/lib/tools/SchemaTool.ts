@@ -196,7 +196,7 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         }
 
         const schemaTools = toolFinder.getTypedTools().control;
-        const matchingTool = toolFinder.findMatchingTool(baseSchemaTool?.schema, schema, uischema, schemaTools);
+        const matchingTool = toolFinder.findMatchingTool(baseSchemaTool?.schema ?? {}, schema, uischema, schemaTools);
         const clone = cloneEmptyTool(matchingTool, schema)
 
         clone.edge.setParent(this);

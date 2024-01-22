@@ -90,8 +90,8 @@ const featuresAll:Feature[] = [
 
 
 const features = computed(() => {
-  const schemaKeys = Array.from(Object.keys(props.tool.schema ?? {})).filter(name => isNotEmpty(props.tool.schema[name]));
-  const uischemaKeys = Array.from(Object.keys(props.tool.uischema ?? {})).filter(name => isNotEmpty(props.tool.uischema[name]));
+  const schemaKeys = Array.from(Object.keys(props.tool.schema ?? {})).filter(name => isNotEmpty((props.tool?.schema as any)[name]));
+  const uischemaKeys = Array.from(Object.keys(props.tool.uischema ?? {})).filter(name => isNotEmpty(props.tool?.uischema[name]));
 
   const hasFeature = (keysExists: string[], keysFound: string[]) => keysExists?.find(x => keysFound.includes(x));
 
