@@ -1,10 +1,7 @@
 <template>
 
-  <span v-if="hasRules" class="f" title="has Rules">R</span>
-  <span v-if="hasDefinitions" class="f" title="has Definitions">D</span>
-  <span v-if="hasConditionals" class="f" title="has Conditionals">C</span>
-  <span v-if="hasDetail" class="f" title="has Detail Layout">L</span>
-
+  <span class="f" :title="feature.hoverLabel" v-for="feature in features">{{ feature.value }}</span>
+  <!--  <span class="f" :title="JSON.stringify(tool.schema )" >?</span>-->
 
 </template>
 
@@ -12,9 +9,9 @@
 <style scoped>
 .f {
   background-color: var(--toolItem-icon);
-  color:var(--base-100);
+  color: var(--base-100);
   @apply
-  block h-3.5 w-3.5
+  block h-3.5 w-3.5 aspect-square
   font-mono text-xs
   rounded-full
   flex items-center justify-center
@@ -22,20 +19,89 @@
 }
 </style>
 
-<script setup>
+<script setup lang="ts">
 import {computed} from 'vue'
-import {Icon} from "@iconify/vue";
-import * as _ from 'lodash-es';
+import {ToolInterface} from "../../../lib/models";
+import {isNotEmpty} from "../../../lib/schemaUtil";
+import {schemaKeys as conditionalSchemaKeys} from "../../../lib/tools/subschemas/conditional";
+import {schemaKeys as validationSchemaKeys} from "../../../lib/tools/subschemas/validation";
 
-const props = defineProps({
-  tool: Object,//ToolInterface
+type SchemaFeature = {
+  value: string,
+  hoverLabel: string,
+  schemaKeys: string[],
+};
+type UischemaFeature = {
+  value: string,
+  hoverLabel: string,
+  uischemaKeys: string[],
+};
+type Feature = SchemaFeature|UischemaFeature
+
+
+const props = defineProps<{
+  tool: ToolInterface
+}>()
+
+const featuresAll:Feature[] = [
+  /**
+   * SCHEMA
+   */
+  {
+    value: "D",
+    hoverLabel: "has Definitions",
+    schemaKeys: ["definitions", "$defs"],
+  },
+  {
+    value: "C",
+    hoverLabel: "has Conditionals",
+    schemaKeys: conditionalSchemaKeys
+  },
+  {
+    value: "V",
+    hoverLabel: "has Validations",
+    schemaKeys: validationSchemaKeys,
+  },
+  {
+    value: "+",
+    hoverLabel: "has Additional Properties",
+    schemaKeys: ["additionalProperties"],
+  },
+
+  /**
+   * UI SCHEMA
+   */
+  {
+    value: "R",
+    hoverLabel: "has Rules",
+    uischemaKeys: ["rule"],
+  },
+  {
+    value: "O",
+    hoverLabel: "has Options",
+    uischemaKeys: ["options"],
+  },
+  // {
+  //   value: "L",
+  //   hoverLabel: "has Detail Layout",
+  //   uischemaKeys: [],
+  // },
+];
+
+
+const features = computed(() => {
+  const schemaKeys = Array.from(Object.keys(props.tool.schema ?? {})).filter(name => isNotEmpty(props.tool.schema[name]));
+  const uischemaKeys = Array.from(Object.keys(props.tool.uischema ?? {})).filter(name => isNotEmpty(props.tool.uischema[name]));
+
+  const hasFeature = (keysExists: string[], keysFound: string[]) => keysExists?.find(x => keysFound.includes(x));
+
+  const hasScope = !!props.tool?.uischema?.scope
+
+  return featuresAll.filter(feature => {
+    if ("schemaKeys" in feature && hasScope && hasFeature(feature?.schemaKeys ?? [], schemaKeys)) return true;
+    if ("uischemaKeys" in feature && hasFeature(feature?.uischemaKeys ?? [], uischemaKeys)) return true;
+  })
 })
 
-
-const hasRules = computed(() => !_.isEmpty(props.tool.uischema?.rule));
-const hasDefinitions = computed(() => (!_.isEmpty(props.tool.schema?.definitions) || !_.isEmpty(props.tool.schema?.['$defs'])) && !couldBeLayoutTool.value);
-const hasConditionals = computed(() => !_.isEmpty(props.tool.schema?.if) && !couldBeLayoutTool.value);
-const hasDetail = computed(() => !_.isEmpty(props.tool.uischema?.options?.detail) && !couldBeLayoutTool.value);
-const couldBeLayoutTool = computed(() => props.tool?.uischema?.type && 'Control' !== props.tool?.uischema.type);
 
 </script>

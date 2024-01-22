@@ -1,5 +1,6 @@
 import {ToolInterface} from "./models";
 import {JsonSchema} from "@jsonforms/core";
+import * as _ from "lodash-es";
 
 export const findAllScopablePaths = (baseTool:ToolInterface, parentPath='#') => {
 
@@ -36,4 +37,37 @@ export const findAllScopablePathsBySchema = (schema?:JsonSchema, parentPath='#')
     });
 
     return currentProperties.flat()
+}
+
+/**
+ *
+ * isNotEmpty(undefined) -> false
+ * isNotEmpty({}) -> false
+ * isNotEmpty([]) -> false
+ * isNotEmpty('') -> false
+ *
+ *
+ * isNotEmpty(1) -> true
+ * isNotEmpty('1') -> true
+ * isNotEmpty(true) -> true
+ * isNotEmpty([1]) -> true
+ * isNotEmpty({a:1}) -> true
+ */
+export const isNotEmpty = (value?:any):boolean => {
+    const hasValue = undefined !== value && null !== value
+    let hasLength = false;
+
+    if(hasValue) {
+        switch (typeof value) {
+            case "object" : hasLength = !_.isEmpty(value); break;
+            case "string" :
+                hasLength = !!value.length;
+                break;
+            default:
+                hasLength = true
+                break;
+        }
+    }
+
+    return hasLength;
 }
