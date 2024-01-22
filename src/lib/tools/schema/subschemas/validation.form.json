@@ -160,7 +160,38 @@
           {
             "scope": "#/properties/validation/properties/uniqueItems",
             "type": "Control"
+          },
+
+          {
+            "type": "Disclosure",
+            "label": "Contains",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/contains",
+                "type": "Formbuilder",
+                "options": {
+                  "schemaOnly": true,
+                  "baseTool": "schema"
+                }
+              }
+            ]
+          },
+
+          {
+            "type": "Disclosure",
+            "label": "Additional Items",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/additionalItems",
+                "type": "Formbuilder",
+                "options": {
+                  "schemaOnly": true,
+                  "baseTool": "schema"
+                }
+              }
+            ]
           }
+
         ],
         "rule": {
           "effect": "SHOW",

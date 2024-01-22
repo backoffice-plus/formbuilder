@@ -6,7 +6,7 @@ import _ from "lodash";
 
 export const schemaKeysString = ['minLength', 'maxLength', 'pattern'] as Array<string>;
 export const schemaKeysNumber = ['minimum', 'maximum', 'multipleOf', 'exclusiveMinimum', 'exclusiveMaximum'] as Array<string>;
-export const schemaKeysArray = ['minItems', 'maxItems', 'uniqueItems'] as Array<string>;
+export const schemaKeysArray = ['minItems', 'maxItems', 'uniqueItems', 'contains', 'additionalItems'] as Array<string>;
 export const schemaKeysObject = ['minProperties', 'maxProperties',  'dependentRequired', 'propertyNames', 'patternProperties'] as Array<string>;
 export const schemaKeys = [...schemaKeysString, ...schemaKeysNumber, ...schemaKeysArray, ...schemaKeysObject, 'not'] as Array<string>;
 
