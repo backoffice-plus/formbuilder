@@ -7,7 +7,7 @@ import jsonFormAsSchemaChild from "./schema/object.asSchemaChild.form.json";
 import {rankWith, setSchema} from "@jsonforms/core";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import * as subschemas from "./subschemas";
-import {SchemaTool} from "./SchemaTool";
+import {cleanEmptySchema, SchemaTool} from "./SchemaTool";
 import * as _ from 'lodash-es';
 import {cloneEmptyTool} from "../toolCreation";
 import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
@@ -56,9 +56,11 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
+        console.log("ObjectTool.updateData",{data});
+
         this.propertyName = data?.propertyName ?? '';
         this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
-        this.schema.additionalProperties = data.schema.additionalProperties;
+        this.schema.additionalProperties = cleanEmptySchema(data.schema.additionalProperties);
 
         const isUischema = 'uischema' === context?.builder;
 
@@ -116,6 +118,8 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
                 }
             }
         });
+
+        console.log("ObjectTool.generateJsonSchema",{tool:this});
 
         return {
             ...this.schema,

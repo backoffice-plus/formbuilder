@@ -170,7 +170,7 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         const firstChild = this.edge.childs[0]; //SchemaTool MUST have only one child!
         const newSchema = firstChild?.generateJsonSchema();
 
-        return !_.isEmpty(newSchema) ? newSchema : undefined;
+        return newSchema ? newSchema : {"default":false}; //{"default":false} is a hack to trigger update meachnisms if schema is empty (schema=undefined will not trigger an update -> find a solution for that!!!)
     }
 
 
@@ -264,6 +264,12 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
 
         return tools;
     }
+}
+
+//{"default":false} is a hack to trigger update meachnisms if schema is empty (schema=undefined will not trigger an update -> find a solution for that!!!)
+export const cleanEmptySchema = (schema:JsonSchema) => {
+    if('{"default":false}' === JSON.stringify(schema)) return undefined;
+    return schema;
 }
 
 // @ts-ignore
