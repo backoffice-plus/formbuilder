@@ -1,5 +1,5 @@
 import * as _ from 'lodash-es'
-import type {ToolInterface} from "./models";
+import type {ToolFinderInterface, ToolInterface} from "./models";
 import {unknownTool} from "./tools/unknownTool";
 import type {JsonSchema, Scoped, UISchemaElement} from "@jsonforms/core";
 import type {ControlElement, Layout} from "@jsonforms/core";
@@ -7,8 +7,9 @@ import {normalizeScope} from "./normalizer";
 import {cloneEmptyTool, cloneToolWithSchema} from "./toolCreation";
 import {findAllProperties} from "./formbuilder";
 import {ScopeTool} from "./tools/ScopeTool";
+import {TypedTools} from "./models";
 
-export class ToolFinder {
+export class ToolFinder implements ToolFinderInterface {
 
     private readonly _tools = [] as ToolInterface[];
 
@@ -40,12 +41,14 @@ export class ToolFinder {
         return this.getTypedTools().layout.find((tool: ToolInterface) => tool?.uischema?.type === uiType)
     }
 
-    findMatchingToolAndClone = (schema: any, itemSchema: any, itemUischema: any, propertyName?:string): ToolInterface => {
-        return cloneEmptyTool(this.findMatchingTool(schema, itemSchema, itemUischema), itemSchema, propertyName);
+    findMatchingToolAndClone = (schema: JsonSchema, itemSchema: JsonSchema, itemUischema: any, propertyName?:string, fromTools?:ToolInterface[]): ToolInterface => {
+        return cloneEmptyTool(this.findMatchingTool(schema, itemSchema, itemUischema, fromTools), itemSchema, propertyName);
     }
 
-    findMatchingTool = (schema: any, itemSchema: JsonSchema, itemUischema: any): ToolInterface => {
-        const toolsWithScore = this._tools.map((tool: ToolInterface, index) => {
+    findMatchingTool = (schema: any, itemSchema: JsonSchema, itemUischema: any, fromTools?:ToolInterface[]): ToolInterface => {
+
+        const tools = fromTools ?? this._tools;
+        const toolsWithScore = tools.map((tool: ToolInterface, index) => {
             return {
                 tool: tool,
                 score: (tool?.tester && tool.tester(itemUischema, itemSchema, {
@@ -71,6 +74,8 @@ export class ToolFinder {
                             }
                             break;
                     }
+
+
                     return this.findMatchingTool(schema, itemSchema, itemUischema);
                 }
             }
@@ -82,12 +87,20 @@ export class ToolFinder {
 
     guessType(schema: JsonSchema):string|undefined {
 
+        /**
+         * if `enum: [true]`, then type=boolean
+         */
+        if(schema.enum?.length) {
+            const types = new Set<string>(schema.enum.map(value => typeof value))
+            return Array.from(types)[0];
+        }
+
         //@see https://json-schema.org/understanding-json-schema/reference/index.html
         const properties = {
-            string:['minLength','maxLength', 'pattern', 'enum'],
+            string:['minLength','maxLength', 'pattern'],
             array: ['contains','minContains', 'maxContains','minItems','maxItems','uniqueItems'],
             number:['minimum','maximum','exclusiveMinimum','exclusiveMaximum','multipleOf'],
-            object:['properties','patternProperties'],
+            object:['properties','patternProperties', 'required'],
         } as Record<string, string[]>;
         const propKeys = Object.keys(properties);
         const scores = {} as Record<string, number>;
@@ -168,8 +181,8 @@ export class ToolFinder {
     }
 
 
-    getTypedTools(): Record<'control'|'layout',Array<ToolInterface>> {
-        const typedTools = {
+    getTypedTools(): TypedTools {
+        const typedTools:TypedTools = {
             control: [] as ToolInterface[],
             layout: [] as ToolInterface[],
         };

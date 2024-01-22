@@ -28,15 +28,8 @@
 
           "patternProperties": {
             "type": "object",
-            "additionalProperties": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "enum": ["string","number","integer","boolean","array"]
-                }
-              }
-            }
+            "additionalProperties": { "$ref": "draft07.schema.json" },
+            "propertyNames": { "format": "regex" }
           },
           "dependentRequired": {
             "type": "object",
@@ -201,9 +194,20 @@
             "type": "VerticalLayout",
             "label": "patternProperties",
             "elements": [
+
               {
-                "scope": "#/properties/validation/properties/patternProperties",
-                "type": "Control"
+                "type": "Disclosure",
+                "label": "PatternProperties",
+                "elements": [
+                  {
+                    "scope": "#/properties/validation/properties/patternProperties",
+                    "type": "Formbuilder",
+                    "options": {
+                      "schemaOnly": true,
+                      "useProperties": true
+                    }
+                  }
+                ]
               }
             ],
             "rule": {
@@ -238,13 +242,11 @@
                 "scope": "#/properties/validation/properties/propertyNames",
                 "type": "Formbuilder",
                 "options": {
+                  "schemaOnly": true,
                   "baseTool": "schema",
-                  "hideToolbar": true,
                   "baseToolProps": {
-                    "hideActionbar": true,
                     "prefixLabel": "propertyNames:"
-                  },
-                  "schemaOnly": true
+                  }
                 }
               }
             ]
@@ -258,52 +260,6 @@
           }
         }
       },
-
-
-
-
-
-      {
-        "scope": "#",
-        "type": "Formbuilder",
-        "options": {
-          "hideDroparea": true,
-          "schemaOnly": true
-        }
-      },
-
-      {
-        "type": "VerticalLayout",
-        "elements": [
-          {
-            "type": "Disclosure",
-            "label": "PropertyNames",
-            "elements": [
-              {
-                "scope": "#/properties/validation/properties/propertyNames",
-                "type": "Formbuilder",
-                "options": {
-                  "baseTool": "schema",
-                  "hideToolbar": true,
-                  "baseToolProps": {
-                    "hideActionbar": true,
-                    "prefixLabel": "propertyNames:"
-                  },
-                  "schemaOnly": true
-                }
-              }
-            ]
-          }
-        ],
-        "rule": {
-          "effect": "SHOW",
-          "condition": {
-            "scope": "#/properties/type",
-            "schema": {"enum": ["object"]}
-          }
-        }
-      },
-
 
 
 
@@ -315,13 +271,11 @@
             "type": "Formbuilder",
             "scope": "#/properties/validation/properties/not",
             "options": {
+              "schemaOnly": true,
               "baseTool": "schema",
-              "hideToolbar": true,
               "baseToolProps": {
-                "hideActionbar": true,
                 "prefixLabel": "not:"
-              },
-              "schemaOnly": true
+              }
             }
           }
         ]

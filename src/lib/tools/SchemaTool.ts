@@ -4,6 +4,7 @@ import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/schema.component.vue";
 import {resolveSchema} from "../formbuilder";
+import {cloneEmptyTool} from "../toolCreation";
 import {schema, uischema} from "./schema/schema.form.json";
 import * as _ from 'lodash-es';
 
@@ -25,47 +26,43 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
 
-        const isBaseTool = context.baseSchemaTool === this;
+        //const isBaseTool = context.baseSchemaTool === this;
 
-        let type = this.schema.type;
+        //always overwrite current type with type from first child
+        const firstChild = this.edge.childs[0];//schematool MUST have only one child!
+        if(firstChild) {
+            this.schema.type = firstChild?.schema?.type
+        }
 
         const data = {
-            _isBaseTool: isBaseTool,
+            //_isBaseTool: isBaseTool,
         } as any;
 
         if(this.schema.type) {
             data.type = this.schema.type;
         }
 
-        if(this.propertyName) {
-            data.propertyName = this.propertyName;
-        }
 
-        return data;
+        return {
+            ...data,
+
+            /**
+             * :INFO: all settings are from firstChild - so schemaTool needs no config, right?!?!?!
+             */
+            // ...subschemas.prepareOptionDataDefinitions(context, this.schema, this.uischema),
+            // ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
+            // ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
+        };
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        this.propertyName = data?.propertyName ?? '';
-        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
-        //
-        // const keyword = data?.keyword;
-        // const keywordOld = this.keyword;
-        //
-        // if(keyword && keywordOld && keyword !== keywordOld) {
-        //     // // /** @ts-ignore **/
-        //     // this.schema[keyword] = undefined;//this.schema[keywordOld] ?? [];
-        //     // /** @ts-ignore **/
-        //     // this.schema[keywordOld] = undefined;
-        //     this.keyword = keyword;
-        // }
 
-        delete data._isBaseTool;
-        delete data.propertyName;
-
-        this.schema = {
-            ...this.schema,
-            ...data
-        }
+        /**
+         * :INFO: all settings are from firstChild - so schemaTool needs no config, right?!?!?!
+         */
+        // subschemas.setOptionDataValidation(this.schema, this.uischema, data);
+        // subschemas.setOptionDataconditional(this.schema, this.uischema, data);
+        // subschemas.setOptionDataDefinitions(this.schema, this.uischema, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
@@ -173,8 +170,6 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         const firstChild = this.edge.childs[0]; //SchemaTool MUST have only one child!
         const newSchema = firstChild?.generateJsonSchema();
 
-        console.log("SchemaTool.generateJsonSchema", {thiss:this,newSchema})
-
         return !_.isEmpty(newSchema) ? newSchema : undefined;
     }
 
@@ -194,27 +189,19 @@ export class SchemaTool extends AbstractTool implements ToolInterface {
         const schema = {...this.schema}
         const uischema = {type:'Control',scope:'#'} as UISchemaElement;
 
-        console.log("SchemaTool.initChilds", {thiss:this,schema:this.schema})
 
+        //is this necassary here? findMatchingTool() calls also guessType()
         if(!schema.type) {
-            if("properties" in schema) {
-                schema.type = 'object';
-            }
-            else if("required" in schema) {
-                schema.type = 'object';
-            }
-            // else {
-            //     console.warn("schema has no type: "+ schema)
-            // }
+            schema.type = toolFinder.guessType(schema);
         }
 
-        const clone = toolFinder.findMatchingToolAndClone({}, schema, uischema);
+        const schemaTools = toolFinder.getTypedTools().control;
+        const matchingTool = toolFinder.findMatchingTool(baseSchemaTool?.schema, schema, uischema, schemaTools);
+        const clone = cloneEmptyTool(matchingTool, schema)
 
         clone.edge.setParent(this);
         clone.edge.replaceChilds(clone.initChilds(toolFinder));
         tools.push(clone);
-
-        console.log("SchemaTool.initChilds findMatchingToolAndClone", {schema, clone})
 
         return tools;
     }

@@ -7,10 +7,11 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
     const data = {} as Record<string, any>;
 
     if(!_.isEmpty(schema.definitions)) {
-        data.definitions = {
-            type: "object",
-            properties: schema.definitions,
-        }
+        data.definitions = schema.definitions;
+        // data.definitions = {
+        //     type: "object",
+        //     properties: schema.definitions,
+        // }
     }
 
     //$def is not part of Draft07
@@ -22,22 +23,28 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
     //     data._asDefs = true;
     // }
 
-    return {
-        definitions: data
-    };
+
+    return {definitions: data};
 }
 
 export const setOptionData = (schema: JsonSchema | any, uischema: UISchemaElement, data: Record<string, any>): void => {
-    let defProps = data?.definitions?.definitions?.properties;
+    schema.definitions = data?.definitions?.definitions;
 
-    if(_.isEmpty(defProps)) {
-        defProps = undefined;
-    }
+    // let defProps = data?.definitions?.definitions?.properties;
+    //
+    // if(_.isEmpty(defProps)) {
+    //     defProps = undefined;
+    // }
+    //
+    // if(data?.definitions?._asDefs) {
+    //     schema['$defs'] = defProps;
+    // }
+    // else {
+    //     schema.definitions = defProps;
+    // }
 
-    if(data?.definitions?._asDefs) {
-        schema['$defs'] = defProps;
+    if("definitions" in schema && _.isEmpty(schema.definitions)) {
+        delete schema.definitions
     }
-    else {
-        schema.definitions = defProps;
-    }
+    delete data.definitions
 }

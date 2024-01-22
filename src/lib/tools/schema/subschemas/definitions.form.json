@@ -24,10 +24,10 @@
             "scope": "#/properties/definitions/properties/definitions",
             "options": {
               "schemaOnly": true,
+              "useProperties": true,
               "baseToolProps": {
                 "hideActionbar": true,
-                "prefixLabel": "definitions:",
-                "schemaOnly": true
+                "prefixLabel": "definitions:"
               }
             }
           }

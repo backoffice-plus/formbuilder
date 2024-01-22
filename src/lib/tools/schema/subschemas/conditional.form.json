@@ -6,15 +6,9 @@
         "type": "object",
         "properties": {
 
-          "if": {
-            "type": "object"
-          },
-          "then": {
-            "type": "object"
-          },
-          "else": {
-            "type": "object"
-          }
+          "if": { "$ref": "draft07.schema.json" },
+          "then": { "$ref": "draft07.schema.json" },
+          "else": { "$ref": "draft07.schema.json" }
         }
       }
     }
@@ -40,13 +34,13 @@
             "type": "Formbuilder",
             "scope": "#/properties/conditional/properties/if",
             "options": {
+              "schemaOnly": true,
               "hideToolbar": true,
               "baseTool": "schema",
               "baseToolProps": {
                 "hideActionbar": true,
-                "prefixLabel": "if:"
-              },
-              "schemaOnly": true
+                "prefixLabel": "If:"
+              }
             }
           }
         ]
@@ -60,13 +54,13 @@
             "type": "Formbuilder",
             "scope": "#/properties/conditional/properties/then",
             "options": {
+              "schemaOnly": true,
               "hideToolbar": true,
               "baseTool": "schema",
               "baseToolProps": {
                 "hideActionbar": true,
-                "prefixLabel": "then:"
-              },
-              "schemaOnly": true
+                "prefixLabel": "Then:"
+              }
             }
           }
         ]
@@ -80,13 +74,13 @@
             "type": "Formbuilder",
             "scope": "#/properties/conditional/properties/else",
             "options": {
+              "schemaOnly": true,
               "hideToolbar": true,
               "baseTool": "schema",
               "baseToolProps": {
                 "hideActionbar": true,
-                "prefixLabel": "elsex:"
-              },
-              "schemaOnly": true
+                "prefixLabel": "Else:"
+              }
             }
           }
         ]

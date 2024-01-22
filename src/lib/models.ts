@@ -51,10 +51,19 @@ export interface ToolContext {
 }
 export interface ToolFinderInterface {
     //:TODO add all methods from ToolFinder
-    findMatchingToolAndClone(schema: any, itemSchema: any, itemUischema: any): ToolInterface
-    findMatchingTool(schema: any, itemSchema: JsonSchema, itemUischema: any): ToolInterface
     findLayoutToolByUiType(uiType: string): ToolInterface | undefined
+    findMatchingToolAndClone(schema: JsonSchema, itemSchema: JsonSchema, itemUischema: any, propertyName?:string, fromTools?:ToolInterface[]): ToolInterface
+    findMatchingTool(schema: JsonSchema, itemSchema: JsonSchema, itemUischema: any, fromTools?:ToolInterface[]): ToolInterface
+    findLayoutToolByUiType(uiType: string): ToolInterface | undefined
+
+    getTypedTools(): TypedTools
+    guessType(schema: JsonSchema): string|undefined
 }
+
+export type TypedTools = {
+    control: ToolInterface[],
+    layout: ToolInterface[],
+};
 
 // @ts-ignore
 export interface JsonFormsUISchema extends UISchemaElement, LabelElement, ControlElement, Category, Categorization {

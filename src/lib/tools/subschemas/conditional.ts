@@ -26,4 +26,9 @@ export const setOptionData = (schema: JsonSchema | any, uischema: UISchemaElemen
             delete schema[key];
         }
     });
+
+    if("conditional" in schema && _.isEmpty(schema.conditional)) {
+        delete schema.conditional
+    }
+    delete data.conditional
 }

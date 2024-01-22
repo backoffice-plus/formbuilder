@@ -9,7 +9,7 @@ import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
 import * as _ from 'lodash-es';
-import {cloneToolWithSchema} from "../toolCreation";
+import {cloneEmptyTool} from "../toolCreation";
 import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
 
 export class ObjectTool extends AbstractTool implements ToolInterface {
@@ -136,13 +136,11 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
         }
 
 
-        const properties = this.schema?.properties ?? {};
-        !_.isEmpty(properties) && Object.keys(properties).forEach((propertyName:string) => {
-            const itemSchema = properties[propertyName];
-            const uischema = {type:'Control',scope:'#'} as UISchemaElement;
-            //const clone = cloneToolWithSchema(schemaTool, itemSchema, {});
-            const clone = cloneToolWithSchema(toolFinder.findMatchingTool({}, itemSchema, uischema), itemSchema, uischema)
-            clone.propertyName = propertyName;
+        const createChild = (itemSchema:JsonSchema, uischema:any, propertyName:string) => {
+
+            const schemaTools = toolFinder.getTypedTools().control;
+            const matchingTool = toolFinder.findMatchingTool({}, itemSchema, uischema, schemaTools);
+            const clone = cloneEmptyTool(matchingTool, itemSchema, propertyName)
 
             //required
             const required = getRequiredFromSchema(clone.propertyName, this.schema);
@@ -154,7 +152,32 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
             clone.edge.replaceChilds(clone.initChilds(toolFinder));
 
             tools.push(clone);
+        }
+
+
+        const properties = this.schema?.properties ?? {};
+        Object.keys(properties).forEach((propertyName:string) => {
+            const itemSchema = properties[propertyName];
+            const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+
+            createChild(itemSchema, uischema, propertyName);
         });
+
+
+        /**
+         * some if/else/then constructs has partial schemas, create childs based on guessType()
+         * for `then:{required:['name']}`
+         */
+        this.schema?.required?.forEach(propertyName => {
+            if(!(propertyName in (this.schema?.properties ?? {}))) {
+                const itemSchema = {type:'string'} as JsonSchema;
+                const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+
+               // console.log("create required child", {propertyName});
+
+                createChild(itemSchema, uischema, propertyName);
+            }
+        })
 
         //:TODO remove
         //schemaKeywords.forEach(key => key in tool.schema && tools.push(cloneToolWithSchema(new SchemaTool(key), (tool.schema as any)[key])));

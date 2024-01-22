@@ -84,6 +84,17 @@ const props = defineProps(rendererProps<ControlElement>())
         schema = (control.control as any).value.data
         schemaOnly = true;
         schemaReadOnly = false;
+
+      /**
+       * for "definition" & "patternProperties" - they are not Schema
+       * so we create a fake ObjectTool
+       */
+      if(control.appliedOptions.value.useProperties) {
+          schema = {
+            type:"object",
+            properties: (schema as {[pattern: string]:JsonSchema|any })
+          }
+        }
     }
 
     //schema & layout mode
@@ -99,6 +110,10 @@ const props = defineProps(rendererProps<ControlElement>())
       if(!e?.init) {
         if(schemaOnly) {
           value = e?.schema;
+
+          if(control.appliedOptions.value.useProperties) {
+            value = value?.properties;
+          }
         }
         else if(schemaReadOnly) {
           value = e?.uischema;
