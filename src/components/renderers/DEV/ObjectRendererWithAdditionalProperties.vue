@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, provide, ref, Ref} from 'vue';
+import {defineComponent, provide, ref, type Ref} from 'vue';
 import {Generate, findUISchema, isObjectControl, rankWith, and, schemaMatches} from '@jsonforms/core';
 import {rendererProps, useJsonFormsControlWithDetail, type RendererProps} from '@jsonforms/vue';
 import {useVanillaControl} from '@jsonforms/vue-vanilla';
@@ -41,7 +41,7 @@ import {useNested} from "./composition";
 import type {ControlElement, GroupLayout, JsonFormsRendererRegistryEntry, UISchemaElement,} from '@jsonforms/core';
 import AdditionalProperties2 from "./AdditionalProperties2.vue";
 import HeaderLine from "./AdditionalProperties/HeaderLine.vue";
-import {AdditionalPropertyType, createAdditionProperties} from "./AdditionalProperties/utils/additionalProperties";
+import {type AdditionalPropertyType, createAdditionProperties} from "./AdditionalProperties/utils/additionalProperties";
 import ItemList from "./AdditionalProperties/ItemList.vue";
 import ButtonWithDialog from "./AdditionalProperties/ButtonWithDialog.vue";
 import DispatchRendererSloted from "./DispatchRendererSloted.vue";

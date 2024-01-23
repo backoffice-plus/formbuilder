@@ -28,9 +28,9 @@
 
 
 <script setup lang="ts">
-import {inject, onBeforeMount, provide, ref, Ref} from "vue";
+import {inject, onBeforeMount, type Ref} from "vue";
 import {DispatchRenderer, useJsonFormsControlWithDetail} from "@jsonforms/vue";
-import {AdditionalPropertyType, createAdditionProperties} from "./utils/additionalProperties";
+import {type AdditionalPropertyType, createAdditionProperties} from "./utils/additionalProperties";
 import {type BopStyles, defaultStyles, useStyles} from "../composition";
 
 const props = defineProps<{

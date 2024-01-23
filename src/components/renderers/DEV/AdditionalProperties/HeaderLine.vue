@@ -37,7 +37,7 @@ import type {Ref} from "vue";
 import {computed, inject, ref, watch} from "vue";
 import {createDefaultValue} from '@jsonforms/core';
 import {useJsonFormsControlWithDetail} from "@jsonforms/vue";
-import {AdditionalPropertyType, createAdditionalProperty, isAdditionalPropertyExists, setNewData} from "./utils/additionalProperties";
+import {type AdditionalPropertyType, createAdditionalProperty, isAdditionalPropertyExists, setNewData} from "./utils/additionalProperties";
 import {type BopStyles, defaultStyles, useStyles} from "../composition";
 
 const props = defineProps<{

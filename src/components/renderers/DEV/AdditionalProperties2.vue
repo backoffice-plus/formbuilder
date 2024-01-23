@@ -11,9 +11,9 @@
 
 
 <script setup lang="ts">
-import {provide, ref, Ref} from "vue";
+import {provide, ref, type Ref} from "vue";
 import {useJsonFormsControlWithDetail} from "@jsonforms/vue";
-import {AdditionalPropertyType, createAdditionProperties} from "./AdditionalProperties/utils/additionalProperties";
+import {type AdditionalPropertyType, createAdditionProperties} from "./AdditionalProperties/utils/additionalProperties";
 import {type BopStyles, defaultStyles, useStyles} from "./composition";
 import HeaderLine from "./AdditionalProperties/HeaderLine.vue";
 import ItemList from "./AdditionalProperties/ItemList.vue";
