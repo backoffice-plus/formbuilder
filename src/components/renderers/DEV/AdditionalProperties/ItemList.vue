@@ -32,6 +32,7 @@ import {inject, onBeforeMount, type Ref} from "vue";
 import {DispatchRenderer, useJsonFormsControlWithDetail} from "@jsonforms/vue";
 import {type AdditionalPropertyType, createAdditionProperties} from "./utils/additionalProperties";
 import {type BopStyles, defaultStyles, useStyles} from "../composition";
+import merge from "lodash/merge";
 
 const props = defineProps<{
   input: ReturnType<typeof useJsonFormsControlWithDetail>
@@ -39,7 +40,7 @@ const props = defineProps<{
 
 const control = props.input.control;
 
-const styles = useStyles(control.value.uischema, defaultStyles) as BopStyles;
+const styles = merge(useStyles(control.value.uischema), defaultStyles) as BopStyles;
 
 const additionalPropertyItems = inject<Ref<AdditionalPropertyType[]> | undefined>("additionalPropertyItems", undefined) ?? (() => {throw "injection 'additionalPropertyItems' not found"})()
 
