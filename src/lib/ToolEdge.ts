@@ -107,11 +107,6 @@ export class ToolEdge {
     }
 
     removeParent(parent:ToolInterface):void {
-        console.log("Edge.removeParent", {
-            parent:parent?.uuid,
-            uiParent:this.uiParent?.uuid,
-            schemaParent:this.schemaParent?.uuid,
-        })
         if(this.uiParent?.uuid === parent?.uuid) {
             this.uiParent = undefined;
         }

@@ -27,9 +27,6 @@ if(isSchemaReadyOnly && !hasSchemaParent) {
   isDeletable = true;
 }
 
-console.log("ConfirmDel", {tool:props.tool});
-
-
 const scopedChilds = props.tool.edge.findScopedChilds();
 
 </script>

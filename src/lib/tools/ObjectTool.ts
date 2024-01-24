@@ -56,8 +56,6 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        console.log("ObjectTool.updateData",{data});
-
         this.propertyName = data?.propertyName ?? '';
         this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
         this.schema.additionalProperties = cleanEmptySchema(data.schema.additionalProperties);
@@ -118,8 +116,6 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
                 }
             }
         });
-
-        console.log("ObjectTool.generateJsonSchema",{tool:this});
 
         return {
             ...this.schema,

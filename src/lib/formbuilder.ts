@@ -157,7 +157,7 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
         .then(resolved => {
             if (resolved.errors.length) {
                 throw resolved.errors.map(error => error.message);
-                console.log("resolveSchema error", resolved.errors.map(error => error.message));
+                console.warn("resolveSchema error", resolved.errors.map(error => error.message));
                 return {}
             }
             return resolved.result

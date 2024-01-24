@@ -183,9 +183,6 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             uischema: await resolveSchema(currentJsonSchema.uischema),
         };
 
-
-        console.log("ArrayTool.jsonform", {jf});
-
         return jf
     }
 
