@@ -2,6 +2,7 @@
 
   <div class="formbuilder">
 
+    <Dialogs />
     <Modal
         :tool="toolEdit"
         :jsonFormsRenderers="jsonFormsRenderers"
@@ -114,6 +115,7 @@ import {ToolFinder} from "../lib/ToolFinder";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
 import FormBuilderToolbar from "./FormBuilderToolbar.vue";
 import {BuilderEvent} from "../lib/BuilderEvent";
+import Dialogs from "./dialog/Dialogs.vue";
 
 //const props = defineProps({...formbuilderProps()})
 const props = defineProps({
@@ -216,7 +218,10 @@ const onEditTool = (data) => {
     isModalOpen.value = true;
     toolEdit.value = data.tool;
 }
-defineExpose({toolFinder, showBuilder, toolDragging, rootSchema, rootUischema, baseSchemaTool, baseUiTool, onToolDrag,  onEditTool, onModalClose, onDropAreaChanged: updateJsonForm})
+defineExpose({
+  toolFinder, showBuilder, toolDragging, rootSchema, rootUischema, baseSchemaTool, baseUiTool, jsonFormsRenderers: props.jsonFormsRenderers,
+  onToolDrag,  onEditTool, onModalClose, onDropAreaChanged: updateJsonForm
+})
 
 </script>
 

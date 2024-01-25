@@ -12,6 +12,8 @@ import ConfirmDelete from "../components/modals/ConfirmDelete.vue";
 import {JsonFormsRendererRegistryEntry, RankedTester} from "@jsonforms/core";
 import {getFormbuilder} from "./vue";
 import {ToolFinder} from "./ToolFinder";
+import {useDialogRegistry} from "./useDialog";
+import Prompt from "../components/modals/Prompt.vue";
 
 
 /** @deprecated **/
@@ -217,21 +219,25 @@ export const showNewPropertyDialogAndGetTool = (toolFinder:ToolFinder|((name:str
 
     return new Promise((resolve, reject) => {
 
-        /**
-         * :TODO create real dialog!
-         */
-        const input = prompt('Name of property or coma seperated name list');
-        if(null === input) {
-            return reject("aborted");
+        const onSubmit = (input:any) => {
+            const names:string[] = input?.split(',').map((item:string) => item.trim()).filter((i:string) => i);
+
+            const tools = names?.map(name => {
+                if(isToolFinder) return defaultFindToolCallback(toolFinder as ToolFinder)(name)
+                return toolFinder?.(name)
+            }).filter(i=>i);
+
+            resolve(tools ?? []);
         }
-        const names = input?.split(',').map(item => item.trim()).filter(i => i);
 
-        const tools = names?.map(name => {
-            if(isToolFinder) return defaultFindToolCallback(toolFinder as ToolFinder)(name)
-            return toolFinder?.(name)
-        }).filter(i=>i);
+        const onClose = (input:any) => {
+            if(!input) {
+                return reject("aborted");
+            }
+        }
 
-        resolve(tools ?? []);
+        const dr = useDialogRegistry()
+        dr.showModal(Prompt, {header:"Add new Item", text:"Name of property or coma seperated name list", onSubmit} ,undefined, {onClose});
     });
 }
 
