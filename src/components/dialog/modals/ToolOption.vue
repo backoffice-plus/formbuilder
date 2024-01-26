@@ -27,9 +27,10 @@ article {
 </style>
 
 <script setup lang="ts">
-import JsonFormsSubmittable from "@/components/JsonFormsSubmittable.vue";
-import {getFormbuilder, type ToolInterface} from "@/lib";
 import {onMounted, ref} from "vue";
+import {getFormbuilder} from "@/lib";
+import type {JsonFormsInterface, ToolContext, ToolInterface} from "@/lib";
+import JsonFormsSubmittable from "@/components/JsonFormsSubmittable.vue";
 
 const props = defineProps<{
   tool: ToolInterface,
@@ -39,15 +40,15 @@ const emit = defineEmits<{
 }>()
 
 const fb = getFormbuilder();
-const context = {
+const context:ToolContext = {
   fb:fb,
   parentMethod:'modalcontent.onchange',
   builder: fb?.exposed?.showBuilder?.value,
-  schemaReadOnly: fb.props.schemaReadOnly,
+  schemaReadOnly: !!fb?.props?.schemaReadOnly,
 }
 
 const options = ref({});
-const jf = ref({});
+const jf = ref<JsonFormsInterface|undefined>();
 const error = ref('');
 
 /**
@@ -72,32 +73,31 @@ const onSubmit = (data:any) => {
 
 onMounted(async () => {
 
-  const context = {
+  const context:ToolContext = {
     fb: fb,
     builder: fb?.exposed?.showBuilder.value,
-    schemaOnly: fb.props.schemaOnly,
-    schemaReadOnly: fb.props.schemaReadOnly,
+    schemaOnly: !!fb?.props?.schemaOnly,
+    schemaReadOnly: !!fb?.props?.schemaReadOnly,
     rootSchema: fb?.exposed?.rootSchema?.value,
     baseSchemaTool: fb?.exposed?.baseSchemaTool?.value,
   }
 
   try {
     options.value = props.tool.optionDataPrepare(context);
-    jf.value = await props.tool.optionJsonforms(context)
-        .then(e => {
-          const event = {
-            tool:props.tool,
-            schema: JSON.parse(JSON.stringify(e.schema)),
-            uischema: JSON.parse(JSON.stringify(e.uischema)),
-          };
+    props.tool.optionJsonforms(context)
+        .then((e:JsonFormsInterface|undefined) => {
+          const jfUnref = JSON.parse(JSON.stringify(e?.schema));
 
-          return {schema:event.schema, uischema:event.uischema};
+          jf.value = {
+            schema:jfUnref?.schema,
+            uischema:jfUnref?.uischema
+          };
         })
-        .catch(e => {
+        .catch((e:any) => {
           error.value = e
         })
   }
-  catch(e) {
+  catch(e:any) {
     error.value = e;
   }
 })

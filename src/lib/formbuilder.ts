@@ -5,7 +5,7 @@ import {Resolver} from "@stoplight/json-ref-resolver";
 import {fromPropertyToScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";
 import type {ToolInterface, JsonFormsInterface} from "./models";
-import type {JsonSchema,  Scoped, UISchemaElement, ControlElement, Layout} from "@jsonforms/core";
+import type {JsonSchema,  Scoped, UISchemaElement, ControlElement, Layout, Translator} from "@jsonforms/core";
 
 
 
@@ -65,7 +65,7 @@ export const getItemsType = (schema:JsonSchema):string|undefined => {
 // };
 
 
-export const createI18nTranslate = (localeCatalogue: Record<string, string>) => {
+export const createI18nTranslate = (localeCatalogue: Record<string, string>):Translator => {
     // $KEY can be propertyName or i18n
     // const translations = {
     //    '$KEY.label': 'TEXT',
@@ -73,17 +73,15 @@ export const createI18nTranslate = (localeCatalogue: Record<string, string>) => 
     //    '$KEY.error.minLength': 'ERROR TEXT',
     // }
 
-    return (key: string, defaultMessage: string, context: any) => {
-        //console.log("translate", {key,defaultMessage, context}, localeCatalogue[key]);
-
+    return (id: string, defaultMessage?: string, values?: any) => {
         let params = {};
 
-        if (context?.error) {
+        if (values?.error) {
             //console.log("translate error", {key, defaultMessage}, context.error);
-            params = {...params, ...context.error?.params};
+            params = {...params, ...values.error?.params};
         }
 
-        return (localeCatalogue[key] && _.template(localeCatalogue[key])(params)) ?? defaultMessage;
+        return (localeCatalogue[id] && _.template(localeCatalogue[id])(params)) ?? defaultMessage;
     };
 }
 

@@ -45,9 +45,10 @@ export interface ToolContext {
     fb?: any;
     builder?: string;
     schemaOnly?: boolean;
-    schemaReadOnly?: string;
+    schemaReadOnly?: boolean;
     rootSchema?: JsonSchema,
     baseSchemaTool?: ToolInterface,
+    parentMethod?:string,
 }
 export interface ToolFinderInterface {
     //:TODO add all methods from ToolFinder

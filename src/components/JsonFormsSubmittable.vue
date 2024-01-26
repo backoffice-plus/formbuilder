@@ -70,7 +70,7 @@ const data = ref(props.data ?? {});
 const latestEvent = ref();
 const validationMode:Ref<ValidationMode> = ref('ValidateAndHide');
 const errors = ref([]);
-const errorAfterUpdated = ref([]);
+const errorAfterUpdated = ref<any[]>([]);
 
 const jf = JSON.parse(JSON.stringify({
     schema: props.jsonforms.schema,
