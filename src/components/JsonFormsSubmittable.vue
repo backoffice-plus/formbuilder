@@ -8,14 +8,21 @@
             :data="data"
             :renderers="fb?.exposed?.jsonFormsRenderers"
             :readonly="!!readonly"
-            @change="onChange"
+            :i18n="{translate: createI18nTranslate(formBuilderCatalogue)}"
             :validationMode="validationMode"
+            @change="onChange"
         />
 
       <slot name="button" v-bind="{submit}">
-        <button class="btn blue mt-4 w-full" @click="submit" :disabled="readonly"  v-if="!hideSubmit">Submit</button>
+        <div class="flex justify-center mt-4 ">
+          <button class="btn w-64" @click="submit" :disabled="readonly"  v-if="!hideSubmit">Submit</button>
+        </div>
       </slot>
 
+    </div>
+
+    <div v-if="errorAfterUpdated" class="flex flex-col gap-1">
+      <div v-for="e in errorAfterUpdated" class="errorMsg px-1">{{ e?.instancePath }}: {{e?.message}}</div>
     </div>
 
     {{ errors.length ? errors : ''}}
@@ -41,10 +48,11 @@ copied from ButtonRenderer
 </style>
 
 <script setup lang="ts">
-import {computed, ref, watch, type Ref} from "vue";
+import {ref, type Ref} from "vue";
 import {JsonForms} from "@jsonforms/vue";
 import type {JsonFormsRendererRegistryEntry, JsonSchema, ValidationMode} from "@jsonforms/core";
-import {getFormbuilder, type ToolInterface} from "@/";
+import {createI18nTranslate, getFormbuilder, type ToolInterface} from "@/";
+import {formBuilderCatalogue} from "@/translations/de";
 
 const props = defineProps<{
   jsonforms: { schema:JsonSchema, uischema:any },
@@ -62,19 +70,33 @@ const data = ref(props.data ?? {});
 const latestEvent = ref();
 const validationMode:Ref<ValidationMode> = ref('ValidateAndHide');
 const errors = ref([]);
+const errorAfterUpdated = ref([]);
 
-const jf = computed(() => {
-  //:MAGIC ERROR reparse to avoid proxy objects (maybe it can be removed)
-  return JSON.parse(JSON.stringify({
+const jf = JSON.parse(JSON.stringify({
     schema: props.jsonforms.schema,
     uischema: props.jsonforms.uischema,
   }));
-})
+// const jf = computed(() => {
+//   console.log("FJSubmit.computed jf",{jf:props.jsonforms});
+//   //:MAGIC ERROR reparse to avoid proxy objects (maybe it can be removed)
+//   return JSON.parse(JSON.stringify({
+//     schema: props.jsonforms.schema,
+//     uischema: props.jsonforms.uischema,
+//   }));
+// })
 
 const onChange = (event:any) => {
-    latestEvent.value = event;
+   latestEvent.value = event;
+
+  errorAfterUpdated.value = [];
+  if(event.errors.length) {
+    errorAfterUpdated.value = event.errors;
+  }
+  else {
     emits('changed', latestEvent.value.data)
+  }
 }
+
 const submit = async () => {
     errors.value = [];
     data.value = latestEvent.value.data;  //its necessary bc changinge validationMode clears form
@@ -87,11 +109,11 @@ const submit = async () => {
     emits('submit', data.value)
 }
 
-watch(()=>props.data,(d)=>{
-  data.value = props.data;
-},{deep:true})
+// watch(()=>props.data,(d)=>{
+//   data.value = props.data;
+// },{deep:true})
 
-defineExpose({submit})
+//defineExpose({submit})
 
 </script>
 

@@ -3,15 +3,6 @@
   <div class="formbuilder">
 
     <Dialogs />
-    <Modal
-        :tool="toolEdit"
-        :jsonFormsRenderers="jsonFormsRenderers"
-
-        @change="onChangeModal"
-        @close="onModalClose"
-
-        v-if="isModalOpen && toolEdit"
-    />
 
 <!--    <div class="styleA" v-if="filteredBuilders.length>1">-->
 <!--      Builder:-->
@@ -106,11 +97,10 @@ dialog::backdrop {
 <script setup>
 import {computed, onMounted, ref, useSlots, watch} from 'vue'
 import * as _ from 'lodash-es';
-import {initBaseTools, generateJsonForm, onDragGetTool, ToolFinder, BuilderEvent} from "@/";
+import {initBaseTools, generateJsonForm, onDragGetTool, ToolFinder, BuilderEvent, useDialogRegistry} from "@/";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
 import FormBuilderToolbar from "./FormBuilderToolbar.vue";
 import Dialogs from "./dialog/Dialogs.vue";
-import Modal from "./Modal.vue";
 
 //const props = defineProps({...formbuilderProps()})
 const props = defineProps({
@@ -139,17 +129,15 @@ const hideDroparea = 0 === slotDroparea?.length
 
 const toolFinder = new ToolFinder(props.tools);
 
+const modals = ref([]);
+const dialogRegistry = useDialogRegistry(modals);
+
 //base tools
 const {schema, uischema} = initBaseTools(toolFinder, props)
 const baseUiTool = ref(uischema);
 const baseSchemaTool = ref(schema);
 const currentBaseTool = computed(() => showBuilder.value === 'uischema' ? baseUiTool.value : baseSchemaTool.value)
 
-const onChangeModal = (data) => toolEdit.value && updateJsonForm({modal:{element:toolEdit.value}})
-const onModalClose = () => {
-  isModalOpen.value = false;
-  toolEdit.value = null
-}
 
 const updateJsonForm = (e) => {
   const event = new BuilderEvent(e, props, showBuilder.value, toolFinder, baseUiTool.value, baseSchemaTool.value);
@@ -205,17 +193,13 @@ onMounted(() => {
 
 //expose
 const drag = ref(false);
-const isModalOpen = ref(false);
-const toolEdit = ref(null);
 const toolDragging = ref();
 const onToolDrag = (e) => toolDragging.value = onDragGetTool(e);
-const onEditTool = (data) => {
-    isModalOpen.value = true;
-    toolEdit.value = data.tool;
-}
+
 defineExpose({
   toolFinder, showBuilder, toolDragging, rootSchema, rootUischema, baseSchemaTool, baseUiTool, jsonFormsRenderers: props.jsonFormsRenderers,
-  onToolDrag,  onEditTool, onModalClose, onDropAreaChanged: updateJsonForm
+  dialogRegistry,
+  onToolDrag,  onDropAreaChanged: updateJsonForm
 })
 
 </script>

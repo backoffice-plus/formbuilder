@@ -49,7 +49,11 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
                 //baseUiTool.value?.initChilds(toolFinder);
                //oldChilds.forEach(child => baseUiTool.value.edge?.addChild(child));
 
-                context.fb?.exposed?.onModalClose();
+                /**
+                 * :TODO close modal
+                 */
+                console.log(":TODO close modal")
+                //context.fb?.exposed?.onModalClose();
             }
         });
 

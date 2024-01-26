@@ -172,7 +172,7 @@ const init = () => {
 };
 
 const addItem = (type) => {
-  showNewPropertyDialogAndGetTool(fb?.exposed?.toolFinder)
+  showNewPropertyDialogAndGetTool(fb?.exposed?.toolFinder, fb)
       .then(tools => {
         tools.forEach(tool => {
           childTools.value.push(tool);

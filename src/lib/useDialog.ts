@@ -1,9 +1,10 @@
-import {ref, type Ref, shallowRef} from "vue";
+import {type Ref, shallowRef} from "vue";
 import type {Component, VNodeProps} from "@vue/runtime-core";
 import {ToolInterface} from "./models";
 import {ToolFinder} from "./ToolFinder";
 import ConfirmDelete from "@/components/dialog/modals/ConfirmDelete.vue";
 import Prompt from "@/components/dialog/modals/Prompt.vue";
+import ToolOption from "@/components/dialog/modals/ToolOption.vue";
 
 type Bind = VNodeProps | Record<string, unknown>
 type RawSlots = {
@@ -30,9 +31,8 @@ export type ModalOptions = {
     onClose?: (returnValue:any) => void
 }
 
-const modals: Ref<RegisteredModal[]> = ref([]);
-
-export const useDialogRegistry = () => {
+export const useDialogRegistry = (modals?:Ref<RegisteredModal[]>) => {
+    if(!modals) throw "modals argument is empty at useDialogRegistry"
 
     const showModal = (component: Component|string, bind: Bind, slots?: RawSlots, options?: ModalOptions): ModalControl => {
         const id = crypto.randomUUID();
@@ -65,15 +65,12 @@ export const useDialogRegistry = () => {
     }
 }
 
-export const findDialogOpenElements = (): HTMLDialogElement[] => {
-    return Array.from(document.querySelectorAll('dialog')).filter(dialog=>dialog.open)
-}
 
+export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface, fb:any) : Promise<{ removed:{element:ToolInterface,unscope?:boolean} }> => {
 
-export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface, fb?:any) : Promise<{ removed:{element:ToolInterface,unscope?:boolean} }> => {
     return new Promise((resolve, reject) => {
 
-        const dr = useDialogRegistry();
+        const dr = fb?.exposed?.dialogRegistry
         const {close} = dr.showModal(ConfirmDelete, {
             tool: toolToDelete,
             fb,
@@ -100,7 +97,7 @@ export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:Too
     });
 }
 
-export const showNewPropertyDialogAndGetTool = (toolFinder:ToolFinder|((name:string)=>ToolInterface)) : Promise<ToolInterface[]> => {
+export const showNewPropertyDialogAndGetTool = (toolFinder:ToolFinder|((name:string)=>ToolInterface), fb:any) : Promise<ToolInterface[]> => {
 
     const isToolFinder = toolFinder instanceof ToolFinder;
 
@@ -129,7 +126,17 @@ export const showNewPropertyDialogAndGetTool = (toolFinder:ToolFinder|((name:str
             }
         }
 
-        const dr = useDialogRegistry()
+        const dr = fb?.exposed?.dialogRegistry
         dr.showModal(Prompt, {header:"Add new Item", text:"Name of property or coma seperated name list", onSubmit} ,undefined, {onClose});
     });
+}
+
+export const showToolOptions = (tool:ToolInterface, fb:any) => {
+    const {close} = fb?.exposed?.dialogRegistry?.showModal(ToolOption, {
+        tool:tool,
+        onSubmit: () => {
+            close?.()
+            fb?.exposed?.onDropAreaChanged({modal: {element: tool}})
+        }
+    })
 }

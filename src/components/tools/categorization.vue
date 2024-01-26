@@ -170,7 +170,7 @@ const createNewTab = (name=undefined) => {
     onDropAreaChange({added: {element: tabTool}});
   }
   else {
-    showNewPropertyDialogAndGetTool(findTool)
+    showNewPropertyDialogAndGetTool(findTool, fb)
         .then(tools => {
           tools.forEach(tool => {
             childTools.value.push(tool);

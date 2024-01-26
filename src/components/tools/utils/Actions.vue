@@ -56,9 +56,8 @@
 </style>
 
 <script setup>
-
 import {Icon} from "@iconify/vue";
-import {getFormbuilder} from "../../../lib/vue";
+import {showToolOptions, getFormbuilder} from "@/lib";
 
 const props = defineProps(
     {
@@ -70,7 +69,7 @@ const emit = defineEmits(['gear', 'delete'])
 
 const fb = getFormbuilder();
 const onGear = () => {
-  fb?.exposed?.onEditTool({tool:props.tool})
+  showToolOptions(props.tool, fb)
 };
 
 </script>

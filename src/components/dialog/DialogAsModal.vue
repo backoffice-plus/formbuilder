@@ -18,9 +18,6 @@ dialog {
   background-color: var(--modal);
   border-color: var(--modal-border);
 
-  min-width: 200px;
-  min-height: 100px;
-
   @apply
   rounded-md shadow-lg
   border
@@ -66,7 +63,7 @@ dialog button.close:hover {
 <script setup lang="ts">
 import {ref, h, type Ref, onMounted} from "vue";
 import {Icon} from "@iconify/vue";
-import {useDialogRegistry} from "@/";
+import {getFormbuilder} from "@/";
 import type {DynamicComponent, ModalControl, ModalOptions} from "@/";
 
 const props = defineProps<{
@@ -76,6 +73,7 @@ const props = defineProps<{
 }>();
 
 const dialog = ref() as Ref<HTMLDialogElement>;
+const fb = getFormbuilder();
 
 const render = () => {
   if (props.component?.slots) {
@@ -91,7 +89,7 @@ const clickClose = (event: Event) => {
 }
 
 const onClose = (event: Event) => {
-  useDialogRegistry().removeDialog(dialog.value.id)
+  fb?.exposed?.dialogRegistry.removeDialog(dialog.value.id)
   props.options?.onClose?.(dialog.value.returnValue);
 }
 

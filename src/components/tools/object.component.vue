@@ -114,7 +114,7 @@ onMounted(() => {
 const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
 
 const addItem = () => {
-  showNewPropertyDialogAndGetTool(fb?.exposed?.toolFinder)
+  showNewPropertyDialogAndGetTool(fb?.exposed?.toolFinder, fb)
       .then(tools => {
         tools.forEach(tool => {
           childTools.value.push(tool);
