@@ -168,7 +168,8 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
          * some if/else/then constructs has partial schemas, create childs based on guessType()
          * for `then:{required:['name']}`
          */
-        this.schema?.required?.forEach(propertyName => {
+        const required = this.schema?.required
+        required?.length && required.forEach(propertyName => {
             if(!(propertyName in (this.schema?.properties ?? {}))) {
                 const itemSchema = {type:'string'} as JsonSchema;
                 const uischema = {type:'Control',scope:'#'} as UISchemaElement;
