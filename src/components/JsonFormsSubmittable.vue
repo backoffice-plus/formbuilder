@@ -49,7 +49,7 @@ import {getFormbuilder} from "../lib/vue";
 
 const props = defineProps<{
   jsonforms: { schema:JsonSchema, uischema:any },
-  data?: Object,
+  data?: any,
   renderers?: JsonFormsRendererRegistryEntry[],
   tools?: ToolInterface[],
   readonly?: boolean,
@@ -81,7 +81,7 @@ const submit = async () => {
     data.value = latestEvent.value.data;  //its necessary bc changinge validationMode clears form
     validationMode.value = 'ValidateAndShow';
     if (latestEvent.value.errors.length) {
-        errors.value = latestEvent.value.errors.map(error => error.message)
+        errors.value = latestEvent.value.errors.map((error:any) => error?.message)
         return;
     }
 
