@@ -10,6 +10,9 @@
 
   "uischema": {
     "type": "Control",
-    "scope": "#"
+    "scope": "#/properties/name",
+    "options": {
+      "focus": true
+    }
   }
 }

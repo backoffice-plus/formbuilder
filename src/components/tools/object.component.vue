@@ -82,7 +82,7 @@
 
 import Actions from "./utils/Actions.vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange, showNewPropertyDialogAndGetTool} from '../../lib/formbuilder'
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange, showNewPropertyDialogAndGetTool} from '../../'
 import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import ToolIcon from "./utils/ToolIcon.vue";

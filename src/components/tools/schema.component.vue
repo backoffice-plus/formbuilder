@@ -69,8 +69,7 @@
 import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {Icon} from "@iconify/vue";
 import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
-import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
-import {cloneEmptyTool, cloneToolWithSchema} from '../../lib/toolCreation'
+import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import ToolIcon from "./utils/ToolIcon.vue";

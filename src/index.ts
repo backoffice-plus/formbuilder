@@ -1,5 +1,6 @@
 //lib
 export * from './lib/formbuilder';
+export * from './lib/useDialog';
 export * from './lib/generator';
 export * from './lib/normalizer';
 export * from './lib/tools/subschemas';

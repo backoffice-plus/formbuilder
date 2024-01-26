@@ -1,19 +1,13 @@
 // @ts-ignore
 import * as _ from 'lodash-es';
-import {createVNode, h, ref, render, shallowRef} from "vue"
-import type {Ref} from "vue"
 import {Resolver} from "@stoplight/json-ref-resolver";
 import type {ToolInterface, JsonFormsInterface} from "./models";
 import type {ControlElement, Layout} from "@jsonforms/core";
-import type {JsonSchema, JsonSchema7, Scoped, UISchemaElement} from "@jsonforms/core";
-import {fromPropertyToScope, fromScopeToProperty, normalizeScope} from './normalizer';
+import type {JsonSchema,  Scoped, UISchemaElement} from "@jsonforms/core";
+import {fromPropertyToScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";
-import ConfirmDelete from "../components/modals/ConfirmDelete.vue";
 import {JsonFormsRendererRegistryEntry, RankedTester} from "@jsonforms/core";
-import {getFormbuilder} from "./vue";
-import {ToolFinder} from "./ToolFinder";
-import {useDialogRegistry} from "./useDialog";
-import Prompt from "../components/modals/Prompt.vue";
+
 
 
 /** @deprecated **/
@@ -173,110 +167,7 @@ export const createResolvedJsonForms = (schemas:Promise<any>[]) : Promise<JsonFo
         });
 }
 
-export const confirmAndRemoveChild = (parentTool:ToolInterface, toolToDelete:ToolInterface, fb?:any) : Promise<{ removed:{element:ToolInterface,unscope?:boolean} }> => {
-    return new Promise((resolve, reject) => {
 
-        showDialog((dialog:HTMLDialogElement) => {
-            return {
-                component: ConfirmDelete,
-                bind: {
-                    tool: toolToDelete,
-                    fb,
-                    onConfirm() {
-                        parentTool.edge.removeChild(toolToDelete);
-
-                        const isControl = 'Control' === toolToDelete?.uischema?.type;
-                        if (!isControl) {
-                            toolToDelete.edge.findScopedChilds().forEach(child => child.edge.uiParent = undefined);
-                        }
-
-                        resolve({removed: {element: toolToDelete}});
-
-                        dialog.close();
-                    },
-                    onUnscope() {
-                        parentTool.edge.removeChild(toolToDelete);
-                        resolve({removed: {element: toolToDelete, unscope: true}});
-
-                        dialog.close();
-                    },
-                    key: Math.random(),
-                }
-            }
-        })
-    });
-}
-
-export const showNewPropertyDialogAndGetTool = (toolFinder:ToolFinder|((name:string)=>ToolInterface)) : Promise<ToolInterface[]> => {
-
-    const isToolFinder = toolFinder instanceof ToolFinder;
-
-    const defaultFindToolCallback = (toolFinder:ToolFinder) => (name:string):ToolInterface => {
-        const initSchema = {type:'string'}
-        const initUischema = {type: 'Control', scope: '#'}
-        return toolFinder.findMatchingToolAndClone({}, initSchema, initUischema, name);
-    }
-
-    return new Promise((resolve, reject) => {
-
-        const onSubmit = (input:any) => {
-            const names:string[] = input?.split(',').map((item:string) => item.trim()).filter((i:string) => i);
-
-            const tools = names?.map(name => {
-                if(isToolFinder) return defaultFindToolCallback(toolFinder as ToolFinder)(name)
-                return toolFinder?.(name)
-            }).filter(i=>i);
-
-            resolve(tools ?? []);
-        }
-
-        const onClose = (input:any) => {
-            if(!input) {
-                return reject("aborted");
-            }
-        }
-
-        const dr = useDialogRegistry()
-        dr.showModal(Prompt, {header:"Add new Item", text:"Name of property or coma seperated name list", onSubmit} ,undefined, {onClose});
-    });
-}
-
-
-export const createDialog = ():HTMLDialogElement => {
-    const dialog = document.createElement('dialog')
-    document.body.prepend(dialog)
-    dialog.onclose = () => {
-        document.body.removeChild(dialog)
-    };
-    return dialog;
-}
-export const showDialog = (callback:any) => {
-    const dialog = createDialog();
-    const {component, bind} = callback(dialog)
-    bindDialogComponent(dialog, component, bind);
-}
-export const bindDialogComponent = (dialog:HTMLDialogElement,component:any, args:any) => {
-    render(h(component, args), dialog)
-    dialog.showModal();
-}
-export const findDialogOpenElements = (): HTMLDialogElement[] => {
-    return Array.from(document.querySelectorAll('dialog')).filter(dialog=>dialog.open)
-}
-
-export const deleteToolInChilds = async (toolToDelete:ToolInterface|undefined = undefined, childTools:ToolInterface[] = []) : Promise<ToolInterface[]|boolean> => {
-
-    const confirmed = window?.confirm ? window.confirm("Wirklich löschen?") : true;
-
-    return await Promise.resolve(confirmed)
-        .then((confirmed) => {
-            if(confirmed && toolToDelete) {
-                return childTools.filter(childTool => childTool.uuid !== toolToDelete.uuid)
-            }
-            else {
-                return false;
-            }
-        });
-};
 
 export const prepareAndCallOnDropAreaChange = (e:any, tool:ToolInterface, childs:ToolInterface[], onDropAreaChanged:any) => {
 
