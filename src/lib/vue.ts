@@ -2,7 +2,7 @@ import type {ComponentInternalInstance} from "@vue/runtime-core";
 import {getCurrentInstance} from "vue";
 import type {Ref} from "vue";
 import type {ToolFinder} from "./ToolFinder";
-import type {ToolInterface} from "./models";
+import type {ToolInterface, ToolContext} from "./models";
 
 export const getFormbuilder = () : ComponentInternalInstance|null => {
     let instance = getCurrentInstance();
@@ -31,6 +31,17 @@ export const getToolDragging = (): ToolInterface | undefined => {
 export const onDragGetTool = (e:any) : ToolInterface => {
     const isDragging = 'start' === e?.type;
     return isDragging && e?.item?._underlying_vm_;
+}
+
+export const createContext = (fb:any):ToolContext => {
+    return {
+        fb: fb,
+        builder: fb?.exposed?.showBuilder.value,
+        schemaOnly: !!fb?.props?.schemaOnly,
+        schemaReadOnly: !!fb?.props?.schemaReadOnly,
+        rootSchema: fb?.exposed?.rootSchema?.value,
+        baseSchemaTool: fb?.exposed?.baseSchemaTool?.value,
+    } as ToolContext
 }
 
 // export const onDrag = (e:any) : void => {

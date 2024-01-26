@@ -28,8 +28,8 @@ article {
 
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
-import {getFormbuilder} from "@/lib";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "@/lib";
+import {createContext, getFormbuilder} from "@/lib";
+import type {JsonFormsInterface, ToolInterface} from "@/lib";
 import JsonFormsSubmittable from "@/components/JsonFormsSubmittable.vue";
 
 const props = defineProps<{
@@ -40,28 +40,14 @@ const emit = defineEmits<{
 }>()
 
 const fb = getFormbuilder();
-const context:ToolContext = {
-  fb:fb,
-  parentMethod:'modalcontent.onchange',
-  builder: fb?.exposed?.showBuilder?.value,
-  schemaReadOnly: !!fb?.props?.schemaReadOnly,
-}
+const context = createContext(fb)
+context.parentMethod = 'modalcontent.onchange';
 
 const options = ref({});
 const jf = ref<JsonFormsInterface|undefined>();
 const error = ref('');
 
 const createJsonforms = () => {
-
-  const context:ToolContext = {
-    fb: fb,
-    builder: fb?.exposed?.showBuilder.value,
-    schemaOnly: !!fb?.props?.schemaOnly,
-    schemaReadOnly: !!fb?.props?.schemaReadOnly,
-    rootSchema: fb?.exposed?.rootSchema?.value,
-    baseSchemaTool: fb?.exposed?.baseSchemaTool?.value,
-  }
-
   try {
     options.value = props.tool.optionDataPrepare(context);
 
@@ -83,24 +69,21 @@ const createJsonforms = () => {
   }
 }
 
-
-/**
- * Autosave is disabled for now
- */
-const onChange = (data:any) => {
-  // const dataNoRef = JSON.parse(JSON.stringify(data)); //:TODO other way to remove ref/proxy?
-  //
-  // props.tool.optionDataUpdate(context, dataNoRef)
-  //
-  // emit('submit', data);
-}
-
-const onSubmit = (data:any) => {
+const emitChanges = (data:any) => {
   const dataNoRef = JSON.parse(JSON.stringify(data)); //:TODO other way to remove ref/proxy?
 
   props.tool.optionDataUpdate(context, dataNoRef)
 
   emit('submit', dataNoRef)
+}
+
+const onChange = (data:any) => {
+  //:INFO autosave - is disabled for now
+  //emitChanges(data);
+}
+
+const onSubmit = (data:any) => {
+  emitChanges(data);
 }
 
 
