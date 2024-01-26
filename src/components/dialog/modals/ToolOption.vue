@@ -51,6 +51,39 @@ const options = ref({});
 const jf = ref<JsonFormsInterface|undefined>();
 const error = ref('');
 
+const createJsonforms = () => {
+
+  const context:ToolContext = {
+    fb: fb,
+    builder: fb?.exposed?.showBuilder.value,
+    schemaOnly: !!fb?.props?.schemaOnly,
+    schemaReadOnly: !!fb?.props?.schemaReadOnly,
+    rootSchema: fb?.exposed?.rootSchema?.value,
+    baseSchemaTool: fb?.exposed?.baseSchemaTool?.value,
+  }
+
+  try {
+    options.value = props.tool.optionDataPrepare(context);
+
+    props.tool.optionJsonforms(context)
+        .then((e:JsonFormsInterface|undefined) => {
+          const jfUnref = JSON.parse(JSON.stringify(e));
+
+          jf.value = {
+            schema:jfUnref?.schema,
+            uischema:jfUnref?.uischema
+          };
+        })
+        .catch((e:any) => {
+          error.value = e
+        })
+  }
+  catch(e:any) {
+    error.value = e;
+  }
+}
+
+
 /**
  * Autosave is disabled for now
  */
@@ -72,33 +105,6 @@ const onSubmit = (data:any) => {
 
 
 onMounted(async () => {
-
-  const context:ToolContext = {
-    fb: fb,
-    builder: fb?.exposed?.showBuilder.value,
-    schemaOnly: !!fb?.props?.schemaOnly,
-    schemaReadOnly: !!fb?.props?.schemaReadOnly,
-    rootSchema: fb?.exposed?.rootSchema?.value,
-    baseSchemaTool: fb?.exposed?.baseSchemaTool?.value,
-  }
-
-  try {
-    options.value = props.tool.optionDataPrepare(context);
-    props.tool.optionJsonforms(context)
-        .then((e:JsonFormsInterface|undefined) => {
-          const jfUnref = JSON.parse(JSON.stringify(e?.schema));
-
-          jf.value = {
-            schema:jfUnref?.schema,
-            uischema:jfUnref?.uischema
-          };
-        })
-        .catch((e:any) => {
-          error.value = e
-        })
-  }
-  catch(e:any) {
-    error.value = e;
-  }
+  createJsonforms();
 })
 </script>
