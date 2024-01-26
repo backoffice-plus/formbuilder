@@ -1,6 +1,8 @@
 <template>
 
   <dialog ref="dialog" @close="onClose">
+    <header data-dialog-draggable />
+
     <button type="button" class="close" @click="clickClose" v-if="!options?.hideClose">
       <Icon icon="mdi:close"/>
     </button>
@@ -29,7 +31,15 @@ dialog[open] {
   transform-origin: top;
 }
 
-dialog button.close {
+dialog > header {
+  @apply
+  absolute left-0 top-0 right-8
+  h-4
+  cursor-move
+  select-none
+}
+
+dialog > button.close {
   color: var(--toolItem-icon);
   @apply
   absolute
@@ -42,7 +52,7 @@ dialog button.close {
   flex items-center justify-center
 }
 
-dialog button.close:hover {
+dialog > button.close:hover {
   background-color: var(--buttonRounded-hover);
 }
 
@@ -65,6 +75,9 @@ import {ref, h, type Ref, onMounted} from "vue";
 import {Icon} from "@iconify/vue";
 import {getFormbuilder} from "@/";
 import type {DynamicComponent, ModalControl, ModalOptions} from "@/";
+import { makeDialogDraggable } from 'dialog-draggable';
+
+makeDialogDraggable();
 
 const props = defineProps<{
   component: DynamicComponent,

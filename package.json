@@ -59,6 +59,7 @@
     "@stoplight/json-ref-resolver": "^3.1.6",
     "@types/lodash-es": "^4.17.11",
     "@vueuse/core": "^10.7.0",
+    "dialog-draggable": "^0.1.5",
     "flat": "^6.0.1",
     "lodash-es": "^4.17.21",
     "sortablejs": "^1.15.0"
