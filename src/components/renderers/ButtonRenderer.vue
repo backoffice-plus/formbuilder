@@ -19,22 +19,31 @@ button {
 </style>
 
 <script setup lang="ts">
+import {inject} from "vue";
 import type {ControlElement,} from '@jsonforms/core';
 import {rendererProps, useJsonFormsControl} from "@jsonforms/vue";
 import {ControlWrapper, useVanillaControl} from "@jsonforms/vue-vanilla";
-import {buttonRegistry} from "../../composables/buttonRegistry";
-import {computed} from "vue";
+import {resolveData, toDataPath} from "@jsonforms/core";
 
 const props = defineProps(rendererProps<ControlElement>())
+
+const jsonforms = inject('jsonforms') as any
+const rootData = jsonforms?.core?.data;
 
 const c = useVanillaControl(useJsonFormsControl(props));
 const {control, controlWrapper:bind, styles, isFocused, appliedOptions} = c;
 
 const onSubmit = () => {
-  const data = control.value.data;
-  const callback = buttonRegistry.value.get(data);
+  const value = control.value.data;
+  const uischema = control.value.uischema
 
-  callback?.();
+  const scopeCallback = uischema?.options?.scopeCallback;
+  const path = scopeCallback && toDataPath(scopeCallback);
+  const callback = path && resolveData(rootData, path);
+
+  if(!callback) console.warn("could not resolve scopeCallback");
+
+  callback?.(value);
 }
 
 

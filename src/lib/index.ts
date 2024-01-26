@@ -9,5 +9,5 @@ export * from './BuilderEvent';
 export * from './toolCreation';
 
 export {AbstractTool} from "./tools/AbstractTool";
-export type {ToolInterface, ToolContext, JsonFormsInterface} from "./models";
+export type {ToolInterface, ToolContext, JsonFormsInterface, JsonFormsUISchema, ToolFinderInterface} from "./models";
 export {defaultTools} from "./tools";

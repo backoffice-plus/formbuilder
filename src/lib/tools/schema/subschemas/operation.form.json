@@ -1,0 +1,54 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "operation": {
+        "type": "object",
+        "properties": {
+          "changeToType": {
+            "type":"string",
+            "enum": ["VerticalLayout","HorizontalLayout","Categorization","Group"]
+          },
+          "_isBaseUiTool": {
+            "type":"boolean"
+          }
+        }
+      }
+    }
+  },
+  "uischema": {
+    "type": "Group",
+    "label": "Change to Categorization",
+    "elements": [
+      {
+        "type": "HorizontalLayout",
+        "elements": [
+          {
+            "type": "VerticalLayout",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "#/properties/operation/properties/changeToType"
+              },
+              {
+                "type": "Button",
+                "label": false,
+                "scope": "#/properties/operation/properties/changeToType",
+                "options" : {
+                  "label": "Change Type",
+                  "scopeCallback": "#/properties/operation/properties/_changeTypeCallback"
+                }
+              }
+            ]
+          },
+          {
+            "type": "Text",
+            "text": "This converts the base UI schema into a Categorization UI schema. All current UI elements will be reseted!"
+          }
+        ]
+      }
+    ]
+  },
+
+  "data": {}
+}

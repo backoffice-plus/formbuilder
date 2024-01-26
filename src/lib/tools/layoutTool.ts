@@ -1,20 +1,14 @@
-import {rankWith, scopeEndIs} from "@jsonforms/core";
-import type {Layout} from "@jsonforms/core";
-import {uiTypeIs} from "@jsonforms/core";
-import {AbstractTool} from "./AbstractTool";
-import flexArea from "../../components/tools/flexArea.vue";
-import {resolveSchema} from "../formbuilder";
-import type {JsonFormsInterface, JsonFormsUISchema, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
-import {schema, uischema} from "./schema/layout.form.json";
-import * as subschemas from "./subschemas";
-import {getPlainProperty, getRequiredFromSchema, normalizePath, normalizeScope} from "../normalizer";
-import * as _ from 'lodash-es';
-import {cloneToolWithSchema} from "../toolCreation";
-import {unknownTool} from "./unknownTool";
-import {toDataPath} from "@jsonforms/core";
-import {ScopeTool} from "./ScopeTool";
-import {buttonRegistry} from "../../composables/buttonRegistry";
 import type {Ref} from "vue";
+import {rankWith,uiTypeIs, toDataPath, type Layout} from "@jsonforms/core";
+import * as _ from 'lodash-es';
+import {resolveSchema, cloneToolWithSchema, prepareOptionOperation} from "@/";
+import type {JsonFormsInterface, JsonFormsUISchema, ToolContext, ToolFinderInterface, ToolInterface} from "@/";
+import {schema, uischema} from "./schema/layout.form.json";
+import flexArea from "@/components/tools/flexArea.vue";
+import * as subschemas from "./subschemas";
+import {AbstractTool} from "./AbstractTool";
+import {unknownTool} from "./unknownTool";
+import {ScopeTool} from "./ScopeTool";
 
 export class VerticalLayout extends AbstractTool implements ToolInterface {
 
@@ -31,39 +25,12 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
-        const baseUiTool:Ref<ToolInterface|undefined> = context?.fb?.exposed?.baseUiTool;
-        const isBaseUiTool = baseUiTool?.value?.uuid === this.uuid;
-        // const oldChilds = this.edge.childs
-        // const oldElements = this.generateUiSchema()?.elements;
-
-        buttonRegistry.value.set('layoutTool.changeToCategorization', ()=> {
-            if(isBaseUiTool && baseUiTool) {
-               const toolFinder = context?.fb?.exposed?.toolFinder;
-               const tabTool = toolFinder.findLayoutToolByUiType("Categorization");
-               // const uischema = { elements: [{"type": "Category","elements": oldElements ?? [],  }] }
-
-                /**
-                 * :TODO init old elements/childs to first tab (currently control elements are not initialized)
-                 */
-                baseUiTool.value = cloneToolWithSchema(tabTool, {});//uischema);
-                //baseUiTool.value?.initChilds(toolFinder);
-               //oldChilds.forEach(child => baseUiTool.value.edge?.addChild(child));
-
-                /**
-                 * :TODO close modal
-                 */
-                console.log(":TODO close modal")
-                //context.fb?.exposed?.onModalClose();
-            }
-        });
-
         return {
             options: this.uischema?.options,
             uischemaType: this.uischema.type,
             ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
-            _isBaseUiTool: isBaseUiTool,
-            changeToCategorization: 'layoutTool.changeToCategorization',
+            ...subschemas.prepareOptionOperation(context, this),
         } as any;
     }
 

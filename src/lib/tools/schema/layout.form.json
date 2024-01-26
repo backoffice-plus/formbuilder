@@ -12,17 +12,14 @@
       "styles": {
         "$ref":"styles.schema#/properties/styles"
       },
-      "changeToCategorization": {
-        "type":"string"
+      "operation": {
+        "$ref":"operation.schema#/properties/operation"
       },
       "options": {
         "type": "object",
         "additionalProperties": {
           "type": "string"
         }
-      },
-      "_isBaseUiTool": {
-        "type":"boolean"
       }
     }
   },
@@ -81,36 +78,15 @@
         "label": "Operations",
         "elements": [
           {
-            "type": "Group",
-            "label": "Change to Categorization",
-            "elements": [
-              {
-                "type": "HorizontalLayout",
-                "elements": [
-                  {
-                    "type": "Button",
-                    "label": false,
-                    "scope": "#/properties/changeToCategorization",
-                    "options" : {
-                      "label": "Change"
-                    }
-                  },
-                  {
-                    "type": "Text",
-                    "text": "This converts the base UI schema into a Categorization UI schema. All current UI elements will be reseted!"
-                  }
-                ]
-              }
-            ]
+            "type": "LayoutRef",
+            "$ref":"operation.uischema"
           }
         ],
         "rule": {
           "effect": "SHOW",
           "condition": {
-            "scope": "#/properties/_isBaseUiTool",
-            "schema": {
-              "const": true
-            }
+            "scope": "#/properties/operation/properties/_isBaseUiTool",
+            "schema": {"const":true}
           }
         }
       }

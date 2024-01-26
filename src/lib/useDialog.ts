@@ -45,7 +45,7 @@ export const useDialogRegistry = (modals?:Ref<RegisteredModal[]>) => {
         };
         const registeredModal:RegisteredModal = {
             id,
-            component: {is: shallowRef(component), bind: {...bind, dialogId:id}, slots},
+            component: {is: shallowRef(component), bind: {...bind, modalControl}, slots},
             options,
             modalControl,
         };

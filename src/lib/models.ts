@@ -10,6 +10,7 @@ import type {
 import type {PropType} from "vue";
 import type {RankedTester} from "@jsonforms/core";
 import type {ToolEdge} from "./ToolEdge";
+import {ModalControl} from "@/lib/useDialog";
 
 export const scalarTypes = ['string', 'number', 'integer', 'boolean', 'null'];
 
@@ -48,6 +49,9 @@ export interface ToolContext {
     schemaReadOnly?: boolean;
     rootSchema?: JsonSchema,
     baseSchemaTool?: ToolInterface,
+    modalControl?: ModalControl,
+
+    /** @deprecated - Is this needed anywhere?? */
     parentMethod?:string,
 }
 export interface ToolFinderInterface {

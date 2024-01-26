@@ -29,11 +29,12 @@ article {
 <script setup lang="ts">
 import {onMounted, ref} from "vue";
 import {createContext, getFormbuilder} from "@/lib";
-import type {JsonFormsInterface, ToolInterface} from "@/lib";
+import type {JsonFormsInterface, ToolInterface, ModalControl} from "@/lib";
 import JsonFormsSubmittable from "@/components/JsonFormsSubmittable.vue";
 
 const props = defineProps<{
   tool: ToolInterface,
+  modalControl?: ModalControl,
 }>()
 const emit = defineEmits<{
   (name: 'submit', payload:any): void,
@@ -42,6 +43,7 @@ const emit = defineEmits<{
 const fb = getFormbuilder();
 const context = createContext(fb)
 context.parentMethod = 'modalcontent.onchange';
+context.modalControl = props.modalControl;
 
 const options = ref({});
 const jf = ref<JsonFormsInterface|undefined>();
