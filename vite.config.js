@@ -14,6 +14,12 @@ export default defineConfig({
         }),
     ],
 
+    resolve: {
+        alias: {
+            "@": resolve(__dirname, "./src/"),
+        },
+    },
+
     build: {
         // Output compiled files to /dist.
         outDir: './dist',

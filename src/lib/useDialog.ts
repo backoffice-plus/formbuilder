@@ -2,8 +2,8 @@ import {ref, type Ref, shallowRef} from "vue";
 import type {Component, VNodeProps} from "@vue/runtime-core";
 import {ToolInterface} from "./models";
 import {ToolFinder} from "./ToolFinder";
-import ConfirmDelete from "../components/modals/ConfirmDelete.vue";
-import Prompt from "../components/modals/Prompt.vue";
+import ConfirmDelete from "@/components/dialog/modals/ConfirmDelete.vue";
+import Prompt from "@/components/dialog/modals/Prompt.vue";
 
 type Bind = VNodeProps | Record<string, unknown>
 type RawSlots = {

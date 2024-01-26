@@ -1,6 +1,6 @@
+import * as _ from 'lodash-es';
 import type {ToolInterface} from "./models";
 import type {ToolFinder} from "./ToolFinder";
-import * as _ from 'lodash-es';
 
 export class BuilderEvent {
 

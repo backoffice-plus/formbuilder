@@ -13,7 +13,13 @@
     "skipLibCheck": true,
     //"noEmit": true, //will add at package.json script -> "typecheck": "vue-tsc --noEmit"
 
-    "allowJs": true //to avoid TS6504 -> to fix this, add lang=ts to all <script setup> tags in all remaining components
+    "allowJs": true, //to avoid TS6504 -> to fix this, add lang=ts to all <script setup> tags in all remaining components
+
+    "baseUrl": ".",
+    "paths": {
+      "@/": ["./src/"],
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
   "references": [{ "path": "./tsconfig.node.json" }]

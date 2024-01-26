@@ -66,8 +66,8 @@ dialog button.close:hover {
 <script setup lang="ts">
 import {ref, h, type Ref, onMounted} from "vue";
 import {Icon} from "@iconify/vue";
-import {useDialogRegistry} from "../../lib/useDialog";
-import type {DynamicComponent, ModalControl, ModalOptions} from "../../lib/useDialog";
+import {useDialogRegistry} from "@/";
+import type {DynamicComponent, ModalControl, ModalOptions} from "@/";
 
 const props = defineProps<{
   component: DynamicComponent,

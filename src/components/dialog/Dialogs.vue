@@ -11,8 +11,8 @@
 </template>
 
 <script setup lang="ts">
+import {useDialogRegistry} from "@/";
 import DialogAsModal from "./DialogAsModal.vue";
-import {useDialogRegistry} from "../../lib/useDialog";
 
 const modalRegistry = useDialogRegistry();
 </script>

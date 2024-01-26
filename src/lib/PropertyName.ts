@@ -1,12 +1,3 @@
-import type {JsonSchema} from "@jsonforms/core";
-import type {
-    Categorization,
-    Category,
-    ControlElement,
-    LabelElement,
-    Layout,
-    UISchemaElement,
-} from "@jsonforms/core/src/models/uischema";
 import {composeWithUi, toDataPath, toDataPathSegments} from "@jsonforms/core";
 import type {Scopable} from "@jsonforms/core";
 

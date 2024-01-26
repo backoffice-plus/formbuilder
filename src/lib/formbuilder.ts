@@ -1,12 +1,11 @@
 // @ts-ignore
 import * as _ from 'lodash-es';
+import {JsonFormsRendererRegistryEntry, RankedTester} from "@jsonforms/core";
 import {Resolver} from "@stoplight/json-ref-resolver";
-import type {ToolInterface, JsonFormsInterface} from "./models";
-import type {ControlElement, Layout} from "@jsonforms/core";
-import type {JsonSchema,  Scoped, UISchemaElement} from "@jsonforms/core";
 import {fromPropertyToScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";
-import {JsonFormsRendererRegistryEntry, RankedTester} from "@jsonforms/core";
+import type {ToolInterface, JsonFormsInterface} from "./models";
+import type {JsonSchema,  Scoped, UISchemaElement, ControlElement, Layout} from "@jsonforms/core";
 
 
 

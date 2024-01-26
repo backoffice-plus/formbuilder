@@ -14,8 +14,8 @@
 
 
 <script setup lang="ts">
-import JsonFormsSubmittable from "../JsonFormsSubmittable.vue";
-import jf from "../../lib/jsonforms/prompt_newitem.forms.json";
+import JsonFormsSubmittable from "@/components/JsonFormsSubmittable.vue";
+import jf from "@/lib/jsonforms/prompt_newitem.forms.json";
 
 const props = defineProps<{
   header: string,

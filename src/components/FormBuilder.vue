@@ -104,18 +104,13 @@ dialog::backdrop {
 
 
 <script setup>
-import {computed, getCurrentInstance, onMounted, ref, useSlots, watch} from 'vue'
-import {generateJsonForm} from "../index";
-import {initBaseTools} from "../lib/toolCreation";
-
-import Modal from "./Modal.vue";
+import {computed, onMounted, ref, useSlots, watch} from 'vue'
 import * as _ from 'lodash-es';
-import {onDragGetTool} from "../lib/vue";
-import {ToolFinder} from "../lib/ToolFinder";
+import {initBaseTools, generateJsonForm, onDragGetTool, ToolFinder, BuilderEvent} from "@/";
 import ToolIcon from "./tools/utils/ToolIcon.vue";
 import FormBuilderToolbar from "./FormBuilderToolbar.vue";
-import {BuilderEvent} from "../lib/BuilderEvent";
 import Dialogs from "./dialog/Dialogs.vue";
+import Modal from "./Modal.vue";
 
 //const props = defineProps({...formbuilderProps()})
 const props = defineProps({

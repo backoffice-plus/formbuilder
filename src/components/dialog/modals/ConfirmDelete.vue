@@ -1,7 +1,6 @@
 
 <script setup lang="ts">
-import type {ToolInterface} from "../../lib/models";
-import {getFormbuilder} from "../../lib/vue";
+import {getFormbuilder, type ToolInterface} from "@/";
 
 const props = defineProps<{
   tool: ToolInterface

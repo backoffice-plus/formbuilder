@@ -2,11 +2,11 @@ import type {JsonSchema} from "@jsonforms/core";
 import type {
     Categorization,
     Category,
-    ControlElement, Internationalizable, Labelable, LabelDescription,
+    ControlElement,
     LabelElement,
-    Layout, Scoped,
+    Layout,
     UISchemaElement,
-} from "@jsonforms/core/src/models/uischema";
+} from "@jsonforms/core";
 import type {PropType} from "vue";
 import type {RankedTester} from "@jsonforms/core";
 import type {ToolEdge} from "./ToolEdge";

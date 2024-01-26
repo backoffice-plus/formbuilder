@@ -45,10 +45,9 @@ section > button:hover {
 
 
 <script setup>
-import {computed, onMounted, ref, watch} from 'vue';
-import {getFormbuilder, getToolDraggingRef} from "../lib/vue";
+import {computed, ref} from 'vue';
+import {getFormbuilder, getToolDraggingRef, findUnscopedTools} from "@/";
 import FormBuilderBar from "./FormBuilderBar.vue";
-import {findUnscopedTools} from "../lib/formbuilder";
 
 
 const props = defineProps(

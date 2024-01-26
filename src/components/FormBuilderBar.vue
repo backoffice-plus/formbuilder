@@ -84,16 +84,13 @@ aside .toolItem {
 
 
 <script setup>
+import {ref} from 'vue';
+import {Vuedraggable} from '../index'
+import {getFormbuilder, getToolDraggingRef, cloneEmptyTool} from "@/";
 
 /**
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
-
-import {ref} from 'vue';
-import {Vuedraggable} from '../index'
-import {cloneEmptyTool} from "../lib/toolCreation";
-import {getFormbuilder, getToolDraggingRef} from "../lib/vue";
-
 
 const props = defineProps(
     {

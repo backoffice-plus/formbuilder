@@ -51,10 +51,10 @@
 </style>
 
 <script setup>
-import ModalContent from "./ModalContent.vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import {onClickOutside, onKeyStroke} from "@vueuse/core";
-import {onMounted, onUnmounted, ref, watch} from "vue";
-import {findDialogOpenElements} from "../lib/useDialog";
+import {findDialogOpenElements} from "@/";
+import ModalContent from "./ModalContent.vue";
 
 const props = defineProps({
   tool: Object,//ToolInterface,

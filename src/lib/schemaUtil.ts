@@ -1,5 +1,5 @@
-import {ToolInterface} from "./models";
-import {JsonSchema} from "@jsonforms/core";
+import {type ToolInterface} from "./models";
+import {type JsonSchema} from "@jsonforms/core";
 import * as _ from "lodash-es";
 
 export const findAllScopablePaths = (baseTool:ToolInterface, parentPath='#') => {

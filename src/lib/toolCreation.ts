@@ -1,14 +1,13 @@
 // @ts-ignore
 import * as _ from 'lodash-es';
-import type {formbuilderPropsI, ToolContext, ToolInterface} from "./models";
-import type {JsonSchema, UISchemaElement, Layout} from "@jsonforms/core";
 import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import {fromScopeToProperty} from './normalizer';
-import {objectTool, ObjectTool} from "./tools/ObjectTool";
-import type {ToolFinder} from "./ToolFinder";
-import {SchemaTool, schemaTool} from "./tools/SchemaTool";
-import {formbuilderProps} from "./models";
+import {objectTool} from "./tools/ObjectTool";
+import {schemaTool} from "./tools/SchemaTool";
 import {arrayTool} from "./tools/ArrayTool";
+import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
+import type {formbuilderPropsI, ToolContext, ToolInterface} from "./models";
+import type {ToolFinder} from "./ToolFinder";
 
 export const initBaseTools = (toolFinder: ToolFinder, props:formbuilderPropsI) => {
     // if(props.schemaOnly) {

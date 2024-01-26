@@ -41,11 +41,10 @@ copied from ButtonRenderer
 </style>
 
 <script setup lang="ts">
+import {computed, ref, watch, type Ref} from "vue";
 import {JsonForms} from "@jsonforms/vue";
 import type {JsonFormsRendererRegistryEntry, JsonSchema, ValidationMode} from "@jsonforms/core";
-import {computed, ref, watch, type Ref} from "vue";
-import {type ToolInterface} from "../lib/models";
-import {getFormbuilder} from "../lib/vue";
+import {getFormbuilder, type ToolInterface} from "@/";
 
 const props = defineProps<{
   jsonforms: { schema:JsonSchema, uischema:any },

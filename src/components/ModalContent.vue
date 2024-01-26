@@ -47,13 +47,11 @@
 
 
 <script setup>
-
+import {onMounted, ref} from "vue";
 import {JsonForms} from "@jsonforms/vue";
-import {createI18nTranslate} from "../lib/formbuilder";
-import {getCurrentInstance, onMounted, ref} from "vue";
 import {createAjv} from "@jsonforms/core";
-import {formBuilderCatalogue} from "../translations/de";
-import {getFormbuilder} from "../lib/vue";
+import {formBuilderCatalogue} from "@/translations/de";
+import {createI18nTranslate, getFormbuilder} from "@/";
 
 const props = defineProps({
   tool: Object,//ToolInterface,
