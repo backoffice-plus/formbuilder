@@ -4,6 +4,7 @@ import type {ToolContext, ToolFinderInterface, ToolInterface} from "@/";
 import {cloneToolWithSchema} from "@/lib";
 
 export const prepareOptionData = (context: ToolContext, tool: ToolInterface): Record<string, any> => {
+    const baseSchemaTool: Ref<ToolInterface | undefined> = context?.fb?.exposed?.baseSchemaTool;
     const baseUiTool: Ref<ToolInterface | undefined> = context?.fb?.exposed?.baseUiTool;
     const isBaseUiTool = baseUiTool?.value?.uuid === tool.uuid;
 
@@ -15,25 +16,26 @@ export const prepareOptionData = (context: ToolContext, tool: ToolInterface): Re
         const newTool = toolFinder.findLayoutToolByUiType(value);
         const isTypeChanged = newTool && newTool?.uischema?.type !== baseUiTool.value?.uischema?.type;
 
-        if(newTool && isTypeChanged) {
-            const clone = cloneToolWithSchema(newTool, {});//uischema);
+        if(!(newTool && isTypeChanged)) return;
 
-            //
-            //     /**
-            //      * :TODO init old elements/childs to first tab (currently control elements are not initialized)
-            //      */
+        //     /**
+        //      * :TODO init old childs to new tool
+        //      */
+        // const oldElements = tool.generateUiSchema()?.elements;
+        // const uischema = { elements: [{"type": "Category","label":"Tab - changed","elements":oldElements,  }] }
+        //
 
-            baseUiTool.value = clone
-            context?.modalControl?.close()
-            context?.fb?.exposed?.onDropAreaChanged({modal: {element: tool}})
-        }
+         const clone = cloneToolWithSchema(newTool, {});//, uischema);
 
+        // tool.edge.childs.map(child=> {
+        //     console.log("oldChild", {child});
+        //     child.edge.uiParent = undefined
+        // })
+        //clone.initChilds(toolFinder, baseSchemaTool.value)
 
+        //
         // const oldChilds = this.edge.childs
-        // const oldElements = this.generateUiSchema()?.elements;
         // if ('layoutTool.changeToCategorization' === value) {
-        //     // const uischema = { elements: [{"type": "Category","elements": oldElements ?? [],  }] }
-
         //     baseUiTool.value = cloneToolWithSchema(tabTool, {});//uischema);
         //     //baseUiTool.value?.initChilds(toolFinder);
         //     //oldChilds.forEach(child => baseUiTool.value.edge?.addChild(child));
@@ -43,6 +45,11 @@ export const prepareOptionData = (context: ToolContext, tool: ToolInterface): Re
         //     console.log("Callback LayoutTool unknown Type", {value})
         // }
 
+
+
+        baseUiTool.value = clone
+        context?.fb?.exposed?.onDropAreaChanged({modal: {element: tool}})
+        context?.modalControl?.close()
     };
 
     return {
