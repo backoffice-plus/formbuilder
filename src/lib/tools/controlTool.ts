@@ -82,8 +82,6 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         (this.schema as JsonSchemaDraft07).contentMediaType = data.schema.contentMediaType;
         (this.schema as JsonSchemaDraft07).contentEncoding = data.schema.contentEncoding;
 
-        console.log("controla.update",{data});
-
         subschemas.setOptionDataValidation(this.schema, this.uischema, data);
         subschemas.setOptionDataLabel(this.schema, this.uischema, data);
         subschemas.setOptionDataRule(this.schema, this.uischema, data);
