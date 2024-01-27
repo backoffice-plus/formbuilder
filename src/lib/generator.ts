@@ -22,6 +22,12 @@ export const generateJsonForm = (event: BuilderEvent): JsonFormsInterface => {
         case 'uischema':
             uischema = event.baseUiTool?.generateUiSchema();
 
+            // deleting a child (type=control) in a type=control (object, array, combinator)
+            const isParentControl = 'Control' === event.parentTool?.uischema.type;
+            if(isParentControl) {
+                schema = event.baseSchemaTool?.generateJsonSchema();
+            }
+
             if(!event.schemaReadOnly) {
                 const updated = updateSchemaTree(event);
                 updated && (schema = event.baseSchemaTool?.generateJsonSchema());
@@ -96,7 +102,17 @@ const updateSchemaTree = (event: BuilderEvent): boolean => {
                 uiTool.edge.displaced = undefined;
             }
 
-            return !wasDisplaced ? handleUiEventOnRemoved(event) : false;
+            let update = !wasDisplaced ? handleUiEventOnRemoved(event) : false;
+
+            // deleting a child (type=control) in a type=control (object, array, combinator) at builder=uischema
+            if(!update) {
+                const isParentControl = 'Control' === event.parentTool?.uischema.type;
+                if(isParentControl) {
+                    update = true;
+                }
+            }
+
+            return update
 
         case 'mounted':
             if (!isControl) {
