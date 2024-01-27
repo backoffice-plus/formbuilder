@@ -41,6 +41,8 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
             }
         }
 
+        const isParentArray = 'array' === this.edge.schemaParent?.schema?.type;
+
         return {
             propertyName: this.propertyName,
             schema: {
@@ -51,7 +53,8 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
             ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
             ...uidata,
-            _isUischema:isUischema
+            _isUischema:isUischema,
+            _isParentArray:isParentArray,
         } as any;
     }
 

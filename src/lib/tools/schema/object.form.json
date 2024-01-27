@@ -55,6 +55,12 @@
       },
       "definitions": {
         "$ref": "definitions.schema#/properties/definitions"
+      },
+      "_isUischema": {
+        "type": "boolean"
+      },
+      "_isParentArray": {
+        "type": "boolean"
       }
     },
     "required": [
@@ -80,10 +86,8 @@
             "rule": {
               "effect": "HIDE",
               "condition": {
-                "scope": "#/properties/_isBaseTool",
-                "schema": {
-                  "const": true
-                }
+                "scope": "#/properties/_isParentArray",
+                "schema": { "const": true }
               }
             }
           },
