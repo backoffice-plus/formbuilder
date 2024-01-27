@@ -1,4 +1,3 @@
-import type {JsonSchema} from "@jsonforms/core";
 import type {
     Categorization,
     Category,
@@ -6,11 +5,13 @@ import type {
     LabelElement,
     Layout,
     UISchemaElement,
+    RankedTester,
+    JsonSchema,
 } from "@jsonforms/core";
 import type {PropType} from "vue";
-import type {RankedTester} from "@jsonforms/core";
 import type {ToolEdge} from "./ToolEdge";
 import {ModalControl} from "@/lib/useDialog";
+import type {JsonSchema7} from "@jsonforms/core/src/models/jsonSchema7";
 
 export const scalarTypes = ['string', 'number', 'integer', 'boolean', 'null'];
 
@@ -40,6 +41,13 @@ export interface ToolInterface {
     generateJsonSchema: () => JsonSchema|undefined
     generateUiSchema: () => JsonFormsUISchema|undefined
     initChilds: (toolFinder:ToolFinderInterface, baseSchemaTool?:ToolInterface|undefined) => ToolInterface[]
+}
+
+export interface JsonSchemaDraft07 extends JsonSchema7 {
+    //@see https://json-schema.org/understanding-json-schema/reference/non_json_data#contentmediatype
+    contentMediaType?:string
+    //@see https://json-schema.org/understanding-json-schema/reference/non_json_data#contentencoding
+    contentEncoding?:string
 }
 
 export interface ToolContext {

@@ -6,9 +6,13 @@ export const schema = {
 
     definitions: {
 
+        //@see http://json-schema.org/draft-07/schema#/definitions/simpleTypes
+        type: {
+            enum: ['string', 'number', 'integer', 'boolean'],
+        },
+
         //@see https://json-schema.org/understanding-json-schema/reference/string.html?highlight=format#built-in-formats
-        formats: {
-            type: "string",
+        format: {
             enum: [
                 'date', 'time', 'date-time', 'duration',
                 'email','password',
@@ -39,34 +43,29 @@ export const schema = {
             $ref:'styles.schema#/properties/styles'
         },
 
+        schema: {
+            "type": "object",
+            "properties": {
+                "type": {  "$ref": "#/definitions/type" },
+                "format": {  "$ref": "#/definitions/format" },
+
+                "contentMediaType": {
+                    "type": "string",
+                    "description": 'like: "image/*", "image/jpeg" or "application/pdf"'
+                },
+                "contentEncoding": {
+                    "type": "string",
+                    //enum: ['7bit', '8bit', 'binary', 'quoted-printable', 'base16', 'base32', 'base64']
+                    "enum": ['base64'] //there are really only two options useful for modern usage
+                },
+            },
+        },
+
 
         propertyName: {
             type: "string",
             pattern: "^[a-z]"
         },
-
-        // schema: {
-        //     type: "object",
-        //     properties: {
-                type: {
-                    type: "string",
-                    enum: ['string', 'number', 'integer', 'boolean'],
-                },
-                format:{$ref:'#/definitions/formats'},
-
-
-                contentMediaType: {
-                    type: "string",
-                    description: 'like: "image/*", "image/jpeg" or "application/pdf"'
-                },
-                contentEncoding: {
-                    type: "string",
-                    //enum: ['7bit', '8bit', 'binary', 'quoted-printable', 'base16', 'base32', 'base64']
-                    enum: ['base64'] //there are really only two options useful for modern usage
-                },
-
-        //     },
-        // },
 
         required: {
             type: "boolean"
@@ -161,16 +160,16 @@ export const uischema = {
                                     type: "HorizontalLayout",
                                     elements: [
                                         {
-                                            scope: "#/properties/type",
+                                            scope: "#/properties/schema/properties/type",
                                             type: "Control"
                                         },
                                         {
-                                            scope: "#/properties/format",
+                                            scope: "#/properties/schema/properties/format",
                                             type: "Control",
                                             rule: {
                                                 effect: "ENABLE",
                                                 condition: {
-                                                    scope: "#/properties/type",
+                                                    scope: "#/properties/schema/properties/type",
                                                     schema: {
                                                         "const": "string"
                                                     }
@@ -184,18 +183,18 @@ export const uischema = {
                                     "type": "HorizontalLayout",
                                     "elements": [
                                         {
-                                            "scope": "#/properties/contentMediaType",
+                                            "scope": "#/properties/schema/properties/contentMediaType",
                                             "type": "Control"
                                         },
                                         {
-                                            "scope": "#/properties/contentEncoding",
+                                            "scope": "#/properties/schema/properties/contentEncoding",
                                             "type": "Control",
                                         }
                                     ],
                                     "rule": {
                                         "effect": "ENABLE",
                                         "condition": {
-                                            "scope": "#/properties/type",
+                                            "scope": "#/properties/schema/properties/type",
                                             "schema": {
                                                 "const": "string"
                                             }
@@ -217,7 +216,7 @@ export const uischema = {
                                                     type: "AND",
                                                     conditions: [
                                                         {
-                                                            scope: "#/properties/type",
+                                                            scope: "#/properties/schema/properties/type",
                                                             schema: {
                                                                 const: "string"
                                                             }
@@ -244,7 +243,7 @@ export const uischema = {
                                             rule: {
                                                 effect: "SHOW",
                                                 condition: {
-                                                    scope: "#/properties/type",
+                                                    scope: "#/properties/schema/properties/type",
                                                     schema: {
                                                         const: "boolean"
                                                     }
@@ -368,7 +367,7 @@ export const uischema = {
             rule: {
                 effect: "DISABLE",
                 condition: {
-                    scope: "#/properties/type",
+                    scope: "#/properties/schema/properties/type",
                     schema: { enum: ["boolean"] }
                 }
             }

@@ -99,7 +99,10 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
 
         const data = {
             propertyName: this.propertyName,
-            type: this.schema.type,
+            schema: {
+                type: this.schema.type,
+            },
+
             //asInlineType: couldBeInlineType,
             isRef: isRef,
             options: options,

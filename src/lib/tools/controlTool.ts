@@ -9,6 +9,7 @@ import {createResolvedJsonForms, resolveSchema} from "../formbuilder";
 import * as _ from 'lodash-es';
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
+import {JsonSchemaDraft07} from "../models";
 
 
 export class ControlTool extends AbstractTool implements ToolInterface {
@@ -26,16 +27,17 @@ export class ControlTool extends AbstractTool implements ToolInterface {
     optionDataPrepare(context: ToolContext): Record<string, any> {
         const data = {
             propertyName: this.propertyName,
-            type: this.schema.type,
-            format: this.schema.format,
-            /** @ts-ignore */
-            contentMediaType: this.schema?.contentMediaType as any,
-            /** @ts-ignore */
-            contentEncoding: this.schema?.contentEncoding as any,
 
             options: this.uischema.options,
 
             required: this.isRequired,
+
+            schema: {
+                type: this.schema.type,
+                format: this.schema.format,
+                contentMediaType: (this.schema as JsonSchemaDraft07).contentMediaType,
+                contentEncoding: (this.schema as JsonSchemaDraft07).contentEncoding,
+            },
 
             _isUischema: 'uischema' === context.builder,
             _isSchemaOnly: context.schemaOnly,
@@ -71,15 +73,16 @@ export class ControlTool extends AbstractTool implements ToolInterface {
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
 
         this.propertyName = data?.propertyName ?? '';
-        this.schema.type = data.type;
-        this.schema.format = data.format;
         this.uischema.options = data.options ?? {};
         this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
-        /** @ts-ignore */
-        this.schema.contentMediaType = data.contentMediaType;
-        /** @ts-ignore */
-        this.schema.contentEncoding = data.contentEncoding;
+        //use schema
+        this.schema.type = data.schema.type;
+        this.schema.format = data.schema.format;
+        (this.schema as JsonSchemaDraft07).contentMediaType = data.schema.contentMediaType;
+        (this.schema as JsonSchemaDraft07).contentEncoding = data.schema.contentEncoding;
+
+        console.log("controla.update",{data});
 
         subschemas.setOptionDataValidation(this.schema, this.uischema, data);
         subschemas.setOptionDataLabel(this.schema, this.uischema, data);

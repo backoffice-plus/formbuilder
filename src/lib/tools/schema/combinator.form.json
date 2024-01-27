@@ -8,10 +8,6 @@
       "keyword": {
         "type": "string",
         "enum": ["oneOf", "anyOf", "allOf"]
-      },
-
-      "type": {
-        "type": "string"
       }
     }
   },
@@ -34,10 +30,6 @@
           },
           {
             "scope": "#/properties/keyword",
-            "type": "Control"
-          },
-          {
-            "scope": "#/properties/type",
             "type": "Control"
           }
         ]

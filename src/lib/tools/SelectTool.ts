@@ -60,8 +60,10 @@ export class SelectTool extends AbstractTool implements ToolInterface {
 
         const data = {
             propertyName: this.propertyName,
-            type: schemaTypeOrItemsType,//schema.type,
-            format: schema.format,
+            schema: {
+                type: schemaTypeOrItemsType,//schema.type,
+                format: schema.format,
+            },
             options: uischema.options,
 
             asMultiSelect: asMultiSelect,

@@ -32,7 +32,9 @@ export class SchemaOnlyChildsTool extends AbstractTool implements ToolInterface 
 
         return {
             propertyName: this.propertyName,
-            type: this.schema.type,
+            schema: {
+                type: this.schema.type,
+            },
             additionalProperties: this.schema.additionalProperties,
             //schema: schema,
             // ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
@@ -68,7 +70,7 @@ export class SchemaOnlyChildsTool extends AbstractTool implements ToolInterface 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         this.propertyName = data?.propertyName ?? '';
         this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
-        this.schema.type = data.type;
+        this.schema.type = data.schema.type;
         this.schema.additionalProperties = data.additionalProperties;
         //
         // const keyword = data?.keyword;

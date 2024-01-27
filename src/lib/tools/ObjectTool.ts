@@ -43,8 +43,8 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
 
         return {
             propertyName: this.propertyName,
-            type: this.schema.type,
             schema: {
+                type: this.schema.type,
                 additionalProperties: this.schema?.additionalProperties,
             },
             ...subschemas.prepareOptionDataDefinitions(context, this.schema, this.uischema),
