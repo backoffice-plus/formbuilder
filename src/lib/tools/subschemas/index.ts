@@ -10,6 +10,7 @@ import definitionsSubschema from "../schema/subschemas/definitions.form.json";
 import operationSubschema from "../schema/subschemas/operation.form.json";
 // @ts-ignore
 import draft07 from '../schema/drafts/draft07.schema.json'
+import jfUiRule from '../schema/drafts/jsonforms_ui_rule.schema.json'
 
 export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './label'
 export { prepareOptionData as prepareOptionDataValidation, setOptionData as setOptionDataValidation } from './validation'
@@ -22,6 +23,7 @@ export { prepareOptionData as prepareOptionOperation, setOptionData as setOption
 
 export const subschemaMap = {
     'http://json-schema.org/draft-07/schema': draft07,
+    'jsonforms_ui_rule.schema.json': jfUiRule,
     'validation.schema': validationSubschema.schema,
     'validation.uischema': validationSubschema.uischema,
     'rule.schema': ruleSubschema.schema,
