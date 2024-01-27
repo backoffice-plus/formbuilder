@@ -138,7 +138,7 @@ const jsonForms = computed(() => {
   }
   else if(example.value) {
     exampleData = getExamples().find(item => item.name===example.value) as any;
-    exampleData = JSON.parse(JSON.stringify(exampleData)); //clone
+    exampleData = exampleData && JSON.parse(JSON.stringify(exampleData)); //clone
 
 
     if(exampleData) {
@@ -173,7 +173,9 @@ const jsonForms = computed(() => {
       // })
       // console.table(output)
     }
-
+    else {
+      exampleData = {schema:undefined,uischema:undefined}
+    }
     jsonFormsExternalChanges.value = undefined;
   }
   else {
