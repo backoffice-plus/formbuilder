@@ -8,7 +8,7 @@ import {cleanEmptySchema} from "../SchemaTool";
 export const schemaKeysString = ['minLength', 'maxLength', 'pattern'] as Array<string>;
 export const schemaKeysNumber = ['minimum', 'maximum', 'multipleOf', 'exclusiveMinimum', 'exclusiveMaximum'] as Array<string>;
 export const schemaKeysArray = ['minItems', 'maxItems', 'uniqueItems', 'contains', 'additionalItems'] as Array<string>;
-export const schemaKeysObject = ['minProperties', 'maxProperties',  'dependentRequired', 'propertyNames', 'patternProperties'] as Array<string>;
+export const schemaKeysObject = ['minProperties', 'maxProperties',  'dependentRequired', 'propertyNames', 'patternProperties', 'dependencies'] as Array<string>;
 export const schemaKeys = [...schemaKeysString, ...schemaKeysNumber, ...schemaKeysArray, ...schemaKeysObject, 'not'] as Array<string>;
 export const schemaKeysAsSchema = ['contains', 'not', 'additionalItems', 'propertyNames'] as Array<string>;
 
@@ -22,6 +22,17 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
             data[key] = schema[key]
         }
     });
+
+    //@see https://ajv.js.org/json-schema.html#dependencies
+    if(data?.dependencies) {
+        //right new we only support SchemaDependency
+        const isPropertyDependency = Object.values(data?.dependencies).find(item => {
+            return Array.isArray(item)
+        })
+        if(isPropertyDependency) {
+            delete data?.dependencies
+        }
+    }
 
     return {validation: data};
 }

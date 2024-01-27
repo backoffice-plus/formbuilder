@@ -48,6 +48,10 @@
 
           "not": {
             "type": "object"
+          },
+
+          "dependencies": {
+            "type": "object"
           }
         }
       }
@@ -278,6 +282,20 @@
                   "baseToolProps": {
                     "prefixLabel": "propertyNames:"
                   }
+                }
+              }
+            ]
+          },
+          {
+            "type": "Disclosure",
+            "label": "Dependencies",
+            "elements": [
+              {
+                "scope": "#/properties/validation/properties/dependencies",
+                "type": "Formbuilder",
+                "options": {
+                  "schemaOnly": true,
+                  "useProperties": true
                 }
               }
             ]
