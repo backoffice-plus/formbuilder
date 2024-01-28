@@ -23,7 +23,7 @@ export type RegisteredModal = {
 export type ModalControl = {
     id: string,
     getDialog: () => HTMLDialogElement | undefined,
-    close: () => void
+    close: (returnValue?: string) => void
 }
 
 export type ModalOptions = {
@@ -41,7 +41,7 @@ export const useDialogRegistry = (modals?:Ref<RegisteredModal[]>) => {
         const modalControl:ModalControl = {
             id,
             getDialog,
-            close: () => getDialog()?.close(),
+            close: (returnValue?: string) => getDialog()?.close(returnValue),
         };
         const registeredModal:RegisteredModal = {
             id,

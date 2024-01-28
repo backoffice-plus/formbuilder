@@ -27,7 +27,6 @@ const emit = defineEmits<{
   (name: 'submit', payload:any): void,
 }>()
 
-console.log({props:props.modalControl});
 const onSubmit = (data:any) => {
   emit('submit', data.name)
 
