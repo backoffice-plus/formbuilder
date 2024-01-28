@@ -13,7 +13,6 @@
         <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot"><Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'" /></button>
       </Actions>
 
-
       <Vuedraggable
           v-bind="vuedraggableOptions"
 
@@ -39,6 +38,14 @@
             />
           </div>
         </template>
+
+        <template #footer>
+          <FooterActions
+            :showAdd="showAddItem"
+            @add="addItem"
+            />
+        </template>
+
       </Vuedraggable>
     </div>
   </div>
@@ -77,6 +84,23 @@
 
   gap-2
 }
+.dropArea:not(.HorizontalLayout) {
+ padding-bottom: 24px;
+}
+.dropArea.HorizontalLayout {
+  padding-right: 24px;
+}
+.dropItem > div > .dropArea:not(.HorizontalLayout) > footer {
+  bottom:16px
+}
+
+.dropItem > div > .dropArea.HorizontalLayout > footer {
+  right:36px
+}
+
+
+
+
 .dropArea.isControl {
     min-height: 80px;
 }
@@ -144,6 +168,7 @@ import {ref, computed, onMounted, nextTick} from 'vue';
 import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
+import FooterActions from "@/components/tools/utils/FooterActions.vue";
 
 const props = defineProps({...toolComponentProps()})
 

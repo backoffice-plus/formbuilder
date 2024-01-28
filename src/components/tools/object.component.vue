@@ -55,6 +55,14 @@
               />
             </div>
           </template>
+
+          <template #footer>
+            <FooterActions
+                :showAdd="showAddItem"
+                @add="addItem"
+            />
+          </template>
+
         </Vuedraggable>
 
     </div>
@@ -89,6 +97,7 @@ import ToolIcon from "./utils/ToolIcon.vue";
 import {Icon} from "@iconify/vue";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import SchemaFeatures from "./utils/SchemaFeatures.vue";
+import FooterActions from "@/components/tools/utils/FooterActions.vue";
 
 const props = defineProps({...toolComponentProps()})
 

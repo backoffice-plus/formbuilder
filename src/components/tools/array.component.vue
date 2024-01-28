@@ -55,6 +55,14 @@
             />
           </div>
         </template>
+
+        <template #footer>
+          <FooterActions
+              :showAdd="showAddItem"
+              @add="addItem"
+          />
+        </template>
+
       </Vuedraggable>
 
     </div>
@@ -92,6 +100,7 @@ import {CombinatorTool} from "../../lib/tools/combinatorTool";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
 import SchemaFeatures from "./utils/SchemaFeatures.vue";
 import * as _ from 'lodash-es';
+import FooterActions from "@/components/tools/utils/FooterActions.vue";
 
 const props = defineProps({...toolComponentProps()})
 

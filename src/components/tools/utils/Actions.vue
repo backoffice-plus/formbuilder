@@ -10,7 +10,7 @@
 
 <style>
 .toolActions {
-  @apply absolute right-0.5 top-0.5
+  @apply absolute right-0.5 top-0.5 z-10
 
   transition-opacity duration-300
 }
