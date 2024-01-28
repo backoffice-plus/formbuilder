@@ -13,7 +13,7 @@ export class CategorizationTool extends VerticalLayout {
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
-            schema: await resolveSchema(schema),
+            schema: await resolveSchema(schema,undefined, this, context),
             uischema: await resolveSchema(uischema),
         } as JsonFormsInterface
     }

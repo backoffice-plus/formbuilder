@@ -11,6 +11,7 @@ import operationSubschema from "../schema/subschemas/operation.form.json";
 // @ts-ignore
 import draft07 from '../schema/drafts/draft07.schema.json'
 import jfUiRule from '../schema/drafts/jsonforms_ui_rule.schema.json'
+import {uioptionsSchemaResolver} from "@/lib/tools/subschemas/uioptions";
 
 export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './label'
 export { prepareOptionData as prepareOptionDataValidation, setOptionData as setOptionDataValidation } from './validation'
@@ -20,8 +21,12 @@ export { prepareOptionData as prepareOptionDataConst, setOptionData as setOption
 export { prepareOptionData as prepareOptionDataconditional, setOptionData as setOptionDataconditional } from './conditional'
 export { prepareOptionData as prepareOptionDataDefinitions, setOptionData as setOptionDataDefinitions } from './definitions'
 export { prepareOptionData as prepareOptionOperation, setOptionData as setOptionDataOperation } from './operation'
+export { setOptionData as setOptionDataUiOptions } from './uioptions'
+
+
 
 export const subschemaMap = {
+    "uioptions": uioptionsSchemaResolver,
     'http://json-schema.org/draft-07/schema': draft07,
     'jsonforms_ui_rule.schema.json': jfUiRule,
     'validation.schema': validationSubschema.schema,

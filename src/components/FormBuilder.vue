@@ -111,6 +111,8 @@ const props = defineProps({
   schemaOnly: Boolean,
   schemaReadOnly: Boolean,
   tools: Array,
+  uiOptions: Object,
+  toolFinder: Object,
   schemaTool: String,
   schemaToolProps: Object,
 })
@@ -127,7 +129,7 @@ const slotDroparea = slots?.droparea && slots.droparea();
 const hideToolbar = 0 === slotToolbar?.length
 const hideDroparea = 0 === slotDroparea?.length
 
-const toolFinder = new ToolFinder(props.tools);
+const toolFinder = props.toolFinder ?? new ToolFinder(props.tools, props.uiOptions);
 
 const modals = ref([]);
 const dialogRegistry = useDialogRegistry(modals);

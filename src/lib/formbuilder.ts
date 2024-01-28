@@ -4,7 +4,7 @@ import {JsonFormsRendererRegistryEntry, RankedTester} from "@jsonforms/core";
 import {Resolver} from "@stoplight/json-ref-resolver";
 import {fromPropertyToScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";
-import type {ToolInterface, JsonFormsInterface} from "./models";
+import type {ToolInterface, JsonFormsInterface, ToolContext} from "./models";
 import type {JsonSchema,  Scoped, UISchemaElement, ControlElement, Layout, Translator} from "@jsonforms/core";
 
 
@@ -134,13 +134,18 @@ export const findAllScopeTools = (uitool: ToolInterface, tools: ToolInterface[] 
 };
 
 type Callback = (ref:URI) => JsonSchema|undefined;
-export const resolveSchema = async (schema: any, callback:Callback|undefined = undefined): Promise<any> => {
+export const resolveSchema = async (schema: any, callback:Callback|undefined = undefined, tool?:ToolInterface, context?:ToolContext): Promise<any> => {
 
     const resolver = new Resolver({
         resolvers: {
             file: {
                 async resolve(ref: URI) {
-                    return subschemaMap[String(ref)] ?? (callback && callback(ref)) ?? {}
+                    const subschema = subschemaMap[String(ref)];
+                    switch (typeof subschema) {
+                        case "function": return subschema(ref, tool, context);
+                        case "object": return subschema;
+                        default: return (callback && callback(ref)) ?? {}
+                    }
                 }
             },
         }

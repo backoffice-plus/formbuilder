@@ -31,11 +31,12 @@ export class LabelTool extends AbstractTool implements ToolInterface {
 
         subschemas.setOptionDataRule(this.schema, this.uischema, data);
         subschemas.setOptionDataStyles(this.schema, this.uischema, data);
+        subschemas.setOptionDataUiOptions(context, this, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
-            schema: await resolveSchema(schema),
+            schema: await resolveSchema(schema,undefined, this, context),
             uischema: await resolveSchema(uischema),
         } as JsonFormsInterface
     }

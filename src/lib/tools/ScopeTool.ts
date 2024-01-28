@@ -7,6 +7,7 @@ import {AbstractTool} from "./AbstractTool";
 import jsonForms from "./schema/scope.form.json";
 import {resolveSchema} from "../formbuilder";
 import {findAllScopablePaths, findAllScopablePathsBySchema} from "../schemaUtil";
+import * as subschemas from "@/lib/tools/subschemas";
 
 export class ScopeTool extends AbstractTool implements ToolInterface {
     importer = () => scopeComp;
@@ -40,6 +41,7 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
         this.uischema.scope = data.uischema.scope
         this.uischema.label = data.uischema.label
         this.uischema.options = data.uischema.options ?? {}
+        subschemas.setOptionDataUiOptions(context, this, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
@@ -64,7 +66,7 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
         }
 
         return {
-            schema: await resolveSchema(jsonForms.schema, scopeResolver),
+            schema: await resolveSchema(jsonForms.schema, scopeResolver, this, context),
             uischema: await resolveSchema(jsonForms.uischema),
         } as JsonFormsInterface
     }

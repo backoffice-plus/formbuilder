@@ -9,12 +9,15 @@ import {findAllProperties} from "./formbuilder";
 import {ScopeTool} from "./tools/ScopeTool";
 import {TypedTools} from "./models";
 
+export type UiOptions = Record<string, Record<string, JsonSchema>>
 export class ToolFinder implements ToolFinderInterface {
 
     private readonly _tools = [] as ToolInterface[];
+    private readonly _uiOptions = {} as UiOptions;
 
-    constructor(tools: ToolInterface[]) {
+    constructor(tools: ToolInterface[], uiOptions?:UiOptions) {
         this._tools = tools;
+        this._uiOptions = uiOptions ?? {};
     }
 
     get tools(): ToolInterface[] {
@@ -36,6 +39,10 @@ export class ToolFinder implements ToolFinderInterface {
     //         return (uiSchemaType && hasElements) || uiSchemaType !== 'Control' && uiSchemaType !== 'Unknown'
     //     })
     // }
+
+    getUiOptions = (uischema:string) => {
+        return this._uiOptions?.[uischema]
+    }
 
     findLayoutToolByUiType = (uiType: string): ToolInterface | undefined => {
         return this.getTypedTools().layout.find((tool: ToolInterface) => tool?.uischema?.type === uiType)

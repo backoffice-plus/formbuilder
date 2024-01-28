@@ -10,10 +10,7 @@
             "enum": ["VerticalLayout","HorizontalLayout"]
           },
           "options": {
-            "type":"object",
-            "additionalProperties": {
-              "type": ["string","number","boolean"]
-            }
+            "$ref":"uioptions"
           }
         }
       },

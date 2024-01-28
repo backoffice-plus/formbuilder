@@ -28,13 +28,17 @@
           :jsonFormsRenderers="jsonFormsRenderers"
           :schemaOnly="schemaOnly"
           :schemaReadOnly="schemaReadOnly"
-          :tools="tools"
+          :toolFinder="toolFinder"
           :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'') + (schemaBaseTool?'schema':'') + changeKey"
           :schemaTool="schemaBaseTool ? 'schema' : ''"
           @schemaUpdated="onSchemaUpdated"
           ref="fb"
       />
-    <!--            -->
+    <!--
+          :tools="tools"
+          :uiOptions="uiOptions"
+       -->
+
       <details>
           <summary class="cursor-pointer">ToolTree</summary>
           <div class="flex gap-4 text-xs">
@@ -83,6 +87,7 @@ import {getExamples} from '@jsonforms/examples/src'
 import * as ownExamples from "./jsonForms/examples";
 import {getExampleFromUrl, getKeyFromUrl, getUrl} from "./lib";
 import {boplusVueVanillaRenderers, defaultTools, FormBuilder, formbuilderRenderers} from "../src/index.ts";
+import  {ToolFinder, type UiOptions} from "../src/index.ts";
 import IdList from "./Dev/IdList.vue";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
 import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
@@ -90,6 +95,16 @@ import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
 const tools = [
     ...defaultTools,
 ]
+const uiOptions:UiOptions = {
+  Group: {
+    collapsible: {type:"boolean",default:false}
+  },
+  Categorization: {
+    variant: {type:"string",enum:["stepper"],default:''},
+    showNavButtons: {type:"boolean",default:false},
+  }
+}
+const toolFinder = new ToolFinder(tools, uiOptions);
 
 const jsonFormsRenderers = Object.freeze([
   ...vanillaRenderers,
