@@ -28,15 +28,15 @@
           :jsonFormsRenderers="jsonFormsRenderers"
           :schemaOnly="schemaOnly"
           :schemaReadOnly="schemaReadOnly"
-          :toolFinder="toolFinder"
+          :tools="tools"
+          :uiOptions="uiOptions"
           :key="example + (schemaOnly?'schemaonly':'') + (schemaReadOnly?'readonly':'') + (schemaBaseTool?'schema':'') + changeKey"
           :schemaTool="schemaBaseTool ? 'schema' : ''"
           @schemaUpdated="onSchemaUpdated"
           ref="fb"
       />
     <!--
-          :tools="tools"
-          :uiOptions="uiOptions"
+          :toolFinder="toolFinder"
        -->
 
       <details>
