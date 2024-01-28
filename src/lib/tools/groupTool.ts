@@ -9,23 +9,25 @@ import * as subschemas from "./subschemas";
 export class GroupTool extends VerticalLayout {
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
-        const data = {};
-
-        _.merge(
-            data,
-            subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
-            subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
-            subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
-        )
-        return data;
+        return super.optionDataPrepare(context);
+        // const data = {};
+        //
+        // _.merge(
+        //     data,
+        //     subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
+        //     subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
+        //     subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
+        // )
+        // return data;
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        this.uischema.options = data.options ?? {};
-
-        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
-        subschemas.setOptionDataRule(this.schema, this.uischema, data);
-        subschemas.setOptionDataStyles(this.schema, this.uischema, data);
+        return super.optionDataUpdate(context, data);
+        // this.uischema.options = data.options ?? {};
+        //
+        // subschemas.setOptionDataLabel(this.schema, this.uischema, data);
+        // subschemas.setOptionDataRule(this.schema, this.uischema, data);
+        // subschemas.setOptionDataStyles(this.schema, this.uischema, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {

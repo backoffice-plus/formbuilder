@@ -1,6 +1,7 @@
 {
   "schema": {
     "type": "object",
+
     "definitions": {
       "scopeString": {
         "type": "string",
@@ -8,15 +9,34 @@
         "description": "#/properties/NAME"
       }
     },
+
     "properties": {
-      "scope": {
-        "anyOf": [
-          {"$ref":"scopeTool.scopes","title":"asdasd","label": "aaa","lable": "111"},
-          {"$ref":"#/definitions/scopeString"}
-        ]
+
+      "uischema": {
+        "type": "object",
+        "properties": {
+
+          "scope": {
+            "anyOf": [
+              {"$ref":"scopeTool.scopes"},
+              {"$ref":"#/definitions/scopeString"}
+            ]
+          },
+          "label": {
+            "type":"string"
+          },
+          "options": {
+            "type":"object",
+            "additionalProperties": {
+              "type": ["string","number","boolean"]
+            }
+          }
+        }
       }
     }
   },
+
+
   "uischema": {
 
     "type": "Categorization",
@@ -26,14 +46,29 @@
         "label": "Base",
         "elements": [
           {
+            "type": "Control",
+            "scope": "#/properties/uischema/properties/label"
+          },
+          {
             "type": "HorizontalLayout",
             "elements": [
               {
                 "type": "Control",
-                "scope": "#/properties/scope",
+                "scope": "#/properties/uischema/properties/scope",
                 "label": "Scopes"
               }
             ]
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Options",
+        "elements": [
+          {
+            "scope": "#/properties/uischema/properties/options",
+            "type": "Control"
           }
         ]
       }

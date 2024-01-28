@@ -14,18 +14,20 @@ export class LabelTool extends AbstractTool implements ToolInterface {
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
         return {
-            text: this.uischema.text,
-            i18n: this.uischema.i18n,
-            options: this.uischema.options ?? {},
+            uischema: {
+                text: this.uischema.text,
+                i18n: this.uischema.i18n,
+                options: this.uischema.options ?? {},
+            },
             ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
         } as any;
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        this.uischema.text = data.text;
-        this.uischema.i18n = data.i18n;
-        this.uischema.options = data.options ?? {};
+        this.uischema.text = data.uischema.text;
+        this.uischema.i18n = data.uischema.i18n;
+        this.uischema.options = data.uischema.options ?? {};
 
         subschemas.setOptionDataRule(this.schema, this.uischema, data);
         subschemas.setOptionDataStyles(this.schema, this.uischema, data);

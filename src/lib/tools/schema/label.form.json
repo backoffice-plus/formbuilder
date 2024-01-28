@@ -2,12 +2,27 @@
   "schema": {
     "type": "object",
     "properties": {
-      "text": {
-        "type": "string"
+
+
+      "uischema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "i18n": {
+            "type": "string"
+          },
+          "options": {
+            "type":"object",
+            "additionalProperties": {
+              "type": ["string","number","boolean"]
+            }
+          }
+
+        }
       },
-      "i18n": {
-        "type": "string"
-      },
+
       "rule": {
         "$ref":"rule.schema#/properties/rule"
       },
@@ -16,6 +31,9 @@
       }
     }
   },
+
+
+
   "uischema": {
 
     "type": "Categorization",
@@ -28,11 +46,11 @@
             "type": "VerticalLayout",
             "elements": [
               {
-                "scope": "#/properties/text",
+                "scope": "#/properties/uischema/properties/text",
                 "type": "Control"
               },
               {
-                "scope": "#/properties/i18n",
+                "scope": "#/properties/uischema/properties/i18n",
                 "type": "Control"
               }
             ]
@@ -40,6 +58,16 @@
         ]
       },
 
+      {
+        "type": "Category",
+        "label": "Options",
+        "elements": [
+          {
+            "scope": "#/properties/uischema/properties/options",
+            "type": "Control"
+          }
+        ]
+      },
 
       {
         "type": "Category",

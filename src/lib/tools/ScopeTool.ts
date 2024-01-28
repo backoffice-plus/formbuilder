@@ -23,15 +23,23 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
-        const data = {} as any;
+        const data = {
 
-        data.scope = this.uischema.scope;
+            uischema: {
+                scope: this.uischema.scope,
+                label: this.uischema.label,
+                options: this.uischema.options ?? {},
+            }
+
+        } as any;
 
         return data;
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        this.uischema.scope = data.scope
+        this.uischema.scope = data.uischema.scope
+        this.uischema.label = data.uischema.label
+        this.uischema.options = data.uischema.options ?? {}
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {

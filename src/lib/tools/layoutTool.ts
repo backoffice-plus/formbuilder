@@ -26,8 +26,12 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
         return {
-            options: this.uischema?.options,
-            uischemaType: this.uischema.type,
+            uischema: {
+                type: this.uischema.type,
+                options: this.uischema.options,
+                label: this.uischema.label,
+            },
+            ...subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
             ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
             ...subschemas.prepareOptionOperation(context, this),
@@ -35,12 +39,13 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        if (data.uischemaType) {
-            this.uischema.type = data.uischemaType;
+        if (data.uischema.type) {
+            this.uischema.type = data.uischema.type;
         }
 
-        this.uischema.options = data.options ?? {};
+        this.uischema.options = data.uischema.options ?? {};
 
+        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
         subschemas.setOptionDataRule(this.schema, this.uischema, data);
         subschemas.setOptionDataStyles(this.schema, this.uischema, data);
     }

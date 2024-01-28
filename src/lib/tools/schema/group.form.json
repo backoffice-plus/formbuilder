@@ -2,18 +2,23 @@
   "schema": {
     "type": "object",
     "properties": {
-      "labelAndI18n": {
+
+      "uischema": {
         "type": "object",
         "properties": {
-          "label": {
-            "type": "string"
-          },
-          "i18n": {
-            "type": "string",
-            "title": "i18n",
-            "description": "alternative lookup key for translation catalogue"
+
+          "options": {
+            "type":"object",
+            "additionalProperties": {
+              "type": ["string","number","boolean"]
+            }
           }
+
         }
+      },
+
+      "labelAndI18n": {
+        "$ref": "labelAndI18n.schema#/properties/labelAndI18n"
       },
       "styles": {
         "$ref": "styles.schema#/properties/styles"
@@ -45,6 +50,20 @@
           }
         ]
       },
+
+
+      {
+        "type": "Category",
+        "label": "Options",
+        "elements": [
+          {
+            "scope": "#/properties/uischema/properties/options",
+            "type": "Control"
+          }
+        ]
+      },
+
+
       {
         "type": "Category",
         "label": "Styles",

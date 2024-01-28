@@ -2,6 +2,19 @@
   "schema": {
     "type": "object",
     "properties": {
+
+      "uischema": {
+        "type": "object",
+        "properties": {
+          "options": {
+            "type":"object",
+            "additionalProperties": {
+              "type": ["string","number","boolean"]
+            }
+          }
+        }
+      },
+
       "styles": {
         "$ref": "styles.schema#/properties/styles"
       },
@@ -15,6 +28,17 @@
     "elements": [
       {
         "type": "Category",
+        "label": "Options",
+        "elements": [
+          {
+            "scope": "#/properties/uischema/properties/options",
+            "type": "Control"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
         "elements": [
           {
             "type": "LayoutRef",
@@ -23,6 +47,8 @@
         ],
         "label": "Styles"
       },
+
+
       {
         "type": "Category",
         "elements": [
