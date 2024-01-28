@@ -96,9 +96,6 @@ const tools = [
     ...defaultTools,
 ]
 const uiOptions:UiOptions = {
-  Group: {
-    collapsible: {type:"boolean",default:false}
-  },
   Categorization: {
     variant: {type:"string",enum:["stepper"],default:''},
     showNavButtons: {type:"boolean",default:false},

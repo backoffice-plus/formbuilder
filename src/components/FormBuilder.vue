@@ -129,7 +129,13 @@ const slotDroparea = slots?.droparea && slots.droparea();
 const hideToolbar = 0 === slotToolbar?.length
 const hideDroparea = 0 === slotDroparea?.length
 
-const toolFinder = props.toolFinder ?? new ToolFinder(props.tools, props.uiOptions);
+
+const uiOptions = _.merge(props.uiOptions ?? {}, {
+  Group: {
+    collapsible: {type:"boolean",default:false}
+  }
+});
+const toolFinder = props.toolFinder ?? new ToolFinder(props.tools, uiOptions);
 
 const modals = ref([]);
 const dialogRegistry = useDialogRegistry(modals);
