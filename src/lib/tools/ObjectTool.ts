@@ -55,6 +55,7 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
             ...uidata,
             _isUischema:isUischema,
             _isParentArray:isParentArray,
+            _isProperty: 'object' === this.edge.schemaParent?.schema?.type,
         } as any;
     }
 

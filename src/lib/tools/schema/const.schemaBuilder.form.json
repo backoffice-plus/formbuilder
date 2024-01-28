@@ -34,8 +34,8 @@
                 "rule": {
                   "effect": "HIDE",
                   "condition": {
-                    "scope": "#/properties/_asSchemaChild",
-                    "schema": {"const": true}
+                    "scope": "#/properties/_isProperty",
+                    "schema": {"const": false}
                   }
                 }
               },

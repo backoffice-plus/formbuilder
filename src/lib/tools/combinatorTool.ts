@@ -39,6 +39,7 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
             propertyName: this.propertyName,
             keyword: CombinatorTool.getKeyword(this.schema),
             options: this.uischema?.options ?? {},
+            _isProperty: 'object' === this.edge.schemaParent?.schema?.type,
         } as any;
     }
 

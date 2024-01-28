@@ -111,6 +111,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             _isUischema: 'uischema' === context.builder,
             _isSchemaReadOnly: context.schemaReadOnly,
             _readOnlySchema: readOnlySchema,
+            _isProperty: 'object' === this.edge.schemaParent?.schema?.type,
         } as any;
 
 

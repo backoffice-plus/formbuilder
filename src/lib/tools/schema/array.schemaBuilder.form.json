@@ -29,7 +29,14 @@
             "elements": [
               {
                 "type": "Control",
-                "scope": "#/properties/propertyName"
+                "scope": "#/properties/propertyName",
+                "rule": {
+                  "effect": "HIDE",
+                  "condition": {
+                    "scope": "#/properties/_isProperty",
+                    "schema": {"const": false}
+                  }
+                }
               }
             ]
           },

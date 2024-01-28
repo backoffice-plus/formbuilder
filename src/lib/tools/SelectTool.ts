@@ -69,6 +69,8 @@ export class SelectTool extends AbstractTool implements ToolInterface {
             asMultiSelect: asMultiSelect,
 
             required: this.isRequired,
+
+            _isProperty: 'object' === this.edge.schemaParent?.schema?.type
         } as any;
 
         _.merge(

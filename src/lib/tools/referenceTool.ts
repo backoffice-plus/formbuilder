@@ -22,9 +22,11 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
-        const data = {} as any;
+        const data = {
+            propertyName: this.propertyName,
+            _isProperty: 'object' === this.edge.schemaParent?.schema?.type,
+        } as any;
 
-        data.propertyName = this.propertyName;
 
         if (undefined !== this.schema.$ref) {
             data._reference = this.schema.$ref

@@ -143,7 +143,14 @@ export const uischema = {
                             elements: [
                                 {
                                     scope: "#/properties/propertyName",
-                                    type: "Control"
+                                    type: "Control",
+                                    "rule": {
+                                        "effect": "HIDE",
+                                        "condition": {
+                                            "scope": "#/properties/_isProperty",
+                                            "schema": {"const": false}
+                                        }
+                                    }
                                 },
                             ]
                         },
