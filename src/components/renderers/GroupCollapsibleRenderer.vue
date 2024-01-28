@@ -75,7 +75,6 @@ const elements = uischemaLayout?.elements as UISchemaElement[];
 </script>
 
 <script lang="ts">
-import type {RankedTester} from "@jsonforms/core";
-import {rankWith, uiTypeIs} from "@jsonforms/core";
-export const tester: RankedTester = rankWith(2, uiTypeIs('Disclosure'));
+import {and, rankWith, uiTypeIs, optionIs, type RankedTester} from "@jsonforms/core";
+export const tester: RankedTester = rankWith(3, and(uiTypeIs('Group'), optionIs('collapsible', true)))
 </script>

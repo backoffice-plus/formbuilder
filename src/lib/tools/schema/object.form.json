@@ -141,7 +141,10 @@
                   }
                 ]
               }
-            ]
+            ],
+          "options": {
+            "collapsible": true
+          }
           }
         ]
       },

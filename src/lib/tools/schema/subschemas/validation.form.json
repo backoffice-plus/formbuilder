@@ -167,7 +167,7 @@
           },
 
           {
-            "type": "Disclosure",
+            "type": "Group",
             "label": "Contains",
             "elements": [
               {
@@ -178,11 +178,14 @@
                   "baseTool": "schema"
                 }
               }
-            ]
+            ],
+            "options": {
+              "collapsible": true
+            }
           },
 
           {
-            "type": "Disclosure",
+            "type": "Group",
             "label": "Additional Items",
             "elements": [
               {
@@ -193,7 +196,10 @@
                   "baseTool": "schema"
                 }
               }
-            ]
+            ],
+            "options": {
+              "collapsible": true
+            }
           }
 
         ],
@@ -231,7 +237,7 @@
             "elements": [
 
               {
-                "type": "Disclosure",
+                "type": "Group",
                 "label": "PatternProperties",
                 "elements": [
                   {
@@ -242,7 +248,10 @@
                       "useProperties": true
                     }
                   }
-                ]
+                ],
+                "options": {
+                  "collapsible": true
+                }
               }
             ],
             "rule": {
@@ -270,7 +279,7 @@
             }
           },
           {
-            "type": "Disclosure",
+            "type": "Group",
             "label": "PropertyNames",
             "elements": [
               {
@@ -284,10 +293,13 @@
                   }
                 }
               }
-            ]
+            ],
+            "options": {
+              "collapsible": true
+            }
           },
           {
-            "type": "Disclosure",
+            "type": "Group",
             "label": "Dependencies",
             "elements": [
               {
@@ -298,7 +310,10 @@
                   "useProperties": true
                 }
               }
-            ]
+            ],
+            "options": {
+              "collapsible": true
+            }
           }
         ],
         "rule": {
@@ -313,7 +328,7 @@
 
 
       {
-        "type": "Disclosure",
+        "type": "Group",
         "label": "Not",
         "elements": [
           {
@@ -327,7 +342,10 @@
               }
             }
           }
-        ]
+        ],
+        "options": {
+          "collapsible": true
+        }
       }
     ]
   },
