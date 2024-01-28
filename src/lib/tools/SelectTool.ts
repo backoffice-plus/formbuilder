@@ -58,6 +58,15 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         /** @ts-ignore **/
         const schemaTypeOrItemsType = schema.items?.type ?? schema.type;
 
+        let uidata = {};
+        const isUischema = 'uischema' === context?.builder;
+        if(isUischema) {
+            uidata = {
+                ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
+                ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
+            }
+        }
+
         const data = {
             propertyName: this.propertyName,
             schema: {
@@ -66,20 +75,19 @@ export class SelectTool extends AbstractTool implements ToolInterface {
             },
             options: uischema.options,
 
-            asMultiSelect: asMultiSelect,
 
             required: this.isRequired,
 
-            _isProperty: 'object' === this.edge.schemaParent?.schema?.type
+            ...subschemas.prepareOptionDataValidation(context, schema, uischema),
+            ...subschemas.prepareOptionDataLabel(context, schema, uischema),
+            ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
+            ...uidata,
+
+            _isUischema:isUischema,
+            _isProperty: 'object' === this.edge.schemaParent?.schema?.type,
+            asMultiSelect: asMultiSelect,
         } as any;
 
-        _.merge(
-            data,
-            subschemas.prepareOptionDataValidation(context, schema, uischema),
-            subschemas.prepareOptionDataLabel(context, schema, uischema),
-            subschemas.prepareOptionDataRule(context, schema, uischema),
-            subschemas.prepareOptionDataStyles(context, schema, uischema),
-        )
 
         const enumOrOneOf = (asMultiSelect ? schema.items : schema) as JsonSchema;
         if ("enum" in enumOrOneOf) {
@@ -106,10 +114,16 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         this.schema.format = data.format;
         this.uischema.options = data.options ?? {};
 
+        const isUischema = 'uischema' === context?.builder;
+
+        if(isUischema) {
+            subschemas.setOptionDataRule(this.schema, this.uischema, data);
+            subschemas.setOptionDataStyles(this.schema, this.uischema, data);
+        }
+
         subschemas.setOptionDataValidation(schema, uischema, data);
+        subschemas.setOptionDataconditional(this.schema, this.uischema, data);
         subschemas.setOptionDataLabel(schema, uischema, data);
-        subschemas.setOptionDataRule(schema, uischema, data);
-        subschemas.setOptionDataStyles(schema, uischema, data);
 
         this.schema.uniqueItems = data.asMultiSelect ? true : undefined;
 

@@ -326,9 +326,9 @@ export const uischema = {
                                     scope: "#/properties/required",
                                     type: "Control",
                                     "rule": {
-                                        "effect": "HIDE",
+                                        "effect": "SHOW",
                                         "condition": {
-                                            "scope": "#/properties/_asSchemaChild",
+                                            "scope": "#/properties/_isProperty",
                                             "schema": {"const": true}
                                         }
                                     }

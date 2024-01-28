@@ -115,6 +115,9 @@ export const schema = {
 
         asMultiSelect: {
             type: 'boolean',
+        },
+        "_isUischema": {
+            "type": "boolean"
         }
     },
     required: [
@@ -183,25 +186,63 @@ export const uischema = {
                                 }
                             ]
                         },
+
                         {
                             type: "Group",
                             label: "Label & Description",
                             elements: [
                                 {
-                                    $ref:'labelAndI18n.uischema'
+                                    type:'VerticalLayout',
+                                    elements: [{ $ref:'labelAndI18n.uischema'}],
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition: {
+                                            scope: "#/properties/_isUischema",
+                                            schema: {const: true}
+                                        },
+                                    },
                                 },
+
+                                {
+                                    type:'VerticalLayout',
+                                    elements: [{ $ref:'labelAndI18n.descriptionOnly.uischema' }],
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition: {
+                                            scope: "#/properties/_isUischema",
+                                            schema: {const: false}
+                                        },
+                                    },
+                                },
+
+
                             ]
                         },
+
                         {
                             type: "HorizontalLayout",
                             elements: [
                                 {
                                     scope: "#/properties/required",
-                                    type: "Control"
+                                    type: "Control",
+                                    "rule": {
+                                        "effect": "SHOW",
+                                        "condition": {
+                                            "scope": "#/properties/_isProperty",
+                                            "schema": {"const": true}
+                                        }
+                                    }
                                 },
                                 {
                                     scope: "#/properties/options/properties/readonly",
-                                    type: "Control"
+                                    type: "Control",
+                                    rule: {
+                                        effect: "SHOW",
+                                        condition:   {
+                                            scope: "#/properties/_isUischema",
+                                            schema: {const: true}
+                                        },
+                                    }
                                 },
                             ]
                         },
@@ -243,7 +284,14 @@ export const uischema = {
                 {
                     $ref:'styles.uischema'
                 },
-            ]
+            ],
+            "rule": {
+                "effect": "SHOW",
+                "condition": {
+                    "scope": "#/properties/_isUischema",
+                    "schema":{"const": true }
+                }
+            }
         },
 
         /**
@@ -256,6 +304,23 @@ export const uischema = {
                 {
                     $ref:'rule.uischema'
                 },
+            ],
+            "rule": {
+                "effect": "SHOW",
+                "condition": {
+                    "scope": "#/properties/_isUischema",
+                    "schema":{"const": true }
+                }
+            }
+        },
+
+        {
+            "type": "Category",
+            "label": "Conditional",
+            "elements": [
+                {
+                    "$ref": "conditional.uischema"
+                }
             ]
         },
 
