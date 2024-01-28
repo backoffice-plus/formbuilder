@@ -16,20 +16,22 @@
 <script setup lang="ts">
 import JsonFormsSubmittable from "@/components/JsonFormsSubmittable.vue";
 import jf from "@/lib/jsonforms/prompt_newitem.forms.json";
+import {ModalControl} from "@/lib";
 
 const props = defineProps<{
   header: string,
   text: string,
-  dialogId?: string,
+  modalControl?: ModalControl,
 }>()
 const emit = defineEmits<{
   (name: 'submit', payload:any): void,
 }>()
 
+console.log({props:props.modalControl});
 const onSubmit = (data:any) => {
   emit('submit', data.name)
-  const dialog = (props?.dialogId && document.getElementById(props?.dialogId)) as HTMLDialogElement|undefined;
-  dialog?.close(data.name); //returValue is alwasy true?!?!
+
+  props.modalControl?.close(data.name); //returValue is alwasy true?!?!
 }
 
 </script>
