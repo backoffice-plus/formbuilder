@@ -483,7 +483,6 @@ fieldset.styleA.group .group-item {
     flex items-center justify-center
     h-7 w-7
     rounded-full
-    bg-base-100
 }
 .styleA .categorization .tabs.isStepper > div > button.selected > .badge {
     color:var(--badge-text-active);
