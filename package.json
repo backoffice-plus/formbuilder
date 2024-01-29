@@ -20,13 +20,9 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "npm run build:plain && npm run build:types",
-    "build:plain": "vite build",
-    "build:types": "vue-tsc --declaration --emitDeclarationOnly --outDir dist/types ",
+    "build": "vite build && vue-tsc --declaration --emitDeclarationOnly --outDir dist/types ",
     "typecheck": "vue-tsc --noEmit",
-    "test": "vitest",
-    "publish": "npm run build && npm publish --public",
-    "publish:plain": "npm publish --public"
+    "test": "vitest"
   },
   "keywords": [],
   "author": "David Wolter <david@dampfer.net>",
