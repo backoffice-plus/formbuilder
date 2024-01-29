@@ -6,20 +6,32 @@
     --text-color-error: #dc2626;
 
     --bg: #f4f5f6;
-    --bg-button:#d1d5db; /** gray-300 */
     --bg-disabled:#d1d5db; /** gray-300 */
+
+    --button-bg:#F3F4F6FF; /** gray-100 */
+    --button-bg-border:#d1d5db; /** gray-300 */
+    --button-bg-hover:#d1d5db; /** gray-300 */
+
+    --button-delete-bg:transparent;
+    --button-delete-text:var(--text-color-error);
+    --button-delete-bg-hover:var(--text-color-error);
+    --button-delete-text-hover:white;
 
     --border:#d1d5db; /** gray-300 */
     --border-focus:#6b7280; /** gray-500 */
     --tabs-border-activ:#1f2937; /** gray-800 */
 
+    --badge-bg:var(--button-bg);
+    --badge-text:var(--text-color);
+    --badge-bg-active:#1f2937; /** gray-800 */
+    --badge-text-active:#f4f5f6;
+
     --success:#10b981;
-    --error:#dc2626;
 
     color:var(--text-color);
 }
 
-.styleA label,
+.styleA .control > label,
 .styleA label.label,
 .styleA label.label-element {
     @apply
@@ -28,7 +40,7 @@
     transition-colors
 }
 
-.styleA label,
+.styleA .control > label,
 .styleA label.label {
     @apply
     pb-4
@@ -40,7 +52,7 @@
 }
 
 
-.styleA .control:focus-within label,
+.styleA .control:focus-within > label,
 .styleA .control:focus-within label.label {
     color:var(--text-color-focused);
 }
@@ -225,21 +237,24 @@ fieldset.styleA.group .group-item {
 
 }
 .styleA .array-list .array-list-item-toolbar {
-    @apply flex gap-1
+    @apply flex items-center gap-1 h-6
 }
 .styleA .array-list .array-list-item-toolbar label {
      @apply pb-0
  }
 
 .styleA .array-list .array-list-item-toolbar button:hover {
-    background-color:var(--bg-button);
+    background-color:var(--button-bg-hover);
 }
 .styleA .array-list .array-list-item-toolbar button {
+    /*
     font-size:20px;
+    font-bold
+    */
     @apply
     flex justify-center items-center
-    rounded-full w-5 h-5
-    font-bold
+    rounded-full
+    w-6 h-6 aspect-square
 }
 .styleA .array-list-item-content {
     @apply mt-4
@@ -261,18 +276,24 @@ fieldset.styleA.group .group-item {
     @apply mb-2
 }
 
-.styleA .array-list button.array-list-item-delete:hover {
-    background-color: var(--error);
-}
 .styleA .array-list button.array-list-item-delete {
+    color: var(--button-delete-text);
+    background-color: var(--button-delete-bg);
     @apply
     flex justify-center items-center
     w-7 h-7 rounded-full
 }
+.styleA .array-list button.array-list-item-delete:hover {
+    color: var(--button-delete-text-hover);
+    background-color: var(--button-delete-bg-hover);
+}
 .styleA .array-list button.array-list-item-delete:after {
     content:"x";
-    color:var(--text-color-error);
+    color: var(--button-delete-text);
     @apply font-bold font-mono
+}
+.styleA .array-list button.array-list-item-delete:hover:after {
+    color: var(--button-delete-text-hover);
 }
 .styleA .array-list-no-data {
     color:var(--text-color-description);
@@ -324,7 +345,7 @@ fieldset.styleA.group .group-item {
     background-color: var(--success);
 }
 .styleA fieldset.array-list legend button {
-    background-color:var(--bg-button);
+    background-color:var(--button-bg);
     @apply
     px-2 m-0
     rounded-full
@@ -371,13 +392,13 @@ fieldset.styleA.group .group-item {
 }
 
 .styleA fieldset.array-list .array-list-item-toolbar button:hover {
-    background-color:var(--bg-button);
+    background-color:var(--button-bg-hover);
 }
 
 .styleA fieldset.array-list .array-list-item-toolbar button.array-list-item-move-up {}
 .styleA fieldset.array-list .array-list-item-toolbar button.array-list-item-move-down {}
 .styleA fieldset.array-list .array-list-item-toolbar button.array-list-item-delete:hover {
-    background-color: var(--error);
+    background-color: var(--button-delete-bg-hover);
 }
 
 .styleA fieldset.array-list .array-list-item-content {
@@ -386,8 +407,12 @@ fieldset.styleA.group .group-item {
 }
 
 
+.styleA .categorization {
+    @apply
+    grid gap-4
+}
 
-.styleA .tabs {
+.styleA .tabs:not(.isStepper) {
     border-color: var(--border);
     @apply
     flex
@@ -397,10 +422,10 @@ fieldset.styleA.group .group-item {
     border-b
 }
 
-.styleA .tabs button:hover {
-    background-color:var(--bg-button);
+.styleA .tabs:not(.isStepper) button:hover {
+    background-color:var(--button-bg-hover);
 }
-.styleA .tabs button {
+.styleA .tabs:not(.isStepper) button {
     min-width: 100px;
     color:var(--text-color-description);
     @apply
@@ -413,20 +438,83 @@ fieldset.styleA.group .group-item {
     transition-colors
 
     rounded-t-lg
+
+    cursor-pointer
 }
-.styleA .tabs button:hover {
+.styleA .tabs:not(.isStepper) button:hover {
     color:var(--text-color-focused);
 }
 
-.styleA .tabs button.selected {
+.styleA .tabs:not(.isStepper) button label {
+    @apply cursor-pointer
+}
+
+.styleA .tabs:not(.isStepper) button.selected {
     color:var(--text-color-focused);
     border-color:var(--tabs-border-activ);
 }
-.styleA .tabs button:disabled {
+.styleA .tabs:not(.isStepper) button:disabled {
     @apply
     opacity-50
     /*hover:bg-opacity-0*/
 }
+
+
+.styleA .categorization .tabs.isStepper {
+    @apply
+    flex items-center gap-2
+}
+.styleA .categorization .tabs.isStepper > hr {
+    height:1px;
+    border-top:0;
+    border-color:var(--tabs-border-activ);
+    @apply
+    flex-grow
+    border-b
+}
+.styleA .categorization .tabs.isStepper > div > button {
+    @apply
+    flex items-center gap-2
+}
+.styleA .categorization .tabs.isStepper > div > button > .badge {
+    color:var(--badge-text);
+    background-color:var(--badge-bg);
+    @apply
+    flex items-center justify-center
+    h-7 w-7
+    rounded-full
+    bg-base-100
+}
+.styleA .categorization .tabs.isStepper > div > button.selected > .badge {
+    color:var(--badge-text-active);
+    background-color:var(--badge-bg-active);
+}
+.styleA .categorization .tabs.isStepper > div > button > label {
+    @apply p-0 m-0
+}
+.styleA .categorization .tabs.isStepper > div > button > label:empty {
+ @apply hidden
+}
+
+.styleA .categorization > footer {
+    @apply
+    flex justify-end gap-4
+}
+.styleA .categorization > footer button {
+    border-width: 1px;
+    border-color:var(--button-bg-border);
+    background-color:var(--button-bg);
+
+    @apply
+    rounded
+    px-4 py-1
+    transition-colors
+}
+.styleA .categorization footer button:hover {
+    background-color:var(--button-bg-hover);
+}
+
+
 
 .styleA .oneof .oneof-select + div {
     @apply
@@ -456,7 +544,7 @@ fieldset.styleA.group .group-item {
      @apply flex-grow-0
 }
 .styleA .object-addprops-toolbar button:hover {
-    background-color:var(--bg-button);
+    background-color:var(--button-bg);
 }
 .styleA .object-addprops-toolbar button {
     @apply
@@ -475,11 +563,20 @@ fieldset.styleA.group .group-item {
 .styleA .object-addprops-items > div > *:first-child {
   @apply flex-grow
 }
-.styleA .object-addprops-items > div > button {
-    color:var(--text-color-error);
-    @apply mt-6 px-2
-}
 
+
+.styleA .object-addprops-items > div > button {
+    color:var(--button-delete-text);
+    background-color:var(--button-delete-bg);
+    @apply
+    mt-6 px-2
+    h-6 w-6 rounded-full
+    flex items-center justify-center
+}
+.styleA .object-addprops-items > div > button:hover {
+    color:var(--button-delete-text-hover);
+    background-color:var(--button-delete-bg-hover);
+}
 
 .styleA .object-addprops-items .oneof {
     @apply flex-grow
