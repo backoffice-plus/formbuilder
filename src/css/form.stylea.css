@@ -490,6 +490,7 @@ fieldset.styleA.group .group-item {
 }
 .styleA .categorization .tabs.isStepper > div > button > label {
     @apply p-0 m-0
+    cursor-pointer
 }
 .styleA .categorization .tabs.isStepper > div > button > label:empty {
  @apply hidden
