@@ -15,7 +15,6 @@ export {formbuilderRenderers} from "./components/renderers";
 import boplusJsonfromsVueVanilla from "@backoffice-plus/jsonforms-vue-vanilla";
 export const boplusVueVanillaRenderers = boplusJsonfromsVueVanilla;
 
-/** @ts-ignore */
-export {default as Vuedraggable} from "../packages/_vuedraggable/src/vuedraggable.js";
+export {default as Vuedraggable} from "vuedraggable";
 
 import './css/theme.css'

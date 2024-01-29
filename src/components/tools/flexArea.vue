@@ -161,7 +161,7 @@
  * @see https://sortablejs.github.io/vue.draggable.next/#/clone-on-control
  */
 import Actions from "./utils/Actions.vue";
-import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
+import {default as Vuedraggable} from "vuedraggable"
 import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange, showNewPropertyDialogAndGetTool} from '../../'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {ref, computed, onMounted, nextTick} from 'vue';

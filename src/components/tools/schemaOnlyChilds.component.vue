@@ -67,7 +67,7 @@
 <script setup>
 import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {Icon} from "@iconify/vue";
-import {default as Vuedraggable} from "../../../packages/_vuedraggable/src/vuedraggable.js";
+import {default as Vuedraggable} from "vuedraggable"
 import {prepareAndCallOnDropAreaChange} from '../../lib/formbuilder'
 import {confirmAndRemoveChild} from '../../'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";

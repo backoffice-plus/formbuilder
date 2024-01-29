@@ -28,18 +28,17 @@
   "author": "David Wolter <david@dampfer.net>",
   "license": "MIT",
   "devDependencies": {
-    "@babel/types": "^7.20.7",
     "@jsonforms/examples": "^3.2.1",
     "@types/flat": "^5.0.5",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^20.10.4",
     "@vitejs/plugin-vue": "^4.5.0",
     "@vue/tsconfig": "^0.5.1",
-    "autoprefixer": "^10.4.16",
+    "autoprefixer": "^10.4.17",
     "diff": "^5.1.0",
-    "postcss": "^8.4.31",
+    "postcss": "^8.4.33",
     "rollup-plugin-visualizer": "^5.9.0",
-    "sass": "^1.69.5",
-    "tailwindcss": "^3.3.5",
+    "tailwindcss": "^3.4.1",
     "typescript": "^5.2.2",
     "vite": "^4.5.0",
     "vitest": "^0.27.3",
@@ -53,11 +52,10 @@
     "@iconify/vue": "^4.1.1",
     "@jsonforms/vue-vanilla": "^3.2.1",
     "@stoplight/json-ref-resolver": "^3.1.6",
-    "@types/lodash-es": "^4.17.11",
     "@vueuse/core": "^10.7.0",
     "dialog-draggable": "^0.1.5",
     "flat": "^6.0.1",
     "lodash-es": "^4.17.21",
-    "sortablejs": "^1.15.0"
+    "vuedraggable": "^4.1.0"
   }
 }

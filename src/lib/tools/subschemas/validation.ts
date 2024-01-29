@@ -2,7 +2,7 @@ import type {JsonSchema} from "@jsonforms/core";
 import type {UISchemaElement} from "@jsonforms/core";
 import type {JsonFormsInterface} from "../../models";
 import type {ToolContext} from "../../models";
-import _ from "lodash";
+import * as _ from 'lodash-es';
 import {cleanEmptySchema} from "../SchemaTool";
 
 export const schemaKeysString = ['minLength', 'maxLength', 'pattern'] as Array<string>;

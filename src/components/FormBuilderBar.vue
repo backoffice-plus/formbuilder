@@ -85,7 +85,7 @@ aside .toolItem {
 
 <script setup>
 import {ref} from 'vue';
-import {Vuedraggable} from '../index'
+import {default as Vuedraggable} from "vuedraggable"
 import {getFormbuilder, getToolDraggingRef, cloneEmptyTool} from "@/";
 
 /**
