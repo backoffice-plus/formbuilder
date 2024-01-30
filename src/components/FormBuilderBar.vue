@@ -1,6 +1,6 @@
 <template>
 
-  <vuedraggable
+  <Vuedraggable
     tag="aside"
     :list="tools"
     :group="{name:'formBuilder', pull: 'clone', put: false}"
@@ -22,7 +22,7 @@
       />
     </template>
 
-  </vuedraggable>
+  </Vuedraggable>
 
 </template>
 
@@ -85,7 +85,7 @@ aside .toolItem {
 
 <script setup>
 import {ref} from 'vue';
-import {default as Vuedraggable} from "vuedraggable"
+import Vuedraggable from "vuedraggable"
 import {getFormbuilder, getToolDraggingRef, cloneEmptyTool} from "@/";
 
 /**

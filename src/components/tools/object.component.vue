@@ -89,7 +89,7 @@
 <script setup>
 
 import Actions from "./utils/Actions.vue";
-import {default as Vuedraggable} from "vuedraggable"
+import Vuedraggable from "vuedraggable"
 import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange, showNewPropertyDialogAndGetTool} from '../../'
 import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
