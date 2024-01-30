@@ -3,17 +3,8 @@
     "type": "object",
     "properties": {
 
-      "uischema": {
-        "type": "object",
-        "properties": {
-          "options": {
-            "$ref":"uioptions"
-          }
-        }
-      },
-
-      "styles": {
-        "$ref": "styles.schema#/properties/styles"
+      "uiOptions": {
+        "$ref": "uiOptions.schema#/properties/uiOptions"
       },
       "rule": {
         "$ref": "rule.schema#/properties/rule"
@@ -23,26 +14,16 @@
   "uischema": {
     "type": "Categorization",
     "elements": [
-      {
-        "type": "Category",
-        "label": "Options",
-        "elements": [
-          {
-            "scope": "#/properties/uischema/properties/options",
-            "type": "Control"
-          }
-        ]
-      },
 
       {
         "type": "Category",
+        "label": "Options & Styles",
         "elements": [
           {
             "type": "LayoutRef",
-            "$ref": "styles.uischema"
+            "$ref": "uiOptions.uischema"
           }
-        ],
-        "label": "Styles"
+        ]
       },
 
 

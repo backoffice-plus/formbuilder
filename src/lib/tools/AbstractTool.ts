@@ -3,6 +3,7 @@ import type {RankedTester} from "@jsonforms/core";
 import type {JsonFormsInterface, JsonFormsUISchema, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import * as _ from 'lodash-es';
 import {ToolEdge} from "../ToolEdge";
+import {UiOptions, UiOptionsByType} from "@/lib";
 
 export abstract class AbstractTool implements ToolInterface {
 
@@ -52,7 +53,9 @@ export abstract class AbstractTool implements ToolInterface {
     toolbarOptions(): Record<string, any> {
         return {}
     }
-
+    availableUiOptions(): UiOptions|undefined {
+        return {}
+    }
     generateJsonSchema(): JsonSchema|undefined {
         return this.schema
     }

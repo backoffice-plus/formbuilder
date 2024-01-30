@@ -1,0 +1,87 @@
+{
+  "schema": {
+    "type": "object",
+
+    "definitions": {
+      "stylesAsArray": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "path": {
+              "type": "string"
+            },
+            "class": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "styles": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      }
+    },
+
+    "properties": {
+      "uiOptions": {
+        "type": "object",
+        "properties": {
+
+          "---styles": {"---$ref": "#/definitions/styles"},
+          "stylesAsArray": {"$ref": "#/definitions/stylesAsArray"},
+          "options": { "$ref":"uioptions" }
+
+        }
+      }
+    }
+  },
+
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Control",
+        "scope": "#/properties/uiOptions/properties/options"
+      },
+      {
+        "type": "Group",
+        "label": "Styles",
+        "elements": [
+          {
+            "type": "Control",
+            "scope": "#/properties/uiOptions/properties/stylesAsArray",
+            "label": false,
+            "---options": {
+              "detail": {
+                "type": "HorizontalLayout",
+                "elements": [
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/path",
+                    "options": {
+                      "autocomplete": true
+                    }
+                  },
+                  {
+                    "type": "Control",
+                    "scope": "#/properties/class",
+                    "options": {
+                      "multi": true
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "data": {}
+}

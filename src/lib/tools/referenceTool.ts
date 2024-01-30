@@ -6,6 +6,7 @@ import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import jsonForms from "./schema/reference.form.json";
 import {resolveSchema} from "../formbuilder";
+import * as subschemas from "@/lib/tools/subschemas";
 
 export class ReferenceTool extends AbstractTool implements ToolInterface {
     importer = () => referenceComp;
@@ -22,9 +23,19 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
+        let uidata = {};
+        const isUischema = 'uischema' === context?.builder;
+        if(isUischema) {
+            uidata = {
+                ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
+                ...subschemas.prepareOptionUiOptions(context, this),
+            }
+        }
+
         const data = {
             propertyName: this.propertyName,
             _isProperty: 'object' === this.edge.schemaParent?.schema?.type,
+            ...uidata
         } as any;
 
 
@@ -36,11 +47,18 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
+        const isUischema = 'uischema' === context?.builder;
+
         this.propertyName = data?.propertyName ?? '';
         this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
         if (undefined !== data._reference) {
             this.schema.$ref = data._reference;
+        }
+
+        if(isUischema) {
+            subschemas.setOptionDataRule(this.schema, this.uischema, data);
+            subschemas.setOptionDataUiOptions(context, this, data);
         }
     }
 
@@ -59,7 +77,7 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
             return undefined;
         }
         return {
-            schema: await resolveSchema(jsonForms.schema, definitionResolver),
+            schema: await resolveSchema(jsonForms.schema, definitionResolver, this, context),
             uischema: await resolveSchema(jsonForms.uischema),
         } as JsonFormsInterface
     }

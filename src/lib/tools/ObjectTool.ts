@@ -37,7 +37,7 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
         if(isUischema) {
             uidata = {
                 ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
-                ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
+                ...subschemas.prepareOptionUiOptions(context, this),
             }
         }
 
@@ -68,7 +68,7 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
 
         if(isUischema) {
             subschemas.setOptionDataRule(this.schema, this.uischema, data);
-            subschemas.setOptionDataStyles(this.schema, this.uischema, data);
+            subschemas.setOptionDataUiOptions(context, this, data);
         }
 
         subschemas.setOptionDataValidation(this.schema, this.uischema, data);
@@ -88,7 +88,7 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
         // }
 
         return {
-            schema: await resolveSchema(setSchema),
+            schema: await resolveSchema(setSchema, undefined, this, context),
             uischema: await resolveSchema(setUischema),
         } as JsonFormsInterface
     }

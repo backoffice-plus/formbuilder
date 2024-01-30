@@ -37,7 +37,7 @@ export class LayoutRefTool extends AbstractTool implements ToolInterface {
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
-            schema: await resolveSchema(jsonForms.schema),
+            schema: await resolveSchema(jsonForms.schema,undefined, this, context),
             uischema: await resolveSchema(jsonForms.uischema),
         } as JsonFormsInterface
     }

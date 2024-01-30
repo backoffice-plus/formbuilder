@@ -7,9 +7,6 @@
         "type": "object",
         "properties": {
 
-          "options": {
-            "$ref":"uioptions"
-          }
 
         }
       },
@@ -17,8 +14,8 @@
       "labelAndI18n": {
         "$ref": "labelAndI18n.schema#/properties/labelAndI18n"
       },
-      "styles": {
-        "$ref": "styles.schema#/properties/styles"
+      "uiOptions": {
+        "$ref": "uiOptions.schema#/properties/uiOptions"
       },
       "rule": {
         "$ref": "rule.schema#/properties/rule"
@@ -49,25 +46,14 @@
       },
 
 
-      {
-        "type": "Category",
-        "label": "Options",
-        "elements": [
-          {
-            "scope": "#/properties/uischema/properties/options",
-            "type": "Control"
-          }
-        ]
-      },
-
 
       {
         "type": "Category",
-        "label": "Styles",
+        "label": "Options & Styles",
         "elements": [
           {
             "type": "LayoutRef",
-            "$ref": "styles.uischema"
+            "$ref":"uiOptions.uischema"
           }
         ]
       },

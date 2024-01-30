@@ -43,8 +43,8 @@
       "rule": {
         "$ref": "rule.schema#/properties/rule"
       },
-      "styles": {
-        "$ref": "styles.schema#/properties/styles"
+      "uiOptions": {
+        "$ref": "uiOptions.schema#/properties/uiOptions"
       },
       "validation": {
         "$ref": "validation.schema#/properties/validation"
@@ -197,10 +197,10 @@
 
       {
         "type": "Category",
-        "label": "Styles",
+        "label": "Option & Styles",
         "elements": [
           {
-            "$ref": "styles.uischema"
+            "$ref": "uiOptions.uischema"
           }
         ],
         "rule": {

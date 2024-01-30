@@ -12,12 +12,6 @@
           },
           "i18n": {
             "type": "string"
-          },
-          "options": {
-            "type":"object",
-            "additionalProperties": {
-              "type": ["string","number","boolean"]
-            }
           }
 
         }
@@ -26,8 +20,8 @@
       "rule": {
         "$ref":"rule.schema#/properties/rule"
       },
-      "styles": {
-        "$ref":"styles.schema#/properties/styles"
+      "uiOptions": {
+        "$ref":"uiOptions.schema#/properties/uiOptions"
       }
     }
   },
@@ -60,22 +54,11 @@
 
       {
         "type": "Category",
-        "label": "Options",
-        "elements": [
-          {
-            "scope": "#/properties/uischema/properties/options",
-            "type": "Control"
-          }
-        ]
-      },
-
-      {
-        "type": "Category",
-        "label": "Styles",
+        "label": "Options & Styles",
         "elements": [
           {
             "type": "LayoutRef",
-            "$ref":"styles.uischema"
+            "$ref":"uiOptions.uischema"
           }
         ]
       },
@@ -91,6 +74,8 @@
           }
         ]
       }
+
+
     ]
   } ,
   "data": {}

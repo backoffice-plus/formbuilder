@@ -35,8 +35,8 @@ export const schema = {
         labelAndI18n: {
             $ref:'labelAndI18n.schema#/properties/labelAndI18n'
         },
-        styles: {
-            $ref:'styles.schema#/properties/styles'
+        uiOptions: {
+            $ref:'uiOptions.schema#/properties/uiOptions'
         },
 
 
@@ -166,10 +166,11 @@ export const uischema = {
          */
         {
             type: "Category",
-            label: "Styles",
-            elements: [
+            "label": "Options & Styles",
+            "elements": [
                 {
-                    $ref:'styles.uischema'
+                    "type": "LayoutRef",
+                    "$ref":"uiOptions.uischema"
                 },
             ],
             rule: {

@@ -9,6 +9,7 @@ import {schema, uischema} from "./schema/select.schema";
 import {resolveSchema} from "../formbuilder";
 import * as _ from 'lodash-es';
 import * as subschemas from "./subschemas";
+import {UiOptions} from "@/lib";
 
 
 export class SelectTool extends AbstractTool implements ToolInterface {
@@ -50,22 +51,30 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         // }
     }
 
+    availableUiOptions():UiOptions|undefined {
+        return {
+            format: {type: "string", enum: ['radio']},
+            readonly: {type:"boolean", default:false},
+        }
+    }
+
     optionDataPrepare(context: ToolContext): Record<string, any> {
         const schema = this.schema as JsonSchema;
         const uischema = this.uischema as ControlElement;
 
+        const isUischema = 'uischema' === context?.builder;
         const asMultiSelect = 'array' === schema.type && true === schema.uniqueItems;
-        /** @ts-ignore **/
-        const schemaTypeOrItemsType = schema.items?.type ?? schema.type;
 
         let uidata = {};
-        const isUischema = 'uischema' === context?.builder;
         if(isUischema) {
             uidata = {
                 ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
-                ...subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
+                ...subschemas.prepareOptionUiOptions(context, this),
             }
         }
+
+        /** @ts-ignore **/
+        const schemaTypeOrItemsType = schema.items?.type ?? schema.type;
 
         const data = {
             propertyName: this.propertyName,
@@ -73,8 +82,6 @@ export class SelectTool extends AbstractTool implements ToolInterface {
                 type: schemaTypeOrItemsType,//schema.type,
                 format: schema.format,
             },
-            options: uischema.options,
-
 
             required: this.isRequired,
 
@@ -105,6 +112,8 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         const schema = this.schema as JsonSchema | Record<string, any>;
         const uischema = this.uischema as ControlElement;
 
+        const isUischema = 'uischema' === context?.builder;
+
         this.propertyName = data?.propertyName ?? '';
         this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
@@ -112,13 +121,10 @@ export class SelectTool extends AbstractTool implements ToolInterface {
 
         this.schema.type = data.asMultiSelect ? 'array' : schemaType;
         this.schema.format = data.format;
-        this.uischema.options = data.options ?? {};
-
-        const isUischema = 'uischema' === context?.builder;
 
         if(isUischema) {
             subschemas.setOptionDataRule(this.schema, this.uischema, data);
-            subschemas.setOptionDataStyles(this.schema, this.uischema, data);
+            subschemas.setOptionDataUiOptions(context, this, data);
         }
 
         subschemas.setOptionDataValidation(schema, uischema, data);
@@ -162,7 +168,7 @@ export class SelectTool extends AbstractTool implements ToolInterface {
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
         return {
-            schema: await resolveSchema(schema),
+            schema: await resolveSchema(schema, undefined, this, context),
             uischema: await resolveSchema(uischema),
         } as JsonFormsInterface
     }

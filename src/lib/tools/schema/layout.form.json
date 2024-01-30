@@ -8,17 +8,14 @@
           "type": {
             "type":"string",
             "enum": ["VerticalLayout","HorizontalLayout"]
-          },
-          "options": {
-            "$ref":"uioptions"
           }
         }
       },
       "rule": {
         "$ref":"rule.schema#/properties/rule"
       },
-      "styles": {
-        "$ref":"styles.schema#/properties/styles"
+      "uiOptions": {
+        "$ref":"uiOptions.schema#/properties/uiOptions"
       },
       "operation": {
         "$ref":"operation.schema#/properties/operation"
@@ -43,22 +40,11 @@
 
       {
         "type": "Category",
-        "label": "Options",
-        "elements": [
-          {
-            "scope": "#/properties/uischema/properties/options",
-            "type": "Control"
-          }
-        ]
-      },
-
-      {
-        "type": "Category",
-        "label": "Styles",
+        "label": "Options & Styles",
         "elements": [
           {
             "type": "LayoutRef",
-            "$ref":"styles.uischema"
+            "$ref":"uiOptions.uischema"
           }
         ]
       },

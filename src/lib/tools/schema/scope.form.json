@@ -24,14 +24,21 @@
           },
           "label": {
             "type":"string"
-          },
-          "options": {
-            "type":"object",
-            "additionalProperties": {
-              "type": ["string","number","boolean"]
-            }
           }
         }
+      },
+
+      "labelAndI18n": {
+        "$ref": "labelAndI18n.schema#/properties/labelAndI18n"
+      },
+      "rule": {
+        "$ref":"rule.schema#/properties/rule"
+      },
+      "uiOptions": {
+        "$ref":"uiOptions.schema#/properties/uiOptions"
+      },
+      "operation": {
+        "$ref":"operation.schema#/properties/operation"
       }
     }
   },
@@ -46,16 +53,27 @@
         "label": "Base",
         "elements": [
           {
-            "type": "Control",
-            "scope": "#/properties/uischema/properties/label"
-          },
-          {
-            "type": "HorizontalLayout",
+            "type": "Group",
+            "label": "Scope",
             "elements": [
               {
                 "type": "Control",
                 "scope": "#/properties/uischema/properties/scope",
                 "label": "Scopes"
+              }
+            ]
+          },
+          {
+            "type": "Group",
+            "label": "Label",
+            "elements": [
+              {
+                "type": "Control",
+                "scope": "properties/labelAndI18n/properties/label"
+              },
+              {
+                "type": "Control",
+                "scope": "properties/labelAndI18n/properties/i18n"
               }
             ]
           }
@@ -64,14 +82,44 @@
 
       {
         "type": "Category",
-        "label": "Options",
+        "label": "Options & Styles",
         "elements": [
           {
-            "scope": "#/properties/uischema/properties/options",
-            "type": "Control"
+            "type": "LayoutRef",
+            "$ref":"uiOptions.uischema"
           }
         ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Rule",
+        "elements": [
+          {
+            "type": "LayoutRef",
+            "$ref":"rule.uischema"
+          }
+        ]
+      },
+
+      {
+        "type": "Category",
+        "label": "Operations",
+        "elements": [
+          {
+            "type": "LayoutRef",
+            "$ref":"operation.uischema"
+          }
+        ],
+        "rule": {
+          "effect": "SHOW",
+          "condition": {
+            "scope": "#/properties/operation/properties/_isBaseUiTool",
+            "schema": {"const":true}
+          }
+        }
       }
+
     ]
   } ,
   "data": {}

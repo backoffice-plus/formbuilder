@@ -9,13 +9,14 @@ import {findAllProperties} from "./formbuilder";
 import {ScopeTool} from "./tools/ScopeTool";
 import {TypedTools} from "./models";
 
-export type UiOptions = Record<string, Record<string, JsonSchema>>
+export type UiOptions = Record<string, JsonSchema>
+export type UiOptionsByType = Record<string, UiOptions>
 export class ToolFinder implements ToolFinderInterface {
 
     private readonly _tools = [] as ToolInterface[];
-    private readonly _uiOptions = {} as UiOptions;
+    private readonly _uiOptions = {} as UiOptionsByType;
 
-    constructor(tools: ToolInterface[], uiOptions?:UiOptions) {
+    constructor(tools: ToolInterface[], uiOptions?:UiOptionsByType) {
         this._tools = tools;
         this._uiOptions = uiOptions ?? {};
     }

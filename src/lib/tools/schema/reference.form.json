@@ -12,6 +12,14 @@
       "propertyName": {
         "type": "string"
       },
+
+      "rule": {
+        "$ref":"rule.schema#/properties/rule"
+      },
+      "uiOptions": {
+        "$ref":"uiOptions.schema#/properties/uiOptions"
+      },
+
       "_reference": {
         "anyOf": [
           {"$ref":"referenceTool.definitions","title":"asdasd"},
@@ -50,7 +58,33 @@
             "label": "Reference to Definitions"
           }
         ]
+      },
+
+
+      {
+        "type": "Category",
+        "label": "Options & Styles",
+        "elements": [
+          {
+            "type": "LayoutRef",
+            "$ref":"uiOptions.uischema"
+          }
+        ]
+      },
+
+
+      {
+        "type": "Category",
+        "label": "Rule",
+        "elements": [
+          {
+            "type": "LayoutRef",
+            "$ref":"rule.uischema"
+          }
+        ]
       }
+
+
     ]
   } ,
   "data": {}

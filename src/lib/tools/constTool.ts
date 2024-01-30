@@ -25,14 +25,11 @@ export class ConstTool extends ControlTool {
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
-        const data = super.optionDataPrepare(context);
 
-        _.merge(
-            data,
-            subschemas.prepareOptionDataConst(context, this.schema, this.uischema),
-        )
-
-        return data;
+        return {
+            ...super.optionDataPrepare(context),
+            ...subschemas.prepareOptionDataConst(context, this.schema, this.uischema),
+        };
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
@@ -49,7 +46,7 @@ export class ConstTool extends ControlTool {
         }
 
         return {
-             schema: await resolveSchema(currentJsonForm.schema),
+             schema: await resolveSchema(currentJsonForm.schema, undefined, this, context),
              uischema: await resolveSchema(currentJsonForm.uischema),
         } as JsonFormsInterface
     }

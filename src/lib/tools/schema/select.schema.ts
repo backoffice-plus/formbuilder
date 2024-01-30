@@ -51,8 +51,8 @@ export const schema = {
         labelAndI18n: {
             $ref:'labelAndI18n.schema#/properties/labelAndI18n'
         },
-        styles: {
-            $ref:'styles.schema#/properties/styles'
+        uiOptions: {
+            $ref:'uiOptions.schema#/properties/uiOptions'
         },
 
         propertyName: {
@@ -67,20 +67,6 @@ export const schema = {
         required: {
             type: "boolean"
         },
-
-        options: {
-            type: "object",
-            properties: {
-                readonly: {
-                    type: "boolean",
-                },
-                format: {
-                    type: "string",
-                    enum: ['radio']
-                },
-            },
-        },
-
 
         select: {
             type: 'object',
@@ -170,7 +156,7 @@ export const uischema = {
                                         //     type: "Control"
                                         // },
                                         {
-                                            scope: "#/properties/options/properties/format",
+                                            scope: "#/properties/uiOptions/properties/options/properties/format",
                                             type: "Control",
                                             // rule: {
                                             //     effect: "ENABLE",
@@ -234,7 +220,7 @@ export const uischema = {
                                     }
                                 },
                                 {
-                                    scope: "#/properties/options/properties/readonly",
+                                    scope: "#/properties/uiOptions/properties/options/properties/readonly",
                                     type: "Control",
                                     rule: {
                                         effect: "SHOW",
@@ -279,10 +265,11 @@ export const uischema = {
          */
         {
             type: "Category",
-            label: "Styles",
-            elements: [
+            "label": "Options & Styles",
+            "elements": [
                 {
-                    $ref:'styles.uischema'
+                    "type": "LayoutRef",
+                    "$ref":"uiOptions.uischema"
                 },
             ],
             "rule": {

@@ -12,6 +12,7 @@ import type {PropType} from "vue";
 import type {ToolEdge} from "./ToolEdge";
 import {ModalControl} from "@/lib/useDialog";
 import type {JsonSchema7} from "@jsonforms/core/src/models/jsonSchema7";
+import type {UiOptions} from "@/lib/ToolFinder";
 
 export const scalarTypes = ['string', 'number', 'integer', 'boolean', 'null'];
 
@@ -29,6 +30,8 @@ export interface ToolInterface {
     optionDataPrepare: (context: ToolContext) => Record<string, any>;
     optionDataUpdate: (context: ToolContext, data: Record<string, any>) => void;
     optionJsonforms: (context: ToolContext) => Promise<JsonFormsInterface | undefined>;
+
+    availableUiOptions:() => UiOptions|undefined,
 
     /** :TODO add cloneWithSchema(schema,uischema) **/
     clone: () => ToolInterface;

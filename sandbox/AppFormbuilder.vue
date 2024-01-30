@@ -87,7 +87,7 @@ import {getExamples} from '@jsonforms/examples/src'
 import * as ownExamples from "./jsonForms/examples";
 import {getExampleFromUrl, getKeyFromUrl, getUrl} from "./lib";
 import {boplusVueVanillaRenderers, defaultTools, FormBuilder, formbuilderRenderers} from "../src/index.ts";
-import  {ToolFinder, type UiOptions} from "../src/index.ts";
+import  {ToolFinder, type UiOptionsByType} from "../src/index.ts";
 import IdList from "./Dev/IdList.vue";
 import FormBuilderDetails from "./FormBuilderDetails.vue";
 import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
@@ -95,7 +95,7 @@ import ExampleVsSchemaCode from "./ExampleVsSchemaCode.vue";
 const tools = [
     ...defaultTools,
 ]
-const uiOptions:UiOptions = {
+const uiOptions:UiOptionsByType = {
   Categorization: {
     variant: {type:"string",enum:["stepper"],default:''},
     showNavButtons: {type:"boolean",default:false},

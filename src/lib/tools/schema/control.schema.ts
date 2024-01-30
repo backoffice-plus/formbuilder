@@ -39,8 +39,8 @@ export const schema = {
         labelAndI18n: {
             $ref:'labelAndI18n.schema#/properties/labelAndI18n'
         },
-        styles: {
-            $ref:'styles.schema#/properties/styles'
+        uiOptions: {
+            $ref:'uiOptions.schema#/properties/uiOptions'
         },
 
         schema: {
@@ -71,7 +71,7 @@ export const schema = {
             type: "boolean"
         },
 
-        options: {
+        "-----options": {
             type: "object",
             properties: {
                 readonly: {
@@ -207,7 +207,7 @@ export const uischema = {
                                     type: 'VerticalLayout',
                                     elements: [
                                         {
-                                            scope: "#/properties/options/properties/multi",
+                                            scope: "#/properties/uiOptions/properties/options/properties/multi",
                                             label: "as Textarea",
                                             type: "Control",
                                             rule: {
@@ -234,7 +234,7 @@ export const uischema = {
                                             }
                                         },
                                         {
-                                            scope: "#/properties/options/properties/toggle",
+                                            scope: "#/properties/uiOptions/properties/options/properties/toggle",
                                             label: "as Toggle",
                                             type: "Control",
                                             options: {
@@ -307,7 +307,7 @@ export const uischema = {
                             type: "HorizontalLayout",
                             elements: [
                                 {
-                                    scope: "#/properties/options/properties/placeholder",
+                                    scope: "#/properties/uiOptions/properties/options/properties/placeholder",
                                     type: "Control",
                                     rule: {
                                         effect: "SHOW",
@@ -334,7 +334,7 @@ export const uischema = {
                                     }
                                 },
                                 {
-                                    scope: "#/properties/options/properties/readonly",
+                                    scope: "#/properties/uiOptions/properties/options/properties/readonly",
                                     type: "Control",
                                     rule: {
                                         effect: "SHOW",
@@ -389,10 +389,11 @@ export const uischema = {
          */
         {
             type: "Category",
-            label: "Styles",
-            elements: [
+            "label": "Options & Styles",
+            "elements": [
                 {
-                    $ref:'styles.uischema'
+                    "type": "LayoutRef",
+                    "$ref":"uiOptions.uischema"
                 },
             ],
             rule: {
@@ -414,17 +415,6 @@ export const uischema = {
                 {
                     $ref:'rule.uischema'
                 },
-            ]
-        },
-
-        {
-            "type": "Category",
-            "label": "Options",
-            "elements": [
-                {
-                    "scope": "#/properties/options",
-                    "type": "Control"
-                }
             ]
         },
     ]
@@ -463,7 +453,7 @@ export const uischemaReadOnly = {
                             type: "HorizontalLayout",
                             elements: [
                                 {
-                                    scope: "#/properties/options/properties/placeholder",
+                                    scope: "#/properties/uiOptions/properties/options/properties/placeholder",
                                     type: "Control"
                                 },
                             ]
@@ -472,7 +462,7 @@ export const uischemaReadOnly = {
                             type: "HorizontalLayout",
                             elements: [
                                 {
-                                    scope: "#/properties/options/properties/readonly",
+                                    scope: "#/properties/uiOptions/properties/options/properties/readonly",
                                     type: "Control"
                                 },
                             ]

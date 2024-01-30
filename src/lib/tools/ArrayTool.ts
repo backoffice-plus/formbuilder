@@ -120,7 +120,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
             subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
             subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
             subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
-            subschemas.prepareOptionDataStyles(context, this.schema, this.uischema),
+            subschemas.prepareOptionUiOptions(context, this),
         )
 
         return data;
@@ -161,7 +161,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         subschemas.setOptionDataValidation(this.schema, this.uischema, data);
         subschemas.setOptionDataLabel(this.schema, this.uischema, data);
         subschemas.setOptionDataRule(this.schema, this.uischema, data);
-        subschemas.setOptionDataStyles(this.schema, this.uischema, data);
+        subschemas.setOptionDataUiOptions(context, this, data);
 
         //this.isRequired = data.required;
         this.isSchemaItem = data._asSchema;
@@ -183,7 +183,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         // }
 
         const jf:JsonFormsInterface = {
-            schema: await resolveSchema(currentJsonSchema.schema),
+            schema: await resolveSchema(currentJsonSchema.schema, undefined, this, context),
             uischema: await resolveSchema(currentJsonSchema.uischema),
         };
 

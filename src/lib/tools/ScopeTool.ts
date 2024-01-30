@@ -25,12 +25,13 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
         const data = {
-
             uischema: {
                 scope: this.uischema.scope,
-                label: this.uischema.label,
-                options: this.uischema.options ?? {},
-            }
+            },
+            ...subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionUiOptions(context, this),
+            ...subschemas.prepareOptionOperation(context, this),
 
         } as any;
 
@@ -39,8 +40,9 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         this.uischema.scope = data.uischema.scope
-        this.uischema.label = data.uischema.label
-        this.uischema.options = data.uischema.options ?? {}
+
+        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
+        subschemas.setOptionDataRule(this.schema, this.uischema, data);
         subschemas.setOptionDataUiOptions(context, this, data);
     }
 
