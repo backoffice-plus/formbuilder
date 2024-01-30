@@ -15,6 +15,7 @@ export {formbuilderRenderers} from "./components/renderers";
 import boplusJsonfromsVueVanilla from "@backoffice-plus/jsonforms-vue-vanilla";
 export const boplusVueVanillaRenderers = boplusJsonfromsVueVanilla;
 
-export {default as Vuedraggable} from "vuedraggable";
+//export {default as Vuedraggable} from "vuedraggable"; //npm install vuedraggable isnt working!!!
+export {default as Vuedraggable} from "../packages/_vuedraggable/src/vuedraggable"; //git clone from https://github.com/SortableJS/vue.draggable.next & npm install sortablejs
 
 import './css/theme.css'

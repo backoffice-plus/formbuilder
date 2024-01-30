@@ -68,7 +68,7 @@
 <script setup>
 import {computed, nextTick, onMounted, ref, unref} from "vue";
 import {Icon} from "@iconify/vue";
-import Vuedraggable from "vuedraggable"
+import {Vuedraggable} from "@/"
 import {confirmAndRemoveChild, prepareAndCallOnDropAreaChange} from '../../'
 import {toolComponentProps, vuedraggableOptions} from "../../lib/models";
 import {getFormbuilder, getToolDragging, getToolfinder} from "../../lib/vue";
