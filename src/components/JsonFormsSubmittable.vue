@@ -12,14 +12,11 @@
             :validationMode="validationMode"
             @change="onChange"
         />
-
-      <slot name="button" v-bind="{submit}">
-        <div class="flex justify-center mt-4 ">
-          <button class="btn w-64" @click="submit" :disabled="readonly"  v-if="!hideSubmit">Submit</button>
-        </div>
-      </slot>
-
     </div>
+
+    <slot name="button" v-bind="{submit}">
+        <button class="submit" @click="submit" :disabled="readonly"  v-if="!hideSubmit">Submit</button>
+    </slot>
 
     <div v-if="errorAfterUpdated" class="flex flex-col gap-1">
       <div v-for="e in errorAfterUpdated" class="errorMsg px-1">{{ e?.instancePath }}: {{e?.message}}</div>
@@ -31,21 +28,7 @@
 
 </template>
 
-<style scoped>
 
-section {
-    @apply p-4
-}
-/**
-copied from ButtonRenderer
- */
-  button {
-    @apply
-    border border-gray-400 rounded px-6 py-0.5
-    bg-gray-100 hover:bg-gray-200
-  }
-
-</style>
 
 <script setup lang="ts">
 import {ref, type Ref} from "vue";

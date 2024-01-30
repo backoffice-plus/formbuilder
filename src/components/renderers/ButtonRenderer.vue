@@ -12,9 +12,13 @@
 
 <style scoped>
 button {
+  background-color: var(--buttonSubmit-bg);
+  border-color: var(--buttonSubmit-border);
   @apply
-  border border-gray-400 rounded px-6 py-0.5
-  bg-gray-100 hover:bg-gray-200
+  border rounded px-6 py-0.5
+}
+button:hover {
+  background-color: var(--buttonSubmit-bg-hover);
 }
 </style>
 

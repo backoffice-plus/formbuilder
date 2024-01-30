@@ -26,6 +26,10 @@
 
     --buttonRounded-hover:rgba(200,200,200,.5);
 
+    --buttonSubmit-bg:#f3f4f6; /** gray-100 */
+    --buttonSubmit-bg-hover:#e5e7eb;/** gray-200 */
+    --buttonSubmit-border:#9ca3af; /** gray-400 */
+
     --tool-categorization-tab-hover:rgb(255,255,255,0.3);
     --tool-reference-ref:var(--base-100);
     --tool-control-input:#fff;

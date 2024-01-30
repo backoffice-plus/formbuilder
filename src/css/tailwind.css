@@ -6,4 +6,18 @@
 }
 
 @layer components {
+
+
+    button.submit {
+        background-color: var(--buttonSubmit-bg);
+        border-color: var(--buttonSubmit-border);
+
+        @apply
+        border
+        rounded px-6 py-0.5
+    }
+    button.submit:hover {
+        background-color: var(--buttonSubmit-bg-hover);
+    }
+
 }
