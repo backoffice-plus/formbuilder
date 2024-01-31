@@ -29,16 +29,7 @@
                     {
                       "$ref": "labelAndI18n.both.uischema"
                     }
-                  ],
-                  "rule": {
-                    "effect": "SHOW",
-                    "condition": {
-                      "scope": "#/properties/_isUischema",
-                      "schema": {
-                        "const": true
-                      }
-                    }
-                  }
+                  ]
                 }
               ]
             }

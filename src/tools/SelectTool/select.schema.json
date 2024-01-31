@@ -1,0 +1,118 @@
+{
+  "type": "object",
+
+  "definitions": {
+
+    "selectAsEnum": {
+      "properties": {
+        "enum": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Items as string"
+        }
+      },
+      "required": ["enum"],
+      "title": "Items as string"
+    },
+
+    "selectAsOneOf": {
+      "properties": {
+        "oneOf": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "const": {
+                "type": "string",
+                "title": "Key"
+              },
+              "title": {
+                "type": "string",
+                "title": "Value"
+              }
+            }
+          },
+          "title": "Items as Key-Value Pairs"
+        }
+      },
+      "required": ["oneOf"],
+      "title": "Items as Key-Value Pairs"
+    }
+  },
+
+  "properties": {
+    "validation": {
+      "$ref":"validation.schema#/properties/validation"
+    },
+    "conditional": {
+      "$ref": "conditional.schema#/properties/conditional"
+    },
+    "rule": {
+      "$ref":"rule.schema#/properties/rule"
+    },
+    "labelAndI18n": {
+      "$ref":"labelAndI18n.schema#/properties/labelAndI18n"
+    },
+    "uiOptions": {
+      "$ref":"uiOptions.schema#/properties/uiOptions"
+    },
+
+    "propertyName": {
+      "type": "string",
+      "pattern": "^[a-z]"
+    },
+    "required": {
+      "type": "boolean"
+    },
+
+    "asMultiSelect": {"type": "boolean"},
+    "select": {
+      "type": "object",
+      "properties": {
+        "_type": {
+          "type": "string",
+          "enum": ["oneOf", "enum"]
+        },
+        "enum": {
+          "type": "array",
+          "$ref": "#/definitions/selectAsEnum"
+        },
+        "oneOf": {
+          "type": "array",
+          "$ref": "#/definitions/selectAsOneOf"
+        }
+      }
+    },
+    "enumOrOneOf": {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/selectAsEnum"
+        },
+        {
+          "$ref": "#/definitions/selectAsOneOf"
+        }
+      ]
+    },
+
+    "_isUischema": {"type": "boolean" },
+    "_isSchemaOnly": {"type":"boolean"},
+    "_isProperty": {"type":"boolean"}
+  },
+
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "_isProperty": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": ["propertyName"]
+      }
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Base",
+      "elements": [
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "scope": "#/properties/propertyName",
+                  "type": "Control",
+                  "rule": {
+                    "effect": "HIDE",
+                    "condition": {
+                      "scope": "#/properties/_isProperty",
+                      "schema": {
+                        "const": false
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Group",
+              "label": "Options",
+              "elements": [
+                {
+                  "type": "HorizontalLayout",
+                  "elements": [
+                    {
+                      "scope": "#/properties/uiOptions/properties/options/properties/format",
+                      "type": "Control"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "Group",
+              "label": "Label & Description",
+              "elements": [
+                {
+                  "$ref": "labelAndI18n.both.uischema"
+                }
+              ]
+            },
+
+            {
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "scope": "#/properties/required",
+                  "type": "Control",
+                  "rule": {
+                    "effect": "SHOW",
+                    "condition": {
+                      "scope": "#/properties/_isProperty",
+                      "schema": {"const": true  }
+                    }
+                  }
+                },
+
+                {
+                  "scope": "#/properties/uiOptions/properties/options/properties/readonly",
+                  "type": "Control"
+                }
+              ]
+            }
+
+          ]
+        }
+      ]
+    },
+
+
+    {
+      "type": "Category",
+      "label": "Select Items",
+      "elements": [
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "scope": "#/properties/asMultiSelect",
+              "type": "Control"
+            },
+            {
+              "type": "Group",
+              "label": "Items",
+              "elements": [
+                {
+                  "scope": "#/properties/enumOrOneOf",
+                  "type": "Control",
+                  "label": false
+                }
+              ]
+            }
+
+          ]
+        }
+      ]
+    },
+
+
+
+    {
+      "type": "Category",
+      "label": "Options & Styles",
+      "elements": [
+        {
+          "$ref":"uiOptions.uischema"
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Rule",
+      "elements": [
+        {
+          "$ref": "rule.uischema"
+        }
+      ]
+    }
+
+
+  ]
+}

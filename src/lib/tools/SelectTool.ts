@@ -2,17 +2,18 @@ import type {JsonSchema} from "@jsonforms/core";
 import {and, isEnumControl, isOneOfControl, isStringControl, or, rankWith, schemaTypeIs, schemaMatches} from "@jsonforms/core";
 import type {ControlElement} from "@jsonforms/core";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
-
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
-import {schema, uischema} from "./schema/select.schema";
-import {resolveSchema} from "../formbuilder";
+import {BuilderMode, createResolvedJsonForms, resolveSchema} from "../formbuilder";
 import * as _ from 'lodash-es';
 import * as subschemas from "./subschemas";
 import {UiOptions} from "@/lib";
+import {ControlTool} from "@/lib/tools/controlTool";
+import {BuilderModeType} from "../models";
+import {schema, uischemaModeBoth, uischemaModeSchema, uischemaModeUi} from "@/tools/SelectTool";
 
 
-export class SelectTool extends AbstractTool implements ToolInterface {
+export class SelectTool extends ControlTool {
 
     // constructor(uischemaType: string = 'Control', toolType: string | undefined = 'select') {
     //     super(uischemaType, toolType);
@@ -55,52 +56,25 @@ export class SelectTool extends AbstractTool implements ToolInterface {
         return {
             format: {type: "string", enum: ['radio']},
             readonly: {type:"boolean", default:false},
+            showUnfocusedDescription: {type:"boolean", default:false},
         }
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
-        const schema = this.schema as JsonSchema;
-        const uischema = this.uischema as ControlElement;
+        const data:any = super.optionDataPrepare(context);
 
-        const isUischema = 'uischema' === context?.builder;
-        const asMultiSelect = 'array' === schema.type && true === schema.uniqueItems;
+        if(context.isBuilderMode?.schema) {
+            const schema = this.schema as JsonSchema;
 
-        let uidata = {};
-        if(isUischema) {
-            uidata = {
-                ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
-                ...subschemas.prepareOptionUiOptions(context, this),
+            data.schema.type = (schema.items as any)?.type ?? schema.type;
+            data.asMultiSelect = 'array' === schema.type && true === schema.uniqueItems;
+
+            const enumOrOneOf = (data.asMultiSelect ? schema.items : schema) as JsonSchema;
+            if (enumOrOneOf?.enum?.length) {
+                data.enumOrOneOf = {enum: enumOrOneOf.enum};
+            } else if (enumOrOneOf?.oneOf?.length) {
+                data.enumOrOneOf = {oneOf: enumOrOneOf.oneOf};
             }
-        }
-
-        /** @ts-ignore **/
-        const schemaTypeOrItemsType = schema.items?.type ?? schema.type;
-
-        const data = {
-            propertyName: this.propertyName,
-            schema: {
-                type: schemaTypeOrItemsType,//schema.type,
-                format: schema.format,
-            },
-
-            required: this.isRequired,
-
-            ...subschemas.prepareOptionDataValidation(context, schema, uischema),
-            ...subschemas.prepareOptionDataLabel(context, schema, uischema),
-            ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
-            ...uidata,
-
-            _isUischema:isUischema,
-            _isProperty: 'object' === this.edge.schemaParent?.schema?.type,
-            asMultiSelect: asMultiSelect,
-        } as any;
-
-
-        const enumOrOneOf = (asMultiSelect ? schema.items : schema) as JsonSchema;
-        if ("enum" in enumOrOneOf) {
-            data.enumOrOneOf = {enum: enumOrOneOf.enum};
-        } else if ("oneOf" in enumOrOneOf) {
-            data.enumOrOneOf = {oneOf: enumOrOneOf.oneOf};
         }
 
 
@@ -109,68 +83,64 @@ export class SelectTool extends AbstractTool implements ToolInterface {
 
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        const schema = this.schema as JsonSchema | Record<string, any>;
-        const uischema = this.uischema as ControlElement;
+        super.optionDataUpdate(context, data);
 
-        const isUischema = 'uischema' === context?.builder;
+        if(context.isBuilderMode?.schema) {
+            const schemaType = data.type ?? 'string';
 
-        this.propertyName = data?.propertyName ?? '';
-        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
+            this.schema.type = data.asMultiSelect ? 'array' : schemaType;
+            this.schema.uniqueItems = data.asMultiSelect ? true : undefined;
 
-        const schemaType = data.type ?? 'string';
-
-        this.schema.type = data.asMultiSelect ? 'array' : schemaType;
-        this.schema.format = data.format;
-
-        if(isUischema) {
-            subschemas.setOptionDataRule(this.schema, this.uischema, data);
-            subschemas.setOptionDataUiOptions(context, this, data);
-        }
-
-        subschemas.setOptionDataValidation(schema, uischema, data);
-        subschemas.setOptionDataconditional(this.schema, this.uischema, data);
-        subschemas.setOptionDataLabel(schema, uischema, data);
-
-        this.schema.uniqueItems = data.asMultiSelect ? true : undefined;
-
-        this.isRequired = data.required;
-
-        //create enumOrOneOf
-        const enumOrOneOf = {} as any;
-        if (data?.enumOrOneOf) {
-            if ("enum" in data?.enumOrOneOf) {
-                enumOrOneOf.enum = data?.enumOrOneOf.enum;
-            } else if ("oneOf" in data?.enumOrOneOf) {
-                enumOrOneOf.oneOf = (data.enumOrOneOf.oneOf ?? []).filter((item: any) => item?.const)
-                if (!enumOrOneOf.oneOf.length) {
-                    enumOrOneOf.oneOf = [{const: ''}];
+            //create enumOrOneOf
+            const enumOrOneOf = {} as any;
+            if (data?.enumOrOneOf) {
+                if ("enum" in data?.enumOrOneOf) {
+                    enumOrOneOf.enum = data?.enumOrOneOf.enum;
+                } else if ("oneOf" in data?.enumOrOneOf) {
+                    enumOrOneOf.oneOf = (data.enumOrOneOf.oneOf ?? []).filter((item: any) => item?.const)
+                    if (!enumOrOneOf.oneOf.length) {
+                        enumOrOneOf.oneOf = [{const: ''}];
+                    }
+                    delete enumOrOneOf.type;
                 }
-                delete enumOrOneOf.type;
             }
-        }
-        if(!enumOrOneOf.enum && !enumOrOneOf.oneOf) {
-            enumOrOneOf.enum = [''];
-        }
+            if(!enumOrOneOf.enum && !enumOrOneOf.oneOf) {
+                enumOrOneOf.enum = [''];
+            }
 
-        //set enumOrOneOf
-        this.schema.oneOf && delete this.schema.oneOf;
-        this.schema.enum && delete this.schema.enum;
-        this.schema.items && delete this.schema.items;
-        if(data.asMultiSelect) {
-            enumOrOneOf.type = 'array' !== schemaType ? schemaType : 'string'
-            this.schema.items = enumOrOneOf;
-        }
-        else {
-            this.schema = {...this.schema,  ...enumOrOneOf}
+            //set enumOrOneOf
+            let setEnumOrOneOf = {
+                oneOf: undefined,
+                enum: undefined,
+                items: undefined,
+            }
+            // this.schema.oneOf && delete this.schema.oneOf;
+            // this.schema.enum && delete this.schema.enum;
+            // this.schema.items && delete this.schema.items;
+            if(data.asMultiSelect) {
+                enumOrOneOf.type = 'array' !== schemaType ? schemaType : 'string'
+                setEnumOrOneOf.items = enumOrOneOf;
+            }
+            else {
+                setEnumOrOneOf = {...setEnumOrOneOf, ...enumOrOneOf}
+            }
+
+            this.schema = {...this.schema,  ...setEnumOrOneOf}
         }
     }
 
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
-        return {
-            schema: await resolveSchema(schema, undefined, this, context),
-            uischema: await resolveSchema(uischema),
-        } as JsonFormsInterface
+        let uischemas:Record<BuilderModeType, any> = {
+            [BuilderMode.BOTH]:uischemaModeBoth,
+            [BuilderMode.SCHEMA]:uischemaModeSchema,
+            [BuilderMode.UI]:uischemaModeUi,
+        };
+
+        return createResolvedJsonForms([
+            resolveSchema(schema, undefined, this, context),
+            resolveSchema(uischemas[context.builderMode ?? BuilderMode.BOTH])
+        ]);
     }
 
     clone(): ToolInterface {
