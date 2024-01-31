@@ -42,7 +42,9 @@ export class ConstTool extends ControlTool {
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         super.optionDataUpdate(context, data);
 
-        subschemas.setOptionDataConst(this.schema, this.uischema, data);
+        if(context.isBuilderMode?.schema) {
+            subschemas.setOptionDataConst(this.schema, this.uischema, data);
+        }
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
