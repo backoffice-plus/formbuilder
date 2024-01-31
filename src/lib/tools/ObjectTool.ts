@@ -1,9 +1,7 @@
 import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import toolComponent from "../../components/tools/object.component.vue";
-import {resolveSchema} from "../formbuilder";
-import {schema, uischema} from "./schema/object.form.json";
-import jsonFormAsSchemaChild from "./schema/object.asSchemaChild.form.json";
+import {BuilderMode, createResolvedJsonForms, resolveSchema} from "../formbuilder";
 import {rankWith, setSchema} from "@jsonforms/core";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import * as subschemas from "./subschemas";
@@ -11,8 +9,12 @@ import {cleanEmptySchema, SchemaTool} from "./SchemaTool";
 import * as _ from 'lodash-es';
 import {cloneEmptyTool} from "../toolCreation";
 import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
+import {schema, uischemaModeBoth, uischemaModeSchema, uischemaModeUi} from "@/tools/ObjectTool";
+import {ControlTool} from "@/lib/tools/controlTool";
+import {UiOptions} from "@/lib";
+import {BuilderModeType} from "../models";
 
-export class ObjectTool extends AbstractTool implements ToolInterface {
+export class ObjectTool extends ControlTool {
 
     importer = () => toolComponent;
     tester = rankWith(1, (uischema, schema, context) => {
@@ -23,74 +25,50 @@ export class ObjectTool extends AbstractTool implements ToolInterface {
     constructor(uischemaType: string = 'Control') {
         super(uischemaType);
 
-        this.schema.type ??= 'object'
+        this.schema.type = 'object'
 
         if (undefined === this.schema.properties) {
             this.schema.properties = {}
         }
     }
 
+    availableUiOptions():UiOptions|undefined {
+        return {}
+    }
+
     optionDataPrepare(context: ToolContext): Record<string, any> {
+        const data:any = super.optionDataPrepare(context);
 
-        let uidata = {};
-        const isUischema = 'uischema' === context?.builder;
-        if(isUischema) {
-            uidata = {
-                ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
-                ...subschemas.prepareOptionUiOptions(context, this),
-            }
-        }
-
-        const isParentArray = 'array' === this.edge.schemaParent?.schema?.type;
+        data.schema.additionalProperties = this.schema?.additionalProperties
 
         return {
-            propertyName: this.propertyName,
-            schema: {
-                type: this.schema.type,
-                additionalProperties: this.schema?.additionalProperties,
-            },
+            ...data,
             ...subschemas.prepareOptionDataDefinitions(context, this.schema, this.uischema),
-            ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
-            ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
-            ...uidata,
-            _isUischema:isUischema,
-            _isParentArray:isParentArray,
-            _isProperty: 'object' === this.edge.schemaParent?.schema?.type,
-        } as any;
+        };
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        this.propertyName = data?.propertyName ?? '';
-        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
-        this.schema.additionalProperties = cleanEmptySchema(data.schema.additionalProperties);
+        super.optionDataUpdate(context, data);
 
-        const isUischema = 'uischema' === context?.builder;
+        if(context.isBuilderMode?.schema) {
+            this.schema.additionalProperties = cleanEmptySchema(data.schema.additionalProperties);
 
-        if(isUischema) {
-            subschemas.setOptionDataRule(this.schema, this.uischema, data);
-            subschemas.setOptionDataUiOptions(context, this, data);
+            subschemas.setOptionDataDefinitions(this.schema, this.uischema, data);
         }
-
-        subschemas.setOptionDataValidation(this.schema, this.uischema, data);
-        subschemas.setOptionDataconditional(this.schema, this.uischema, data);
-        subschemas.setOptionDataDefinitions(this.schema, this.uischema, data);
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
 
-        let setSchema = schema;
-        let setUischema = uischema;
+        let uischemas:Record<BuilderModeType, any> = {
+            [BuilderMode.BOTH]:uischemaModeBoth,
+            [BuilderMode.SCHEMA]:uischemaModeSchema,
+            [BuilderMode.UI]:uischemaModeUi,
+        };
 
-        // const parentTool = this.parentTool;
-        // if(parentTool instanceof SchemaTool) {
-        //     setSchema = jsonFormAsSchemaChild.schema as any;
-        //     setUischema = jsonFormAsSchemaChild.uischema;
-        // }
-
-        return {
-            schema: await resolveSchema(setSchema, undefined, this, context),
-            uischema: await resolveSchema(setUischema),
-        } as JsonFormsInterface
+        return createResolvedJsonForms([
+            resolveSchema(schema, undefined, this, context),
+            resolveSchema(uischemas[context.builderMode ?? BuilderMode.BOTH])
+        ]);
     }
 
     toolbarOptions(): Record<string, any> {

@@ -5,7 +5,6 @@ import combinator from '../../../src/lib/tools/schema/combinator.form.json'
 import group from '../../../src/lib/tools/schema/group.form.json'
 import label from '../../../src/lib/tools/schema/label.form.json'
 import layout from '../../../src/lib/tools/schema/layout.form.json'
-import object from '../../../src/lib/tools/schema/object.form.json'
 import constPartJsonForms from '../../../src/lib/tools/schema/subschemas/const.form.json'
 import stylesPartJsonForms from '../../../src/lib/tools/schema/subschemas/styles.form.json'
 import validationSubschema from '../../../src/lib/tools/schema/subschemas/validation.form.json'
@@ -17,7 +16,6 @@ const examples = [
   {name:"combinator", schema:combinator},
   {name:"group", schema:group},
   {name:"layout", schema:layout},
-  {name:"object", schema:object},
 
     //:TODO
   // {name:"array", schema:array},

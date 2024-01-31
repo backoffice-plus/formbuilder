@@ -1,0 +1,93 @@
+{
+  "type": "object",
+  "definitions": {
+    "additionalPropertiesFalse": {
+      "type": "boolean",
+      "title": "by boolean"
+    },
+    "additionalPropertiesSingleType": {
+      "type": "object",
+      "title": "by type",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "string",
+            "number",
+            "integer",
+            "boolean",
+            "array"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ]
+    }
+  },
+
+  "properties": {
+    "propertyName": {
+      "type": "string"
+    },
+    "required": {
+      "type": "boolean"
+    },
+
+    "schema": {
+      "type": "object",
+      "properties": {
+        "type": {"type": "string"},
+
+        "additionalProperties": {
+          "anyOf": [
+            {"$ref": "#/definitions/additionalPropertiesFalse"},
+            { "$ref": "#/definitions/additionalPropertiesSingleType" }
+          ]
+        }
+      }
+    },
+
+    "rule": {
+      "$ref": "rule.schema#/properties/rule"
+    },
+    "labelAndI18n": {
+      "$ref":"labelAndI18n.schema#/properties/labelAndI18n"
+    },
+    "uiOptions": {
+      "$ref": "uiOptions.schema#/properties/uiOptions"
+    },
+    "validation": {
+      "$ref": "validation.schema#/properties/validation"
+    },
+    "conditional": {
+      "$ref": "conditional.schema#/properties/conditional"
+    },
+    "definitions": {
+      "$ref": "definitions.schema#/properties/definitions"
+    },
+
+    "_isUischema": { "type": "boolean" },
+    "_isProperty": {"type":"boolean"}
+  },
+
+
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "_isProperty": {"const": true}
+        }
+      },
+      "then":{
+        "properties": {
+          "propertyName": {
+            "pattern": "^[a-z]"
+          }
+        },
+        "required": ["propertyName"]
+      }
+    }
+  ]
+
+}

@@ -1,0 +1,71 @@
+{
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Base",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "scope": "#/properties/propertyName",
+              "type": "Control",
+              "rule": {
+                "effect": "HIDE",
+                "condition": {
+                  "scope": "#/properties/_isProperty",
+                  "schema": { "const": false}
+                }
+              }
+            }
+          ]
+        },
+
+
+        {
+          "type": "Group",
+          "label": "Additional Properties",
+          "elements": [
+            {
+              "scope": "#/properties/schema/properties/additionalProperties",
+              "type": "Formbuilder",
+              "options": {
+                "schemaOnly": true,
+                "baseTool": "schema",
+                "baseToolProps": {
+                  "prefixLabel": "Additional Properties"
+                }
+              }
+            }
+          ],
+          "options": {
+            "collapsible": true
+          }
+        }
+      ]
+    },
+
+    {
+      "type": "Category",
+      "label": "Definitions",
+      "elements": [
+        { "$ref": "definitions.uischema" }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Validation",
+      "elements": [
+        { "$ref": "validation.uischema" }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Conditional",
+      "elements": [
+        {"$ref": "conditional.uischema" }
+      ]
+    }
+  ]
+}
