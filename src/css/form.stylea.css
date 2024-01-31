@@ -196,6 +196,10 @@
 {
     @apply gap-2
 }
+.styleA .vertical-layout .vertical-layout-item:empty,
+.styleA .horizontal-layout .horizontal-layout-item:empty {
+    display: none;
+}
 
 /**
  * custom class "horizontalFirstChildOneQuarter"
