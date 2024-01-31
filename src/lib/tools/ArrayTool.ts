@@ -2,21 +2,21 @@ import {rankWith} from '@jsonforms/core';
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import toolComponent from "../../components/tools/array.component.vue";
-import {schema, uischema} from "./schema/array.schema";
-import jsonFormsSchema from "./schema/array.schemaBuilder.form.json";
-import jsonFormsAsSchemaChild from "./schema/array.asSchemaChild.form.json";
-import {resolveSchema} from "../formbuilder";
+import {BuilderMode, createResolvedJsonForms, resolveSchema} from "../formbuilder";
 import * as _ from 'lodash-es';
 import {AbstractTool} from "./AbstractTool";
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
-import jsonFormAsSchemaChild from "./schema/object.asSchemaChild.form.json";
+import {schema, uischemaModeBoth, uischemaModeSchema, uischemaModeUi} from "@/tools/ArrayTool";
+import {BuilderModeType} from "../models";
+import {ControlTool} from "@/lib/tools/controlTool";
+import {UiOptions} from "@/lib";
 
-export class ArrayTool extends AbstractTool implements ToolInterface {
+export class ArrayTool extends ControlTool {
 
     /** @deprecated **/
     isInlineType: boolean = false;
-    isSchemaItem: boolean = false; //items is not array
+    //isSchemaItem: boolean = false; //items is not array
 
     importer = () => toolComponent;
     //tester = rankWith(3, or(isObjectArrayControl, isPrimitiveArrayControl));//not working for $ref (we want unresolved schema)
@@ -25,7 +25,7 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
     constructor(uischemaType: string = 'Control') {
         super(uischemaType);
 
-        this.schema.type ??= 'array';
+        this.schema.type = 'array';
 
         if (undefined === this.schema.items) {
             //this.schema.items = {type: 'object'} //:INFO do not set type (it breaks $ref)
@@ -33,59 +33,16 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         }
     }
 
-    optionDataPrepare(context: ToolContext): Record<string, any> {
-
-        // let items = {...this.schema?.items};
-        //
-        // const hasRef = undefined !== items?.$ref
-
-        /** @ts-ignore **/
-        const itemsType = this.schema?.items?.type;
-        /** @ts-ignore **/
-        const isRef = '$ref' in this.schema?.items;
-        const asSchema = undefined !== itemsType;
-
-        /**
-         * Array of Strings
-         */
-        /** @ts-ignore **/
-        //let couldBeInlineType = false;
-        // if(itemsType) {
-        //     couldBeInlineType = itemsType && ['string', 'number', 'integer', 'bool'].includes(itemsType)
-        //
-        //     //init from existing schema (:TODO find better solution)
-        //     this.isInlineType = couldBeInlineType;
-        // }
-
-        // const canHaveChilds = true;//:TODO need new "canHaveObject"
-        //
-        // if(canHaveChilds && !hasItemType && !hasRef) {
-        //     if(undefined === items) {
-        //         items = {};
-        //     }
-        //     items.type = this.schema.items?.type ?? 'object'
-        // }
-        //
-        // if (hasRef) {
-        //     items._reference = items.$ref;
-        //     delete items.$ref;//must be delete otherwise oneOf will not work
-        // }
-
-
-        //convert option.detail.elements
-        const options = {...this.uischema?.options ?? {}}
-        // if(options?.detail?.elements) {
-        //     options.detail.elements = JSON.stringify(options.detail.elements);
-        // }
-
-        /**
-         * :BUG https://github.com/eclipsesource/jsonforms/issues/1917
-         * @see https://jsonforms.io/docs/uischema/controls/#label-for-array-elements-elementlabelprop
-         * prefer elementLabelProp over childLabelProp
-         */
-        if('childLabelProp' in options) {
-            options.elementLabelProp = options.childLabelProp;
+    availableUiOptions():UiOptions|undefined {
+        return {
+            elementLabelProp:{"type":"string"}
         }
+    }
+
+    optionDataPrepare(context: ToolContext): Record<string, any> {
+        const data:any = super.optionDataPrepare(context);
+
+        //const isRef = '$ref' in (this.schema?.items as JsonSchema);
 
         /**
          * add readOnly Schema for "options.detail"
@@ -97,38 +54,17 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         }
             //:TODO: disable asInlineType if tool has no childs!
 
-        const data = {
-            propertyName: this.propertyName,
-            schema: {
-                type: this.schema.type,
-            },
-
-            //asInlineType: couldBeInlineType,
-            isRef: isRef,
-            options: options,
-            _asSchema: asSchema,
-
-            _isUischema: 'uischema' === context.builder,
-            _isSchemaReadOnly: context.schemaReadOnly,
-            _readOnlySchema: readOnlySchema,
-            _isProperty: 'object' === this.edge.schemaParent?.schema?.type,
-        } as any;
-
-
-        _.merge(
-            data,
-            subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
-            subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
-            subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
-            subschemas.prepareOptionUiOptions(context, this),
-        )
-
-        return data;
+        return {
+            ...data,
+            ...{
+               //isRef: isRef,
+                _readOnlySchema: readOnlySchema,
+            }
+        }
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        this.propertyName = data?.propertyName ?? '';
-        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
+        super.optionDataUpdate(context, data);
 
         //this.isInlineType = data?.asInlineType;
 
@@ -156,38 +92,23 @@ export class ArrayTool extends AbstractTool implements ToolInterface {
         //     console.log("arrayTOol optionDataUpdate",{isRef,childIsRef},firstChild)
         // }
 
-        this.uischema.options = {...data.options ?? {}};
-
-        subschemas.setOptionDataValidation(this.schema, this.uischema, data);
-        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
-        subschemas.setOptionDataRule(this.schema, this.uischema, data);
-        subschemas.setOptionDataUiOptions(context, this, data);
 
         //this.isRequired = data.required;
-        this.isSchemaItem = data._asSchema;
+        //this.isSchemaItem = data._asSchema;
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
 
-        let currentJsonSchema = {
-            schema: schema,
-            uischema: uischema,
-        }
-        if('schema' === context.builder) {
-            currentJsonSchema = jsonFormsSchema;
-        }
-
-        // const parentTool = this.parentTool;
-        // if(parentTool instanceof SchemaTool) {
-        //     currentJsonSchema = jsonFormsAsSchemaChild;
-        // }
-
-        const jf:JsonFormsInterface = {
-            schema: await resolveSchema(currentJsonSchema.schema, undefined, this, context),
-            uischema: await resolveSchema(currentJsonSchema.uischema),
+        let uischemas:Record<BuilderModeType, any> = {
+            [BuilderMode.BOTH]:uischemaModeBoth,
+            [BuilderMode.SCHEMA]:uischemaModeSchema,
+            [BuilderMode.UI]:uischemaModeUi,
         };
 
-        return jf
+        return createResolvedJsonForms([
+            resolveSchema(schema, undefined, this, context),
+            resolveSchema(uischemas[context.builderMode ?? BuilderMode.BOTH])
+        ]);
     }
 
     clone(): ToolInterface {

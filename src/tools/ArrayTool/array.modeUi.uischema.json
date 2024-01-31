@@ -1,0 +1,62 @@
+{
+
+  "type": "Categorization",
+  "elements": [
+
+    {
+      "type": "Category",
+      "label": "Base",
+      "elements": [
+        {
+          "type": "VerticalLayout",
+          "elements": [
+
+            {
+              "type": "Group",
+              "label": "Label & Description",
+              "elements": [
+                {"$ref":"labelAndI18n.ui.uischema" }
+              ]
+            },
+
+            {
+              "scope": "#/properties/uiOptions/properties/options/properties/elementLabelProp",
+              "type": "Control"
+            }
+          ]
+        }
+      ]
+    },
+
+
+    {
+      "type": "Category",
+      "label": "Detail",
+      "elements": [
+        {
+          "scope": "#/properties/uiOptions/properties/detail",
+          "type": "Formbuilder",
+          "options": {
+            "schemaReadOnly": true,
+            "schemaScope": "#/properties/_readOnlySchema"
+          }
+        }
+      ]
+    },
+
+    {
+      "type": "Category",
+      "label": "Option & Styles",
+      "elements": [
+        {"$ref": "uiOptions.uischema" }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Rule",
+      "elements": [
+        { "$ref": "rule.uischema"  }
+      ]
+    }
+  ]
+}
