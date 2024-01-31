@@ -11,7 +11,6 @@ import reference from '../../../src/lib/tools/schema/reference.form.json'
 import constPartJsonForms from '../../../src/lib/tools/schema/subschemas/const.form.json'
 import stylesPartJsonForms from '../../../src/lib/tools/schema/subschemas/styles.form.json'
 import validationSubschema from '../../../src/lib/tools/schema/subschemas/validation.form.json'
-import labelSubschema from '../../../src/lib/tools/schema/subschemas/label.form.json'
 import ruleSubschema from '../../../src/lib/tools/schema/subschemas/rule.form.json'
 
 const examples = [
@@ -20,7 +19,6 @@ const examples = [
   {name:"combinator", schema:combinator},
   {name:"const", schema:constJsonForms},
   {name:"group", schema:group},
-  {name:"label", schema:label},
   {name:"layout", schema:layout},
   {name:"object", schema:object},
   {name:"reference", schema:reference},
@@ -79,15 +77,6 @@ registerExamples([
   }
 ]);
 
-registerExamples([
-  {
-    name: 'fb.option.subschema.label',
-    label: 'FormBuilder - Option - Subschema: Label',
-    schema: labelSubschema.schema,
-    uischema: labelSubschema.uischema,
-    data: labelSubschema.data,
-  }
-]);
 
 registerExamples([
   {

@@ -1,0 +1,140 @@
+{
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Base",
+      "elements": [
+        {
+          "type": "VerticalLayout",
+          "elements": [
+
+            {
+              "type": "Group",
+              "label": "Label & Description",
+              "elements": [
+                {
+                  "type": "VerticalLayout",
+                  "elements": [
+                    {
+                      "$ref": "labelAndI18n.ui.uischema"
+                    }
+                  ]
+                }
+              ]
+            },
+
+            {
+              "type": "Group",
+              "label": "Form Type",
+              "elements": [
+
+                {
+                  "type": "VerticalLayout",
+                  "elements": [
+                    {
+                      "scope": "#/properties/uiOptions/properties/options/properties/multi",
+                      "label": "as Textarea",
+                      "type": "Control",
+                      "rule": {
+                        "effect": "SHOW",
+                        "condition": {
+                          "type": "AND",
+                          "conditions": [
+                            {
+                              "scope": "#/properties/schema/properties/type",
+                              "schema": {
+                                "const": "string"
+                              }
+                            },
+                            {
+                              "scope": "#/properties/schema/properties/format",
+                              "schema": {
+                                "not": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "scope": "#/properties/uiOptions/properties/options/properties/toggle",
+                      "label": "as Toggle",
+                      "type": "Control",
+                      "options": {
+                        "toggle": true
+                      },
+                      "rule": {
+                        "effect": "SHOW",
+                        "condition": {
+                          "scope": "#/properties/schema/properties/type",
+                          "schema": {
+                            "const": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "scope": "#/properties/uiOptions/properties/options/properties/placeholder",
+                  "type": "Control",
+                  "rule": {
+                    "effect": "SHOW",
+                    "condition": {
+                      "scope": "#/properties/_isUischema",
+                      "schema": {
+                        "const": true
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "scope": "#/properties/uiOptions/properties/options/properties/readonly",
+                  "type": "Control"
+                },
+
+                {
+                  "scope": "#/properties/uiOptions/properties/options/properties/showUnfocusedDescription",
+                  "type": "Control"
+                }
+
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "Category",
+      "label": "Options & Styles",
+      "elements": [
+        {
+          "$ref": "uiOptions.uischema"
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Rule",
+      "elements": [
+        {
+          "$ref": "rule.uischema"
+        }
+      ]
+    }
+  ]
+}

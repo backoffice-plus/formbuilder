@@ -8,6 +8,11 @@ import type {ToolInterface, JsonFormsInterface, ToolContext} from "./models";
 import type {JsonSchema,  Scoped, UISchemaElement, ControlElement, Layout, Translator} from "@jsonforms/core";
 
 
+export const BuilderMode = {
+    SCHEMA: 1,  //builder=schema || schemaOnly
+    UI: 2,      //builder=uischema && schemaReadOnly
+    BOTH: 3,    //builder=uischema
+} as const;
 
 /** @deprecated **/
 export const updatePropertyNameAndScope = (propertyName: string | undefined, tool: ToolInterface): string => {

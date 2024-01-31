@@ -9,6 +9,11 @@
         "type": "string",
         "pattern": "^[a-z]"
       },
+
+      "labelAndI18n": {
+        "$ref": "labelAndI18n.schema#/properties/labelAndI18n"
+      },
+
       "required": {
         "type": "boolean"
       }
@@ -48,6 +53,17 @@
                     "$ref": "const.uischema"
                   }
                 ]
+              }
+            ]
+          },
+
+          {
+            "type": "Group",
+            "label": "Label & Description",
+            "elements": [
+              {
+                "type":"VerticalLayout",
+                "elements": [{ "$ref":"labelAndI18n.schema.uischema" }]
               }
             ]
           },

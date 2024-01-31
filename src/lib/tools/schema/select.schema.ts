@@ -179,7 +179,7 @@ export const uischema = {
                             elements: [
                                 {
                                     type:'VerticalLayout',
-                                    elements: [{ $ref:'labelAndI18n.uischema'}],
+                                    elements: [{ $ref:'labelAndI18n.both.uischema'}],
                                     rule: {
                                         effect: "SHOW",
                                         condition: {
@@ -191,7 +191,7 @@ export const uischema = {
 
                                 {
                                     type:'VerticalLayout',
-                                    elements: [{ $ref:'labelAndI18n.descriptionOnly.uischema' }],
+                                    elements: [{ $ref:'labelAndI18n.schema.uischema' }],
                                     rule: {
                                         effect: "SHOW",
                                         condition: {

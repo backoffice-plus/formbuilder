@@ -1,0 +1,138 @@
+{
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Base",
+      "elements": [
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "scope": "#/properties/propertyName",
+                  "type": "Control"
+                }
+              ],
+              "rule": {
+                "effect": "SHOW",
+                "condition": {
+                  "scope": "#/properties/_isProperty",
+                  "schema": {
+                    "const": true
+                  }
+                }
+              }
+            },
+            {
+              "type": "Group",
+              "label": "Form Type",
+              "elements": [
+                {
+                  "type": "HorizontalLayout",
+                  "elements": [
+                    {
+                      "scope": "#/properties/schema/properties/type",
+                      "type": "Control"
+                    },
+                    {
+                      "scope": "#/properties/schema/properties/format",
+                      "type": "Control",
+                      "rule": {
+                        "effect": "ENABLE",
+                        "condition": {
+                          "scope": "#/properties/schema/properties/type",
+                          "schema": {
+                            "const": "string"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "HorizontalLayout",
+                  "elements": [
+                    {
+                      "scope": "#/properties/schema/properties/contentMediaType",
+                      "type": "Control"
+                    },
+                    {
+                      "scope": "#/properties/schema/properties/contentEncoding",
+                      "type": "Control"
+                    }
+                  ],
+                  "rule": {
+                    "effect": "ENABLE",
+                    "condition": {
+                      "scope": "#/properties/schema/properties/type",
+                      "schema": {
+                        "const": "string"
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Group",
+              "label": "Label & Description",
+              "elements": [
+                {
+                  "$ref": "labelAndI18n.schema.uischema"
+                }
+              ]
+            },
+            {
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "scope": "#/properties/required",
+                  "type": "Control",
+                  "rule": {
+                    "effect": "SHOW",
+                    "condition": {
+                      "scope": "#/properties/_isProperty",
+                      "schema": {
+                        "const": true
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Validation",
+      "elements": [
+        {
+          "$ref": "validation.uischema"
+        }
+      ],
+      "rule": {
+        "effect": "DISABLE",
+        "condition": {
+          "scope": "#/properties/schema/properties/type",
+          "schema": {
+            "enum": ["boolean"]
+          }
+        }
+      }
+    },
+    {
+      "type": "Category",
+      "label": "Conditional",
+      "elements": [
+        {
+          "$ref": "conditional.uischema"
+        }
+      ]
+    }
+  ]
+}

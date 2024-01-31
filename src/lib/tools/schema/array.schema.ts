@@ -111,7 +111,7 @@ export const uischema = {
                             label: "Label & Description",
                             elements: [
                                 {
-                                    $ref:'labelAndI18n.noDescription.uischema'
+                                    $ref:'labelAndI18n.both.uischema'
                                 },
                             ]
                         },

@@ -13,6 +13,7 @@ import type {ToolEdge} from "./ToolEdge";
 import {ModalControl} from "@/lib/useDialog";
 import type {JsonSchema7} from "@jsonforms/core/src/models/jsonSchema7";
 import type {UiOptions} from "@/lib/ToolFinder";
+import {BuilderMode} from "@/lib/formbuilder";
 
 export const scalarTypes = ['string', 'number', 'integer', 'boolean', 'null'];
 
@@ -53,14 +54,20 @@ export interface JsonSchemaDraft07 extends JsonSchema7 {
     contentEncoding?:string
 }
 
+export type BuilderType = "schema" | "uischema"; //current baseTool is a schemaTool or a uiSchemaTool
+export type BuilderModeType = typeof BuilderMode.SCHEMA | typeof BuilderMode.UI | typeof BuilderMode.BOTH;
+
 export interface ToolContext {
     fb?: any;
-    builder?: string;
+    builder?: BuilderType;
     schemaOnly?: boolean;
     schemaReadOnly?: boolean;
     rootSchema?: JsonSchema,
     baseSchemaTool?: ToolInterface,
     modalControl?: ModalControl,
+
+    builderMode?: BuilderModeType;
+    isBuilderMode?:Record<BuilderType, boolean>,
 
     /** @deprecated - Is this needed anywhere?? */
     parentMethod?:string,

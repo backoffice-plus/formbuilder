@@ -57,7 +57,7 @@
                     "elements": [
                       {
                         "type": "LayoutRef",
-                        "$ref": "labelAndI18n.uischema"
+                        "$ref": "labelAndI18n.both.uischema"
                       }
                     ],
                     "rule": {
@@ -75,7 +75,7 @@
                     "elements": [
                       {
                         "type": "LayoutRef",
-                        "$ref": "labelAndI18n.descriptionOnly.uischema"
+                        "$ref": "labelAndI18n.schema.uischema"
                       }
                     ],
                     "rule": {

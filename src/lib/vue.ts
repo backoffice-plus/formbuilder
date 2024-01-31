@@ -2,7 +2,8 @@ import type {ComponentInternalInstance} from "@vue/runtime-core";
 import {getCurrentInstance} from "vue";
 import type {Ref} from "vue";
 import type {ToolFinder} from "./ToolFinder";
-import type {ToolInterface, ToolContext} from "./models";
+import type {ToolInterface, ToolContext, BuilderType, BuilderModeType} from "./models";
+import {BuilderMode} from "@/lib/formbuilder";
 
 export const getFormbuilder = () : ComponentInternalInstance|null => {
     let instance = getCurrentInstance();
@@ -34,11 +35,30 @@ export const onDragGetTool = (e:any) : ToolInterface => {
 }
 
 export const createContext = (fb:any):ToolContext => {
+    const builderType:BuilderType = fb?.exposed?.showBuilder.value;
+    const schemaOnly= !!fb?.props?.schemaOnly;
+    const schemaReadOnly= !!fb?.props?.schemaReadOnly;
+
+    let builderMode:BuilderModeType = BuilderMode.SCHEMA;
+    if('uischema' === builderType) {
+        builderMode = BuilderMode.UI;
+        if(!schemaReadOnly) {
+            builderMode = BuilderMode.BOTH
+        }
+    }
+
+    const isBuilderMode:Record<BuilderType, boolean> = {
+        schema: 0 !== (builderMode & BuilderMode.SCHEMA),
+        uischema: 0 !== (builderMode & BuilderMode.UI),
+    }
+
     return {
         fb: fb,
-        builder: fb?.exposed?.showBuilder.value,
-        schemaOnly: !!fb?.props?.schemaOnly,
-        schemaReadOnly: !!fb?.props?.schemaReadOnly,
+        builderMode,
+        isBuilderMode,
+        builder: builderType,
+        schemaOnly: schemaOnly,
+        schemaReadOnly: schemaReadOnly,
         rootSchema: fb?.exposed?.rootSchema?.value,
         baseSchemaTool: fb?.exposed?.baseSchemaTool?.value,
     } as ToolContext

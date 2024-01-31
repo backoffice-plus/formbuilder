@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "properties": {
+    "labelAndI18n": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "like label, but stored at schema"
+        },
+        "description": {
+          "type": "string"
+        },
+
+        "label": {
+          "type": "string"
+        },
+        "i18n": {
+          "type": "string",
+          "title": "i18n",
+          "description": "alternative lookup key for translation catalogue"
+        },
+        "showUnfocusedDescription": {
+          "type": "boolean"
+        },
+
+        "_type": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

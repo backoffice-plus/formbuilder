@@ -1,7 +1,8 @@
 import validationSubschema from "../schema/subschemas/validation.form.json";
-import labelSubschema from "../schema/subschemas/label.form.json";
-import labelDescOnlySubschema from "../schema/subschemas/label.descriptionOnly.form.json";
-import labelNoDescSubschema from "../schema/subschemas/label.noDescription.form.json";
+import labelSchema from "../schema/subschemas/label.schema.json";
+import labelModeBoth from "../schema/subschemas/label.modeBoth.form.json";
+import labelModeSchema from "../schema/subschemas/label.modeSchema.form.json";
+import labelModeUi from "../schema/subschemas/label.modeUi.form.json";
 //import stylesSubschema from "../schema/subschemas/styles.form.json";
 import constSubschema from "../schema/subschemas/const.form.json";
 import ruleSubschema from "../schema/subschemas/rule.form.json";
@@ -14,7 +15,7 @@ import draft07 from '../schema/drafts/draft07.schema.json'
 import jfUiRule from '../schema/drafts/jsonforms_ui_rule.schema.json'
 import {uioptionsSchemaResolver} from "@/lib/tools/subschemas/uioptions";
 
-export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './label'
+export { prepareOptionData as prepareOptionDataLabel, setOptionData as setOptionDataLabel } from './labelAndI18n'
 export { prepareOptionData as prepareOptionDataValidation, setOptionData as setOptionDataValidation } from './validation'
 export { prepareOptionData as prepareOptionDataRule, setOptionData as setOptionDataRule } from './rule'
 //export { prepareOptionData as prepareOptionDataStyles, setOptionData as setOptionDataStyles } from './styles'
@@ -34,10 +35,12 @@ export const subschemaMap = {
     'validation.uischema': validationSubschema.uischema,
     'rule.schema': ruleSubschema.schema,
     'rule.uischema': ruleSubschema.uischema,
-    'labelAndI18n.schema': labelSubschema.schema,
-    'labelAndI18n.uischema': labelSubschema.uischema,
-    'labelAndI18n.descriptionOnly.uischema': labelDescOnlySubschema.uischema,
-    'labelAndI18n.noDescription.uischema': labelNoDescSubschema.uischema,
+
+    'labelAndI18n.schema': labelSchema,
+    'labelAndI18n.both.uischema': labelModeBoth.uischema,
+    'labelAndI18n.schema.uischema': labelModeSchema.uischema,
+    'labelAndI18n.ui.uischema': labelModeUi.uischema,
+
     // 'styles.schema': stylesSubschema.schema,
     // 'styles.uischema': stylesSubschema.uischema,
     'const.schema': constSubschema.schema,

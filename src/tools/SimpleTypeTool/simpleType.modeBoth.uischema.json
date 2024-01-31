@@ -1,0 +1,264 @@
+{
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Base",
+      "elements": [
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "scope": "#/properties/propertyName",
+                  "type": "Control"
+                }
+              ],
+              "rule": {
+                "effect": "SHOW",
+                "condition": {
+                  "scope": "#/properties/_isProperty",
+                  "schema": {
+                    "const": true
+                  }
+                }
+              }
+            },
+            {
+              "type": "Group",
+              "label": "Form Type",
+              "elements": [
+                {
+                  "type": "HorizontalLayout",
+                  "elements": [
+                    {
+                      "scope": "#/properties/schema/properties/type",
+                      "type": "Control"
+                    },
+                    {
+                      "scope": "#/properties/schema/properties/format",
+                      "type": "Control",
+                      "rule": {
+                        "effect": "ENABLE",
+                        "condition": {
+                          "scope": "#/properties/schema/properties/type",
+                          "schema": {
+                            "const": "string"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "HorizontalLayout",
+                  "elements": [
+                    {
+                      "scope": "#/properties/schema/properties/contentMediaType",
+                      "type": "Control"
+                    },
+                    {
+                      "scope": "#/properties/schema/properties/contentEncoding",
+                      "type": "Control"
+                    }
+                  ],
+                  "rule": {
+                    "effect": "ENABLE",
+                    "condition": {
+                      "scope": "#/properties/schema/properties/type",
+                      "schema": {
+                        "const": "string"
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "VerticalLayout",
+                  "elements": [
+                    {
+                      "scope": "#/properties/uiOptions/properties/options/properties/multi",
+                      "label": "as Textarea",
+                      "type": "Control",
+                      "rule": {
+                        "effect": "SHOW",
+                        "condition": {
+                          "type": "AND",
+                          "conditions": [
+                            {
+                              "scope": "#/properties/schema/properties/type",
+                              "schema": {
+                                "const": "string"
+                              }
+                            },
+                            {
+                              "scope": "#/properties/format",
+                              "schema": {
+                                "not": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "scope": "#/properties/uiOptions/properties/options/properties/toggle",
+                      "label": "as Toggle",
+                      "type": "Control",
+                      "options": {
+                        "toggle": true
+                      },
+                      "rule": {
+                        "effect": "SHOW",
+                        "condition": {
+                          "scope": "#/properties/schema/properties/type",
+                          "schema": {
+                            "const": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "rule": {
+                    "effect": "SHOW",
+                    "condition": {
+                      "type": "AND",
+                      "conditions": [
+                        {
+                          "scope": "#/properties/_isUischema",
+                          "schema": {
+                            "const": true
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "Group",
+              "label": "Label & Description",
+              "elements": [
+                {
+                  "type": "VerticalLayout",
+                  "elements": [
+                    {
+                      "$ref": "labelAndI18n.both.uischema"
+                    }
+                  ],
+                  "rule": {
+                    "effect": "SHOW",
+                    "condition": {
+                      "scope": "#/properties/_isUischema",
+                      "schema": {
+                        "const": true
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "scope": "#/properties/uiOptions/properties/options/properties/placeholder",
+                  "type": "Control",
+                  "rule": {
+                    "effect": "SHOW",
+                    "condition": {
+                      "scope": "#/properties/_isUischema",
+                      "schema": {
+                        "const": true
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "HorizontalLayout",
+              "elements": [
+                {
+                  "scope": "#/properties/required",
+                  "type": "Control",
+                  "rule": {
+                    "effect": "SHOW",
+                    "condition": {
+                      "scope": "#/properties/_isProperty",
+                      "schema": {
+                        "const": true
+                      }
+                    }
+                  }
+                },
+                {
+                  "scope": "#/properties/uiOptions/properties/options/properties/readonly",
+                  "type": "Control",
+                  "rule": {
+                    "effect": "SHOW",
+                    "condition": {
+                      "scope": "#/properties/_isUischema",
+                      "schema": {
+                        "const": true
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Validation",
+      "elements": [
+        {
+          "$ref": "validation.uischema"
+        }
+      ],
+      "rule": {
+        "effect": "DISABLE",
+        "condition": {
+          "scope": "#/properties/schema/properties/type",
+          "schema": {
+            "enum": ["boolean"]
+          }
+        }
+      }
+    },
+    {
+      "type": "Category",
+      "label": "Conditional",
+      "elements": [
+        {
+          "$ref": "conditional.uischema"
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Options & Styles",
+      "elements": [
+        {
+          "$ref": "uiOptions.uischema"
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Rule",
+      "elements": [
+        {
+          "$ref": "rule.uischema"
+        }
+      ]
+    }
+  ]
+}

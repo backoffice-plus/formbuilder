@@ -1,0 +1,95 @@
+{
+  "type": "object",
+
+  "definitions": {
+
+
+    "type": {
+      "$comment" : "@see http://json-schema.org/draft-07/schema#/definitions/simpleTypes",
+      "enum": ["string", "number", "integer", "boolean"]
+    },
+
+    "format": {
+      "$comment" : "@see https://json-schema.org/understanding-json-schema/reference/string.html?highlight=format#built-in-formats",
+      "enum": [
+        "date", "time", "date-time", "duration",
+        "email","password",
+        "uuid",
+        "regex",
+        "hostname", "ipv4", "ipv6",
+        "uri","uri-reference","iri","iri-reference",
+        "binary"
+      ]
+    }
+  },
+
+
+  "properties": {
+    "validation": {
+      "$ref":"validation.schema#/properties/validation"
+    },
+    "conditional": {
+      "$ref": "conditional.schema#/properties/conditional"
+    },
+    "rule": {
+      "$ref":"rule.schema#/properties/rule"
+    },
+    "labelAndI18n": {
+      "$ref":"labelAndI18n.schema#/properties/labelAndI18n"
+    },
+    "uiOptions": {
+      "$ref":"uiOptions.schema#/properties/uiOptions"
+    },
+
+    "schema": {
+      "type": "object",
+      "properties": {
+
+        "type": {  "$ref": "#/definitions/type" },
+        "format": {  "$ref": "#/definitions/format" },
+
+        "contentMediaType": {
+          "type": "string",
+          "description": "like: 'image/*', 'image/jpeg' or 'application/pdf'"
+        },
+
+        "contentEncoding": {
+          "$comment" : "[\"7bit\", \"8bit\", \"binary\", \"quoted-printable\", \"base16\", \"base32\", \"base64\"] there are really only two options useful for modern usage",
+          "type": "string",
+          "enum": ["base64"]
+        }
+      }
+    },
+
+
+    "propertyName": {
+      "type": "string",
+      "pattern": "^[a-z]"
+    },
+
+    "required": {
+      "type": "boolean"
+    },
+
+    "_isUischema": {"type":"boolean"},
+    "_isSchemaOnly": {"type":"boolean"},
+    "_isSchemaReadOnly": {"type":"boolean"},
+    "_isProperty": {"type":"boolean"}
+  },
+
+
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "_isProperty": {"const": true}
+        }
+      },
+      "then":{
+        "required": ["propertyName"]
+      }
+    }
+  ]
+
+
+}

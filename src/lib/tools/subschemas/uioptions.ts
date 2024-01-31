@@ -62,7 +62,11 @@ export const setOptionData = (context: ToolContext, tool: ToolInterface, data: R
 
     //clean "default" values from toolfinder.uiOptions
     const toolFinder = context?.fb?.exposed?.toolFinder;
-    const uiOptions = toolFinder?.getUiOptions(tool.uischema?.type)
+    const uiOptions = {
+        ...toolFinder?.getUiOptions(tool.uischema?.type),
+        ...tool?.availableUiOptions()
+    }
+
     if (uiOptions) {
         Object.keys(uiOptions).forEach(name => {
             const schema = uiOptions[name];

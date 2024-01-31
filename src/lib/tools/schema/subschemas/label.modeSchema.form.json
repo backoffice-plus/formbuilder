@@ -1,21 +1,4 @@
 {
-  "schema": {
-    "type": "object",
-    "properties": {
-      "labelAndI18n": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "like label, but stored at schema"
-          },
-          "description": {
-            "type": "string"
-          }
-        }
-      }
-    }
-  },
   "uischema": {
     "type": "VerticalLayout",
     "elements": [

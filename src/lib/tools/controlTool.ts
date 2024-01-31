@@ -1,11 +1,11 @@
 import {isBooleanControl, isNumberControl, isStringControl, or, rankWith} from "@jsonforms/core";
 import type {Categorization, JsonSchema} from "@jsonforms/core";
 import {isIntegerControl} from "@jsonforms/core";
-import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
+import type {JsonFormsInterface, ToolContext, ToolInterface, BuilderModeType} from "../models";
 import {AbstractTool} from "./AbstractTool";
 import formInputByType from "../../components/tools/formInputByType.vue";
-import {schema, uischema,uischemaReadOnly} from "./schema/control.schema";
-import {createResolvedJsonForms, resolveSchema} from "../formbuilder";
+import {schema, uischemaModeBoth, uischemaModeSchema, uischemaModeUi} from "@/tools/SimpleTypeTool";
+import {BuilderMode, createResolvedJsonForms, resolveSchema} from "../formbuilder";
 import * as _ from 'lodash-es';
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
@@ -30,15 +30,25 @@ export class ControlTool extends AbstractTool implements ToolInterface {
              multi: {type:"boolean", default:false},
              toggle: {type:"boolean", default:false},
              placeholder: {type:"string", default:""},
+             showUnfocusedDescription: {type:"boolean", default:false},
          }
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
 
-        let uidata = {};
-        const isUischema = 'uischema' === context?.builder;
-        if(isUischema) {
-            uidata = {
+        let dataSubschemas = {
+            ...subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
+        };
+        if(context.isBuilderMode?.schema) {
+            dataSubschemas = {
+                ...dataSubschemas,
+                ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
+                ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
+            }
+        }
+        if(context.isBuilderMode?.uischema) {
+            dataSubschemas = {
+                ...dataSubschemas,
                 ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
                 ...subschemas.prepareOptionUiOptions(context, this),
             }
@@ -56,10 +66,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
                 contentEncoding: (this.schema as JsonSchemaDraft07).contentEncoding,
             },
 
-            ...subschemas.prepareOptionDataValidation(context, this.schema, this.uischema),
-            ...subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
-            ...subschemas.prepareOptionDataconditional(context, this.schema, this.uischema),
-            ...uidata,
+            ...dataSubschemas,
 
             _isUischema: 'uischema' === context.builder,
             _isSchemaOnly: context.schemaOnly,
@@ -69,8 +76,6 @@ export class ControlTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        const isUischema = 'uischema' === context?.builder;
-
         this.propertyName = data?.propertyName ?? '';
         this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
@@ -80,42 +85,32 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         (this.schema as JsonSchemaDraft07).contentMediaType = data.schema.contentMediaType;
         (this.schema as JsonSchemaDraft07).contentEncoding = data.schema.contentEncoding;
 
-        if(isUischema) {
+        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
+
+        if(context.isBuilderMode?.schema) {
+            subschemas.setOptionDataValidation(this.schema, this.uischema, data);
+            subschemas.setOptionDataconditional(this.schema, this.uischema, data);
+        }
+
+        if(context.isBuilderMode?.uischema) {
             subschemas.setOptionDataRule(this.schema, this.uischema, data);
             subschemas.setOptionDataUiOptions(context, this, data);
         }
-
-        subschemas.setOptionDataValidation(this.schema, this.uischema, data);
-        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
-        subschemas.setOptionDataconditional(this.schema, this.uischema, data);
 
         this.isRequired = data.required;
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
 
-
-        let setSchema = JSON.parse(JSON.stringify(schema)) as JsonSchema|any; //deepClone
-        let setUischema = JSON.parse(JSON.stringify(uischema)) as Categorization; //deepClone
-
-        //:TODO find better solution to show different options for SCHEMA and UISCHEMA
-        // if(context.schemaReadOnly) {
-        //     setUischema = JSON.parse(JSON.stringify(uischemaReadOnly)) as JsonSchema|any; //deepClone
-        // }
-
-        //hide rule in schema/definitions
-        if('uischema' !== context.builder) {
-            setUischema.elements = setUischema.elements.filter(category => 'Rule' !== category.label);
-        }
-
-        // if(context.schemaReadOnly) {
-        //     //setSchema.properties.propertyName.readOnly=true;
-        //     // setSchema.properties.type.readOnly=true;
-        // }
+        let uischemas:Record<BuilderModeType, any> = {
+            [BuilderMode.BOTH]:uischemaModeBoth,
+            [BuilderMode.SCHEMA]:uischemaModeSchema,
+            [BuilderMode.UI]:uischemaModeUi,
+        };
 
         return createResolvedJsonForms([
-            resolveSchema(setSchema, undefined, this, context),
-            resolveSchema(setUischema)
+            resolveSchema(schema, undefined, this, context),
+            resolveSchema(uischemas[context.builderMode ?? BuilderMode.BOTH])
         ]);
     }
 

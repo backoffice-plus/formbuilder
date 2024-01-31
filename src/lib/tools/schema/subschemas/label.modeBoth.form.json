@@ -1,40 +1,4 @@
 {
-  "schema": {
-    "type": "object",
-    "properties": {
-      "labelAndI18n": {
-        "type": "object",
-        "properties": {
-          "_type": {
-            "type": "string"
-          },
-          "label": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string",
-            "description": "like label, but stored at schema"
-          },
-          "description": {
-            "type": "string"
-          },
-          "i18n": {
-            "type": "string",
-            "title": "i18n",
-            "description": "alternative lookup key for translation catalogue"
-          },
-          "options": {
-            "type": "object",
-            "properties": {
-              "showUnfocusedDescription": {
-                "type": "boolean"
-              }
-            }
-          }
-        }
-      }
-    }
-  },
   "uischema": {
     "type": "VerticalLayout",
     "elements": [
@@ -79,7 +43,7 @@
             }
           },
           {
-            "scope": "#/properties/labelAndI18n/properties/options/properties/showUnfocusedDescription",
+            "scope": "#/properties/uiOptions/properties/options/properties/showUnfocusedDescription",
             "type": "Control",
             "rule": {
               "effect": "SHOW",
