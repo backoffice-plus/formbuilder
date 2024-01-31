@@ -1,0 +1,61 @@
+{
+  "type": "object",
+
+  "definitions": {
+    "refString": {
+      "type": "string",
+      "title": "Reference",
+      "description": "#/definitions/NAME"
+    }
+  },
+
+  "properties": {
+
+    "_reference": {
+      "anyOf": [
+        {"$ref":"referenceTool.definitions"},
+        {"$ref":"#/definitions/refString"}
+      ]
+    },
+
+    "rule": {
+      "$ref":"rule.schema#/properties/rule"
+    },
+    "labelAndI18n": {
+      "$ref":"labelAndI18n.schema#/properties/labelAndI18n"
+    },
+    "uiOptions": {
+      "$ref":"uiOptions.schema#/properties/uiOptions"
+    },
+
+
+    "propertyName": {
+      "type": "string",
+      "pattern": "^[a-z]"
+    },
+    "required": {
+      "type": "boolean"
+    },
+
+
+    "_isSchemaOnly": {"type":"boolean"},
+    "_isProperty": {"type":"boolean"}
+  },
+
+  "required": [
+    "_reference"
+  ],
+
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "_isProperty": {"const": true}
+        }
+      },
+      "then":{
+        "required": ["propertyName"]
+      }
+    }
+  ]
+}

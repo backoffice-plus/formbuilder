@@ -1,0 +1,98 @@
+{
+
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Base",
+      "elements": [
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/propertyName",
+              "rule": {
+                "effect": "HIDE",
+                "condition": {
+                  "scope": "#/properties/_isProperty",
+                  "schema": {"const": false}
+                }
+              }
+            }
+          ]
+        },
+
+
+        {
+          "type": "Group",
+          "label": "Reference",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/_reference",
+              "label": "Reference to Definitions"
+            }
+          ]
+        },
+
+
+
+        {
+          "type": "Group",
+          "label": "Label & Description",
+          "elements": [
+            {
+              "type": "VerticalLayout",
+              "elements": [
+                {
+                  "$ref": "labelAndI18n.ui.uischema"
+                }
+              ]
+            }
+          ],
+          "rule": {
+            "effect": "SHOW",
+            "condition": {
+              "scope": "#/properties/_isUischema",
+              "schema": {"const": true}
+            }
+          }
+        },
+
+        {
+          "type": "HorizontalLayout",
+          "elements": [
+            {
+              "scope": "#/properties/required",
+              "type": "Control"
+            }
+          ]
+        }
+      ]
+    },
+
+
+    {
+      "type": "Category",
+      "label": "Options & Styles",
+      "elements": [
+        {
+          "$ref":"uiOptions.uischema"
+        }
+      ]
+    },
+
+
+    {
+      "type": "Category",
+      "label": "Rule",
+      "elements": [
+        {
+          "$ref":"rule.uischema"
+        }
+      ]
+    }
+
+  ]
+}

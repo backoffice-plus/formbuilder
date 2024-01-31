@@ -6,7 +6,6 @@ import group from '../../../src/lib/tools/schema/group.form.json'
 import label from '../../../src/lib/tools/schema/label.form.json'
 import layout from '../../../src/lib/tools/schema/layout.form.json'
 import object from '../../../src/lib/tools/schema/object.form.json'
-import reference from '../../../src/lib/tools/schema/reference.form.json'
 import constPartJsonForms from '../../../src/lib/tools/schema/subschemas/const.form.json'
 import stylesPartJsonForms from '../../../src/lib/tools/schema/subschemas/styles.form.json'
 import validationSubschema from '../../../src/lib/tools/schema/subschemas/validation.form.json'
@@ -19,7 +18,6 @@ const examples = [
   {name:"group", schema:group},
   {name:"layout", schema:layout},
   {name:"object", schema:object},
-  {name:"reference", schema:reference},
 
     //:TODO
   // {name:"array", schema:array},

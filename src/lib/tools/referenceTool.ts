@@ -4,11 +4,14 @@ import {uiTypeIs} from "@jsonforms/core";
 import referenceComp from "../../components/tools/reference.vue";
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
-import jsonForms from "./schema/reference.form.json";
-import {resolveSchema} from "../formbuilder";
+import {BuilderMode, createResolvedJsonForms, resolveSchema} from "../formbuilder";
 import * as subschemas from "@/lib/tools/subschemas";
+import {schema, uischemaModeBoth, uischemaModeSchema, uischemaModeUi} from "@/tools/RefTool";
+import {ControlTool} from "@/lib/tools/controlTool";
+import {UiOptions} from "@/lib";
+import {BuilderModeType} from "../models";
 
-export class ReferenceTool extends AbstractTool implements ToolInterface {
+export class ReferenceTool extends ControlTool {
     importer = () => referenceComp;
     tester = rankWith(1,
         and(
@@ -22,22 +25,19 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
         this.schema.$ref ??= '';
     }
 
-    optionDataPrepare(context: ToolContext): Record<string, any> {
-        let uidata = {};
-        const isUischema = 'uischema' === context?.builder;
-        if(isUischema) {
-            uidata = {
-                ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
-                ...subschemas.prepareOptionUiOptions(context, this),
-            }
+    availableUiOptions():UiOptions|undefined {
+        return {
+            readonly: {type:"boolean", default:false},
+            showUnfocusedDescription: {type:"boolean", default:false},
         }
+    }
 
-        const data = {
-            propertyName: this.propertyName,
-            _isProperty: 'object' === this.edge.schemaParent?.schema?.type,
-            ...uidata
-        } as any;
+    optionDataPrepare(context: ToolContext): Record<string, any> {
 
+        /**
+         * :TODO no need to load schema data (like type, title, etc...) only $ref & uischema stuff
+         */
+        const data:any = super.optionDataPrepare(context);
 
         if (undefined !== this.schema.$ref) {
             data._reference = this.schema.$ref
@@ -47,22 +47,23 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        const isUischema = 'uischema' === context?.builder;
+        /**
+         * :TODO no need to update schema data (like type, title, etc...) only $ref & uischema stuff
+         */
+        super.optionDataUpdate(context, data);
 
-        this.propertyName = data?.propertyName ?? '';
-        this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
-
-        if (undefined !== data._reference) {
-            this.schema.$ref = data._reference;
-        }
-
-        if(isUischema) {
-            subschemas.setOptionDataRule(this.schema, this.uischema, data);
-            subschemas.setOptionDataUiOptions(context, this, data);
-        }
+         this.schema = {
+             $ref: data._reference ?? ''
+         }
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
+        let uischemas:Record<BuilderModeType, any> = {
+            [BuilderMode.BOTH]:uischemaModeBoth,
+            [BuilderMode.SCHEMA]:uischemaModeSchema,
+            [BuilderMode.UI]:uischemaModeUi,
+        };
+
         const definitionResolver = (ref: URI) => {
             if ('referenceTool.definitions' === String(ref)) {
                 const s = context.rootSchema;
@@ -76,10 +77,11 @@ export class ReferenceTool extends AbstractTool implements ToolInterface {
             }
             return undefined;
         }
-        return {
-            schema: await resolveSchema(jsonForms.schema, definitionResolver, this, context),
-            uischema: await resolveSchema(jsonForms.uischema),
-        } as JsonFormsInterface
+
+        return createResolvedJsonForms([
+            resolveSchema(schema, definitionResolver, this, context),
+            resolveSchema(uischemas[context.builderMode ?? BuilderMode.BOTH])
+        ]);
     }
 
     clone(): ToolInterface {
