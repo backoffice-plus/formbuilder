@@ -1,0 +1,53 @@
+{
+  "type": "object",
+
+  "properties": {
+    "const": {
+      "$ref": "const.schema#/properties/const"
+    },
+    "validation": {
+      "$ref":"validation.schema#/properties/validation"
+    },
+    "conditional": {
+      "$ref": "conditional.schema#/properties/conditional"
+    },
+    "rule": {
+      "$ref":"rule.schema#/properties/rule"
+    },
+    "labelAndI18n": {
+      "$ref":"labelAndI18n.schema#/properties/labelAndI18n"
+    },
+    "uiOptions": {
+      "$ref":"uiOptions.schema#/properties/uiOptions"
+    },
+
+    "propertyName": {
+      "type": "string",
+      "pattern": "^[a-z]"
+    },
+    "required": {
+      "type": "boolean"
+    },
+
+
+    "_isSchemaOnly": {"type":"boolean"},
+    "_isProperty": {"type":"boolean"}
+  },
+
+  "required": [
+    "const"
+  ],
+
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "_isProperty": {"const": true}
+        }
+      },
+      "then":{
+        "required": ["propertyName"]
+      }
+    }
+  ]
+}

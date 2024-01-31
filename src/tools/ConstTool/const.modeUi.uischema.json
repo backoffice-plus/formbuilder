@@ -1,0 +1,45 @@
+{
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Base",
+      "elements": [
+        {
+          "type": "VerticalLayout",
+          "elements": [
+            {
+              "type": "Group",
+              "label": "Label & Description",
+              "elements": [
+                {
+                  "$ref": "labelAndI18n.ui.uischema"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "Category",
+      "label": "Options & Styles",
+      "elements": [
+        {
+          "$ref":"uiOptions.uischema"
+        }
+      ]
+    },
+
+    {
+      "type": "Category",
+      "label": "Rule",
+      "elements": [
+        {
+          "$ref": "rule.uischema"
+        }
+      ]
+    }
+  ]
+}

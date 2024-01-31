@@ -1,7 +1,5 @@
 import type {JsonFormsInterface, ToolContext, ToolInterface} from "../models";
-import {resolveSchema} from "../formbuilder";
-import jsonForms from "./schema/const.form.json";
-import jsonFormsSchema from "./schema/const.schemaBuilder.form.json";
+import {BuilderMode, createResolvedJsonForms, resolveSchema} from "../formbuilder";
 import constComponent from "../../components/tools/const.vue";
 import {rankWith} from "@jsonforms/core";
 import type {TesterContext} from "@jsonforms/core";
@@ -10,6 +8,9 @@ import {ControlTool} from "./controlTool";
 import * as _ from 'lodash-es';
 import * as subschemas from "./subschemas";
 import {SchemaTool} from "./SchemaTool";
+import {UiOptions} from "@/lib";
+import {schema, uischemaModeBoth, uischemaModeSchema, uischemaModeUi} from "@/tools/ConstTool";
+import {BuilderModeType} from "../models";
 
 export class ConstTool extends ControlTool {
 
@@ -21,6 +22,12 @@ export class ConstTool extends ControlTool {
 
         if(!('const' in this.schema)) {
             this.schema.const = '';//undefined;
+        }
+    }
+    availableUiOptions():UiOptions|undefined {
+        return {
+            readonly: {type:"boolean", default:false},
+            showUnfocusedDescription: {type:"boolean", default:false},
         }
     }
 
@@ -40,15 +47,16 @@ export class ConstTool extends ControlTool {
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
 
-        let currentJsonForm = jsonForms
-        if('schema' === context.builder) {
-            currentJsonForm = jsonFormsSchema as any;
-        }
+        let uischemas:Record<BuilderModeType, any> = {
+            [BuilderMode.BOTH]:uischemaModeBoth,
+            [BuilderMode.SCHEMA]:uischemaModeSchema,
+            [BuilderMode.UI]:uischemaModeUi,
+        };
 
-        return {
-             schema: await resolveSchema(currentJsonForm.schema, undefined, this, context),
-             uischema: await resolveSchema(currentJsonForm.uischema),
-        } as JsonFormsInterface
+        return createResolvedJsonForms([
+            resolveSchema(schema, undefined, this, context),
+            resolveSchema(uischemas[context.builderMode ?? BuilderMode.BOTH])
+        ]);
     }
 
     clone(): ToolInterface {

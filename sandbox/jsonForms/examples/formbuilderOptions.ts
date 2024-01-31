@@ -2,7 +2,6 @@ import {registerExamples} from "@jsonforms/examples/src/register";
 import category from '../../../src/lib/tools/schema/category.form.json'
 import categorization from '../../../src/lib/tools/schema/categorization.form.json'
 import combinator from '../../../src/lib/tools/schema/combinator.form.json'
-import constJsonForms from '../../../src/lib/tools/schema/const.form.json'
 import group from '../../../src/lib/tools/schema/group.form.json'
 import label from '../../../src/lib/tools/schema/label.form.json'
 import layout from '../../../src/lib/tools/schema/layout.form.json'
@@ -17,7 +16,6 @@ const examples = [
   {name:"category", schema:category},
   {name:"categorization", schema:categorization},
   {name:"combinator", schema:combinator},
-  {name:"const", schema:constJsonForms},
   {name:"group", schema:group},
   {name:"layout", schema:layout},
   {name:"object", schema:object},
@@ -47,15 +45,6 @@ examples.forEach(item => {
  * Subschemas
  *
  */
-registerExamples([
-  {
-    name: 'fb.option.subschema.const',
-    label: 'FormBuilder - Option - Subschema: Const',
-    schema: constPartJsonForms.schema,
-    uischema: constPartJsonForms.uischema,
-    data: constPartJsonForms.data,
-  }
-]);
 
 registerExamples([
   {

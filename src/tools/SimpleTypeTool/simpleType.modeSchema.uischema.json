@@ -9,23 +9,17 @@
           "type": "VerticalLayout",
           "elements": [
             {
-              "type": "HorizontalLayout",
-              "elements": [
-                {
-                  "scope": "#/properties/propertyName",
-                  "type": "Control"
-                }
-              ],
+              "scope": "#/properties/propertyName",
+              "type": "Control",
               "rule": {
                 "effect": "SHOW",
                 "condition": {
                   "scope": "#/properties/_isProperty",
-                  "schema": {
-                    "const": true
-                  }
+                  "schema": {"const": true}
                 }
               }
             },
+
             {
               "type": "Group",
               "label": "Form Type",
