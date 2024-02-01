@@ -13,6 +13,11 @@
       ]
     },
 
+    "scopeString": {
+      "type": "string",
+      "title": "Manual path",
+      "description": "#/properties/NAME"
+    },
 
     "schemaBasedCondition": {
       "type": "object",
@@ -22,7 +27,11 @@
           "---$ref": "http://json-schema.org/draft-07/schema"
         },
         "scope": {
-          "type": "string"
+          "---type": "string",
+          "anyOf": [
+            {"$ref": "scopeTool.scopes"},
+            {"$ref": "#/definitions/scopeString"}
+          ]
         },
         "failWhenUndefined": {
           "type": "boolean"

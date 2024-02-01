@@ -6,6 +6,7 @@ import {fromPropertyToScope} from './normalizer';
 import {subschemaMap} from "./tools/subschemas";
 import type {ToolInterface, JsonFormsInterface, ToolContext} from "./models";
 import type {JsonSchema,  Scoped, UISchemaElement, ControlElement, Layout, Translator} from "@jsonforms/core";
+import {schemaResolverMap, SchemaResolverMethod} from "@/lib/schemaResolver";
 
 
 export const BuilderMode = {
@@ -145,9 +146,18 @@ export const resolveSchema = async (schema: any, callback:Callback|undefined = u
         resolvers: {
             file: {
                 async resolve(ref: URI) {
-                    const subschema = subschemaMap[String(ref)];
+                    const map = {
+                        ...subschemaMap,
+                        ...schemaResolverMap,
+                    } as Record<string, SchemaResolverMethod>
+
+                    const subschema = map[String(ref)];
                     switch (typeof subschema) {
-                        case "function": return subschema(ref, tool, context);
+                        case "function": {
+                            if(!tool) throw "tool argument is required at resolveSchema()."
+                            if(!context) throw "tool argument is required at resolveSchema()."
+                            return await subschema(ref, tool, context);
+                        }
                         case "object": return subschema;
                         default: return (callback && callback(ref)) ?? {}
                     }

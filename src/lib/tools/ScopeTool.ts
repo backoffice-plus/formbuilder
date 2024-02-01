@@ -47,28 +47,8 @@ export class ScopeTool extends ControlTool {
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
-
-        const resolvedSchema = await resolveSchema(JSON.parse(JSON.stringify(context.baseSchemaTool?.schema)));
-
-        const scopeResolver = (ref: URI) => {
-            if ('scopeTool.scopes' === String(ref)) {
-                //const allScopes = findAllScopablePaths(context.baseSchemaTool, '#');
-                const allScopes = [
-                    '#',
-                    ...findAllScopablePathsBySchema(resolvedSchema, '#'),
-                ]
-
-                return {
-                    type: 'string',
-                    title: 'Select scope',
-                    enum: allScopes ?? ['']
-                } as JsonSchema
-            }
-            return undefined;
-        }
-
         return {
-            schema: await resolveSchema(schema, scopeResolver, this, context),
+            schema: await resolveSchema(schema, undefined, this, context),
             uischema: await resolveSchema(uischema),
         } as JsonFormsInterface
     }

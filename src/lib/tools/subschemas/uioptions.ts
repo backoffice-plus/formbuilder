@@ -1,27 +1,5 @@
 import type {ToolContext, ToolInterface} from "../../models";
 
-
-export const uioptionsSchemaResolver = (uri: URI, tool: ToolInterface, context: ToolContext) => {
-    if(!tool) {
-        throw "tool argument is missing at uioptionsSchemaResolver(). "
-    }
-    if ('uioptions' === String(uri)) {
-        const toolFinder = context?.fb?.exposed?.toolFinder;
-        const uiOptions = {
-            ...tool.availableUiOptions(),
-            ...toolFinder?.getUiOptions(tool.uischema?.type)          ,
-        }
-
-        return {
-            type: "object",
-            properties: uiOptions,
-            additionalProperties: {
-                type: ["string", "number", "boolean"]
-            }
-        }
-    }
-}
-
 export const prepareOptionData = (context: ToolContext, tool: ToolInterface): Record<string, any> => {
     //const uiOptions = tool.uischema?.options;//JSON.parse(JSON.stringify(tool.uischema?.options ?? {}))
     const uiOptions = JSON.parse(JSON.stringify(tool.uischema?.options ?? {}))
