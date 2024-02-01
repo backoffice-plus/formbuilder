@@ -1,24 +1,30 @@
-import type {JsonSchema} from "@jsonforms/core";
-import type {UISchemaElement} from "@jsonforms/core";
-import type {ToolContext} from "../../models";
+import type {ToolContext, ToolInterface} from "@/lib";
 
-export const schemaKeys = ['title', 'description'] as Array<'title' | 'description'>;
-export const uischemaKeys = ['label', 'i18n'] as Array<'label' | 'i18n'>;
+export const schemaKeys = ['title', 'description'] as const;
+export const uischemaKeys = ['label', 'i18n'] as const;
 
-export const prepareOptionData = (context:ToolContext, schema:JsonSchema, uischema:UISchemaElement|any) : Record<string, any> => {
+export const prepareOptionData = (context:ToolContext, tool:ToolInterface) : Record<string, any> => {
     const data = {
-        _type:uischema.type,
+        _type:tool.uischema.type,
         //_isUischema: 'uischema' === context.builder || !context?.builder,
         options: {}
     } as Record<string, any>;
 
-    schemaKeys.forEach(key => data[key] = schema[key]);
-    uischemaKeys.forEach(key => data[key] = uischema[key]);
+    if(context.isBuilderMode?.schema) {
+        schemaKeys.forEach(key => data[key] = tool.schema[key]);
+    }
+    if(context.isBuilderMode?.uischema) {
+        uischemaKeys.forEach(key => data[key] = tool.uischema[key]);
+    }
 
     return {labelAndI18n:data};
 }
-export const setOptionData = (schema:JsonSchema, uischema:UISchemaElement|any, data:Record<string, any>) : void => {
-    schemaKeys.forEach(key => schema[key] = data.labelAndI18n[key]);
-    uischemaKeys.forEach(key => uischema[key] = data.labelAndI18n[key]);
+export const setOptionData = (context:ToolContext, tool:ToolInterface, data:Record<string, any>) : void => {
+    if(context.isBuilderMode?.schema) {
+        schemaKeys.forEach(key => tool.schema[key] = data.labelAndI18n[key]);
+    }
+    if(context.isBuilderMode?.uischema) {
+        uischemaKeys.forEach(key => tool.uischema[key] = data.labelAndI18n[key]);
+    }
 }
 

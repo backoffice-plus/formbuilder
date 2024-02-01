@@ -37,7 +37,7 @@ export class ControlTool extends AbstractTool implements ToolInterface {
     optionDataPrepare(context: ToolContext): Record<string, any> {
 
         let dataSubschemas = {
-            ...subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataLabel(context, this),
         };
         if(context.isBuilderMode?.schema) {
             dataSubschemas = {
@@ -79,15 +79,13 @@ export class ControlTool extends AbstractTool implements ToolInterface {
         this.propertyName = data?.propertyName ?? '';
         this.uischema && (this.uischema.scope = '#/properties/'+ this.propertyName);
 
-        //use schema
-        this.schema.type = data.schema.type;
-        this.schema.format = data.schema.format;
-        (this.schema as JsonSchemaDraft07).contentMediaType = data.schema.contentMediaType;
-        (this.schema as JsonSchemaDraft07).contentEncoding = data.schema.contentEncoding;
-
-        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
+        subschemas.setOptionDataLabel(context, this, data);
 
         if(context.isBuilderMode?.schema) {
+            this.schema.type = data.schema.type;
+            this.schema.format = data.schema.format;
+            (this.schema as JsonSchemaDraft07).contentMediaType = data.schema.contentMediaType;
+            (this.schema as JsonSchemaDraft07).contentEncoding = data.schema.contentEncoding;
             subschemas.setOptionDataValidation(this.schema, this.uischema, data);
             subschemas.setOptionDataconditional(this.schema, this.uischema, data);
         }

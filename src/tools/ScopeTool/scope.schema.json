@@ -1,0 +1,42 @@
+{
+  "type": "object",
+
+  "definitions": {
+    "scopeString": {
+      "type": "string",
+      "title": "Manual path",
+      "description": "#/properties/NAME"
+    }
+  },
+
+  "properties": {
+
+    "uischema": {
+      "type": "object",
+      "properties": {
+        "scope": {
+          "anyOf": [
+            {"$ref": "scopeTool.scopes"},
+            {"$ref": "#/definitions/scopeString"}
+          ]
+        },
+        "label": {
+          "type": "string"
+        }
+      }
+    },
+
+    "labelAndI18n": {
+      "$ref": "labelAndI18n.schema#/properties/labelAndI18n"
+    },
+    "rule": {
+      "$ref": "rule.schema#/properties/rule"
+    },
+    "uiOptions": {
+      "$ref": "uiOptions.schema#/properties/uiOptions"
+    },
+    "operation": {
+      "$ref": "operation.schema#/properties/operation"
+    }
+  }
+}

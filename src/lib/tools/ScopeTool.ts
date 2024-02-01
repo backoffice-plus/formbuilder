@@ -4,12 +4,17 @@ import {uiTypeIs} from "@jsonforms/core";
 import scopeComp from "../../components/tools/scope.component.vue";
 import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
 import {AbstractTool} from "./AbstractTool";
-import jsonForms from "./schema/scope.form.json";
 import {resolveSchema} from "../formbuilder";
 import {findAllScopablePaths, findAllScopablePathsBySchema} from "../schemaUtil";
 import * as subschemas from "@/lib/tools/subschemas";
+import {UiOptions} from "@/lib";
+import {schema, uischema} from "@/tools/ScopeTool";
+import {VerticalLayout} from "@/lib/tools/layoutTool";
+import {JsonFormsUISchema} from "../models";
+import * as _ from "lodash-es";
+import {ControlTool} from "@/lib/tools/controlTool";
 
-export class ScopeTool extends AbstractTool implements ToolInterface {
+export class ScopeTool extends ControlTool {
     importer = () => scopeComp;
     tester = rankWith(0,
         and(
@@ -24,26 +29,21 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
-        const data = {
+        const data = super.optionDataPrepare(context)
+
+        return {
+            ...data,
             uischema: {
-                scope: this.uischema.scope,
+                scope: this.uischema.scope
             },
-            ...subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
-            ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
-            ...subschemas.prepareOptionUiOptions(context, this),
             ...subschemas.prepareOptionOperation(context, this),
-
-        } as any;
-
-        return data;
+        }
     }
 
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
-        this.uischema.scope = data.uischema.scope
+        super.optionDataUpdate(context,data);
 
-        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
-        subschemas.setOptionDataRule(this.schema, this.uischema, data);
-        subschemas.setOptionDataUiOptions(context, this, data);
+        this.uischema.scope = data.uischema.scope
     }
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
@@ -68,8 +68,8 @@ export class ScopeTool extends AbstractTool implements ToolInterface {
         }
 
         return {
-            schema: await resolveSchema(jsonForms.schema, scopeResolver, this, context),
-            uischema: await resolveSchema(jsonForms.uischema),
+            schema: await resolveSchema(schema, scopeResolver, this, context),
+            uischema: await resolveSchema(uischema),
         } as JsonFormsInterface
     }
 

@@ -30,7 +30,7 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
                 type: this.uischema.type,
                 label: this.uischema.label,
             },
-            ...subschemas.prepareOptionDataLabel(context, this.schema, this.uischema),
+            ...subschemas.prepareOptionDataLabel(context, this),
             ...subschemas.prepareOptionDataRule(context, this.schema, this.uischema),
             ...subschemas.prepareOptionUiOptions(context, this),
             ...subschemas.prepareOptionOperation(context, this),
@@ -42,7 +42,7 @@ export class VerticalLayout extends AbstractTool implements ToolInterface {
             this.uischema.type = data.uischema.type;
         }
 
-        subschemas.setOptionDataLabel(this.schema, this.uischema, data);
+        subschemas.setOptionDataLabel(context, this, data);
         subschemas.setOptionDataRule(this.schema, this.uischema, data);
         subschemas.setOptionDataUiOptions(context, this, data);
     }

@@ -1,0 +1,68 @@
+{
+  "type": "Categorization",
+  "elements": [
+    {
+      "type": "Category",
+      "label": "Base",
+      "elements": [
+        {
+          "type": "Group",
+          "label": "Scope",
+          "elements": [
+            {
+              "type": "Control",
+              "scope": "#/properties/uischema/properties/scope",
+              "label": "Scopes"
+            }
+          ]
+        },
+
+        {
+          "type": "Group",
+          "label": "Label & Description",
+          "elements": [
+            {"$ref":"labelAndI18n.ui.uischema" }
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "Category",
+      "label": "Options & Styles",
+      "elements": [
+        {
+          "$ref": "uiOptions.uischema"
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "label": "Rule",
+      "elements": [
+        {
+          "$ref": "rule.uischema"
+        }
+      ]
+    },
+
+    {
+      "type": "Category",
+      "elements": [
+        {
+          "type": "LayoutRef",
+          "$ref": "operation.uischema"
+        }
+      ],
+      "rule": {
+        "effect": "SHOW",
+        "condition": {
+          "scope": "#/properties/operation/properties/_isBaseUiTool",
+          "schema": {
+            "const": true
+          }
+        }
+      }
+    }
+  ]
+}
