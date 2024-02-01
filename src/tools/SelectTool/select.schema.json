@@ -3,7 +3,7 @@
 
   "definitions": {
 
-    "selectAsEnum": {
+    "selectAsEnumString": {
       "properties": {
         "enum": {
           "type": "array",
@@ -68,27 +68,11 @@
     },
 
     "asMultiSelect": {"type": "boolean"},
-    "select": {
-      "type": "object",
-      "properties": {
-        "_type": {
-          "type": "string",
-          "enum": ["oneOf", "enum"]
-        },
-        "enum": {
-          "type": "array",
-          "$ref": "#/definitions/selectAsEnum"
-        },
-        "oneOf": {
-          "type": "array",
-          "$ref": "#/definitions/selectAsOneOf"
-        }
-      }
-    },
+
     "enumOrOneOf": {
       "oneOf": [
         {
-          "$ref": "#/definitions/selectAsEnum"
+          "$ref": "#/definitions/selectAsEnumString"
         },
         {
           "$ref": "#/definitions/selectAsOneOf"

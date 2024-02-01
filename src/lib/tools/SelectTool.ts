@@ -47,6 +47,9 @@ export class SelectTool extends ControlTool {
     constructor(uischemaType: string = 'Control') {
         super(uischemaType);
 
+        //type is OK for ENUM (:TODO add more types)
+        //delete this.schema.type;
+
         // if(!this.schema.enum && !this.schema.oneOf) {
         //     this.schema.enum = [''];
         // }
@@ -92,6 +95,7 @@ export class SelectTool extends ControlTool {
             this.schema.uniqueItems = data.asMultiSelect ? true : undefined;
 
             //create enumOrOneOf
+            let removeType = false;
             const enumOrOneOf = {} as any;
             if (data?.enumOrOneOf) {
                 if ("enum" in data?.enumOrOneOf) {
@@ -101,7 +105,8 @@ export class SelectTool extends ControlTool {
                     if (!enumOrOneOf.oneOf.length) {
                         enumOrOneOf.oneOf = [{const: ''}];
                     }
-                    delete enumOrOneOf.type;
+                    //delete enumOrOneOf.type;
+                    removeType = true;
                 }
             }
             if(!enumOrOneOf.enum && !enumOrOneOf.oneOf) {
@@ -126,6 +131,10 @@ export class SelectTool extends ControlTool {
             }
 
             this.schema = {...this.schema,  ...setEnumOrOneOf}
+
+            if(removeType) {
+                this.schema.type = undefined;
+            }
         }
     }
 
