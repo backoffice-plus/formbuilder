@@ -500,7 +500,65 @@ fieldset.styleA.group .group-item {
  @apply hidden
 }
 
+
+
+
+.styleA .categorization.horizontal
+/*.styleA .categorization:has(.tabs.isStepperHorizontal) */
+{
+    grid-template-columns: min(150px,15%) 1fr;
+    grid-template-rows: auto auto;
+    grid-template-areas:
+    ". ."
+    "footer footer";
+}
+
+
+
+.styleA .categorization.horizontal .tabs:not(.isStepper) {
+    border-width: 0;
+    border-right-width: 1px;
+    flex-direction: column;
+}
+.styleA .categorization.horizontal .tabs:not(.isStepper) button {
+    width: 100%;
+    border-bottom:0;
+
+    @apply
+    py-1 px-2
+
+    border-r
+
+    rounded-none
+    rounded-l-lg
+
+    text-right
+}
+
+
+.styleA .categorization.horizontal .tabs.isStepper
+/*.styleA .categorization .tabs.isStepperHorizontal  */
+{
+    flex-direction: column;
+}
+.styleA .categorization.horizontal .tabs.isStepper > hr
+/*.styleA .categorization .tabs.isStepperHorizontal > hr   */
+{
+    border-left-width: 1px;
+    min-height:4rem;
+}
+.styleA .categorization.horizontal .tabs.isStepper > hr
+    /*.styleA .categorization .tabs.isStepperHorizontal > hr   */
+{
+    border-left-width: 1px;
+}
+
+
+
+
+
 .styleA .categorization > footer {
+    grid-area: footer;
     @apply
     flex justify-end gap-4
 }
