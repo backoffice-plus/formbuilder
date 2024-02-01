@@ -6,8 +6,8 @@
       <summary class="cursor-pointer">JSON</summary>
       <div class="card p-4">
         <SchemaCode
-            v-model:schema="jsonFormsSchema"
-            v-model:uischema="jsonFormsUiSchema"
+            v-model:schema="jfResolved.schema"
+            v-model:uischema="jfResolved.uischema"
         />
         <!--
         :TODO emit event to send updated schema
@@ -17,34 +17,33 @@
       </div>
     </details>
 
-    <details v-if="false !== jsonFormsUiSchema">
+    <details v-if="false !== jfResolved?.uischema">
       <summary class="cursor-pointer">JsonForms Preview</summary>
       <ResizeArea>
         <div class="card p-4 styleA" style="min-height: 106px">
-          <Suspense>
+
             <JsonForms
-                :schema="jsonFormsSchema"
-                :uischema="jsonFormsUiSchema"
-                :data="jsonFormsData"
-                :renderers="jsonFormRenderesMore"
-                :ajv="ajv"
-                :i18n="{translate: createI18nTranslate(localeCatalogue)}"
-                v-if="jsonFormsSchema && jsonFormsUiSchema"
+                :schema="jfResolved.schema"
+                :uischema="jfResolved.uischema"
+                :data="jfResolved.data"
+                :renderers="renderers"
+                v-if="jfResolved?.schema"
                 :key="newKey"
-                @change="r => jsonFormsUpdated=r"
             />
-            <template #fallback>
-              JsonForms Loading...
-            </template>
-          </Suspense>
+            <!--
+                :i18n="{translate: createI18nTranslate(localeCatalogue)}"
+                :ajv="ajv"
+                validation-mode="NoValidation"
+            -->
+
         </div>
       </ResizeArea>
 
       <details open="true" class="pt-4">
         <summary class="cursor-pointer">Data</summary>
         <div class="styleA flex gap-4">
-          <textarea class="h-60 p-4" readonly disabled>{{ jsonFormsUpdated?.data }}</textarea>
-          <textarea class="h-60 p-4 text-red-600" readonly disabled>{{ jsonFormsUpdated?.errors }}</textarea>
+          <textarea class="h-60 p-4" readonly disabled>{{ jfResolved?.data }}</textarea>
+          <textarea class="h-60 p-4 text-red-600" readonly disabled>{{ jfResolved?.errors }}</textarea>
         </div>
       </details>
 
@@ -78,49 +77,43 @@ import {createI18nTranslate} from "../src/index";
 import SchemaCode from './SchemaCode.vue'
 import ResizeArea from "./ResizeArea.vue";
 import {translationsErrors as localeCatalogue} from "../src/translations/de";
-import {boplusVueVanillaRenderers} from "../src/index";
+import boplusVueVanillaRenderers from "@backoffice-plus/jsonforms-vue-vanilla";
 import {formbuilderRenderers} from "../src/components/renderers";
 
 const props = defineProps({
   jsonForms: Object, //read from store
 })
 
-const jsonFormsSchema = ref(props.jsonForms.schema);
-const jsonFormsUiSchema = ref(props.jsonForms.uischema);
-const jsonFormsData = ref({});
-const jsonFormsUpdated = ref({});
+const jfResolved = ref({});
+const newKey = ref({});
 
-const newKey = computed(() => JSON.stringify([jsonFormsSchema.value,jsonFormsUiSchema.value]));
+jfResolved.value = {
+  schema:props.jsonForms?.schema,
+  uischema:props.jsonForms?.uischema,
+}
 
-const jsonFormRenderesMore = Object.freeze([
+const renderers = Object.freeze([
   ...vanillaRenderers,
   ...boplusVueVanillaRenderers,
   ...formbuilderRenderers,
 ]);
 
-watch(() => props.jsonForms, () => {
-   jsonFormsSchema.value = props.jsonForms?.schema;
-   jsonFormsUiSchema.value = props.jsonForms?.uischema;
+const setJfProps = () => {
+  const isArray = 'array' === props.jsonForms?.schema?.type;
 
-   const isArray = 'array' === jsonFormsSchema.value?.type;
+  jfResolved.value = {
+    schema: props.jsonForms?.schema,
+    uischema: props.jsonForms?.uischema,
+    data: props.jsonForms?.data ?? (isArray ? [] : {}),
+  };
 
-   jsonFormsData.value = props.jsonForms?.data ?? (isArray ? [] : {});
-})
+  newKey.value = Math.random()
+}
 
+setJfProps();
 
-onMounted(() => {
-  // jsonFormsSchema.value = props.jsonForms?.schema;
-  // jsonFormsUiSchema.value = props.jsonForms?.uischema;
-  // jsonFormsData.value = props.jsonForms?.data ?? {};
+watch(() => props.jsonForms, setJfProps)
 
-  // emitter.on('formBuilderSchemaUpdated', (jsonForms) => {
-  //   jsonFormsSchema.value = jsonForms?.schema;
-  //   jsonFormsUiSchema.value = jsonForms?.uischema;
-  // });
-});
-// onBeforeUnmount(() => {
-//   emitter.off('formBuilderSchemaUpdated');
-// })
 
 /**
  * @see https://ajv.js.org/options.html#advanced-options
