@@ -1,6 +1,5 @@
-import type {ComponentInternalInstance} from "@vue/runtime-core";
 import {getCurrentInstance} from "vue";
-import type {Ref} from "vue";
+import type {Ref, ComponentInternalInstance} from "vue";
 import type {ToolFinder} from "./ToolFinder";
 import type {ToolInterface, ToolContext, BuilderType, BuilderModeType} from "./models";
 import {BuilderMode} from "@/lib/formbuilder";

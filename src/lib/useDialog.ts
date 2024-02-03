@@ -1,5 +1,5 @@
-import {type Ref, shallowRef} from "vue";
-import type {Component, VNodeProps} from "@vue/runtime-core";
+import {shallowRef} from "vue";
+import type {Ref, Component, VNodeProps} from "vue";
 import {ToolInterface} from "./models";
 import {ToolFinder} from "./ToolFinder";
 import ConfirmDelete from "@/components/dialog/modals/ConfirmDelete.vue";
