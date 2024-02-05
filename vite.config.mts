@@ -36,10 +36,10 @@ export default defineConfig({
             // Vue is provided by the parent project, don't compile Vue source-code inside our library.
             external: ['vue'],
             output: {
-                globals: { vue: 'Vue' },
-                sourcemap: true
+                globals: { vue: 'Vue' }
             },
         },
+        sourcemap: true
     },
 
     test: {
