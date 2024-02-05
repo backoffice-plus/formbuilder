@@ -2,7 +2,7 @@
 import * as _ from 'lodash-es';
 import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
 import {fromScopeToProperty} from './normalizer';
-import {ObjectTool} from "@/tools";
+import {ObjectTool, SchemaArrayTool} from "@/tools";
 import {schemaTool} from "./tools/SchemaTool";
 import {arrayTool} from "./tools/ArrayTool";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
@@ -73,6 +73,10 @@ export const createSchemaTool = (schema: JsonSchema, toolName: string | undefine
     switch (toolName) {
         case "schema":
             clone = cloneToolWithSchema(schemaTool, schema);
+            break;
+
+        case "schemaArray":
+            clone = cloneToolWithSchema(SchemaArrayTool.create(), schema);
             break;
 
         default:

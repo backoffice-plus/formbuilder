@@ -86,6 +86,55 @@
     },
     {
       "type": "Category",
+      "label": "Composition",
+      "elements": [
+        {
+          "type": "Group",
+          "label": "oneOf",
+          "elements": [
+            {
+              "type": "Formbuilder",
+              "scope": "#/properties/schema/properties/oneOf",
+              "options": {
+                "schemaOnly": true,
+                "baseTool": "schemaArray",
+                "useKeyword": "oneOf",
+                "baseToolProps": {
+                  "keyword": "oneOf",
+                  "prefixLabel": "oneOf:"
+                }
+              }
+            }
+          ],
+          "options": {
+            "collapsible": true
+          }
+        },
+
+        {
+          "type": "Group",
+          "label": "allOf",
+          "elements": [
+            {
+              "type": "Formbuilder",
+              "scope": "#/properties/schema/properties/allOf",
+              "options": {
+                "schemaOnly": true,
+                "baseTool": "schemaArray",
+                "useKeyword": "allOf",
+                "baseToolProps": {
+                  "keyword": "allOf",
+                  "prefixLabel": "allOf:"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "type": "Category",
       "label": "Option & Styles",
       "elements": [
         {"$ref": "uiOptions.uischema" }

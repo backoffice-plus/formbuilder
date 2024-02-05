@@ -60,6 +60,7 @@ const props = defineProps(rendererProps<ControlElement>())
     let schema:JsonSchema|undefined, uischema:UISchemaElement;
     let schemaOnly:boolean, schemaReadOnly:boolean;
 
+    const options = control.appliedOptions.value;
 
     //ui only mode
     if(control.appliedOptions.value.schemaReadOnly) {
@@ -80,7 +81,7 @@ const props = defineProps(rendererProps<ControlElement>())
     }
 
     //schema only mode
-    else if(control.appliedOptions.value.schemaOnly) {
+    else if(options?.schemaOnly) {
         schema = (control.control as any).value.data
         schemaOnly = true;
         schemaReadOnly = false;
@@ -89,12 +90,18 @@ const props = defineProps(rendererProps<ControlElement>())
        * for "definition" & "patternProperties" - they are not Schema
        * so we create a fake ObjectTool
        */
-      if(control.appliedOptions.value.useProperties) {
+      if(options?.useProperties) {
           schema = {
             type:"object",
             properties: (schema as {[pattern: string]:JsonSchema|any })
           }
         }
+      else if(options?.useKeyword && ["oneOf","allOf","anyOf"].includes(options?.useKeyword)) {
+
+        schema = {
+          [options.useKeyword]: schema
+        }
+      }
     }
 
     //schema & layout mode
@@ -114,6 +121,10 @@ const props = defineProps(rendererProps<ControlElement>())
           if(control.appliedOptions.value.useProperties) {
             value = value?.properties;
           }
+          else if(options.useKeyword) {
+            value = value?.[options.useKeyword];
+          }
+
         }
         else if(schemaReadOnly) {
           value = e?.uischema;
@@ -135,5 +146,5 @@ const props = defineProps(rendererProps<ControlElement>())
 <script lang="ts">
 import type {RankedTester} from "@jsonforms/core";
 import {rankWith, uiTypeIs} from "@jsonforms/core";
-export const tester: RankedTester = rankWith(1, uiTypeIs('Formbuilder'));
+export const tester: RankedTester = rankWith(11, uiTypeIs('Formbuilder'));
 </script>

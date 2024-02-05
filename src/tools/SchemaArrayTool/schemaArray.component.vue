@@ -1,0 +1,140 @@
+<template>
+  <div class="schemaArrayTool" :class="['rootItem', {isRoot:isRoot}]">
+
+    <slot name="header">
+      <ToolIcon :tool="tool" :isToolbar="isToolbar" :prefixLabel="prefixLabel"/>
+    </slot>
+
+    <div v-if="!isToolbar" :class="[{'mr-5':!isRoot}]">
+
+      <Actions :tool="tool" @delete="onDelete" :deletable="!isRoot" v-if="!props.hideActionbar">
+        <!--        <button type="button" @click="addItem"><Icon icon="mdi:plus" /></button>-->
+        <button type="button" @click="collapsed=!collapsed;" v-if="!isRoot">
+          <Icon :icon="collapsed ? 'mdi:arrow-expand-vertical' : 'mdi:arrow-collapse-vertical'"/>
+        </button>
+      </Actions>
+
+      <Vuedraggable
+          v-bind="vuedraggableOptions"
+
+
+          :class="['dropArea nestedFlexArea flex-col', {drag:showDragClass}]"
+          :list="childTools"
+          :group="{name:'formBuilder', pull: true, put: groupPut}"
+          @start="onDrag"
+          @end="onDrag"
+          @change="onDropAreaChange"
+
+          v-show="!collapsed"
+      >
+        <template #item="{ element: tool, index }">
+          <div> <!-- div needed for edit mode?!?! -->
+            <component :is="tool.importer()"
+
+                       :tool="tool"
+                       :isToolbar="false"
+                       :isInlineType="true"
+
+                       @deleteByTool="onDeleteByTool"
+
+                       class="dropItem"
+            />
+          </div>
+        </template>
+      </Vuedraggable>
+
+    </div>
+
+  </div>
+</template>
+
+<style>
+.schemaArrayTool:not(.isRoot) {
+  background-color: var(--tool-control-secondary);
+}
+</style>
+
+<style scoped>
+.schemaArrayTool {
+  @apply
+  relative
+}
+
+.dropArea .schemaArrayTool {
+  min-height: 180px !important;
+}
+</style>
+
+<script setup>
+import {computed, nextTick, onMounted, ref, unref} from "vue";
+import {Icon} from "@iconify/vue";
+import {Actions, confirmAndRemoveChild, getFormbuilder, getToolDragging, getToolfinder, prepareAndCallOnDropAreaChange, toolComponentProps, ToolIcon, Vuedraggable, vuedraggableOptions,} from "@/";
+
+const props = defineProps({...toolComponentProps()})
+
+const emit = defineEmits(['deleteByTool']);
+
+const childTools = ref([]);
+const collapsed = ref(false);
+
+const fb = getFormbuilder();
+const toolFinder = getToolfinder();
+const onDrag = fb?.exposed.onToolDrag;
+
+onMounted(() => {
+  if (!props.isToolbar) {
+
+    childTools.value.push(...props.tool.initChilds(toolFinder));
+
+    if (childTools.value.length) {
+      nextTick().then(() => onDropAreaChange({mounted: {element: props.tool}}))
+    }
+  }
+})
+
+const prefixLabel = computed(() => {
+  let prefixLabel = '';
+  if (!props.isToolbar) {
+    prefixLabel = 'schema array:';
+
+    if (props.prefixLabel) {
+      prefixLabel = props.prefixLabel;
+    }
+  }
+  return prefixLabel
+})
+
+const onDropAreaChange = (e) => prepareAndCallOnDropAreaChange(e, props.tool, childTools.value, fb?.exposed?.onDropAreaChanged);
+
+
+
+const allowChild = (tool) => {
+
+  return true;
+
+  // const isArrayOrObject = ['array','object'].includes(tool?.schema?.type);
+  // const isschemaArrayTool = tool instanceof schemaArrayTool
+  //
+  // return isArrayOrObject || isschemaArrayTool;
+}
+
+const showDragClass = computed(() => {
+  const tool = getToolDragging();
+  return tool && allowChild(unref(tool));
+})
+const groupPut = (from, to, node, dragEvent) => {
+  const tool = node._underlying_vm_;
+  return tool && allowChild(unref(tool));
+};
+
+const onDeleteByTool = (e) => confirmAndRemoveChild(props.tool, e.tool, fb).then(e => {
+  childTools.value = props.tool.edge.childs;
+  onDropAreaChange(e);
+});
+
+const onDelete = () => {
+  emit("deleteByTool", {tool: props.tool});
+};
+
+
+</script>

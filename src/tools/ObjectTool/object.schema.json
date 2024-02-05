@@ -44,6 +44,16 @@
             {"$ref": "#/definitions/additionalPropertiesFalse"},
             { "$ref": "#/definitions/additionalPropertiesSingleType" }
           ]
+        },
+
+        "oneOf": {
+          "type": "array"
+        },
+        "allOf": {
+          "type": "array"
+        },
+        "any": {
+          "type": "array"
         }
       }
     },

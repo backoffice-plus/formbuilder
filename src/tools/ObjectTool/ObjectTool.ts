@@ -33,7 +33,12 @@ export class ObjectTool extends ControlTool {
     optionDataPrepare(context: ToolContext): Record<string, any> {
         const data: any = super.optionDataPrepare(context);
 
-        data.schema.additionalProperties = this.schema?.additionalProperties
+        if (context.isBuilderMode?.schema) {
+            data.schema.additionalProperties = this.schema?.additionalProperties
+            data.schema.oneOf = this.schema?.oneOf;
+            data.schema.allOf = this.schema?.allOf;
+            data.schema.anyOf = this.schema?.anyOf;
+        }
 
         return {
             ...data,
@@ -45,7 +50,8 @@ export class ObjectTool extends ControlTool {
         super.optionDataUpdate(context, data);
 
         if (context.isBuilderMode?.schema) {
-            this.schema.additionalProperties = cleanEmptySchema(data.schema.additionalProperties);
+            this.schema.oneOf = data.schema.oneOf;
+            this.schema.allOf = data.schema.allOf;
 
             subschemas.setOptionDataDefinitions(this.schema, this.uischema, data);
         }

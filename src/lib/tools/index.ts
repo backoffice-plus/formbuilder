@@ -8,13 +8,13 @@ import {referenceTool} from "./referenceTool";
 import {combinatorTool} from "./combinatorTool";
 import {controlTool} from "./controlTool";
 import {arrayTool} from "./ArrayTool";
-import {ObjectTool} from "@/tools";
 import {constTool} from "./constTool";
 import {listWithDetailTool} from "./ListWithDetailTool";
 import {layoutRefTool} from "./LayoutRefTool";
 import {schemaTool} from "./SchemaTool";
 //import {schemaOnlyChildsTool} from "./SchemaOnlyChildsTool";
 import {scopeTool} from "./ScopeTool";
+import {defaultToolsNew} from "@/tools";
 export type {JsonFormsInterface, JsonFormsUISchema} from "../models";
 
 export const defaultTools = [
@@ -24,7 +24,6 @@ export const defaultTools = [
     selectTool,
     referenceTool,
     constTool,
-    ObjectTool.create(),
     arrayTool,
     schemaTool,
     //schemaOnlyChildsTool,
@@ -40,5 +39,7 @@ export const defaultTools = [
     listWithDetailTool,
     layoutRefTool,
     scopeTool,
+
+    ...defaultToolsNew,
 ]
 
