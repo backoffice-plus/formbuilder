@@ -11,6 +11,9 @@ import {TypedTools} from "./models";
 
 export type UiOptions = Record<string, JsonSchema>
 export type UiOptionsByType = Record<string, UiOptions>
+type ScoredTool = {tool:ToolInterface, score:number};
+type ScoredType = {type:string, score:number};
+
 export class ToolFinder implements ToolFinderInterface {
 
     private readonly _tools = [] as ToolInterface[];
@@ -63,7 +66,7 @@ export class ToolFinder implements ToolFinderInterface {
                     rootSchema: schema,
                     config: null
                 })) ?? -1,
-            }
+            } as ScoredTool
         });
 
         const toolWithScore = _.maxBy(toolsWithScore, (i) => i.score)
@@ -123,7 +126,7 @@ export class ToolFinder implements ToolFinderInterface {
             })
         })
 
-        const scoreItems = Object.keys(scores).map((key:string) => {return {type:key,score:scores[key]}})
+        const scoreItems = Object.keys(scores).map((key:string) => {return {type:key,score:scores[key]} as ScoredType})
         const maxItem = _.maxBy(scoreItems, (i) => i.score)
 
         return maxItem?.type;
