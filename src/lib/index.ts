@@ -7,7 +7,7 @@ export * from './tools/subschemas';
 export * from './ToolFinder';
 export * from './BuilderEvent';
 export * from './toolCreation';
+export * from './models';
 
 export {AbstractTool} from "./tools/AbstractTool";
-export type {ToolInterface, ToolContext, JsonFormsInterface, JsonFormsUISchema, ToolFinderInterface} from "./models";
 export {defaultTools} from "./tools";

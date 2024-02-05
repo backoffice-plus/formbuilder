@@ -8,7 +8,7 @@ import {referenceTool} from "./referenceTool";
 import {combinatorTool} from "./combinatorTool";
 import {controlTool} from "./controlTool";
 import {arrayTool} from "./ArrayTool";
-import {objectTool} from "./ObjectTool";
+import {ObjectTool} from "@/tools";
 import {constTool} from "./constTool";
 import {listWithDetailTool} from "./ListWithDetailTool";
 import {layoutRefTool} from "./LayoutRefTool";
@@ -24,7 +24,7 @@ export const defaultTools = [
     selectTool,
     referenceTool,
     constTool,
-    objectTool,
+    ObjectTool.create(),
     arrayTool,
     schemaTool,
     //schemaOnlyChildsTool,

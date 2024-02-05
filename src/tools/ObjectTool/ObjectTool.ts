@@ -1,18 +1,12 @@
-import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
-import {AbstractTool} from "./AbstractTool";
-import toolComponent from "../../components/tools/object.component.vue";
-import {BuilderMode, createResolvedJsonForms, resolveSchema} from "../formbuilder";
-import {rankWith, setSchema} from "@jsonforms/core";
+import {rankWith} from "@jsonforms/core";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
-import * as subschemas from "./subschemas";
-import {cleanEmptySchema, SchemaTool} from "./SchemaTool";
 import * as _ from 'lodash-es';
-import {cloneEmptyTool} from "../toolCreation";
-import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
-import {schema, uischemaModeBoth, uischemaModeSchema, uischemaModeUi} from "@/tools/ObjectTool";
+import {BuilderMode, cloneEmptyTool, createResolvedJsonForms, getPlainProperty, getRequiredFromSchema, resolveSchema, UiOptions} from "@/lib";
+import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface, BuilderModeType} from "@/lib";
+import * as subschemas from "@/lib/tools/subschemas";
 import {ControlTool} from "@/lib/tools/controlTool";
-import {UiOptions} from "@/lib";
-import {BuilderModeType} from "../models";
+import {cleanEmptySchema} from "@/lib/tools/SchemaTool";
+import {schema, uischemaModeBoth, uischemaModeSchema, uischemaModeUi, toolComponent} from "./";
 
 export class ObjectTool extends ControlTool {
 
@@ -32,12 +26,12 @@ export class ObjectTool extends ControlTool {
         }
     }
 
-    availableUiOptions():UiOptions|undefined {
+    availableUiOptions(): UiOptions | undefined {
         return {}
     }
 
     optionDataPrepare(context: ToolContext): Record<string, any> {
-        const data:any = super.optionDataPrepare(context);
+        const data: any = super.optionDataPrepare(context);
 
         data.schema.additionalProperties = this.schema?.additionalProperties
 
@@ -50,7 +44,7 @@ export class ObjectTool extends ControlTool {
     optionDataUpdate(context: ToolContext, data: Record<string, any>): void {
         super.optionDataUpdate(context, data);
 
-        if(context.isBuilderMode?.schema) {
+        if (context.isBuilderMode?.schema) {
             this.schema.additionalProperties = cleanEmptySchema(data.schema.additionalProperties);
 
             subschemas.setOptionDataDefinitions(this.schema, this.uischema, data);
@@ -59,10 +53,10 @@ export class ObjectTool extends ControlTool {
 
     async optionJsonforms(context: ToolContext): Promise<JsonFormsInterface | undefined> {
 
-        let uischemas:Record<BuilderModeType, any> = {
-            [BuilderMode.BOTH]:uischemaModeBoth,
-            [BuilderMode.SCHEMA]:uischemaModeSchema,
-            [BuilderMode.UI]:uischemaModeUi,
+        let uischemas: Record<BuilderModeType, any> = {
+            [BuilderMode.BOTH]: uischemaModeBoth,
+            [BuilderMode.SCHEMA]: uischemaModeSchema,
+            [BuilderMode.UI]: uischemaModeUi,
         };
 
         return createResolvedJsonForms([
@@ -79,18 +73,18 @@ export class ObjectTool extends ControlTool {
         }
     }
 
-    generateJsonSchema(): JsonSchema|undefined {
+    generateJsonSchema(): JsonSchema | undefined {
         const properties = {} as Record<string, JsonSchema>;
         const required = [] as Array<string>;
 
         this.childs.forEach((childTool: ToolInterface) => {
             //probably uischema
-            if(_.isEmpty(childTool.schema)) {
+            if (_.isEmpty(childTool.schema)) {
                 return;
             }
 
             let childSchema = childTool.generateJsonSchema();
-            if(childSchema) {
+            if (childSchema) {
                 properties[childTool.propertyName] = childSchema;
 
                 if (childTool.isRequired) {
@@ -113,12 +107,12 @@ export class ObjectTool extends ControlTool {
         const tools = [] as Array<ToolInterface>;
 
         //for moving existing tools to another list
-        if(this.edge.childs?.length || this.edge.childsInitialized) {
+        if (this.edge.childs?.length || this.edge.childsInitialized) {
             return this.edge.childs;
         }
 
 
-        const createChild = (itemSchema:JsonSchema, uischema:any, propertyName:string) => {
+        const createChild = (itemSchema: JsonSchema, uischema: any, propertyName: string) => {
 
             const schemaTools = toolFinder.getTypedTools().control;
             const matchingTool = toolFinder.findMatchingTool({}, itemSchema, uischema, schemaTools);
@@ -138,9 +132,9 @@ export class ObjectTool extends ControlTool {
 
 
         const properties = this.schema?.properties ?? {};
-        Object.keys(properties).forEach((propertyName:string) => {
+        Object.keys(properties).forEach((propertyName: string) => {
             const itemSchema = properties[propertyName];
-            const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+            const uischema = {type: 'Control', scope: '#'} as UISchemaElement;
 
             createChild(itemSchema, uischema, propertyName);
         });
@@ -152,11 +146,11 @@ export class ObjectTool extends ControlTool {
          */
         const required = this.schema?.required
         required?.length && required.forEach(propertyName => {
-            if(!(propertyName in (this.schema?.properties ?? {}))) {
-                const itemSchema = {type:'string'} as JsonSchema;
-                const uischema = {type:'Control',scope:'#'} as UISchemaElement;
+            if (!(propertyName in (this.schema?.properties ?? {}))) {
+                const itemSchema = {type: 'string'} as JsonSchema;
+                const uischema = {type: 'Control', scope: '#'} as UISchemaElement;
 
-               // console.log("create required child", {propertyName});
+                // console.log("create required child", {propertyName});
 
                 createChild(itemSchema, uischema, propertyName);
             }
@@ -167,7 +161,8 @@ export class ObjectTool extends ControlTool {
 
         return tools;
     }
-}
 
-// @ts-ignore
-export const objectTool = new ObjectTool();
+    static create() {
+        return new ObjectTool();
+    }
+}
