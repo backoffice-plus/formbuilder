@@ -1,4 +1,4 @@
-import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
+import type {JsonSchema, UISchemaElement, CombinatorKeyword} from "@jsonforms/core";
 import {and, rankWith} from "@jsonforms/core";
 import {uiTypeIs} from "@jsonforms/core";
 import type {JsonFormsInterface, ToolContext, ToolFinderInterface, ToolInterface} from "../models";
@@ -9,7 +9,6 @@ import {schema, uischema} from "./schema/combinator.form.json";
 import * as _ from 'lodash-es';
 import {cloneToolWithSchema} from "../toolCreation";
 import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
-import {CombinatorKeyword} from "@jsonforms/core/src/util/combinators";
 
 export class CombinatorTool extends AbstractTool implements ToolInterface {
 

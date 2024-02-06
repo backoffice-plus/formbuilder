@@ -7,11 +7,11 @@ import type {
     UISchemaElement,
     RankedTester,
     JsonSchema,
+    JsonSchema7
 } from "@jsonforms/core";
 import type {PropType} from "vue";
 import type {ToolEdge} from "./ToolEdge";
 import {ModalControl} from "@/lib/useDialog";
-import type {JsonSchema7} from "@jsonforms/core/src/models/jsonSchema7";
 import type {UiOptions} from "@/lib/ToolFinder";
 import {BuilderMode} from "@/lib/formbuilder";
 
