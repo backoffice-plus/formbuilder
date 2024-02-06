@@ -10,6 +10,7 @@ import conditionalSubschema from "../schema/subschemas/conditional.form.json";
 import definitionsSubschema from "../schema/subschemas/definitions.form.json";
 import operationSubschema from "../schema/subschemas/operation.form.json";
 import uiOptionsSubschema from "../schema/subschemas/uioptions.form.json";
+import compositionSubschema from "../schema/subschemas/composition.form.json";
 // @ts-ignore
 import draft07 from '../schema/drafts/draft07.schema.json'
 import jfUiRule from '../schema/drafts/jsonforms_ui_rule.schema.json'
@@ -23,6 +24,7 @@ export { prepareOptionData as prepareOptionDataconditional, setOptionData as set
 export { prepareOptionData as prepareOptionDataDefinitions, setOptionData as setOptionDataDefinitions } from './definitions'
 export { prepareOptionData as prepareOptionOperation, setOptionData as setOptionDataOperation } from './operation'
 export { prepareOptionData as prepareOptionUiOptions, setOptionData as setOptionDataUiOptions } from './uioptions';
+export { prepareOptionData as prepareOptionDataComposition, setOptionData as setOptionDataComposition } from './composition';
 
 
 
@@ -51,4 +53,6 @@ export const subschemaMap = {
     'operation.uischema': operationSubschema.uischema,
     'uiOptions.schema': uiOptionsSubschema.schema,
     'uiOptions.uischema': uiOptionsSubschema.uischema,
+    'composition.schema': compositionSubschema.schema,
+    'composition.uischema': compositionSubschema.uischema,
 } as Record<string, any>

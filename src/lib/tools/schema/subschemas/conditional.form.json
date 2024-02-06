@@ -10,6 +10,15 @@
           "then": { "$ref": "draft07.schema.json" },
           "else": { "$ref": "draft07.schema.json" }
         }
+      },
+      "composition": {
+        "type": "object",
+        "properties": {
+
+          "oneOf": {"type": "array", "items": { "$ref": "draft07.schema.json" } },
+          "allOf": {"type": "array", "items": { "$ref": "draft07.schema.json" } },
+          "anyOf": {"type": "array", "items": { "$ref": "draft07.schema.json" } }
+        }
       }
     }
   },
@@ -93,7 +102,29 @@
         "options": {
           "collapsible": true
         }
+      },
+
+
+
+      {
+        "type": "Group",
+        "label": "Composition (oneOf / anyOf / allOf)",
+        "elements": [
+          {
+            "type": "Formbuilder",
+            "scope": "#/properties/composition",
+            "options": {
+              "schemaOnly": true,
+              "hideToolbar": true,
+              "baseTool": "combinator"
+            }
+          }
+        ],
+        "options": {
+          "collapsible": true
+        }
       }
+
     ]
   },
   "data": {}

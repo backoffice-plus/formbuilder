@@ -22,6 +22,8 @@ import * as conditional from './conditional';
 import * as definitions from './definitions';
 import * as jsonSchemas from './jsonSchemas';
 import * as renderer from './renderer';
+import * as composition from './composition';
+
 
 export {
   _default,
@@ -48,4 +50,5 @@ export {
   definitions,
   jsonSchemas,
   renderer,
+  composition,
 }

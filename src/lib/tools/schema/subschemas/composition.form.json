@@ -1,0 +1,40 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "composition": {
+        "type": "object",
+        "properties": {
+
+          "oneOf": {
+            "type": "array",
+            "items": { "$ref": "draft07.schema.json" }
+          },
+          "allOf": {
+            "type": "array",
+            "items": { "$ref": "draft07.schema.json" }
+          },
+          "any": {
+            "type": "array",
+            "items": { "$ref": "draft07.schema.json" }
+          }
+        }
+      }
+    }
+  },
+
+  "uischema": {
+    "type": "VerticalLayout",
+    "elements": [
+      {
+        "type": "Formbuilder",
+        "scope": "#/properties/composition",
+        "options": {
+          "schemaOnly": true,
+          "baseTool": "combinator"
+        }
+      }
+    ]
+  },
+  "data": {}
+}

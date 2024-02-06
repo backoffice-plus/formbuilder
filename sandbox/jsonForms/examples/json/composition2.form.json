@@ -1,0 +1,42 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "scopeOrPath": {
+        "type": "string",
+        "enum": ["scope", "path"]
+      },
+      "scope": {
+        "type": "string"
+      }
+    },
+    "allOf": [
+      {
+        "if": {
+          "properties": { "scopeOrPath": {"const": "scope"} },
+          "required": ["scopeOrPath"]
+        },
+        "then": {
+          "properties": { "scope": { "pattern": "^#\/\\w+" }  },
+          "required": ["scope"]
+        }
+      },
+
+      {
+        "if": {
+          "properties": { "scopeOrPath": {"const": "path"} },
+          "required": ["scopeOrPath"]
+        },
+        "then": {
+          "properties": { "scope": { "pattern": "^\\.\/[a-z]+" }  },
+          "required": ["scope"]
+        }
+      }
+    ]
+  },
+  "uischema": {
+    "type": "Control",
+    "scope": "#/"
+  },
+  "data": {}
+}

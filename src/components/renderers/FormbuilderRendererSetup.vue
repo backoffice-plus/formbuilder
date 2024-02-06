@@ -96,12 +96,6 @@ const props = defineProps(rendererProps<ControlElement>())
             properties: (schema as {[pattern: string]:JsonSchema|any })
           }
         }
-      else if(options?.useKeyword && ["oneOf","allOf","anyOf"].includes(options?.useKeyword)) {
-
-        schema = {
-          [options.useKeyword]: schema
-        }
-      }
     }
 
     //schema & layout mode
@@ -121,10 +115,6 @@ const props = defineProps(rendererProps<ControlElement>())
           if(control.appliedOptions.value.useProperties) {
             value = value?.properties;
           }
-          else if(options.useKeyword) {
-            value = value?.[options.useKeyword];
-          }
-
         }
         else if(schemaReadOnly) {
           value = e?.uischema;

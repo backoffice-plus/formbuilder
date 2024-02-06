@@ -3,6 +3,7 @@ import type {UISchemaElement} from "@jsonforms/core";
 import type {ToolContext} from "../../models";
 import * as _ from 'lodash-es';
 import {cleanEmptySchema} from "../SchemaTool";
+import { prepareOptionData as prepareOptionDataComposition, setOptionData as setOptionDataComposition } from './composition';
 
 export const schemaKeys = ['if', 'else', 'then'] as Array<string>;
 
@@ -17,7 +18,10 @@ export const prepareOptionData = (context: ToolContext, schema: JsonSchema, uisc
         }
     });
 
-    return {conditional: data};
+    return {
+        conditional: data,
+        ...prepareOptionDataComposition(context, schema, uischema)
+    };
 }
 
 export const setOptionData = (schema: JsonSchema | any, uischema: UISchemaElement, data: Record<string, any>): void => {
@@ -32,4 +36,6 @@ export const setOptionData = (schema: JsonSchema | any, uischema: UISchemaElemen
         delete schema.conditional
     }
     delete data.conditional
+
+    setOptionDataComposition(schema, uischema, data)
 }

@@ -25,6 +25,7 @@ import {ToolInterface} from "../../../lib/models";
 import {isNotEmpty} from "../../../lib/schemaUtil";
 import {schemaKeys as conditionalSchemaKeys} from "../../../lib/tools/subschemas/conditional";
 import {schemaKeys as validationSchemaKeys} from "../../../lib/tools/subschemas/validation";
+import {schemaKeys as compositionSchemaKeys} from "../../../lib/tools/subschemas/composition";
 
 type SchemaFeature = {
   value: string,
@@ -55,7 +56,7 @@ const featuresAll:Feature[] = [
   {
     value: "C",
     hoverLabel: "has Conditionals",
-    schemaKeys: conditionalSchemaKeys
+    schemaKeys: [...conditionalSchemaKeys, ...compositionSchemaKeys]
   },
   {
     value: "V",

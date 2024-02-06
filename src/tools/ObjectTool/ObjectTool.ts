@@ -35,9 +35,6 @@ export class ObjectTool extends ControlTool {
 
         if (context.isBuilderMode?.schema) {
             data.schema.additionalProperties = this.schema?.additionalProperties
-            data.schema.oneOf = this.schema?.oneOf;
-            data.schema.allOf = this.schema?.allOf;
-            data.schema.anyOf = this.schema?.anyOf;
         }
 
         return {
@@ -50,9 +47,6 @@ export class ObjectTool extends ControlTool {
         super.optionDataUpdate(context, data);
 
         if (context.isBuilderMode?.schema) {
-            this.schema.oneOf = data.schema.oneOf;
-            this.schema.allOf = data.schema.allOf;
-
             subschemas.setOptionDataDefinitions(this.schema, this.uischema, data);
         }
     }

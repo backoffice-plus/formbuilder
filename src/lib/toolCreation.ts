@@ -1,10 +1,11 @@
 // @ts-ignore
 import * as _ from 'lodash-es';
-import {generateDefaultUISchema, generateJsonSchema} from "@jsonforms/core";
+import {generateDefaultUISchema, generateJsonSchema, type CombinatorKeyword} from "@jsonforms/core";
 import {fromScopeToProperty} from './normalizer';
-import {ObjectTool, SchemaArrayTool} from "@/tools";
+import {ObjectTool} from "@/tools";
 import {schemaTool} from "./tools/SchemaTool";
 import {arrayTool} from "./tools/ArrayTool";
+import {combinatorTool} from "@/lib/tools/combinatorTool";
 import type {JsonSchema, UISchemaElement} from "@jsonforms/core";
 import type {formbuilderPropsI, ToolContext, ToolInterface} from "./models";
 import type {ToolFinder} from "./ToolFinder";
@@ -75,8 +76,12 @@ export const createSchemaTool = (schema: JsonSchema, toolName: string | undefine
             clone = cloneToolWithSchema(schemaTool, schema);
             break;
 
-        case "schemaArray":
-            clone = cloneToolWithSchema(SchemaArrayTool.create(), schema);
+        case "combinator":
+            clone = cloneToolWithSchema(combinatorTool, schema);
+            const keyword:CombinatorKeyword|undefined = schemaToolProps?.keyword
+            if(keyword && !clone.schema[keyword]) {
+                clone.schema[keyword] = [];
+            }
             break;
 
         default:

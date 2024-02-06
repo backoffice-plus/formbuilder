@@ -1,0 +1,29 @@
+{
+  "schema": {
+    "type": "object",
+    "properties": {
+      "foo": { "enum": ["bar", "baz"] },
+      "bar": { "type": "string" },
+      "baz": { "type": "string" }
+    },
+    "oneOf": [
+      {
+        "properties": {
+          "foo": { "const": "bar" }
+        },
+        "required": ["bar"]
+      },
+      {
+        "properties": {
+          "foo": { "const": "baz" }
+        },
+        "required": ["baz"]
+      }
+    ]
+  },
+  "uischema": {
+    "type": "Control",
+    "scope": "#/"
+  },
+  "data": {}
+}

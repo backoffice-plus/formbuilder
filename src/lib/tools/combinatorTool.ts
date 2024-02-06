@@ -9,6 +9,7 @@ import {schema, uischema} from "./schema/combinator.form.json";
 import * as _ from 'lodash-es';
 import {cloneToolWithSchema} from "../toolCreation";
 import {getPlainProperty, getRequiredFromSchema} from "../normalizer";
+import {CombinatorKeyword} from "@jsonforms/core/src/util/combinators";
 
 export class CombinatorTool extends AbstractTool implements ToolInterface {
 
@@ -69,19 +70,32 @@ export class CombinatorTool extends AbstractTool implements ToolInterface {
         } as JsonFormsInterface
     }
 
-    static getKeyword(schema: JsonSchema): 'oneOf' | 'allOf' | 'anyOf' | string | undefined {
+    static getKeyword(schema: JsonSchema): CombinatorKeyword | undefined {
+
+        const schemaOnlyKeywords = {} as Record<CombinatorKeyword, Array<JsonSchema>>;
+
         //if (schema?.oneOf && schema.oneOf?.length > 0) {
         if (undefined !== schema?.oneOf) {
-            return 'oneOf';
+            schemaOnlyKeywords['oneOf'] = schema?.oneOf;
         }
         //if (schema?.anyOf && schema.anyOf?.length > 0) {
         if (undefined !== schema?.anyOf) {
-            return 'anyOf';
+            schemaOnlyKeywords['anyOf'] = schema?.anyOf;
         }
         //if (schema?.allOf && schema.allOf?.length > 0) {
         if (undefined !== schema?.allOf) {
-            return 'allOf';
+            schemaOnlyKeywords['allOf'] = schema?.allOf;
         }
+
+        const keywords = Object.keys(schemaOnlyKeywords) as CombinatorKeyword[];
+        if(1 === keywords.length) {
+            return keywords[0];
+        }
+        else if(1 < keywords.length){
+            const notEmpty = keywords.filter(keyword => schemaOnlyKeywords[keyword]?.length > 0)
+            return notEmpty?.[0];
+        }
+
         return undefined;
     }
 
